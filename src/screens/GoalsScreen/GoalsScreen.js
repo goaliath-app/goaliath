@@ -1,12 +1,12 @@
 import React from 'react';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Switch } from 'react-native-paper';
+import { List, Switch, Appbar } from 'react-native-paper';
 import { Header } from '../../components'
 
 const data = [
-  {name: 'Japanese', activated: true},
-  {name: 'Beautiful garden', activated: false},
+  {name: 'Japanese', activated: false},
+  {name: 'Beautiful garden', activated: true},
 ]
 
 const GoalListItem = ({ name, activated }) => {
@@ -27,9 +27,13 @@ const renderItem = ({ item }) => (
     activated={item.activated} />
 )
 
+const headerButtons = (
+  <Appbar.Action icon='plus' />
+)
+
 const GoalsScreen = ({ navigation }) => (
   <View>
-    <Header title='Goals' left='hamburger' navigation={navigation}/>
+    <Header title='Goals' left='hamburger' navigation={navigation} buttons={headerButtons}/>
     <FlatList data={data} renderItem={renderItem} />
   </View>
 )

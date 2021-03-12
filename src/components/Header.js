@@ -1,7 +1,7 @@
 import React from 'react';
 import { Appbar, IconButton } from 'react-native-paper';
 
-const Header = ({title, left, navigation}) => {
+const Header = ({ title, left, navigation, buttons }) => {
     let leftComponent;
 
     if(left === 'back'){
@@ -18,6 +18,7 @@ const Header = ({title, left, navigation}) => {
         <Appbar.Header>
             {leftComponent}
             <Appbar.Content title={title} />
+            {buttons}
         </Appbar.Header>
     )
 }
