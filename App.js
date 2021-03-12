@@ -12,30 +12,21 @@ const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
 const TodayStack = () => (
-  <Stack.Navigator 
-    initialRouteName='Today'
-    headerMode='screen'
-    screenOptions={{header: Header}}>
+  <Stack.Navigator initialRouteName='Today' headerMode='none'>
     <Stack.Screen name='Today' component={TodayScreen} options={{headerTitle: 'Today'}} />
     <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} options={{headerTitle: 'ActivityDetail'}} />
   </Stack.Navigator>
 )
 
 const WeekStack = () => (
-  <Stack.Navigator 
-    initialRouteName='Week'
-    headerMode='screen'
-    screenOptions={{header: Header}}>
+  <Stack.Navigator initialRouteName='Week' headerMode='none'>
     <Stack.Screen name='Week' component={WeekScreen} options={{headerTitle: 'Week'}} />
     <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} options={{headerTitle: 'ActivityDetail'}} />
   </Stack.Navigator>
 )
 
 const GoalsStack = () => (
-  <Stack.Navigator 
-    initialRouteName='Goals'
-    headerMode='screen'
-    screenOptions={{header: Header}}>
+  <Stack.Navigator initialRouteName='Goals' headerMode='none' >
     <Stack.Screen name='Goals' component={GoalsScreen} options={{headerTitle: 'Goals'}} />
     <Stack.Screen name='Goal' component={GoalScreen} />
   </Stack.Navigator>

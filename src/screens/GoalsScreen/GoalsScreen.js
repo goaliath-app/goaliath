@@ -1,36 +1,37 @@
 import React from 'react';
-import { FlatList } from 'react-native'
+import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { Text, List, Switch } from 'react-native-paper';
+import { List, Switch } from 'react-native-paper';
+import { Header } from '../../components'
 
 const data = [
-    {name: 'Japanese', activated: true},
-    {name: 'Beautiful garden', activated: false},
+  {name: 'Japanese', activated: true},
+  {name: 'Beautiful garden', activated: false},
 ]
 
 const GoalListItem = ({ name, activated }) => {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
 
-    return (
-        <List.Item
-            title={name}
-            right={() => <Switch value={activated}/>}
-            onPress={() => navigation.navigate('Goal', { headerTitle: name, goalName: name })}
-        />
-    );
+  return (
+    <List.Item
+      title={name}
+      right={() => <Switch value={activated}/>}
+      onPress={() => navigation.navigate('Goal', { headerTitle: name, goalName: name })}
+    />
+  );
 }
 
 const renderItem = ({ item }) => (
-    <GoalListItem
-        name={item.name}
-        activated={item.activated} />
+  <GoalListItem
+    name={item.name}
+    activated={item.activated} />
 )
 
-const GoalsScreen = () => (
-    <FlatList
-    data={data}
-    renderItem={renderItem}
-  />
+const GoalsScreen = ({ navigation }) => (
+  <View>
+    <Header title='Goals' left='hamburger' navigation={navigation}/>
+    <FlatList data={data} renderItem={renderItem} />
+  </View>
 )
 
 export default GoalsScreen;

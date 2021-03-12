@@ -1,5 +1,7 @@
 import React from 'react';
-import { ActivityList } from '../../components'
+import { View } from 'react-native'
+import { ActivityList, Header } from '../../components'
+
 
 const data = [
     {title: 'Genki', completed: true, current: true, period: 'weekly', todayTime: 0, weeklyTimesObjective: 2, weeklyTimes: 0},
@@ -7,7 +9,10 @@ const data = [
   ]
 
 const WeekScreen = ({ navigation }) => (
-      <ActivityList data={data} />
+  <View>
+    <Header title='This Week' left='hamburger' navigation={navigation}/>
+    <ActivityList data={data} />
+  </View>
 )
 
 export default WeekScreen;

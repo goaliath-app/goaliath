@@ -1,19 +1,6 @@
 import React from 'react';
 import { Appbar, IconButton } from 'react-native-paper';
 
-
-const HeaderContainer = ({ scene, navigation, previous }) => {  
-    const { options } = scene.descriptor
-    const title = options.headerTitle !== undefined ? options.headerTitle : scene.route.params.headerTitle;
-
-    return(
-        <Header 
-            title={title} 
-            left={previous? 'back':'hamburger'} 
-            navigation={navigation} />
-    )
-  };
-
 const Header = ({title, left, navigation}) => {
     let leftComponent;
 
@@ -35,4 +22,4 @@ const Header = ({title, left, navigation}) => {
     )
 }
 
-export default HeaderContainer;
+export default Header;

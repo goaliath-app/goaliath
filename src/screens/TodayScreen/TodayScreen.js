@@ -1,5 +1,8 @@
 import React from 'react';
+import { View } from 'react-native'
 import { ActivityList } from '../../components'
+import { Header } from '../../components';
+
 
 const data = [
   {title: 'Anki', completed: true, current: false, period: 'daily'},
@@ -10,9 +13,12 @@ const data = [
   {title: 'Genki', timeGoal: 5, completed: true, current: true, period: 'daily', todayTime: 0},
  ]
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   return (
-    <ActivityList data={data} />
+    <View>
+      <Header title='Today' left='hamburger' navigation={navigation}/>
+      <ActivityList data={data} />
+    </View>
   );
 }
 
