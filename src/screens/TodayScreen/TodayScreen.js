@@ -1,40 +1,18 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
-import { Appbar, IconButton, List } from 'react-native-paper'
-import { useNavigation } from '@react-navigation/native';
+import { ActivityList } from '../../components'
 
 const data = [
-  {title: 'Anki'},
-  {title: 'Cure Dolly', description: 'Dedicated 2 of 4 hours'},
-  {title: 'Genki', description: 'Dedicated 0 of 1 hour'}
-]
+  {title: 'Anki', completed: true, current: false, period: 'daily'},
+  {title: 'Cure Dolly', timeGoal: 20, completed: false, current: true, period: 'daily', todayTime: 10},
+  {title: 'Genki', completed: false, current: false, period: 'daily'},
+  {title: 'Genki', timeGoal: 10, completed: true, current: false, period: 'daily', todayTime: 20},
+  {title: 'Genki', timeGoal: 5, completed: false, current: false, period: 'daily', todayTime: 0},
+  {title: 'Genki', timeGoal: 5, completed: true, current: true, period: 'daily', todayTime: 0},
+ ]
 
-const renderItem = ({ item }) => (
-  <DailyActivityListItem 
-    activityName={item.title} 
-    description={item.description} />
-)
-
-const DailyActivityListItem = ({ activityName, description }) => {
-  const navigation = useNavigation();
-
-  return (  
-    <List.Item
-      title={activityName}
-      description={description}
-      onPress={() => navigation.navigate('ActivityDetail')}
-    />
-  );
-}
-
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
   return (
-    <View>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-      />
-    </View>
+    <ActivityList data={data} />
   );
 }
 

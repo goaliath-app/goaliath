@@ -4,7 +4,7 @@ import { Appbar, IconButton } from 'react-native-paper';
 
 const HeaderContainer = ({ scene, navigation, previous }) => {  
     const { options } = scene.descriptor
-    const title = options.headerTitle !== undefined ? options.headerTitle : 'Default';
+    const title = options.headerTitle !== undefined ? options.headerTitle : scene.route.params.headerTitle;
 
     return(
         <Header 
