@@ -1,13 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, Switch, Appbar } from 'react-native-paper';
 import { Header } from '../../components'
 
-const data = [
-  {name: 'Japanese', activated: false},
-  {name: 'Beautiful garden', activated: true},
-]
 
 const GoalListItem = ({ name, activated }) => {
   const navigation = useNavigation();
@@ -27,15 +24,22 @@ const renderItem = ({ item }) => (
     activated={item.activated} />
 )
 
-const GoalsScreen = ({ navigation }) => (
-  <View>
-    <Header 
-      title='Goals' left='hamburger' navigation={navigation} 
-      buttons={
-        <Appbar.Action icon='plus' onPress={() => navigation.navigate('NewGoal')} />
-      }/>
-    <FlatList data={data} renderItem={renderItem} />
-  </View>
-)
+const GoalsScreen = ({ navigation, goals }) => {
+  return(
+    <View>
+      <Header 
+        title='Goals' left='hamburger' navigation={navigation} 
+        buttons={
+          <Appbar.Action icon='plus' onPress={() => navigation.navigate('NewGoal')} />
+        }/>
+      <FlatList data={goals} renderItem={renderItem} />
+    </View>
+  )
+}
 
-export default GoalsScreen;
+const mapStateToProps = (state) => {
+  const { goals } = state
+  return { goals }
+};
+
+export default connect(mapStateToProps)(GoalsScreen);

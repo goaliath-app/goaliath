@@ -1,14 +1,16 @@
 import 'react-native-gesture-handler';  // this import needs to be at the top.
 import React from 'react';
-import { 
-  TodayScreen, WeekScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, NewActivityScreen,
-  NewGoalScreen
-} from './src/screens'
+import { Provider as ReduxProvider } from 'react-redux';
+import { createStore } from 'redux';
 import { Provider as PaperProvider } from  'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import { 
+  TodayScreen, WeekScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, NewActivityScreen,
+  NewGoalScreen
+} from './src/screens'
+import store from './src/redux/store'
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -40,14 +42,16 @@ const GoalsStack = () => (
 
 export default function App() {
   return (
-    <PaperProvider>
-      <NavigationContainer>
-        <Drawer.Navigator initialRouteName='Today'>
-          <Drawer.Screen name='Today' component={TodayStack} />
-          <Drawer.Screen name='Week' component={WeekStack} />
-          <Drawer.Screen name='Goals' component={GoalsStack} />
-        </Drawer.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
+    <ReduxProvider store={store}>
+      <PaperProvider>
+        <NavigationContainer>
+          <Drawer.Navigator initialRouteName='Today'>
+            <Drawer.Screen name='Today' component={TodayStack} />
+            <Drawer.Screen name='Week' component={WeekStack} />
+            <Drawer.Screen name='Goals' component={GoalsStack} />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
+    </ReduxProvider>
   );
 }
