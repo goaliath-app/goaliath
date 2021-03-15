@@ -27,13 +27,13 @@ const renderItem = ({ item }) => (
     activated={item.activated} />
 )
 
-const headerButtons = (
-  <Appbar.Action icon='plus' />
-)
-
 const GoalsScreen = ({ navigation }) => (
   <View>
-    <Header title='Goals' left='hamburger' navigation={navigation} buttons={headerButtons}/>
+    <Header 
+      title='Goals' left='hamburger' navigation={navigation} 
+      buttons={
+        <Appbar.Action icon='plus' onPress={() => navigation.navigate('NewGoal')} />
+      }/>
     <FlatList data={data} renderItem={renderItem} />
   </View>
 )

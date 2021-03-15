@@ -18,7 +18,7 @@ const GoalScreen = ({ navigation }) => {
   const [timesPerWeek, setTimesPerWeek] = React.useState(0)
 
   const headerButtons = (
-    <Appbar.Action icon='check' />
+    <Appbar.Action icon='check' onPress={() => navigation.navigate('Goal')} />
   )
 
   return(

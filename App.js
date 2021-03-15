@@ -1,6 +1,9 @@
 import 'react-native-gesture-handler';  // this import needs to be at the top.
 import React from 'react';
-import { TodayScreen, WeekScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, NewActivityScreen } from './src/screens'
+import { 
+  TodayScreen, WeekScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, NewActivityScreen,
+  NewGoalScreen
+} from './src/screens'
 import { Provider as PaperProvider } from  'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -29,6 +32,7 @@ const GoalsStack = () => (
     <Stack.Screen name='Goals' component={GoalsScreen} options={{headerTitle: 'Goals'}} />
     <Stack.Screen name='Goal' component={GoalScreen} />
     <Stack.Screen name='NewActivity' component={NewActivityScreen} />
+    <Stack.Screen name='NewGoal' component={NewGoalScreen} />
   </Stack.Navigator>
 )
 
