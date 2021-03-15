@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Image } from 'react-native'
+import { useNavigation } from '@react-navigation/native';
 import { List, Checkbox, IconButton, Text } from 'react-native-paper'
 
 const ActivityListItem = ({ 
@@ -48,12 +49,15 @@ const ActivityListItem = ({
       rightSlot = <Text style={styles.timeLabel}>{hours}:{minutes}:{seconds}</Text>
     }
 
+    const navigation = useNavigation();
+
     return (  
       <List.Item
         left={() => leftSlot}
         title={name}
         description={description}
         right={() => rightSlot}
+        onPress={() => navigation.navigate('ActivityDetail', {activityName: name})}
       />
     );
   }

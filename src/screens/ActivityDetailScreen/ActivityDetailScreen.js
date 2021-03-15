@@ -1,13 +1,72 @@
 import React from 'react';
 import { View } from 'react-native'
-import { Button } from 'react-native-paper';
+import { Button, List, Checkbox, Divider } from 'react-native-paper';
 import { Header } from '../../components';
 
-const ActivityDetailScreen = ({ navigation }) => (
+const data = {
+  goal: 'Japanese', frecuency: 'Daily', weekHours: 3, weekTimes: 2, hours: 5, times: 4
+}
+
+const ActivityDetailScreen = ({ route, navigation }) => (
   <View>
-    <Header title='Activity Details' left='back' navigation={navigation}/>
-    <Button onPress={() => navigation.push('ActivityDetail')}>Go Deeper</Button>
+    <Header title={route.params.activityName} left='back' navigation={navigation}/>
+    <BasicActivityInfo />
+    <TodayPannel />
+    <WeekStats />
+    <GenericStats />
+    
   </View>
 )
 
+const BasicActivityInfo =() => (
+  <View>
+    <List.Item
+      title={'Goal: ' + data.goal}
+    />
+    <List.Item
+      title={'Frecuency: ' + data.frecuency}
+    />
+    <Divider />
+  </View>
+)
+const TodayPannel = () => (
+  <View>
+    <List.Item
+      title='Today'
+      right={() => <Checkbox status='unchecked' />}
+    />
+    <Button>Start Timer</Button>
+    <Divider />
+  </View>
+)
+
+const GenericStats = () => (
+  <View>
+    <List.Item title='Stats' />
+    <List.Item
+      left={() => <List.Icon icon="clock-outline" />}
+      title={data.hours + ' total hours dedicated'}
+    />
+    <List.Item
+      left={() => <List.Icon icon="check-circle-outline" />}
+      title={data.times + ' times completed'}
+    />
+    <Divider />
+  </View>
+)
+
+const WeekStats = () => (
+  <View>
+    <List.Item title='This Week' />
+    <List.Item
+      left={() => <List.Icon icon="clock-outline" />}
+      title={data.weekHours + ' total hours dedicated'}
+    />
+    <List.Item
+      left={() => <List.Icon icon="check-circle-outline" />}
+      title={data.weekTimes + ' times completed'}
+    />
+    <Divider />
+  </View>
+)
 export default ActivityDetailScreen;

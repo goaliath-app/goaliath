@@ -31,6 +31,7 @@ const GoalsStack = () => (
   <Stack.Navigator initialRouteName='Goals' headerMode='none' >
     <Stack.Screen name='Goals' component={GoalsScreen} options={{headerTitle: 'Goals'}} />
     <Stack.Screen name='Goal' component={GoalScreen} />
+    <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
     <Stack.Screen name='NewActivity' component={NewActivityScreen} />
     <Stack.Screen name='NewGoal' component={NewGoalScreen} />
   </Stack.Navigator>
