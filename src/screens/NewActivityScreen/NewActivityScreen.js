@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, TextInput as ReactTextInput, FlatList } from 'react-native';
 import { Title, Appbar, Text, TextInput, Button, List, Checkbox } from 'react-native-paper';
-import { Header } from '../../components';
+import { Header, TimeInput } from '../../components';
 
 
 const GoalScreen = ({ navigation }) => {
@@ -142,33 +142,6 @@ const TimeGoal = ({
   )
 }
 
-const TimeInput = ({ hours, setHours, minutes, setMinutes, seconds, setSeconds }) => (
-  <View style={styles.timeInputView}>
-
-    <TextInput 
-      style={styles.timeInputField} keyboardType='numeric' maxLength={2}
-      value={hours} 
-      onChangeText={(value) => setHours(value)}
-    />
-    <Text style={styles.timeInputLabel}>hr</Text>
-
-    <TextInput 
-      style={styles.timeInputField} keyboardType='numeric' maxLength={2}
-      value={minutes} 
-      onChangeText={setMinutes}
-    />
-    <Text style={styles.timeInputLabel}>min</Text>
-
-    <TextInput 
-      style={styles.timeInputField} keyboardType='numeric'  maxLength={2}
-      value={seconds} 
-      onChangeText={setSeconds}
-    />
-    <Text style={styles.timeInputLabel}>s</Text>
-
-  </View>
-)
-
 const WeekdaySelector = ({ weekDays, setWeekDays }) => (
   <View style={styles.weekdaySelectorView}>
     <WeekdaySelectorItem day='Monday' weekDays={weekDays} setWeekDays={setWeekDays}/>
@@ -201,9 +174,6 @@ const styles = StyleSheet.create({
   repeatOptionsView: {
     flexDirection: 'row',
   },
-  timeInputView: {
-    flexDirection: 'row',
-  },
   weekdaySelectorView: {
     flexDirection: 'row',
   },
@@ -218,12 +188,6 @@ const styles = StyleSheet.create({
   },
   weekdaySelectorItem: {
     flex: 1,
-  },
-  timeInputField: {
-    flex: 2
-  },
-  timeInputLabel: {
-    flex: 1
   },
   repeatOptionsButton: {
     flex: 1,

@@ -1,22 +1,30 @@
 import React from 'react';
 import { View } from 'react-native'
-import { Button, List, Checkbox, Divider } from 'react-native-paper';
-import { Header } from '../../components';
+import { Button, List, Checkbox, Divider, Appbar } from 'react-native-paper';
+import { Header, TimeInput, ThreeDotsMenu } from '../../components';
 
 const data = {
-  goal: 'Japanese', frecuency: 'Daily', weekHours: 3, weekTimes: 2, hours: 5, times: 4
+  goal: 'Japanese', frecuency: 'Daily', weekHours: 3, weekTimes: 2, hours: 5, times: 4, previousScreen: ''
 }
 
-const ActivityDetailScreen = ({ route, navigation }) => (
-  <View>
-    <Header title={route.params.activityName} left='back' navigation={navigation}/>
-    <BasicActivityInfo />
-    <TodayPannel />
-    <WeekStats />
-    <GenericStats />
-    
-  </View>
-)
+const ActivityDetailScreen = ({ route, navigation }) => {
+  const headerButtons = (previousScreen) => {
+    if(previousScreen=='Goal'){
+      return <Appbar.Action icon='pencil' color='white'/>
+    } else {return <ThreeDotsMenu />}
+  }
+
+  return(
+    <View>
+      <Header title={route.params.activityName} left='back' navigation={navigation} buttons={headerButtons(data.previousScreen)} />
+      <BasicActivityInfo />
+      <TodayPannel />
+      <WeekStats />
+      <GenericStats />
+      
+    </View>
+  )
+}
 
 const BasicActivityInfo =() => (
   <View>
@@ -35,6 +43,7 @@ const TodayPannel = () => (
       title='Today'
       right={() => <Checkbox status='unchecked' />}
     />
+    <TimeInput />
     <Button>Start Timer</Button>
     <Divider />
   </View>
