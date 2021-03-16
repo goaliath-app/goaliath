@@ -11,7 +11,7 @@ const NewActivityScreen = ({ navigation, createActivity, route }) => {
 
   const [name, setName] = React.useState('');
   const [repeatMode, setRepeatMode] = React.useState();  // 'daily', 'select' or 'weekly'
-  const [goal, setGoal] = React.useState();  // 'time' or 'check'
+  const [goal, setGoal] = React.useState('check');  // 'time' or 'check'
   const [seconds, setSeconds] = React.useState('');
   const [minutes, setMinutes] = React.useState('');
   const [hours, setHours] = React.useState('');
@@ -19,21 +19,47 @@ const NewActivityScreen = ({ navigation, createActivity, route }) => {
     'Monday': false, 'Tuesday': false, 'Wednesday': false, 'Thursday': false, 
     'Friday': false, 'Saturday': false, 'Sunday': false
   })
-  const [timesPerWeek, setTimesPerWeek] = React.useState(0)
+  const [timesPerWeek, setTimesPerWeek] = React.useState('1')
 
   const validate = ( newActivity ) => {
+    const { name, repeatMode, goal, goalId, timeGoal, weekDays } = newActivity
+    if(!name || !repeatMode || !goal || !goalId){
+      Alert.alert('Missing name, repeatMode, goal or goalId')
+      return false
+    }
+    if(goal == 'time' && !timeGoal){
+      Alert.alert('Please enter a time')
+      return false
+    }
+    if(repeatMode == 'select'){
+      for(let day in weekDays){
+        if (weekDays[day] == true){ return true }
+      }
+      Alert.alert('Please select at least one day')
+      return false
+    }
+    if(repeatMode == 'weekly' && goal == 'check'){
+      if(!timesPerWeek){
+        Alert.alert('Please enter number of days per week')
+        return false
+      }
+    }
     return true
   }
 
   const headerButtons = (
     <Appbar.Action icon='check' onPress={() => {
-        const timeGoal = hours*3600 + minutes*60 + seconds
-        const newActivity = { name, repeatMode, goal, timeGoal, weekDays, timesPerWeek, goalId: goalId }
+        let timeGoal
+        if(hours || minutes || seconds ){
+          timeGoal = Number.parseInt(hours)*3600 + Number.parseInt(minutes)*60 + Number.parseInt(seconds)
+        }
+        
+        const newActivity = { 
+          name, repeatMode, goal, timeGoal, 
+          weekDays, timesPerWeek: Number.parseInt(timesPerWeek), goalId: goalId }
         if(validate(newActivity)){
           createActivity(newActivity)
           navigation.navigate('Goal')
-        }else{
-          Alert.alert('Invalid values')
         }
       }} 
     /> 
@@ -151,7 +177,7 @@ const TimeGoal = ({
       right={()=>(
         <Checkbox
           status={goal=='time' ? 'checked' : 'unchecked'}
-          onPress={() => {setGoal(goal!=='time'?'time':'')}}
+          onPress={() => {setGoal(goal!=='time'?'time':'check')}}
         />
       )}
     />
