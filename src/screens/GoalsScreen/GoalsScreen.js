@@ -7,7 +7,7 @@ import { Header } from '../../components'
 import { selectAllGoals, toggleGoal } from '../../redux/GoalsSlice'
 
 
-const GoalListItem = ({ name, activated, toggleGoal }) => {
+const GoalListItem = ({ name, active, toggleGoal, id }) => {
   const navigation = useNavigation();
 
   return (
@@ -15,11 +15,11 @@ const GoalListItem = ({ name, activated, toggleGoal }) => {
       title={
         <View style={{width: '100%'}}>
           <Text 
-            onPress={() => navigation.navigate('Goal', { headerTitle: name, goalName: name })}>
+            onPress={() => navigation.navigate('Goal', { headerTitle: name, goalName: name, goalId: id})}>
               {name}
           </Text>
         </View>}
-       right={() => <Switch value={activated} onValueChange={ () => toggleGoal({id: 0}) }/>}
+       right={() => <Switch value={active} onValueChange={ () => toggleGoal({id: id}) }/>}
     />
   );
 }
@@ -29,8 +29,9 @@ const GoalListItem = ({ name, activated, toggleGoal }) => {
 const GoalsScreen = ({ navigation, goals, toggleGoal }) => {
   const renderItem = ({ item }) => (
     <GoalListItem
+      id={item.id}
       name={item.name}
-      activated={item.activated} 
+      active={item.active} 
       toggleGoal={toggleGoal}/>
   )
 

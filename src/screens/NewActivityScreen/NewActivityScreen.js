@@ -1,10 +1,14 @@
 import React from 'react';
-import { View, StyleSheet, TextInput as ReactTextInput, FlatList } from 'react-native';
+import { connect } from 'react-redux'
+import { View, StyleSheet, TextInput as ReactTextInput, FlatList, Alert } from 'react-native';
 import { Title, Appbar, Text, TextInput, Button, List, Checkbox } from 'react-native-paper';
 import { Header, TimeInput } from '../../components';
+import { createActivity } from '../../redux/ActivitySlice'
 
 
-const GoalScreen = ({ navigation }) => {
+const NewActivityScreen = ({ navigation, createActivity, route }) => {
+  const { goalId } = route.params
+
   const [name, setName] = React.useState('');
   const [repeatMode, setRepeatMode] = React.useState();  // 'daily', 'select' or 'weekly'
   const [goal, setGoal] = React.useState();  // 'time' or 'check'
@@ -17,8 +21,22 @@ const GoalScreen = ({ navigation }) => {
   })
   const [timesPerWeek, setTimesPerWeek] = React.useState(0)
 
+  const validate = ( newActivity ) => {
+    return true
+  }
+
   const headerButtons = (
-    <Appbar.Action icon='check' onPress={() => navigation.navigate('Goal')} />
+    <Appbar.Action icon='check' onPress={() => {
+        const timeGoal = hours*3600 + minutes*60 + seconds
+        const newActivity = { name, repeatMode, goal, timeGoal, weekDays, timesPerWeek, goalId: goalId }
+        if(validate(newActivity)){
+          createActivity(newActivity)
+          navigation.navigate('Goal')
+        }else{
+          Alert.alert('Invalid values')
+        }
+      }} 
+    /> 
   )
 
   return(
@@ -194,4 +212,8 @@ const styles = StyleSheet.create({
   }
 })
 
-export default GoalScreen;
+const actionsToProps = {
+  createActivity,
+}
+
+export default connect(null, actionsToProps)(NewActivityScreen);
