@@ -10,12 +10,13 @@ each activity is:
   goalId: id of its goal
   name: str
   active: bool
-  repeatMode: "daily" / "weekly" / "weekdays",
+  repeatMode: "daily" / "weekly" / "select",
   goal: "check" / "time"
   timeGoal: seconds, 
-  weekdays: {'monday': bool, 'tuesday': bool, 'wednesday': bool, 'thursday': bool', 
+  weekDays: {'monday': bool, 'tuesday': bool, 'wednesday': bool, 'thursday': bool', 
     'friday': bool, 'saturday': bool, 'sunday': bool'}, 
   timesPerWeek: int 
+  id: str
 }
 */
 

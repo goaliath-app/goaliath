@@ -1,13 +1,16 @@
 import React from 'react';
 import { View } from 'react-native'
+import { connect } from 'react-redux';
 import { Button, List, Checkbox, Divider, Appbar, Menu } from 'react-native-paper';
 import { Header, TimeInput, ThreeDotsMenu } from '../../components';
+import { selectActivityById } from '../../redux/ActivitySlice'
+import { selectGoalById } from '../../redux/GoalsSlice'
 
 const data = {
   goal: 'Japanese', frecuency: 'Daily', weekHours: 3, weekTimes: 2, hours: 5, times: 4, previousScreen: ''
 }
 
-const ActivityDetailScreen = ({ route, navigation }) => {
+const ActivityDetailScreen = ({ activity, goal, navigation }) => {
   const menuItems = (
     <>
     <Menu.Item onPress={() => {}} title='Edit activity' />
@@ -22,27 +25,64 @@ const ActivityDetailScreen = ({ route, navigation }) => {
 
   return(
     <View>
-      <Header title={route.params.activityName} left='back' navigation={navigation} buttons={headerButtons(data.previousScreen)} />
-      <BasicActivityInfo />
+      <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons(data.previousScreen)} />
+      <BasicActivityInfo activity={activity} goal={goal}/>
+      {/* delayed until we start working on daily and weekly screens 
       <TodayPannel />
       <WeekStats />
-      <GenericStats />
-      
+      <GenericStats /> 
+      */}
     </View>
   )
 }
 
-const BasicActivityInfo =() => (
-  <View>
-    <List.Item
-      title={'Goal: ' + data.goal}
-    />
-    <List.Item
-      title={'Frecuency: ' + data.frecuency}
-    />
-    <Divider />
-  </View>
-)
+const BasicActivityInfo = ({ activity, goal }) => {
+  let frequency 
+  switch(activity.repeatMode){
+    case 'weekly':
+      if(activity.goal=='check'){
+        frequency = `${activity.timesPerWeek} times per week.`
+      }else{
+        frequency = `${activity.timeGoal} seconds per week.`
+      }
+      break
+    case 'select':
+      let days = ''
+      for (let day in activity.weekDays){
+        if (activity.weekDays[day]){
+          days = `${days} ${day.substring(0,2)}`
+        }
+      }
+      if(activity.goal=='check'){
+        frequency = `Do on ${days}`
+      }else{
+        frequency = `${activity.timeGoal} seconds on ${days}`
+      }
+      break
+    case 'daily':
+      if(activity.goal=='check'){
+        frequency = "Every day."
+      }else{
+        frequency = `${activity.timeGoal} seconds every day.`
+      }
+      break
+    default:
+      frequency = 'ERROR'
+  }
+
+  return (
+    <View>
+      <List.Item
+        title={'Goal: ' + goal.name}
+      />
+      <List.Item
+        title={'Frequency: ' + frequency}
+      />
+      <Divider />
+    </View>
+  )
+}
+
 const TodayPannel = () => (
   <View>
     <List.Item
@@ -84,4 +124,14 @@ const WeekStats = () => (
     <Divider />
   </View>
 )
-export default ActivityDetailScreen;
+
+const mapStateToProps = (state, ownProps) => {
+  const activityId = ownProps.route.params.activityId
+  const activity = selectActivityById(state, activityId)
+  const activityGoalId = activity.goalId
+  const goal = selectGoalById(state, activityGoalId)
+
+  return { activity, goal }
+}
+
+export default connect(mapStateToProps)(ActivityDetailScreen);

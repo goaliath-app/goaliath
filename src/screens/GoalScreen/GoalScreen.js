@@ -18,7 +18,7 @@ const Activity = ({ name, repeatMode, active, id, toggleActivity }) => {
     <List.Item
       title={
         <View style={{width: '100%' }}>
-          <Text onPress={() => navigation.navigate('ActivityDetail', { activityName: name })}>
+          <Text onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}>
             {name}
           </Text>
         </View>

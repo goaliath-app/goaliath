@@ -4,7 +4,7 @@ const goalsAdapter = createEntityAdapter();
 
 const initialState = goalsAdapter.getInitialState({nextId: 0});
 
-// each goal is {name: str, motivation: str, active: bool}
+// each goal is {name: str, motivation: str, active: bool, id: str}
 
 const goalsSlice = createSlice({
   name: 'goals',
@@ -24,6 +24,8 @@ const goalsSlice = createSlice({
 
 export const { createGoal, toggleGoal } = goalsSlice.actions
 
-export const { selectAll: selectAllGoals } = goalsAdapter.getSelectors(state => state.goals)
+export const { 
+  selectAll: selectAllGoals, selectById: selectGoalById
+} = goalsAdapter.getSelectors(state => state.goals)
 
 export default goalsSlice.reducer

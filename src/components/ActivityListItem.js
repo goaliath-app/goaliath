@@ -57,7 +57,7 @@ const ActivityListItem = ({
         title={name}
         description={description}
         right={() => rightSlot}
-        onPress={() => navigation.navigate('ActivityDetail', {activityName: name})}
+        onPress={() => navigation.navigate('ActivityDetail', {activityId: '0'})}
       />
     );
   }
