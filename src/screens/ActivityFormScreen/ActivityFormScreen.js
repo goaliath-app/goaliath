@@ -3,23 +3,23 @@ import { connect } from 'react-redux'
 import { View, StyleSheet, TextInput as ReactTextInput, FlatList, Alert } from 'react-native';
 import { Title, Appbar, Text, TextInput, Button, List, Checkbox } from 'react-native-paper';
 import { Header, TimeInput } from '../../components';
-import { createActivity } from '../../redux/ActivitySlice'
+import { createActivity, selectActivityById } from '../../redux/ActivitySlice'
 
 
-const NewActivityScreen = ({ navigation, createActivity, route }) => {
+const ActivityFormScreen = ({ navigation, createActivity, route, activity=null }) => {
   const { goalId } = route.params
 
-  const [name, setName] = React.useState('');
-  const [repeatMode, setRepeatMode] = React.useState();  // 'daily', 'select' or 'weekly'
-  const [goal, setGoal] = React.useState('check');  // 'time' or 'check'
-  const [seconds, setSeconds] = React.useState('');
-  const [minutes, setMinutes] = React.useState('');
-  const [hours, setHours] = React.useState('');
-  const [weekDays, setWeekDays] = React.useState({
+  const [name, setName] = React.useState(activity?.name?activity.name:'');
+  const [repeatMode, setRepeatMode] = React.useState(activity?.repeatMode?activity.repeatMode:null);  // 'daily', 'select' or 'weekly'
+  const [goal, setGoal] = React.useState(activity?.goal?activity.goal:'check');  // 'time' or 'check'
+  const [seconds, setSeconds] = React.useState(activity?.timeGoal?(activity.timeGoal%60).toString():'');
+  const [minutes, setMinutes] = React.useState(activity?.minutes?(Math.floor((activity.minutes%3600)/60)).toString():'');
+  const [hours, setHours] = React.useState(activity?.hours?(Math.floor((activity.hours/3600))).toString():'');
+  const [weekDays, setWeekDays] = React.useState(activity?.weekDays?activity.weekDays:{
     'Monday': false, 'Tuesday': false, 'Wednesday': false, 'Thursday': false, 
     'Friday': false, 'Saturday': false, 'Sunday': false
   })
-  const [timesPerWeek, setTimesPerWeek] = React.useState('1')
+  const [timesPerWeek, setTimesPerWeek] = React.useState(activity?.timesPerWeek?activity.timesPerWeek:'1')
 
   const validate = ( newActivity ) => {
     const { name, repeatMode, goal, goalId, timeGoal, weekDays } = newActivity
@@ -67,7 +67,7 @@ const NewActivityScreen = ({ navigation, createActivity, route }) => {
 
   return(
     <View>
-      <Header title='New Activity' left='back' navigation={navigation} buttons={headerButtons}/>
+      <Header title={activity?.name?activity.name:'New Activity'} left='back' navigation={navigation} buttons={headerButtons}/>
       <TextInput label="Activity Name" value={name} onChangeText={name => setName(name)} />
       <ActivityTypeSelector repeatMode={repeatMode} setRepeatMode={setRepeatMode}/>
       {repeatMode=='select'?
@@ -242,4 +242,9 @@ const actionsToProps = {
   createActivity,
 }
 
-export default connect(null, actionsToProps)(NewActivityScreen);
+const mapStateToProps = (state, ownProps) => {
+  const activityId = ownProps.route.params.activityId
+  return { activity: selectActivityById(state, activityId) }
+}
+
+export default connect(mapStateToProps, actionsToProps)(ActivityFormScreen);
