@@ -13,7 +13,11 @@ const data = {
 const ActivityDetailScreen = ({ activity, goal, navigation }) => {
   const menuItems = (
     <>
-    <Menu.Item onPress={() => {}} title='Edit activity' />
+    <Menu.Item title='Edit activity'
+      onPress={() => {
+        navigation.navigate('ActivityForm', { activityId: activity.id })
+      }} 
+    />
     <Menu.Item onPress={() => {}} title='Delete activity' />
     </>
   )

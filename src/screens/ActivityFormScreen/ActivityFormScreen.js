@@ -1,20 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { View, StyleSheet, TextInput as ReactTextInput, FlatList, Alert } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { Title, Appbar, Text, TextInput, Button, List, Checkbox } from 'react-native-paper';
 import { Header, TimeInput } from '../../components';
-import { createActivity, selectActivityById } from '../../redux/ActivitySlice'
+import { createActivity, updateActivity, selectActivityById } from '../../redux/ActivitySlice'
 
 
-const ActivityFormScreen = ({ navigation, createActivity, route, activity=null }) => {
-  const { goalId } = route.params
-
+const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId=null, activity=null }) => {
+  if(activity){
+    goalId = activity.goalId
+  }
+  
   const [name, setName] = React.useState(activity?.name?activity.name:'');
   const [repeatMode, setRepeatMode] = React.useState(activity?.repeatMode?activity.repeatMode:null);  // 'daily', 'select' or 'weekly'
   const [goal, setGoal] = React.useState(activity?.goal?activity.goal:'check');  // 'time' or 'check'
   const [seconds, setSeconds] = React.useState(activity?.timeGoal?(activity.timeGoal%60).toString():'');
-  const [minutes, setMinutes] = React.useState(activity?.minutes?(Math.floor((activity.minutes%3600)/60)).toString():'');
-  const [hours, setHours] = React.useState(activity?.hours?(Math.floor((activity.hours/3600))).toString():'');
+  const [minutes, setMinutes] = React.useState(activity?.timeGoal?(Math.floor((activity.timeGoal%3600)/60)).toString():'');
+  const [hours, setHours] = React.useState(activity?.timeGoal?(Math.floor((activity.timeGoal/3600))).toString():'');
   const [weekDays, setWeekDays] = React.useState(activity?.weekDays?activity.weekDays:{
     'Monday': false, 'Tuesday': false, 'Wednesday': false, 'Thursday': false, 
     'Friday': false, 'Saturday': false, 'Sunday': false
@@ -50,15 +52,28 @@ const ActivityFormScreen = ({ navigation, createActivity, route, activity=null }
   const headerButtons = (
     <Appbar.Action icon='check' onPress={() => {
         let timeGoal
-        if(hours || minutes || seconds ){
-          timeGoal = Number.parseInt(hours)*3600 + Number.parseInt(minutes)*60 + Number.parseInt(seconds)
+        if( hours || minutes || seconds ){
+          const secondsFromHour = Number.parseInt(hours)*3600
+          const secondsFromMinute = Number.parseInt(minutes)*60
+          const secondsFromSeconds = Number.parseInt(seconds)
+          timeGoal = (
+            (secondsFromHour?secondsFromHour:0) 
+            + (secondsFromMinute?secondsFromMinute:0) 
+            + (secondsFromSeconds?secondsFromSeconds:0)
+          )
         }
         
         const newActivity = { 
           name, repeatMode, goal, timeGoal, 
           weekDays, timesPerWeek: Number.parseInt(timesPerWeek), goalId: goalId }
         if(validate(newActivity)){
-          createActivity(newActivity)
+          if(activity){
+            console.log('trying to update activity with: ')
+            console.log({...newActivity, id: activity.id})
+            updateActivity({...newActivity, id: activity.id})
+          }else{
+            createActivity(newActivity)
+          }
           navigation.navigate('Goal')
         }
       }} 
@@ -74,12 +89,7 @@ const ActivityFormScreen = ({ navigation, createActivity, route, activity=null }
         <WeekdaySelector weekDays={weekDays} setWeekDays={setWeekDays}/>
       : <></>}
       {repeatMode=='daily' || repeatMode=='select'?
-        <TimeGoal 
-          goal={goal} setGoal={setGoal}
-          hours={hours} setHours={setHours}
-          minutes={minutes} setMinutes={setMinutes}
-          seconds={seconds} setSeconds={setSeconds}
-        />
+        <TimeGoal goal={goal} setGoal={setGoal} />
       : <></> }
       {repeatMode=='weekly'?
         <>
@@ -168,7 +178,7 @@ const PeriodDescription = ({ repeatMode }) => {
 }
 
 const TimeGoal = ({ 
-    goal, setGoal, hours, setHours, minutes, setMinutes, seconds, setSeconds 
+    goal, setGoal
   }) => {
   return (
     <>
@@ -240,11 +250,20 @@ const styles = StyleSheet.create({
 
 const actionsToProps = {
   createActivity,
+  updateActivity
 }
 
 const mapStateToProps = (state, ownProps) => {
   const activityId = ownProps.route.params.activityId
-  return { activity: selectActivityById(state, activityId) }
+  const activity = selectActivityById(state, activityId)
+  if(activity){
+    return { activity: activity, goalId: activity.goalId }
+  }else{
+    if(!ownProps.route.params.goalId){
+      throw "Navigated to ActivityFormScreen without providing activityId nor goalId. At least one is required."
+    }
+    return { goalId: ownProps.route.params.goalId }
+  }
 }
 
 export default connect(mapStateToProps, actionsToProps)(ActivityFormScreen);

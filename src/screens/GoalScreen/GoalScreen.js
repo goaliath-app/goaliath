@@ -53,7 +53,7 @@ const GoalScreen = ({ activities, route, navigation, toggleActivity }) => {
   const headerButtons = (
     <>
     <Appbar.Action icon='plus' color='white' onPress={() => {
-        navigation.navigate('NewActivity', { goalId: goalId })
+        navigation.navigate('ActivityForm', { goalId: goalId })
       }}
     />
     <ThreeDotsMenu menuItems={menuItems}/>

@@ -25,18 +25,21 @@ const activitySlice = createSlice({
   initialState,
   reducers: {
     createActivity(state, action){
-        activityAdapter.addOne(state, {...action.payload, id: state.nextId.toString(), active: true})
-        state.nextId += 1
+      activityAdapter.addOne(state, {...action.payload, id: state.nextId.toString(), active: true})
+      state.nextId += 1
+    },
+    updateActivity(state, action){
+      activityAdapter.updateOne(state, {id: action.payload.id, changes: action.payload})
     },
     toggleActivity(state, action){
-        const activityId = action.payload.id
-        const newValue = !state.entities[activityId].active
-        activityAdapter.updateOne(state, {id: activityId, changes: {active: newValue}})
+      const activityId = action.payload.id
+      const newValue = !state.entities[activityId].active
+      activityAdapter.updateOne(state, {id: activityId, changes: {active: newValue}})
     },
   }
 })
 
-export const { createActivity, toggleActivity } = activitySlice.actions
+export const { createActivity, updateActivity, toggleActivity } = activitySlice.actions
 
 export const { 
   selectAll: selectAllActivities, selectById: selectActivityById 

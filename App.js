@@ -34,7 +34,7 @@ const GoalsStack = () => (
     <Stack.Screen name='Goals' component={GoalsScreen} options={{headerTitle: 'Goals'}} />
     <Stack.Screen name='Goal' component={GoalScreen} />
     <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
-    <Stack.Screen name='NewActivity' component={ActivityFormScreen} />
+    <Stack.Screen name='ActivityForm' component={ActivityFormScreen} />
     <Stack.Screen name='NewGoal' component={NewGoalScreen} />
   </Stack.Navigator>
 )
