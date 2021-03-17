@@ -14,6 +14,9 @@ const goalsSlice = createSlice({
       goalsAdapter.addOne(state, {...action.payload, id: state.nextId.toString(), active: true})
       state.nextId += 1
     },
+    updateGoal(state, action){
+      goalsAdapter.updateOne(state, {id: action.payload.id, changes: action.payload})
+    },
     toggleGoal(state, action){
       const goalId = action.payload.id
       const newValue = !state.entities[goalId].active
@@ -22,7 +25,7 @@ const goalsSlice = createSlice({
   }
 })
 
-export const { createGoal, toggleGoal } = goalsSlice.actions
+export const { createGoal, toggleGoal, updateGoal } = goalsSlice.actions
 
 export const { 
   selectAll: selectAllGoals, selectById: selectGoalById

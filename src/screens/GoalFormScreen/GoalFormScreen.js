@@ -3,13 +3,13 @@ import { connect } from 'react-redux'
 import { View, Alert } from 'react-native'
 import { Appbar, TextInput } from 'react-native-paper';
 import { Header } from '../../components'
-import { createGoal } from '../../redux/GoalsSlice';
+import { createGoal, updateGoal, selectGoalById } from '../../redux/GoalsSlice';
 
 
-const GoalsScreen = ({ navigation, createGoal }) => {
+const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
 
-  const [name, setName] = React.useState('')
-  const [motivation, setMotivation] = React.useState('')
+  const [name, setName] = React.useState(goal?.name?goal.name:'')
+  const [motivation, setMotivation] = React.useState(goal?.motivation?goal.motivation:'')
   
   const validate = ( newGoal ) => {
     if(!newGoal.name){
@@ -25,7 +25,11 @@ const GoalsScreen = ({ navigation, createGoal }) => {
       onPress={() => {
         const newGoal = {name: name, motivation: motivation}
         if(validate(newGoal)){
-          createGoal({name: name, motivation: motivation})
+          if(goal){
+            updateGoal({...newGoal, id: goal.id})
+          }else{
+            createGoal({name: name, motivation: motivation})
+          }
           navigation.navigate('Goals')}
         }
       } 
@@ -48,8 +52,14 @@ const GoalsScreen = ({ navigation, createGoal }) => {
   )
 }
 
-const actionsToProps = {
-  createGoal,
+const mapStateToProps = (state, ownProps) => {
+  const goal = selectGoalById(state, ownProps.route.params?.id)
+  return { goal }
 }
 
-export default connect(null, actionsToProps)(GoalsScreen);
+const actionsToProps = {
+  createGoal,
+  updateGoal
+}
+
+export default connect(mapStateToProps, actionsToProps)(GoalFormScreen);

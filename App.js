@@ -8,7 +8,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { 
   TodayScreen, WeekScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, ActivityFormScreen,
-  NewGoalScreen
+  GoalFormScreen
 } from './src/screens'
 import store from './src/redux/store'
 
@@ -35,7 +35,7 @@ const GoalsStack = () => (
     <Stack.Screen name='Goal' component={GoalScreen} />
     <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
     <Stack.Screen name='ActivityForm' component={ActivityFormScreen} />
-    <Stack.Screen name='NewGoal' component={NewGoalScreen} />
+    <Stack.Screen name='GoalForm' component={GoalFormScreen} />
   </Stack.Navigator>
 )
 

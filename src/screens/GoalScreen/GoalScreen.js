@@ -36,7 +36,11 @@ const Activity = ({ name, repeatMode, active, id, toggleActivity }) => {
 const GoalScreen = ({ activities, route, navigation, toggleActivity }) => {
   const menuItems = (
     <>
-    <Menu.Item onPress={() => {}} title='Edit goal' />
+    <Menu.Item onPress={() => {}} title='Edit goal' 
+      onPress={() => {
+        navigation.navigate('GoalForm', { id: goalId })
+      }}
+    />
     <Menu.Item onPress={() => {}} title='Delete goal' />
     </>
   )

@@ -40,7 +40,7 @@ const GoalsScreen = ({ navigation, goals, toggleGoal }) => {
       <Header 
         title='Goals' left='hamburger' navigation={navigation} 
         buttons={
-          <Appbar.Action icon='plus' onPress={() => navigation.navigate('NewGoal')} />
+          <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} />
         }/>
       <FlatList data={goals} renderItem={renderItem} />
     </View>

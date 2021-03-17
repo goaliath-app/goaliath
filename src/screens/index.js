@@ -4,4 +4,4 @@ export { default as ActivityDetailScreen} from './ActivityDetailScreen/ActivityD
 export { default as GoalsScreen } from './GoalsScreen/GoalsScreen'
 export { default as GoalScreen} from './GoalScreen/GoalScreen'
 export { default as ActivityFormScreen } from './ActivityFormScreen/ActivityFormScreen'
-export { default as NewGoalScreen } from './NewGoalScreen/NewGoalScreen'
+export { default as GoalFormScreen } from './GoalFormScreen/GoalFormScreen'
