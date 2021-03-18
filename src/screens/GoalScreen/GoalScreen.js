@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { View, FlatList } from 'react-native';
-import { List, Switch, Appbar, Menu, Text } from 'react-native-paper';
+import { List, Switch, Appbar, Menu, Text, Card, Paragraph } from 'react-native-paper';
 import { Header, ThreeDotsMenu } from '../../components';
 import { useNavigation } from '@react-navigation/native';
 import { selectAllActivities, toggleActivity } from '../../redux/ActivitySlice'
@@ -28,7 +28,6 @@ const Activity = ({ name, repeatMode, active, id, toggleActivity }) => {
         <Switch
           onValueChange={() => toggleActivity({id: id})} 
           value={active}/>)}
-      
     />
   );
 }
@@ -53,7 +52,7 @@ const GoalScreen = ({ activities, route, navigation, toggleActivity }) => {
       id={item.id}
       toggleActivity={toggleActivity} />
   )
-  const { goalId, goalName } = route.params
+  const { goalId, goalName, goalMotivation } = route.params
   const headerButtons = (
     <>
     <Appbar.Action icon='plus' color='white' onPress={() => {
@@ -65,9 +64,16 @@ const GoalScreen = ({ activities, route, navigation, toggleActivity }) => {
   )
 
   return (
-    <View>
-      <Header title={goalName} left='back' navigation={navigation} buttons={headerButtons}/>
-      <FlatList data={activities} renderItem={renderItem} />
+    <View style={{height: '100%', justifyContent: 'space-between'}}>
+      <View>
+        <Header title={goalName} left='back' navigation={navigation} buttons={headerButtons}/>
+        <FlatList data={activities} renderItem={renderItem} />
+      </View>
+      <Card>
+        <Card.Content>        
+          <Paragraph>{goalMotivation}</Paragraph>
+        </Card.Content>
+      </Card>
     </View>
   )
 }
