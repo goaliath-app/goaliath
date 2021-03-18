@@ -28,7 +28,9 @@ const goalsSlice = createSlice({
 export const { createGoal, toggleGoal, updateGoal } = goalsSlice.actions
 
 export const { 
-  selectAll: selectAllGoals, selectById: selectGoalById
+  selectAll: selectAllGoals, 
+  selectById: selectGoalById,
+  selectEntities: selectGoalEntities,
 } = goalsAdapter.getSelectors(state => state.goals)
 
 export default goalsSlice.reducer

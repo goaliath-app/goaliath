@@ -1,16 +1,16 @@
 import 'react-native-gesture-handler';  // this import needs to be at the top.
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import { createStore } from 'redux';
 import { Provider as PaperProvider } from  'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import { DateTime } from 'luxon'
 import { 
   TodayScreen, WeekScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, ActivityFormScreen,
   GoalFormScreen
 } from './src/screens'
-import { store } from './src/redux'
+import { store, selectAllActivities, selectDailyLogById, selectGoalById, createDailyLog, addEntry, createGoal, createActivity } from './src/redux'
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -39,8 +39,55 @@ const GoalsStack = () => (
   </Stack.Navigator>
 )
 
+function generateDummyData(store){
+  store.dispatch(createGoal({name: 'dummy goal'}))
+  store.dispatch(createActivity({name: 'dummy activity', goalId: '0', goal: 'check', repeatMode: 'daily'}))
+}
+
+function newEntry(activity){
+  return(
+    {
+      intervals: [], 
+      done: false, 
+      goal: activity.goal, 
+      timeGoal: activity.timeGoal,
+      activityId: activity.id 
+    }
+  )
+}
+
+function generateLogs(store){
+  const state = store.getState()
+  const today = DateTime.now().toISO()
+  if(selectDailyLogById(state, today)){ return }  // today's log is already generated
+
+  store.dispatch(createDailyLog({date: today}))
+
+  for(let activity of selectAllActivities(state)){
+    const goal = selectGoalById(state, activity.goalId)
+    if(!goal.active || !activity.active || activity.repeatMode == 'weekly'){ continue }
+    switch(activity.repeatMode){
+      case 'daily':
+        const entry = newEntry(activity)
+        store.dispatch(addEntry({date: today, entry}))
+        break
+      case 'weekly':
+        if(activity.weekDays[today.weekday]){
+          const entry = newEntry(activity)
+          store.dispatch(addEntry({date: today, entry}))
+        }
+        break
+    }
+  }
+}
 
 export default function App() {
+  useEffect(() => {
+    generateDummyData(store)
+    generateLogs(store)
+    console.log(store.getState())
+  })
+
   return (
     <ReduxProvider store={store}>
       <PaperProvider>

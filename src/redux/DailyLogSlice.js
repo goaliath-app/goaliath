@@ -36,7 +36,8 @@ const dailyLogSlice = createSlice({
       dailyLogAdapter.addOne(state, dailyLog)
     },
     addEntry(state, action){
-      const { date, entry } = action.payload.date
+      const { date, entry } = action.payload
+      console.log(`date: ${date}`)
       const selectedDay = state.entities[date]
       entryAdapter.addOne(selectedDay.entries, entry)
     }
