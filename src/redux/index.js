@@ -8,3 +8,6 @@ export {
     createActivity, updateActivity, toggleActivity, selectAllActivities, selectActivityById 
 } from './ActivitySlice' 
 
+export { 
+    createDailyLog, addEntry, selectAllLogs, selectDailyLogById 
+} from './DailyLogSlice'
