@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { View, Alert } from 'react-native'
 import { Appbar, TextInput } from 'react-native-paper';
 import { Header } from '../../components'
-import { createGoal, updateGoal, selectGoalById } from '../../redux/GoalsSlice';
+import { createGoal, updateGoal, selectGoalById } from '../../redux';
 
 
 const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {

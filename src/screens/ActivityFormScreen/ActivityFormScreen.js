@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { View, StyleSheet, Alert } from 'react-native';
 import { Title, Appbar, Text, TextInput, Button, List, Checkbox } from 'react-native-paper';
 import { Header, TimeInput } from '../../components';
-import { createActivity, updateActivity, selectActivityById } from '../../redux/ActivitySlice'
+import { createActivity, updateActivity, selectActivityById } from '../../redux'
 
 
 const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId=null, activity=null }) => {

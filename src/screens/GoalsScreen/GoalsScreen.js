@@ -4,7 +4,7 @@ import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, Switch, Appbar, Text } from 'react-native-paper';
 import { Header } from '../../components'
-import { selectAllGoals, toggleGoal } from '../../redux/GoalsSlice'
+import { selectAllGoals, toggleGoal } from '../../redux'
 
 
 const GoalListItem = ({ name, active, toggleGoal, id, motivation }) => {

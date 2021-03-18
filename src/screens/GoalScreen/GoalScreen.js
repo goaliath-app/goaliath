@@ -4,7 +4,7 @@ import { View, FlatList } from 'react-native';
 import { List, Switch, Appbar, Menu, Text, Card, Paragraph } from 'react-native-paper';
 import { Header, ThreeDotsMenu } from '../../components';
 import { useNavigation } from '@react-navigation/native';
-import { selectAllActivities, toggleActivity } from '../../redux/ActivitySlice'
+import { selectAllActivities, toggleActivity } from '../../redux'
 
 const data = [
   {name: 'Study Anki', repeatMode: 'daily', active: true},

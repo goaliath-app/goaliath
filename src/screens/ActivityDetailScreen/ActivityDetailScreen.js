@@ -3,8 +3,7 @@ import { View } from 'react-native'
 import { connect } from 'react-redux';
 import { Button, List, Checkbox, Divider, Appbar, Menu } from 'react-native-paper';
 import { Header, TimeInput, ThreeDotsMenu } from '../../components';
-import { selectActivityById } from '../../redux/ActivitySlice'
-import { selectGoalById } from '../../redux/GoalsSlice'
+import { selectActivityById, selectGoalById } from '../../redux'
 
 const data = {
   goal: 'Japanese', frecuency: 'Daily', weekHours: 3, weekTimes: 2, hours: 5, times: 4, previousScreen: ''

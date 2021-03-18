@@ -10,7 +10,7 @@ import {
   TodayScreen, WeekScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, ActivityFormScreen,
   GoalFormScreen
 } from './src/screens'
-import store from './src/redux/store'
+import { store } from './src/redux'
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
