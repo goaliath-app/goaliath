@@ -13,8 +13,8 @@ each activity is:
   repeatMode: "daily" / "weekly" / "select",
   goal: "check" / "time"
   timeGoal: seconds, 
-  weekDays: {'monday': bool, 'tuesday': bool, 'wednesday': bool, 'thursday': bool', 
-    'friday': bool, 'saturday': bool, 'sunday': bool'}, 
+  weekDays: {'1': bool, '2': bool, '3': bool, '4': bool', 
+    '5': bool, '6': bool, '7': bool'}, 
   timesPerWeek: int 
   id: str
 }

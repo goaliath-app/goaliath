@@ -18,8 +18,7 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
   const [minutes, setMinutes] = React.useState(activity?.timeGoal?(Math.floor((activity.timeGoal%3600)/60)).toString():'');
   const [hours, setHours] = React.useState(activity?.timeGoal?(Math.floor((activity.timeGoal/3600))).toString():'');
   const [weekDays, setWeekDays] = React.useState(activity?.weekDays?activity.weekDays:{
-    'Monday': false, 'Tuesday': false, 'Wednesday': false, 'Thursday': false, 
-    'Friday': false, 'Saturday': false, 'Sunday': false
+    '1': false, '2': false, '3': false, '4': false, '5': false, '6': false, '7': false
   })
   const [timesPerWeek, setTimesPerWeek] = React.useState(activity?.timesPerWeek?activity.timesPerWeek:'1')
 
@@ -198,13 +197,13 @@ const TimeGoal = ({
 
 const WeekdaySelector = ({ weekDays, setWeekDays }) => (
   <View style={styles.weekdaySelectorView}>
-    <WeekdaySelectorItem day='Monday' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem day='Tuesday' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem day='Wednesday' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem day='Thursday' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem day='Friday' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem day='Saturday' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem day='Sunday' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem day='1' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem day='2' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem day='3' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem day='4' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem day='5' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem day='6' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem day='7' weekDays={weekDays} setWeekDays={setWeekDays}/>
   </View>
 )
 
