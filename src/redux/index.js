@@ -11,3 +11,7 @@ export {
 export { 
     createDailyLog, addEntry, selectAllLogs, selectDailyLogById, selectTodayLogs, selectTodayLogByActivityId, upsertTodaysEntry, deleteOneTodaysEntry
 } from './DailyLogSlice'
+
+export { 
+    generateDummyData, updateLogs
+} from './Thunks'
