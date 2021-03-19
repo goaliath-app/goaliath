@@ -14,7 +14,7 @@ each dailyLog is
       entities: {
         eachEntryId: {
           id: id matching with the activity this log comes from,
-          intervals: [{start_date: Date, end_date: Date}],
+          intervals: [{startDate: Date, endDate: Date}],
           done: bool,
           goal: "check" / "time",
           timeGoal: seconds,
@@ -37,7 +37,6 @@ const dailyLogSlice = createSlice({
     },
     addEntry(state, action){
       const { date, entry } = action.payload
-      console.log(`date: ${date}`)
       const selectedDay = state.entities[date]
       entryAdapter.addOne(selectedDay.entries, entry)
     }

@@ -85,7 +85,6 @@ export default function App() {
   useEffect(() => {
     generateDummyData(store)
     generateLogs(store)
-    console.log(store.getState())
   })
 
   return (

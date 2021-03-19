@@ -67,8 +67,6 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
           weekDays, timesPerWeek: Number.parseInt(timesPerWeek), goalId: goalId }
         if(validate(newActivity)){
           if(activity){
-            console.log('trying to update activity with: ')
-            console.log({...newActivity, id: activity.id})
             updateActivity({...newActivity, id: activity.id})
           }else{
             createActivity(newActivity)

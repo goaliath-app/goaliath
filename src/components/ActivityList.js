@@ -7,13 +7,12 @@ const renderItem = ({ item }) => (
       name={item.title}
       timeGoal={item.timeGoal}
       completed={item.completed}
-      current={item.current}
-      period={item.period}
-      todayTime={item.todayTime}
+      repeatMode={item.repeatMode}
       weeklyTimesObjective={item.weeklyTimesObjective}
       weeklyTimes={item.weeklyTimes}
       weeklyTime={item.weeklyTime}
       weeklyTimeGoal={item.weeklyTimeGoal}
+      intervals={item.intervals}
 />
 )
 
