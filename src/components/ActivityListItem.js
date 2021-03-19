@@ -36,7 +36,6 @@ function getTodayTime(intervals){
 
 const ActivityListItem = ({ 
   timeGoal,    // number of seconds of the time goal for this activity or null if it is not a timed activity
-  weeklyTimeGoal, // number of seconds
   name,        // name of the activity
   repeatMode,      // 'daily' or 'weekly'
   weeklyTime,    // time spent this week (just used in 'weekly' repeatMode activities)
@@ -69,7 +68,7 @@ const ActivityListItem = ({
     }else if(repeatMode=='weekly' && timeGoal==undefined){
       description = `Done ${weeklyTimes} of ${weeklyTimesObjective} days`
     }else if(repeatMode=='weekly' && timeGoal!==undefined){
-      description = `Dedicated ${weeklyTime} of ${weeklyTimeGoal} total seconds`
+      description = `Dedicated ${weeklyTime} of ${timeGoal} total seconds`
     }
 
     if(todayTime){

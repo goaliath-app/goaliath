@@ -9,5 +9,5 @@ export {
 } from './ActivitySlice' 
 
 export { 
-    createDailyLog, addEntry, selectAllLogs, selectDailyLogById 
+    createDailyLog, addEntry, selectAllLogs, selectDailyLogById, selectTodayLogs
 } from './DailyLogSlice'

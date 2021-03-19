@@ -10,7 +10,7 @@ import {
   TodayScreen, WeekScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, ActivityFormScreen,
   GoalFormScreen
 } from './src/screens'
-import { store, selectAllActivities, selectDailyLogById, selectGoalById, createDailyLog, addEntry, createGoal, createActivity } from './src/redux'
+import { store, selectAllActivities, selectDailyLogById, selectGoalById, createDailyLog, addEntry, createGoal, createActivity, selectTodayLogs } from './src/redux'
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -42,23 +42,24 @@ const GoalsStack = () => (
 function generateDummyData(store){
   store.dispatch(createGoal({name: 'dummy goal'}))
   store.dispatch(createActivity({name: 'dummy activity', goalId: '0', goal: 'check', repeatMode: 'daily'}))
+  store.dispatch(createActivity({name: 'dummy activity2', goalId: '0', goal: 'check', repeatMode: 'daily'}))
 }
 
 function newEntry(activity){
   return(
     {
       intervals: [], 
-      done: false, 
+      completed: false, 
       goal: activity.goal, 
       timeGoal: activity.timeGoal,
-      activityId: activity.id 
+      id: activity.id 
     }
   )
 }
 
 function generateLogs(store){
   const state = store.getState()
-  const today = DateTime.now().toISO()
+  const today = DateTime.now()
   if(selectDailyLogById(state, today)){ return }  // today's log is already generated
 
   store.dispatch(createDailyLog({date: today}))
