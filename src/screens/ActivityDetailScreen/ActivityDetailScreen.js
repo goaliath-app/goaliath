@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native'
-import { Button, List, Checkbox, Divider, Appbar } from 'react-native-paper';
+import { Button, List, Checkbox, Divider, Appbar, Menu } from 'react-native-paper';
 import { Header, TimeInput, ThreeDotsMenu } from '../../components';
 
 const data = {
@@ -8,10 +8,16 @@ const data = {
 }
 
 const ActivityDetailScreen = ({ route, navigation }) => {
+  const menuItems = (
+    <>
+    <Menu.Item onPress={() => {}} title='Edit activity' />
+    <Menu.Item onPress={() => {}} title='Delete activity' />
+    </>
+  )
   const headerButtons = (previousScreen) => {
     if(previousScreen=='Goal'){
       return <Appbar.Action icon='pencil' color='white'/>
-    } else {return <ThreeDotsMenu />}
+    } else {return <ThreeDotsMenu menuItems={menuItems}/>}
   }
 
   return(

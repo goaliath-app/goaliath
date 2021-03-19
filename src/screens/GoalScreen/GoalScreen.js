@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
-import { List, Switch, Appbar } from 'react-native-paper';
-import { Header } from '../../components';
+import { List, Switch, Appbar, Menu } from 'react-native-paper';
+import { Header, ThreeDotsMenu } from '../../components';
 import { useNavigation } from '@react-navigation/native';
 
 const data = [
@@ -30,10 +30,17 @@ const renderItem = ({ item }) => (
 )
 
 const GoalScreen = ({ route, navigation }) => {
+  const menuItems = (
+    <>
+    <Menu.Item onPress={() => {}} title='Edit goal' />
+    <Menu.Item onPress={() => {}} title='Delete goal' />
+    </>
+  )
+
   const headerButtons = (
     <>
-    <Appbar.Action icon='pencil' color='white'/>
-    <Appbar.Action icon='plus' color='white' onPress={() => navigation.navigate('NewActivity')}/>
+      <Appbar.Action icon='plus' color='white' onPress={() => navigation.navigate('NewActivity')} />
+      <ThreeDotsMenu menuItems={menuItems}/>
     </>
   )
 
