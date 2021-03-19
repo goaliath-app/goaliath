@@ -14,23 +14,18 @@ function isActivityRunning(intervals){
 }
 
 function getTodayTime(intervals){
-  console.log(intervals)
   if(!intervals) {return -1}
   let todayTime = 0
   for(let interval of intervals){
-    console.log('una iteracion')
     if(interval.startDate && interval.endDate){
-      console.log('dif entre dos')
       const startDate = DateTime.fromISO(interval.startDate)
       const endDate = DateTime.fromISO(interval.endDate)
       todayTime += Math.floor(endDate.diff(startDate, 'seconds').get('seconds'))
     }else if(interval.startDate && !interval.endDate){
-      console.log('dif entre uno y ahora')
       const startDate = DateTime.fromISO(interval.startDate)
       todayTime -= Math.floor(startDate.diffNow("seconds").get('seconds'))  // this returns a negative number
     }
   }
-  console.log(todayTime)
   return todayTime
 }
 
@@ -42,7 +37,8 @@ const ActivityListItem = ({
   completed,   // boolean value
   weeklyTimesObjective, // number of days that the activity should be completed each week
   weeklyTimes, // number of times that the activity has been done this week (counting today)
-  intervals
+  intervals, 
+  archived
 }) => {
     const current = isActivityRunning(intervals)
     const todayTime = getTodayTime(intervals)
@@ -82,7 +78,8 @@ const ActivityListItem = ({
 
     const navigation = useNavigation();
 
-    return (  
+    return (
+      archived? <></> : 
       <List.Item
         left={() => leftSlot}
         title={name}

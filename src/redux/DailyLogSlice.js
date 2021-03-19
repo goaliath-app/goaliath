@@ -48,11 +48,25 @@ const dailyLogSlice = createSlice({
       const { date, entry } = action.payload
       const selectedDay = state.entities[date.startOf('day').toISO()]
       entryAdapter.addOne(selectedDay.entries, entry)
+    },
+    upsertTodaysEntry(state, action){
+      /* upsert a single entry to todays daily log
+      action.payload: a entry object to be upserted*/
+      const entry = action.payload
+      const today = DateTime.now().startOf('day').toISO()
+      const todaysLog = state.entities[today].entries
+      entryAdapter.upsertOne(todaysLog, entry)
+    },
+    deleteOneTodaysEntry(state, action){
+      /* action.payload: id of the entry to delete */
+      const today = DateTime.now().startOf('day').toISO()
+      const todaysLog = state.entities[today].entries
+      entryAdapter.removeOne(todaysLog, action.payload)
     }
   }
 })
 
-export const { createDailyLog, addEntry } = dailyLogSlice.actions
+export const { createDailyLog, addEntry, upsertTodaysEntry, deleteOneTodaysEntry } = dailyLogSlice.actions
 
 export const { 
   selectAll: selectAllLogs, selectById: selectDailyLogById
@@ -65,6 +79,11 @@ export function selectTodayLogs(state){
   }else{
     return []
   }
+}
+
+export function selectTodayLogByActivityId(state, activityId){
+  const todayLog = state.dailyLogs.entities[DateTime.now().startOf('day').toISO()]
+  return todayLog?.entries.entities[activityId]
 }
 
 export default dailyLogSlice.reducer
