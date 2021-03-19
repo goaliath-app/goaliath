@@ -1,45 +1,11 @@
 import { DateTime } from 'luxon'
-import { deleteOneTodaysEntry, upsertTodaysEntry, selectTodayLogByActivityId, selectAllActivities, selectDailyLogById, selectGoalById, createDailyLog, addEntry, createGoal, createActivity, selectTodayLogs } from '.'
-import { toggleGoal as originalToggleGoal } from './GoalsSlice'
+import { selectAllActivities,  createActivity } from './ActivitySlice'
+import { selectGoalById, createGoal } from './GoalsSlice'
+import { 
+  deleteOneTodaysEntry, upsertTodaysEntry, selectTodayLogByActivityId, selectDailyLogById, 
+  createDailyLog, addEntry
+} from './DailyLogSlice'
 
-// TODO: implement thunks and replace exports of index.js with them
-
-// function myExampleDispatchableThunkAction(message){
-//     return function(dispatch, getState){
-//       console.log(`dispacheado ${message}`)
-//       console.log(getState())
-//     }
-//   }
-
-// function toggleGoal(goalId){
-//   return function(dispatch, getState){
-//     // toggle the goal
-//     originalToggleGoal({id: goalId})
-//     // update the daily log
-    
-//   }
-// }
-
-// function toggleActivity(activityId){
-//   return function(dispatch, getState){
-//     // toggle the activity
-//     // update the daily log
-//   }
-// }
-
-// function createActivity(activity){
-//   return function(dispatch, getState){
-//     // create the new activity
-//     // update the daily log
-//   }
-// }
-
-// function updateActivity(activity){
-//   return function(dispatch, getState){
-//     // update the activity
-//     // update the daily log
-//   }
-// }
 
 export function generateDummyData(){
   return function(dispatch, getState){

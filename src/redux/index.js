@@ -9,7 +9,8 @@ export {
 } from './ActivitySlice' 
 
 export { 
-    createDailyLog, addEntry, selectAllLogs, selectDailyLogById, selectTodayLogs, selectTodayLogByActivityId, upsertTodaysEntry, deleteOneTodaysEntry
+    createDailyLog, addEntry, upsertTodaysEntry, deleteOneTodaysEntry, 
+    selectAllLogs, selectDailyLogById, selectTodayLogs, selectTodayLogByActivityId, 
 } from './DailyLogSlice'
 
 export { 

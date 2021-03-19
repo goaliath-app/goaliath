@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { View } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native';
 import { ActivityList } from '../../components'
 import { Header } from '../../components';
-import { selectTodayLogs, selectActivityById } from '../../redux'
+import { selectTodayLogs, selectActivityById, updateLogs } from '../../redux'
 
 
 const data = [
@@ -15,9 +16,14 @@ const data = [
   {name: 'Genki', timeGoal: 5, completed: true, period: 'daily', intervals: []},
  ]
 
-const TodayScreen = ({ todaysActivities, navigation }) => {
-  console.log('todaysActivities del TodayScreen:')
-  console.log(todaysActivities)
+const TodayScreen = ({ todaysActivities, navigation, updateLogs }) => {
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('RAN')
+      updateLogs()
+    }, [])
+  )
+
   return (
     <View>
       <Header title='Today' left='hamburger' navigation={navigation}/>
@@ -39,4 +45,8 @@ const mapStateToProps = (state) => {
   return { todaysActivities }
 }
 
-export default connect(mapStateToProps)(TodayScreen)
+const actionsToProps = {
+  updateLogs
+}
+
+export default connect(mapStateToProps, actionsToProps)(TodayScreen)
