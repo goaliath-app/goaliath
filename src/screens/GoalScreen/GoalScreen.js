@@ -69,11 +69,12 @@ const GoalScreen = ({ activities, route, navigation, toggleActivity }) => {
         <Header title={goalName} left='back' navigation={navigation} buttons={headerButtons}/>
         <FlatList data={activities} renderItem={renderItem} />
       </View>
-      <Card>
-        <Card.Content>        
-          <Paragraph>{goalMotivation}</Paragraph>
-        </Card.Content>
-      </Card>
+      {goalMotivation?
+        <Card>
+          <Card.Content>        
+            <Paragraph>{goalMotivation}</Paragraph>
+          </Card.Content>
+        </Card> : <></>}
     </View>
   )
 }
