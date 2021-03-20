@@ -1,18 +1,59 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { View } from 'react-native'
-import { ActivityList, Header } from '../../components'
-
+import { useFocusEffect } from '@react-navigation/native';
+import { ActivityList } from '../../components'
+import { Header } from '../../components';
+import { selectTodayEntries, selectActivityById, updateLogs, selectThisWeekEntriesByActivityId } from '../../redux'
+import { getTodayTime } from '../../util'
 
 const data = [
     {title: 'Genki', completed: true, current: true, period: 'weekly', todayTime: 0, weeklyTimesObjective: 2, weeklyTimes: 0},
     {title: 'Genki', timeGoal: 5, completed: true, current: false, period: 'weekly', todayTime: 0, weeklyTimeGoal: 20, weeklyTime: 10, todayTime: 10},
   ]
 
-const WeekScreen = ({ navigation }) => (
-  <View>
-    <Header title='This Week' left='hamburger' navigation={navigation}/>
-    <ActivityList data={data} />
-  </View>
-)
+const WeekScreen = ({ todaysActivities, navigation, updateLogs }) => {
+  useFocusEffect(
+    React.useCallback(() => {
+      updateLogs()
+    }, [])
+  )
 
-export default WeekScreen;
+  return(
+    <View>
+      <Header title='This Week' left='hamburger' navigation={navigation}/>
+      <ActivityList data={todaysActivities} />
+    </View>
+  )
+}
+
+const mapStateToProps = (state) => {
+  let todaysActivities = []
+  const logs = selectTodayEntries(state)
+  for(let log of logs){
+    const activity = selectActivityById(state, log.id)
+    if(activity.repeatMode == 'weekly'){
+      // we have to inyect weeklyTime and weeklyTimes
+      const weekLogs = selectThisWeekEntriesByActivityId(state, activity.id)
+      let weeklyTime = 0
+      let weeklyTimes = 0
+      for(let day in weekLogs){
+        weeklyTime += getTodayTime(weekLogs[day].intervals)
+        weeklyTimes += weekLogs[day].completed?1:0
+      }
+      todaysActivities.push({
+        ...activity,
+        ...log,
+        weeklyTime,
+        weeklyTimes
+      })
+    }
+  }
+  return { todaysActivities }
+}
+
+const actionsToProps = {
+  updateLogs
+}
+
+export default connect(mapStateToProps, actionsToProps)(WeekScreen)

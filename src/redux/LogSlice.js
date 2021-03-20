@@ -1,13 +1,13 @@
 import { createSlice, createEntityAdapter} from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 
-const dailyLogAdapter = createEntityAdapter();
+const logAdapter = createEntityAdapter();
 const entryAdapter = createEntityAdapter();
 
-const initialState = dailyLogAdapter.getInitialState();
+const initialState = logAdapter.getInitialState();
 
 /*
-each dailyLog is 
+each log is 
   {id: Date, 
     entries: {  // the entries are managed via entryAdapter
       ids: array of ids of all entries
@@ -16,28 +16,29 @@ each dailyLog is
           id: id matching with the activity this log comes from,
           intervals: [{start_date: Date, end_date: Date}],
           completed: bool,
-          goal: "check" / "time",
-          timeGoal: seconds,
+          archived: bool, (a log is archived if it contains information that may be useful in the future but should not be shown i.e. if the activity has been disabled after logging some time on it)
+          ...data redundant to its Activity for logs of past days that
+             should remain the same even if the orifinal activity changes
         }
       }
     }
   }
 */
 
-const dailyLogSlice = createSlice({
-  name: 'dailyLogs',
+const logSlice = createSlice({
+  name: 'logs',
   initialState,
   reducers: {
-    createDailyLog(state, action){
+    createLog(state, action){
       /* create empty daily log for today
       action.payload: 
         date: a luxon DateTime from the day you want to get the logs from
       */
-      const dailyLog= {
+      const log= {
         id: action.payload.date.startOf('day').toISO(),
         entries: entryAdapter.getInitialState()
       }
-      dailyLogAdapter.addOne(state, dailyLog)
+      logAdapter.addOne(state, log)
     },
     addEntry(state, action){
       /* add a single entry to a daily log
@@ -66,14 +67,14 @@ const dailyLogSlice = createSlice({
   }
 })
 
-export const { createDailyLog, addEntry, upsertTodaysEntry, deleteOneTodaysEntry } = dailyLogSlice.actions
+export const { createLog, addEntry, upsertTodaysEntry, deleteOneTodaysEntry } = logSlice.actions
 
 export const { 
-  selectAll: selectAllLogs, selectById: selectDailyLogById
-} = dailyLogAdapter.getSelectors(state => state.dailyLogs)
+  selectAll: selectAllLogs, selectById: selectLogById
+} = logAdapter.getSelectors(state => state.logs)
 
-export function selectTodayLogs(state){
-  const entriesEntitiesObject = state.dailyLogs.entities[DateTime.now().startOf('day').toISO()]?.entries.entities
+export function selectTodayEntries(state){
+  const entriesEntitiesObject = state.logs.entities[DateTime.now().startOf('day').toISO()]?.entries.entities
   if(entriesEntitiesObject){
     return Object.values(entriesEntitiesObject)
   }else{
@@ -81,9 +82,35 @@ export function selectTodayLogs(state){
   }
 }
 
-export function selectTodayLogByActivityId(state, activityId){
-  const todayLog = state.dailyLogs.entities[DateTime.now().startOf('day').toISO()]
+export function selectTodayEntryByActivityId(state, activityId){
+  const todayLog = state.logs.entities[DateTime.now().startOf('day').toISO()]
   return todayLog?.entries.entities[activityId]
 }
 
-export default dailyLogSlice.reducer
+function selectEntryByActivityIdAndDate(state, activityId, date){
+  const thatDaysLog = state.logs.entities[date.startOf('day').toISO()]
+  return thatDaysLog?.entries.entities[activityId]
+}
+
+export function selectThisWeekEntriesByActivityId(state, activityId){
+  let entries = {}
+  let today = DateTime.now()
+  for(let i = 0; i < 7; i++){
+    const weekday = getStartOfWeekDay(today, i)
+    const entry = selectEntryByActivityIdAndDate(state, activityId, weekday)
+    if(entry){
+      entries[i] = entry
+    }
+  }
+  return entries
+}
+
+export default logSlice.reducer
+
+function getStartOfWeekDay(date, weekDayNumber){
+  /* date: luxon datetime
+     weekDayNumber: week day from 0 (monday) to 6 (sunday)
+     returns the date of the start of the specified week day of the week of date */
+  const weekStart = date.startOf('week')
+  return weekStart.plus({days: weekDayNumber})
+}

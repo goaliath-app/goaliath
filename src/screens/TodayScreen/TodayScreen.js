@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
 import { ActivityList } from '../../components'
 import { Header } from '../../components';
-import { selectTodayLogs, selectActivityById, updateLogs } from '../../redux'
+import { selectTodayEntries, selectActivityById, updateLogs } from '../../redux'
 
 
 const data = [
@@ -19,7 +19,6 @@ const data = [
 const TodayScreen = ({ todaysActivities, navigation, updateLogs }) => {
   useFocusEffect(
     React.useCallback(() => {
-      console.log('RAN')
       updateLogs()
     }, [])
   )
@@ -34,13 +33,15 @@ const TodayScreen = ({ todaysActivities, navigation, updateLogs }) => {
 
 const mapStateToProps = (state) => {
   let todaysActivities = []
-  const logs = selectTodayLogs(state)
+  const logs = selectTodayEntries(state)
   for(let log of logs){
     const activity = selectActivityById(state, log.id)
-    todaysActivities.push({
-      ...activity,
-      ...log,
-    })
+    if(!(activity.repeatMode == 'weekly')){
+      todaysActivities.push({
+        ...activity,
+        ...log,
+      })
+    }
   }
   return { todaysActivities }
 }

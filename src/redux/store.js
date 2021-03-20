@@ -2,13 +2,13 @@ import { configureStore } from '@reduxjs/toolkit'
 
 import goalsReducer from './GoalsSlice'
 import activitySlice from './ActivitySlice'
-import dailyLogSlice from './DailyLogSlice'
+import logSlice from './LogSlice'
 
 const store = configureStore({
   reducer: {
     goals: goalsReducer,
     activities: activitySlice,
-    dailyLogs: dailyLogSlice
+    logs: logSlice
   }
 })
 

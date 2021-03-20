@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, Checkbox, IconButton, Text } from 'react-native-paper'
-import { DateTime } from 'luxon'
+import { getTodayTime } from '../util'
 
 function isActivityRunning(intervals){
   const lastInterval = intervals.slice(-1)[0]
@@ -11,22 +11,6 @@ function isActivityRunning(intervals){
   }else{
     return false
   }
-}
-
-function getTodayTime(intervals){
-  if(!intervals) {return -1}
-  let todayTime = 0
-  for(let interval of intervals){
-    if(interval.startDate && interval.endDate){
-      const startDate = DateTime.fromISO(interval.startDate)
-      const endDate = DateTime.fromISO(interval.endDate)
-      todayTime += Math.floor(endDate.diff(startDate, 'seconds').get('seconds'))
-    }else if(interval.startDate && !interval.endDate){
-      const startDate = DateTime.fromISO(interval.startDate)
-      todayTime -= Math.floor(startDate.diffNow("seconds").get('seconds'))  // this returns a negative number
-    }
-  }
-  return todayTime
 }
 
 const ActivityListItem = ({ 
