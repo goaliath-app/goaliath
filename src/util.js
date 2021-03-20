@@ -15,3 +15,12 @@ export function getTodayTime(intervals){
   }
   return todayTime
 }
+
+export function isActivityRunning(intervals){
+  const lastInterval = intervals.slice(-1)[0]
+  if(lastInterval?.startDate && !lastInterval?.endDate){
+    return true
+  }else{
+    return false
+  }
+}

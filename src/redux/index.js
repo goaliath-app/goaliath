@@ -9,7 +9,8 @@ export {
 } from './ActivitySlice' 
 
 export { 
-    createLog, addEntry, upsertTodaysEntry, deleteOneTodaysEntry, 
+    createLog, addEntry, upsertTodaysEntry, deleteOneTodaysEntry, toggleCompleted,
+    startTimer, stopTimer,
     selectAllLogs, selectLogById, selectTodayEntries, selectTodayEntryByActivityId, 
     selectThisWeekEntriesByActivityId,
 } from './LogSlice'

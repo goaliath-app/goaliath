@@ -1,5 +1,6 @@
-import { createSlice, createEntityAdapter} from '@reduxjs/toolkit'
+import { createSlice, createEntityAdapter, current } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
+import { isActivityRunning } from '../util'
 
 const logAdapter = createEntityAdapter();
 const entryAdapter = createEntityAdapter();
@@ -14,7 +15,7 @@ each log is
       entities: {
         eachEntryId: {
           id: id matching with the activity this log comes from,
-          intervals: [{start_date: Date, end_date: Date}],
+          intervals: [{startDate: Date, endDate: Date}],
           completed: bool,
           archived: bool, (a log is archived if it contains information that may be useful in the future but should not be shown i.e. if the activity has been disabled after logging some time on it)
           ...data redundant to its Activity for logs of past days that
@@ -63,11 +64,38 @@ const logSlice = createSlice({
       const today = DateTime.now().startOf('day').toISO()
       const todaysLog = state.entities[today].entries
       entryAdapter.removeOne(todaysLog, action.payload)
+    },
+    toggleCompleted(state, action){
+      /* action.payload = {date: DateTime, id: logID}*/
+      const { date, id } = action.payload
+      const log = state.entities[date.startOf('day').toISO()].entries
+      const entry = log.entities[id]
+      entryAdapter.upsertOne(log, {...entry, completed: !entry.completed})
+    },
+    startTimer(state, action){
+      const id = action.payload
+      const today = DateTime.now().startOf('day').toISO()
+      const todaysLog = state.entities[today]
+      for(let entry of Object.values(todaysLog.entries.entities)){
+        if(isActivityRunning(entry.intervals)){
+          stopActivity(entry)
+        }
+      }
+      const activityEntry = todaysLog.entries.entities[id]
+      activityEntry.intervals.push({startDate: DateTime.now().toISO()})
+      console.log(current(activityEntry))
+    },
+    stopTimer(state, action){
+      const id = action.payload
+      const today = DateTime.now().startOf('day').toISO()
+      const todaysLog = state.entities[today]
+      const activityEntry = todaysLog.entries.entities[id]
+      stopActivity(activityEntry)
     }
   }
 })
 
-export const { createLog, addEntry, upsertTodaysEntry, deleteOneTodaysEntry } = logSlice.actions
+export const { createLog, addEntry, upsertTodaysEntry, deleteOneTodaysEntry, toggleCompleted, startTimer, stopTimer } = logSlice.actions
 
 export const { 
   selectAll: selectAllLogs, selectById: selectLogById
@@ -113,4 +141,9 @@ function getStartOfWeekDay(date, weekDayNumber){
      returns the date of the start of the specified week day of the week of date */
   const weekStart = date.startOf('week')
   return weekStart.plus({days: weekDayNumber})
+}
+
+function stopActivity(entry){
+  const lastInterval = entry.intervals.slice(-1)[0]
+  lastInterval.endDate = DateTime.now().toISO()
 }
