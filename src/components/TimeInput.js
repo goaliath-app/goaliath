@@ -6,21 +6,21 @@ const TimeInput = ({ hours, setHours, minutes, setMinutes, seconds, setSeconds }
     <View style={{flexDirection: 'row'}}>
   
       <TextInput 
-        style={{flex: 2}} keyboardType='numeric' maxLength={2}
+        style={{flex: 2}} keyboardType='numeric'
         value={hours} 
         onChangeText={setHours}
       />
       <Text style={{flex: 1}}>hr</Text>
   
       <TextInput 
-        style={{flex: 2}} keyboardType='numeric' maxLength={2}
+        style={{flex: 2}} keyboardType='numeric'
         value={minutes} 
         onChangeText={setMinutes}
       />
       <Text style={{flex: 1}}>min</Text>
   
       <TextInput 
-        style={{flex: 2}} keyboardType='numeric'  maxLength={2}
+        style={{flex: 2}} keyboardType='numeric' 
         value={seconds} 
         onChangeText={setSeconds}
       />

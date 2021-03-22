@@ -83,7 +83,6 @@ const logSlice = createSlice({
       }
       const activityEntry = todaysLog.entries.entities[id]
       activityEntry.intervals.push({startDate: DateTime.now().toISO()})
-      console.log(current(activityEntry))
     },
     stopTimer(state, action){
       const id = action.payload

@@ -49,8 +49,7 @@ const ActivityListItem = ({
     leftSlot = (
       <Checkbox 
       status='checked'
-      delayLongPress={1000} 
-      onLongPress={() => {
+      onPress={() => {
         toggleCompleted({date: DateTime.now(), id: id})
       }}/>
     )

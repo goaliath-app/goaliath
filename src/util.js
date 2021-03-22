@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 
 export function getTodayTime(intervals){
-  if(!intervals) {return -1}
+  if(!intervals) {return 0}
   let todayTime = 0
   for(let interval of intervals){
     if(interval.startDate && interval.endDate){

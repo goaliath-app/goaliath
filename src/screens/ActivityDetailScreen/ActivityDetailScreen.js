@@ -3,13 +3,17 @@ import { View } from 'react-native'
 import { connect } from 'react-redux';
 import { Button, List, Checkbox, Divider, Appbar, Menu } from 'react-native-paper';
 import { Header, TimeInput, ThreeDotsMenu } from '../../components';
-import { selectActivityById, selectGoalById } from '../../redux'
+import { selectActivityById, selectGoalById, selectTodayEntryByActivityId, toggleCompleted, startTimer, stopTimer, upsertTodaysEntry } from '../../redux'
+import { getTodayTime, isActivityRunning } from '../../util'
+import { DateTime } from 'luxon';
+
 
 const data = {
   goal: 'Japanese', frecuency: 'Daily', weekHours: 3, weekTimes: 2, hours: 5, times: 4, previousScreen: ''
 }
 
-const ActivityDetailScreen = ({ activity, goal, navigation }) => {
+const ActivityDetailScreen = ({ activity, goal, entry, navigation, toggleCompleted, stopTimer, startTimer, upsertTodaysEntry }) => {
+
   const menuItems = (
     <>
     <Menu.Item title='Edit activity'
@@ -30,8 +34,10 @@ const ActivityDetailScreen = ({ activity, goal, navigation }) => {
     <View>
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons(data.previousScreen)} />
       <BasicActivityInfo activity={activity} goal={goal}/>
+ 
+    {entry?
+      <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={startTimer} stopTimer={stopTimer} upsertTodaysEntry={upsertTodaysEntry} /> : null}
       {/* delayed until we start working on daily and weekly screens 
-      <TodayPannel />
       <WeekStats />
       <GenericStats /> 
       */}
@@ -86,17 +92,69 @@ const BasicActivityInfo = ({ activity, goal }) => {
   )
 }
 
-const TodayPannel = () => (
-  <View>
-    <List.Item
-      title='Today'
-      right={() => <Checkbox status='unchecked' />}
-    />
-    <TimeInput />
-    <Button>Start Timer</Button>
-    <Divider />
-  </View>
-)
+const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertTodaysEntry }) => {
+  console.log(entry)
+  React.useEffect(() => {
+    if (isActivityRunning(entry.intervals)) {
+      const intervalId = setInterval(() => {
+        setTodayTime(getTodayTime(entry.intervals))    
+      }, 1000)
+      return () => clearInterval(intervalId)
+    }
+  }, [entry.intervals])
+
+  function onPressPlay(){
+    startTimer(entry.id)
+  }
+
+  function onPressPause(){
+    stopTimer(entry.id)
+  }
+
+  const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
+  
+  function updateTotalTime(seconds){
+    const newInterval = {
+      startDate: DateTime.now().minus({seconds}).toISO(), 
+      endDate: DateTime.now().toISO()
+    }
+    upsertTodaysEntry({...entry, intervals: [newInterval]})
+  }
+
+  function setHours(value){
+    setTodayTime(value*3600 + todayTime % 3600)
+    updateTotalTime(value*3600 + todayTime % 3600)
+  }
+  function setMinutes(value){
+    setTodayTime((Math.floor(todayTime/3600)*3600) + value*60 + todayTime % 60)
+    updateTotalTime((Math.floor(todayTime/3600)*3600) + value*60 + todayTime % 60)
+  }
+  function setSeconds(value){
+    setTodayTime(value + Math.floor(todayTime/60)*60)
+    updateTotalTime(value + Math.floor(todayTime/60)*60)
+  }
+
+  let seconds, minutes, hours
+  seconds = String(todayTime % 60).padStart(2, '0')
+  minutes = String(Math.floor(todayTime / 60) % 60).padStart(2, '0')
+  hours = String(Math.floor(todayTime / 3600)).padStart(2, '0')
+
+  return(
+    <View>
+      <List.Item
+        title='Today'
+        right={() => <Checkbox status={entry.completed? 'checked':'unchecked'} onPress={() => {toggleCompleted({date: DateTime.now(), id: entry.id})} }/>}
+      />
+      <TimeInput seconds={seconds} minutes={minutes} hours={hours} setHours={setHours} setMinutes={setMinutes} setSeconds={setSeconds} />
+      {isActivityRunning(entry.intervals)?
+        <Button onPress={onPressPause}>Stop Timer</Button>
+      :
+        <Button onPress={onPressPlay}>Start Timer</Button>
+      }
+      <Divider />
+    </View>
+  )
+}
 
 const GenericStats = () => (
   <View>
@@ -133,8 +191,20 @@ const mapStateToProps = (state, ownProps) => {
   const activity = selectActivityById(state, activityId)
   const activityGoalId = activity.goalId
   const goal = selectGoalById(state, activityGoalId)
-
-  return { activity, goal }
+  const showLog = ownProps.route.params.showLog
+  let entry 
+  if(showLog){
+    entry = selectTodayEntryByActivityId(state, activityId)
+  }
+      
+  return { activity, goal, entry }
 }
 
-export default connect(mapStateToProps)(ActivityDetailScreen);
+const actionToProps = {
+  toggleCompleted,
+  stopTimer,
+  startTimer,
+  upsertTodaysEntry
+}
+
+export default connect(mapStateToProps, actionToProps)(ActivityDetailScreen);
