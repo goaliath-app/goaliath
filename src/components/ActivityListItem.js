@@ -102,7 +102,7 @@ const ActivityListItem = ({
       title={name}
       description={description}
       right={() => rightSlot}
-      onPress={() => navigation.navigate('ActivityDetail', {activityId: '0'})}
+      onPress={() => navigation.navigate('ActivityDetail', {activityId: id, showLog: true})}
     />
   );
 }

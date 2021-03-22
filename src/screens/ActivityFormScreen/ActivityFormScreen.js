@@ -71,7 +71,7 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
           }else{
             createActivity(newActivity)
           }
-          navigation.navigate('Goal')
+          navigation.goBack()
         }
       }} 
     /> 

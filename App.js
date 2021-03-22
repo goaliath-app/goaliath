@@ -19,6 +19,7 @@ const TodayStack = () => (
   <Stack.Navigator initialRouteName='Today' headerMode='none'>
     <Stack.Screen name='Today' component={TodayScreen} options={{headerTitle: 'Today'}} />
     <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} options={{headerTitle: 'ActivityDetail'}} />
+    <Stack.Screen name='ActivityForm' component={ActivityFormScreen} />
   </Stack.Navigator>
 )
 
@@ -26,6 +27,7 @@ const WeekStack = () => (
   <Stack.Navigator initialRouteName='Week' headerMode='none'>
     <Stack.Screen name='Week' component={WeekScreen} options={{headerTitle: 'Week'}} />
     <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} options={{headerTitle: 'ActivityDetail'}} />
+    <Stack.Screen name='ActivityForm' component={ActivityFormScreen} />
   </Stack.Navigator>
 )
 
