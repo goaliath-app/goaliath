@@ -13,7 +13,7 @@ const ActivityListItem = ({
   repeatMode,      // 'daily' or 'weekly'
   weeklyTime,    // time spent this week (just used in 'weekly' repeatMode activities)
   completed,   // boolean value
-  weeklyTimesObjective, // number of days that the activity should be completed each week
+  timesPerWeek, // number of days that the activity should be completed each week
   weeklyTimes, // number of times that the activity has been done this week (counting today)
   intervals, 
   archived,
@@ -78,7 +78,7 @@ const ActivityListItem = ({
   if(repeatMode == 'daily' && timeGoal!==undefined){
     description = `Time goal: ${timeGoal} seconds`
   }else if(repeatMode=='weekly' && timeGoal==undefined){
-    description = `Done ${weeklyTimes} of ${weeklyTimesObjective} days`
+    description = `Done ${weeklyTimes} of ${timesPerWeek} days`
   }else if(repeatMode=='weekly' && timeGoal!==undefined){
     description = `Dedicated ${weeklyTime} of ${timeGoal} total seconds`
   }
