@@ -57,9 +57,10 @@ const BasicActivityInfo = ({ activity, goal }) => {
       break
     case 'select':
       let days = ''
+      const labels = {1: 'Mon', 2: 'Tue', 3: 'Wed', 4: 'Thu', 5: 'Fri', 6: 'Sat', 7: 'Sun'}
       for (let day in activity.weekDays){
         if (activity.weekDays[day]){
-          days = `${days} ${day.substring(0,2)}`
+          days = `${days} ${labels[day]}`
         }
       }
       if(activity.goal=='check'){
