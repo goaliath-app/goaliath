@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, Pressable } from 'react-native';
 import { List, Switch, Appbar, Menu, Text, Card, Paragraph } from 'react-native-paper';
 import { Header, ThreeDotsMenu } from '../../components';
 import { useNavigation } from '@react-navigation/native';
@@ -16,19 +16,25 @@ const Activity = ({ name, repeatMode, active, id, toggleActivity }) => {
 
   return (
     <List.Item
+     onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
       title={
         <View style={{width: '100%' }}>
-          <Text onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}>
+          <Text>
             {name}
           </Text>
         </View>
       }
       description={repeatMode}
       right={() => (
-        <Switch
-          onValueChange={() => toggleActivity({id: id})} 
-          value={active}/>)}
+        <Pressable onPress={() => {}}>
+          <Switch
+            onValueChange={() => toggleActivity({id: id})} 
+            value={active}
+          />
+        </Pressable>
+      )}
     />
+        
   );
 }
 
