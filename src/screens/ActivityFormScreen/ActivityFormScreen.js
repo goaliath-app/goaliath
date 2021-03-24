@@ -124,7 +124,7 @@ const ButtonSwitchBar = ({ options, state, setState }) => (
 const NumberOfWeeklyDaysInput = ({ timesPerWeek, setTimesPerWeek }) => (
   <View style={{flexDirection: 'row'}}>
     <Text style={{flex: 2}}>How many days per week?</Text>
-    <TextInput value={timesPerWeek} onChangeText={setTimesPerWeek} style={{flex: 1}} />
+    <TextInput value={timesPerWeek} onChangeText={setTimesPerWeek} style={{flex: 1}} keyboardType='numeric' />
   </View>
 )
 
@@ -195,17 +195,17 @@ const TimeGoal = ({
 
 const WeekdaySelector = ({ weekDays, setWeekDays }) => (
   <View style={styles.weekdaySelectorView}>
-    <WeekdaySelectorItem day='1' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem day='2' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem day='3' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem day='4' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem day='5' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem day='6' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem day='7' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label='Mo' day='1' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label='Tu' day='2' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label='We' day='3' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label='Th' day='4' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label='Fr' day='5' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label='Sa' day='6' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label='Su' day='7' weekDays={weekDays} setWeekDays={setWeekDays}/>
   </View>
 )
 
-const WeekdaySelectorItem = ({ day, weekDays, setWeekDays }) => (
+const WeekdaySelectorItem = ({ label, day, weekDays, setWeekDays }) => (
   <View style={styles.weekdaySelectorItem}>
     <Checkbox 
       status={weekDays[day]?'checked':'unchecked'}
@@ -213,7 +213,7 @@ const WeekdaySelectorItem = ({ day, weekDays, setWeekDays }) => (
         setWeekDays(Object.assign({}, weekDays, {[day]: !weekDays[day]}))
       }}
     />
-    <Text>{day.substring(0,2)}</Text>
+    <Text>{label}</Text>
   </View>
 )
 
