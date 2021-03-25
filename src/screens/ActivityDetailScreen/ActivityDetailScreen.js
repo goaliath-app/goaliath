@@ -13,11 +13,15 @@ const data = {
 }
 
 const ActivityDetailScreen = ({ activity, goal, entry, navigation, toggleCompleted, stopTimer, startTimer, upsertTodaysEntry }) => {
+  const [visible, setVisible] = React.useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
 
   const menuItems = (
     <>
     <Menu.Item title='Edit activity'
       onPress={() => {
+        closeMenu()
         navigation.navigate('ActivityForm', { activityId: activity.id })
       }} 
     />
@@ -26,14 +30,14 @@ const ActivityDetailScreen = ({ activity, goal, entry, navigation, toggleComplet
   )
   const headerButtons = (previousScreen) => {
     if(previousScreen=='Goal'){
-      return <Appbar.Action icon='pencil' color='white'/>
-    } else {return <ThreeDotsMenu menuItems={menuItems}/>}
+      return <Appbar.Action icon='pencil' color='white' />
+    } else {return <ThreeDotsMenu menuItems={menuItems} openMenu= {openMenu} closeMenu= {closeMenu} visible={visible} />}
   }
 
   return(
     <View>
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons(data.previousScreen)} />
-      <BasicActivityInfo activity={activity} goal={goal}/>
+      <BasicActivityInfo activity={activity} goal={goal} />
  
     {entry?
       <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={startTimer} stopTimer={stopTimer} upsertTodaysEntry={upsertTodaysEntry} /> : null}

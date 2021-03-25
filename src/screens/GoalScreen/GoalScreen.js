@@ -38,11 +38,16 @@ const Activity = ({ name, active, id, toggleActivity }) => {
 }
 
 const GoalScreen = ({ activities, goal, navigation, toggleActivity }) => {
+  const [visible, setVisible] = React.useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+  
   const menuItems = (
     <>
-    <Menu.Item onPress={() => {}} title='Edit goal' 
+    <Menu.Item title='Edit goal' 
       onPress={() => {
-        navigation.navigate('GoalForm', { id: goal.id })
+        closeMenu()
+        navigation.navigate('GoalForm', { id: goal.id } )
       }}
     />
     <Menu.Item onPress={() => {}} title='Delete goal' />
@@ -63,7 +68,7 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity }) => {
         navigation.navigate('ActivityForm', { goalId: goal.id })
       }}
     />
-    <ThreeDotsMenu menuItems={menuItems}/>
+    <ThreeDotsMenu menuItems={menuItems} openMenu= {openMenu} closeMenu= {closeMenu} visible={visible} />
     </>
   )
 
