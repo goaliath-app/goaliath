@@ -50,7 +50,7 @@ const BasicActivityInfo = ({ activity, goal }) => {
   switch(activity.repeatMode){
     case 'weekly':
       if(activity.goal=='check'){
-        frequency = `${activity.timesPerWeek} times per week.`
+        frequency = `${activity.timesPerWeek} days per week.`
       }else{
         frequency = `${activity.timeGoal} seconds per week.`
       }
@@ -166,7 +166,7 @@ const GenericStats = () => (
     />
     <List.Item
       left={() => <List.Icon icon="check-circle-outline" />}
-      title={data.times + ' times completed'}
+      title={data.times + ' days completed'}
     />
     <Divider />
   </View>
@@ -181,7 +181,7 @@ const WeekStats = () => (
     />
     <List.Item
       left={() => <List.Icon icon="check-circle-outline" />}
-      title={data.weekTimes + ' times completed'}
+      title={data.weekTimes + ' days completed'}
     />
     <Divider />
   </View>

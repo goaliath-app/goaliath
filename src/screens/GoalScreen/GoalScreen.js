@@ -11,7 +11,7 @@ const data = [
   {name: 'Watch Shirokuma Cafe', repeatMode: 'weekly', active: false},
 ]
 
-const Activity = ({ name, repeatMode, active, id, toggleActivity }) => {
+const Activity = ({ name, active, id, toggleActivity }) => {
   const navigation = useNavigation();
 
   return (
@@ -24,7 +24,6 @@ const Activity = ({ name, repeatMode, active, id, toggleActivity }) => {
           </Text>
         </View>
       }
-      description={repeatMode}
       right={() => (
         <Pressable onPress={() => {}}>
           <Switch
@@ -54,7 +53,6 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity }) => {
     <Activity
       name={item.name}
       active={item.active}
-      repeatMode={item.repeatMode}
       id={item.id}
       toggleActivity={toggleActivity} />
   )
