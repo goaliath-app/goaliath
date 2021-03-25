@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon'
+import Duration from 'luxon/src/duration.js'
 
 export function getTodayTime(intervals){
   if(!intervals) {return 0}
@@ -13,7 +14,7 @@ export function getTodayTime(intervals){
       todayTime -= Math.floor(startDate.diffNow("seconds").get('seconds'))  // this returns a negative number
     }
   }
-  return todayTime
+  return Duration.fromObject({seconds: todayTime}).shiftTo('hours', 'minutes', 'seconds')
 }
 
 export function isActivityRunning(intervals){
@@ -23,4 +24,27 @@ export function isActivityRunning(intervals){
   }else{
     return false
   }
+}
+
+function getPreferedExpressionUnit(duration){
+  if(duration.as('seconds') < 60){
+    return 'seconds'
+  }
+  if (duration.as('minutes') < 60){
+    return 'minutes'
+  }
+  return 'hours'
+}
+
+export function roundValue(value){
+  return Math.round((value + Number.EPSILON) * 10) / 10
+}
+
+export function getPreferedExpression(duration){
+  if(!Duration.isDuration(duration)){
+    duration = Duration.fromObject({seconds: duration}).shiftTo('hours', 'minutes', 'seconds')
+  }
+  const unit = getPreferedExpressionUnit(duration)
+  const value = roundValue(duration.as(unit))
+  return {value: value, unit: unit}
 }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button, List, Checkbox, Divider, Appbar, Menu } from 'react-native-paper';
 import { Header, TimeInput, ThreeDotsMenu } from '../../components';
 import { selectActivityById, selectGoalById, selectTodayEntryByActivityId, toggleCompleted, startTimer, stopTimer, upsertTodaysEntry } from '../../redux'
-import { getTodayTime, isActivityRunning } from '../../util'
+import { getTodayTime, isActivityRunning, getPreferedExpression } from '../../util'
 import { DateTime } from 'luxon';
 
 
@@ -56,7 +56,8 @@ const BasicActivityInfo = ({ activity, goal }) => {
       if(activity.goal=='check'){
         frequency = `${activity.timesPerWeek} days per week.`
       }else{
-        frequency = `${activity.timeGoal} seconds per week.`
+        const expression = getPreferedExpression(activity.timeGoal)
+        frequency = `${expression.value} ${expression.unit} per week.`
       }
       break
     case 'select':
@@ -70,14 +71,16 @@ const BasicActivityInfo = ({ activity, goal }) => {
       if(activity.goal=='check'){
         frequency = `Do on ${days}`
       }else{
-        frequency = `${activity.timeGoal} seconds on ${days}`
+        const expression = getPreferedExpression(activity.timeGoal)
+        frequency = `${expression.value} ${expression.unit} on ${days}`
       }
       break
     case 'daily':
       if(activity.goal=='check'){
         frequency = "Every day."
       }else{
-        frequency = `${activity.timeGoal} seconds every day.`
+        const expression = getPreferedExpression(activity.timeGoal)
+        frequency = `${expression.value} ${expression.unit} every day.`
       }
       break
     default:
@@ -127,22 +130,22 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertToda
   }
 
   function setHours(value){
-    setTodayTime(value*3600 + todayTime % 3600)
-    updateTotalTime(value*3600 + todayTime % 3600)
+    setTodayTime(todayTime.set({hours: value}))
+    updateTotalTime(todayTime.as('seconds'))
   }
   function setMinutes(value){
-    setTodayTime((Math.floor(todayTime/3600)*3600) + value*60 + todayTime % 60)
-    updateTotalTime((Math.floor(todayTime/3600)*3600) + value*60 + todayTime % 60)
+    setTodayTime(todayTime.set({minutes: value}))
+    updateTotalTime(todayTime.as('seconds'))
   }
   function setSeconds(value){
-    setTodayTime(value + Math.floor(todayTime/60)*60)
-    updateTotalTime(value + Math.floor(todayTime/60)*60)
+    setTodayTime(todayTime.set({seconds: value}))
+    updateTotalTime(todayTime.as('seconds'))
   }
 
   let seconds, minutes, hours
-  seconds = String(todayTime % 60).padStart(2, '0')
-  minutes = String(Math.floor(todayTime / 60) % 60).padStart(2, '0')
-  hours = String(Math.floor(todayTime / 3600)).padStart(2, '0')
+  seconds = String(todayTime.seconds).padStart(2, '0')
+  minutes = String(todayTime.minutes).padStart(2, '0')
+  hours = String(todayTime.hours).padStart(2, '0')
 
   return(
     <View>

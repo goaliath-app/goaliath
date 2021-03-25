@@ -26,7 +26,7 @@ export function generateDummyData(){
     dispatch(addEntry({date: DateTime.now(), entry: {intervals: [], completed: true, id: 5, archived: false }}))
 
     // weekly activities
-    dispatch(createActivity({name: 'Call a pal', goalId: '0', goal: 'check', weeklyTimesObjective: 3, repeatMode: 'weekly'}))
+    dispatch(createActivity({name: 'Call a pal', goalId: '0', goal: 'check', timesPerWeek: 3, repeatMode: 'weekly'}))
     dispatch(addEntry({date: DateTime.now().plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: 6, archived: false }}))
     dispatch(addEntry({date: DateTime.now().plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: 6, archived: false }}))
     dispatch(createActivity({name: 'Social Media', goalId: '0', goal: 'time', timeGoal: 3, repeatMode: 'weekly'}))

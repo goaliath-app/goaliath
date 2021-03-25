@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
+import Duration from 'luxon/src/duration.js'
 import { ActivityList } from '../../components'
 import { Header } from '../../components';
 import { selectTodayEntries, selectActivityById, updateLogs, selectThisWeekEntriesByActivityId } from '../../redux'
@@ -35,10 +36,10 @@ const mapStateToProps = (state) => {
     if(activity.repeatMode == 'weekly'){
       // we have to inyect weeklyTime and weeklyTimes
       const weekLogs = selectThisWeekEntriesByActivityId(state, activity.id)
-      let weeklyTime = 0
+      let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
       let weeklyTimes = 0
       for(let day in weekLogs){
-        weeklyTime += getTodayTime(weekLogs[day].intervals)
+        weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[day].intervals))
         weeklyTimes += weekLogs[day].completed?1:0
       }
       todaysActivities.push({

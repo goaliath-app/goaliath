@@ -4,7 +4,7 @@ import { StyleSheet, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, Checkbox, IconButton, Text } from 'react-native-paper'
 import { DateTime } from 'luxon'
-import { getTodayTime, isActivityRunning } from '../util'
+import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue } from '../util'
 import { toggleCompleted, startTimer, stopTimer } from '../redux'
 
 const ActivityListItem = ({ 
@@ -75,21 +75,18 @@ const ActivityListItem = ({
     leftSlot = <IconButton icon={require('../../assets/play-outlined.png')} onPress={onPressPlay} />
   }
 
-  if(repeatMode == 'daily' && timeGoal!==undefined){
-    description = `Time goal: ${timeGoal} seconds`
+  if((repeatMode == 'daily' || repeatMode == 'select') && timeGoal!==undefined){
+    const expression = getPreferedExpression(timeGoal)
+    description = `Goal: ${expression.value} ${expression.unit}`
   }else if(repeatMode=='weekly' && timeGoal==undefined){
     description = `Done ${weeklyTimes} of ${timesPerWeek} days`
   }else if(repeatMode=='weekly' && timeGoal!==undefined){
-    description = `Dedicated ${weeklyTime} of ${timeGoal} total seconds`
+    const expression = getPreferedExpression(timeGoal)
+    description = `Done ${roundValue(weeklyTime.as(expression.unit))} of ${expression.value} ${expression.unit}`
   }
 
-  if(todayTime){
-    let seconds, minutes, hours
-    seconds = String(todayTime % 60).padStart(2, '0')
-    minutes = String(Math.floor(todayTime / 60) % 60).padStart(2, '0')
-    hours = String(Math.floor(todayTime / 3600)).padStart(2, '0')
-
-    rightSlot = <Text style={styles.timeLabel}>{hours}:{minutes}:{seconds}</Text>
+  if(todayTime.as('seconds') > 0){
+    rightSlot = <Text style={styles.timeLabel}>{todayTime.toFormat('hh:mm:ss')}</Text>
   }
 
   const navigation = useNavigation();
