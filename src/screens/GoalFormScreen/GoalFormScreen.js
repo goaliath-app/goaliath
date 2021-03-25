@@ -30,7 +30,7 @@ const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
           }else{
             createGoal({name: name, motivation: motivation})
           }
-          navigation.navigate('Goals')}
+          navigation.goBack()}
         }
       } 
     />

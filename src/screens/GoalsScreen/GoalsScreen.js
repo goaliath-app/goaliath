@@ -7,12 +7,12 @@ import { Header } from '../../components'
 import { selectAllGoals, toggleGoal } from '../../redux'
 
 
-const GoalListItem = ({ name, active, toggleGoal, id, motivation }) => {
+const GoalListItem = ({ name, active, toggleGoal, id }) => {
   const navigation = useNavigation();
 
   return (
     <List.Item 
-      onPress={() => navigation.navigate('Goal', { headerTitle: name, goalName: name, goalId: id, goalMotivation: motivation})}
+      onPress={() => navigation.navigate('Goal', { goalId: id })}
       title={
         <View style={{width: '100%'}}>
           <Text>

@@ -4,7 +4,7 @@ import { View, FlatList, Pressable } from 'react-native';
 import { List, Switch, Appbar, Menu, Text, Card, Paragraph } from 'react-native-paper';
 import { Header, ThreeDotsMenu } from '../../components';
 import { useNavigation } from '@react-navigation/native';
-import { selectAllActivities, toggleActivity } from '../../redux'
+import { selectAllActivities, selectGoalById, toggleActivity } from '../../redux'
 
 const data = [
   {name: 'Study Anki', repeatMode: 'daily', active: true},
@@ -38,12 +38,12 @@ const Activity = ({ name, repeatMode, active, id, toggleActivity }) => {
   );
 }
 
-const GoalScreen = ({ activities, route, navigation, toggleActivity }) => {
+const GoalScreen = ({ activities, goal, navigation, toggleActivity }) => {
   const menuItems = (
     <>
     <Menu.Item onPress={() => {}} title='Edit goal' 
       onPress={() => {
-        navigation.navigate('GoalForm', { id: goalId })
+        navigation.navigate('GoalForm', { id: goal.id })
       }}
     />
     <Menu.Item onPress={() => {}} title='Delete goal' />
@@ -58,11 +58,11 @@ const GoalScreen = ({ activities, route, navigation, toggleActivity }) => {
       id={item.id}
       toggleActivity={toggleActivity} />
   )
-  const { goalId, goalName, goalMotivation } = route.params
+  //const { goalId, goalName, goalMotivation } = route.params
   const headerButtons = (
     <>
     <Appbar.Action icon='plus' color='white' onPress={() => {
-        navigation.navigate('ActivityForm', { goalId: goalId })
+        navigation.navigate('ActivityForm', { goalId: goal.id })
       }}
     />
     <ThreeDotsMenu menuItems={menuItems}/>
@@ -72,13 +72,13 @@ const GoalScreen = ({ activities, route, navigation, toggleActivity }) => {
   return (
     <View style={{height: '100%', justifyContent: 'space-between'}}>
       <View>
-        <Header title={goalName} left='back' navigation={navigation} buttons={headerButtons}/>
+        <Header title={goal.name} left='back' navigation={navigation} buttons={headerButtons}/>
         <FlatList data={activities} renderItem={renderItem} />
       </View>
-      {goalMotivation?
+      {goal.motivation?
         <Card>
           <Card.Content>        
-            <Paragraph>{goalMotivation}</Paragraph>
+            <Paragraph>{goal.motivation}</Paragraph>
           </Card.Content>
         </Card> : <></>}
     </View>
@@ -88,10 +88,11 @@ const GoalScreen = ({ activities, route, navigation, toggleActivity }) => {
 const mapStateToProps = (state, ownProps) => {
   const { goalId } = ownProps.route.params
   const activities = selectAllActivities(state)
+  const goal = selectGoalById(state, goalId)
   const thisGoalActivities = activities.filter(activity => {
     return activity.goalId == goalId
   })
-  return { activities: thisGoalActivities }
+  return { activities: thisGoalActivities, goal: goal }
 };
 
 const actionsToProps = {
