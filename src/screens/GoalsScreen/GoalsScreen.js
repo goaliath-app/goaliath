@@ -54,7 +54,10 @@ const GoalsScreen = ({ navigation, goals, toggleGoal }) => {
 
 const mapStateToProps = (state) => {
   const goals = selectAllGoals(state)
-  return { goals }
+  const goalsToShow = goals.filter(goal => {
+    return !goal.archived
+  })
+  return { goals: goalsToShow }
 };
 
 const actionsToProps = {

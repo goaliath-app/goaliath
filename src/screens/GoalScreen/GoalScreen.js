@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { View, FlatList, Pressable } from 'react-native';
-import { List, Switch, Appbar, Menu, Text, Card, Paragraph } from 'react-native-paper';
-import { Header, ThreeDotsMenu } from '../../components';
+import { List, Switch, Appbar, Menu, Text, Card, Paragraph, Portal, Dialog, Button } from 'react-native-paper';
+import { Header, ThreeDotsMenu, DeleteDialog } from '../../components';
 import { useNavigation } from '@react-navigation/native';
-import { selectAllActivities, selectGoalById, toggleActivity } from '../../redux'
+import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal } from '../../redux'
 
 const data = [
   {name: 'Study Anki', repeatMode: 'daily', active: true},
@@ -37,10 +37,11 @@ const Activity = ({ name, active, id, toggleActivity }) => {
   );
 }
 
-const GoalScreen = ({ activities, goal, navigation, toggleActivity }) => {
-  const [visible, setVisible] = React.useState(false);
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
+const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal }) => {
+  const [menuVisible, setMenuVisible] = React.useState(false);
+  const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
   
   const menuItems = (
     <>
@@ -50,7 +51,10 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity }) => {
         navigation.navigate('GoalForm', { id: goal.id } )
       }}
     />
-    <Menu.Item onPress={() => {}} title='Delete goal' />
+    <Menu.Item onPress={() => {
+      setMenuVisible(false)
+      setDeleteDialogVisible(true)
+      }} title='Delete goal' />
     </>
   )
 
@@ -68,11 +72,23 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity }) => {
         navigation.navigate('ActivityForm', { goalId: goal.id })
       }}
     />
-    <ThreeDotsMenu menuItems={menuItems} openMenu= {openMenu} closeMenu= {closeMenu} visible={visible} />
+    <ThreeDotsMenu menuItems={menuItems} openMenu= {openMenu} closeMenu= {closeMenu} visible={menuVisible} />
     </>
   )
 
   return (
+    <>
+    <DeleteDialog 
+      visible={deleteDialogVisible} 
+      setVisible={setDeleteDialogVisible} 
+      onDelete={()=>{
+        archiveGoal(goal.id)
+        setDeleteDialogVisible(false)
+        navigation.goBack()
+      }}
+      title='Delete goal?'
+      body="This will delete all its activities. Can't be undone."
+    />
     <View style={{height: '100%', justifyContent: 'space-between'}}>
       <View>
         <Header title={goal.name} left='back' navigation={navigation} buttons={headerButtons}/>
@@ -85,6 +101,7 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity }) => {
           </Card.Content>
         </Card> : <></>}
     </View>
+    </>
   )
 }
 
@@ -93,13 +110,14 @@ const mapStateToProps = (state, ownProps) => {
   const activities = selectAllActivities(state)
   const goal = selectGoalById(state, goalId)
   const thisGoalActivities = activities.filter(activity => {
-    return activity.goalId == goalId
+    return activity.goalId == goalId && !activity.archived
   })
   return { activities: thisGoalActivities, goal: goal }
 };
 
 const actionsToProps = {
   toggleActivity,
+  archiveGoal
 }
 
 export default connect(mapStateToProps, actionsToProps)(GoalScreen);

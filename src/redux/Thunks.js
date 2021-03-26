@@ -79,6 +79,9 @@ function newEntry(activity){
 
 function dueToday(activity, activityGoal){
   const today = DateTime.now()
+  if(activity.archived || activityGoal.archived){
+    return false
+  }
   if(!activity.active || !activityGoal.active){
     return false
   }

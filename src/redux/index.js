@@ -1,11 +1,13 @@
 export { default as store } from './store'
 
 export { 
-    createGoal, toggleGoal, updateGoal, selectAllGoals, selectGoalById, selectGoalEntities 
+    createGoal, toggleGoal, updateGoal, archiveGoal,
+    selectAllGoals, selectGoalById, selectGoalEntities 
 } from './GoalsSlice'
 
 export { 
-    createActivity, updateActivity, toggleActivity, selectAllActivities, selectActivityById 
+    createActivity, updateActivity, toggleActivity, archiveActivity, 
+    selectAllActivities, selectActivityById
 } from './ActivitySlice' 
 
 export { 

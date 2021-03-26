@@ -2,8 +2,11 @@ import React from 'react';
 import { View } from 'react-native'
 import { connect } from 'react-redux';
 import { Button, List, Checkbox, Divider, Appbar, Menu } from 'react-native-paper';
-import { Header, TimeInput, ThreeDotsMenu } from '../../components';
-import { selectActivityById, selectGoalById, selectTodayEntryByActivityId, toggleCompleted, startTimer, stopTimer, upsertTodaysEntry } from '../../redux'
+import { Header, TimeInput, ThreeDotsMenu, DeleteDialog } from '../../components';
+import { 
+  selectActivityById, selectGoalById, selectTodayEntryByActivityId, toggleCompleted, startTimer, 
+  stopTimer, upsertTodaysEntry, archiveActivity 
+} from '../../redux'
 import { getTodayTime, isActivityRunning, getPreferedExpression } from '../../util'
 import { DateTime } from 'luxon';
 
@@ -12,10 +15,15 @@ const data = {
   goal: 'Japanese', frecuency: 'Daily', weekHours: 3, weekTimes: 2, hours: 5, times: 4, previousScreen: ''
 }
 
-const ActivityDetailScreen = ({ activity, goal, entry, navigation, toggleCompleted, stopTimer, startTimer, upsertTodaysEntry }) => {
-  const [visible, setVisible] = React.useState(false);
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
+const ActivityDetailScreen = ({ 
+  activity, goal, entry, 
+  navigation, 
+  toggleCompleted, stopTimer, startTimer, upsertTodaysEntry, archiveActivity 
+}) => {
+  const [menuVisible, setMenuVisible] = React.useState(false);
+  const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
 
   const menuItems = (
     <>
@@ -25,16 +33,30 @@ const ActivityDetailScreen = ({ activity, goal, entry, navigation, toggleComplet
         navigation.navigate('ActivityForm', { activityId: activity.id })
       }} 
     />
-    <Menu.Item onPress={() => {}} title='Delete activity' />
+    <Menu.Item onPress={() => {
+      setDeleteDialogVisible(true)
+      setMenuVisible(false)
+    }} title='Delete activity' />
     </>
   )
   const headerButtons = (previousScreen) => {
     if(previousScreen=='Goal'){
       return <Appbar.Action icon='pencil' color='white' />
-    } else {return <ThreeDotsMenu menuItems={menuItems} openMenu= {openMenu} closeMenu= {closeMenu} visible={visible} />}
+    } else {return <ThreeDotsMenu menuItems={menuItems} openMenu= {openMenu} closeMenu= {closeMenu} visible={menuVisible} />}
   }
-
   return(
+    <>
+    <DeleteDialog 
+      visible={deleteDialogVisible} 
+      setVisible={setDeleteDialogVisible}
+      onDelete={() => {
+        archiveActivity(activity.id)
+        setDeleteDialogVisible(false)
+        navigation.goBack()
+      }}
+      title="Delete activity?"
+      body="This can't be undone."
+    />
     <View>
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons(data.previousScreen)} />
       <BasicActivityInfo activity={activity} goal={goal} />
@@ -46,6 +68,7 @@ const ActivityDetailScreen = ({ activity, goal, entry, navigation, toggleComplet
       <GenericStats /> 
       */}
     </View>
+    </>
   )
 }
 
@@ -101,7 +124,6 @@ const BasicActivityInfo = ({ activity, goal }) => {
 }
 
 const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertTodaysEntry }) => {
-  console.log(entry)
   React.useEffect(() => {
     if (isActivityRunning(entry.intervals)) {
       const intervalId = setInterval(() => {
@@ -212,7 +234,8 @@ const actionToProps = {
   toggleCompleted,
   stopTimer,
   startTimer,
-  upsertTodaysEntry
+  upsertTodaysEntry,
+  archiveActivity
 }
 
 export default connect(mapStateToProps, actionToProps)(ActivityDetailScreen);
