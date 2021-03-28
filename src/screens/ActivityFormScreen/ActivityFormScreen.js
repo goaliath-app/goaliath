@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { View, StyleSheet, Alert } from 'react-native';
-import { Title, Appbar, Text, TextInput, Button, List, Checkbox } from 'react-native-paper';
+import { Subheading, Appbar, Text, TextInput, Button, List, Checkbox } from 'react-native-paper';
 import { Header, TimeInput } from '../../components';
 import { createActivity, updateActivity, selectActivityById } from '../../redux'
 
@@ -80,7 +80,7 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
   return(
     <View>
       <Header title={activity?.name?activity.name:'New Activity'} left='back' navigation={navigation} buttons={headerButtons}/>
-      <TextInput label="Activity Name" value={name} onChangeText={name => setName(name)} />
+      <TextInput style={styles.textInput} mode= 'outlined' label="Activity's name" value={name} onChangeText={name => setName(name)} />
       <ActivityTypeSelector repeatMode={repeatMode} setRepeatMode={setRepeatMode}/>
       {repeatMode=='select'?
         <WeekdaySelector weekDays={weekDays} setWeekDays={setWeekDays}/>
@@ -90,16 +90,26 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
       : <></> }
       {repeatMode=='weekly'?
         <>
-        <Title>Goal</Title>
+        <Subheading style={styles.subheading}>Goal</Subheading>
         <WeeklyGoalSelector goal={goal} setGoal={setGoal} />
         </>
       : <></> }
-      {goal=='time'?
-      <TimeInput 
-        hours={hours} setHours={setHours} 
-        minutes={minutes} setMinutes={setMinutes} 
-        seconds={seconds} setSeconds={setSeconds}
-      />
+      {goal=='time' && repeatMode == 'weekly'?
+      <>
+        <Subheading style={styles.subheading}>How much time?</Subheading>
+        <TimeInput
+          hours={hours} setHours={setHours} 
+          minutes={minutes} setMinutes={setMinutes} 
+          seconds={seconds} setSeconds={setSeconds}
+        />
+      </>
+      : <></> }
+      {goal=='time' && repeatMode != 'weekly'?
+        <TimeInput
+          hours={hours} setHours={setHours} 
+          minutes={minutes} setMinutes={setMinutes} 
+          seconds={seconds} setSeconds={setSeconds}
+        />
       : <></> }
       {goal=='check' && repeatMode == 'weekly'?
         <NumberOfWeeklyDaysInput timesPerWeek={timesPerWeek} setTimesPerWeek={setTimesPerWeek} />
@@ -111,10 +121,10 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
 const ButtonSwitchBar = ({ options, state, setState }) => (
   <View style={styles.buttonSwitchBarView}>
     {options.map((option) => (
-      <Button 
+      <Button style={{flex:1, borderRadius: 0}}
         mode={state==option.value? 'contained':'text'} 
-        style={styles.repeatOptionsButton}
-        onPress={()=>setState(option.value)}>
+        onPress={()=>setState(option.value)}
+        labelStyle={{ fontSize: 11}}>
           {option.label}
       </Button>
     ))}
@@ -122,14 +132,14 @@ const ButtonSwitchBar = ({ options, state, setState }) => (
 )
 
 const NumberOfWeeklyDaysInput = ({ timesPerWeek, setTimesPerWeek }) => (
-  <View style={{flexDirection: 'row'}}>
-    <Text style={{flex: 2}}>How many days per week?</Text>
-    <TextInput value={timesPerWeek} onChangeText={setTimesPerWeek} style={{flex: 1}} keyboardType='numeric' />
+  <View>
+    <Subheading style={styles.subheading}>How many days per week?</Subheading>
+    <TextInput style={styles.numberInput} value={timesPerWeek} onChangeText={setTimesPerWeek}  keyboardType='numeric' />
   </View>
 )
 
 const WeeklyGoalSelector = ( {goal, setGoal }) => (
-  <ButtonSwitchBar 
+  <ButtonSwitchBar
     options={[
       {label: 'complete', value: 'check'},
       {label: 'dedicate time', value: 'time'}
@@ -139,7 +149,7 @@ const WeeklyGoalSelector = ( {goal, setGoal }) => (
 
 const ActivityTypeSelector = ({ repeatMode, setRepeatMode }) => (
   <>
-    <Title>Repeat</Title>
+    <Subheading style={styles.subheading}>Repeat</Subheading>
     <ButtonSwitchBar
       options={[
         {label: 'daily', value: 'daily'},
@@ -158,14 +168,14 @@ const PeriodDescription = ({ repeatMode }) => {
   switch(repeatMode) {
     case 'daily':
       out = (
-        <Text>You will do the activity every day.</Text>
+        <Text style={styles.infoText}>You will do the activity every day.</Text>
       );
       break;
     case 'select':
-      out = <Text>You will do the activity these days.</Text>;
+      out = <Text style={styles.infoText}>You will do the activity these days.</Text>;
       break;
     case 'weekly':
-      out = <Text>You can do the activity any day of the week.</Text>
+      out = <Text style={styles.infoText}>You can do the activity any day of the week.</Text>
       break;
   }
   
@@ -213,7 +223,7 @@ const WeekdaySelectorItem = ({ label, day, weekDays, setWeekDays }) => (
         setWeekDays(Object.assign({}, weekDays, {[day]: !weekDays[day]}))
       }}
     />
-    <Text>{label}</Text>
+    <Text style={{marginLeft: 10}}>{label}</Text>
   </View>
 )
 
@@ -233,15 +243,32 @@ const styles = StyleSheet.create({
   },
   buttonSwitchBarView: {
     flexDirection: 'row',
-  },
-  buttonSwitchBarItem: {
-    flex:1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 10,
   },
   weekdaySelectorItem: {
     flex: 1,
   },
-  repeatOptionsButton: {
-    flex: 1,
+  infoText: {
+    textAlign: 'center',
+    paddingBottom: 10,
+  },
+  textInput:{
+    padding: 15,
+    fontSize: 16,
+    height: 55,
+  },
+  numberInput:{
+    marginLeft: 20,
+    marginRight: 20, 
+    fontSize: 40,
+    padding: 5,
+    textAlign: 'center'
+  },
+  subheading:{
+    marginLeft: 16,
+    paddingBottom: 10
   }
 })
 
