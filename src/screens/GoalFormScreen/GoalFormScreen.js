@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { View, Alert } from 'react-native'
-import { Appbar, TextInput } from 'react-native-paper';
+import { View, Alert, StyleSheet } from 'react-native'
+import { Appbar, TextInput, Subheading } from 'react-native-paper';
 import { Header } from '../../components'
 import { createGoal, updateGoal, selectGoalById } from '../../redux';
 
@@ -40,11 +40,20 @@ const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
   return(
     <View>
       <Header title='New Goal' left='back' navigation={navigation} buttons={headerButtons} />
-      <TextInput label='Goal Name' value={name} onChangeText={setName} />
+      <Subheading style={styles.subheading}>What do you want to achieve?</Subheading>
+      <TextInput 
+        style={styles.textInput}
+        mode='outlined' 
+        label="Goal Name" 
+        value={name} 
+        onChangeText={setName} />
+      <Subheading style={styles.subheading}>Why do you want to achieve this goal?</Subheading>
       <TextInput
-        label='Goal Motivation'
+        style={styles.textInput}
+        mode='outlined'
+        label="Goal Motivation"
         multiline={true}
-        numberOfLines={7}
+        numberOfLines={10}
         value={motivation}
         onChangeText={setMotivation}
       />
@@ -61,5 +70,20 @@ const actionsToProps = {
   createGoal,
   updateGoal
 }
+
+const styles = StyleSheet.create ({
+  textInput: {
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 15,
+    fontSize: 16
+  },
+  subheading: {
+    marginLeft: 16,
+    marginTop: 16
+  }
+})
+
+
 
 export default connect(mapStateToProps, actionsToProps)(GoalFormScreen);
