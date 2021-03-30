@@ -47,7 +47,7 @@ const activitySlice = createSlice({
 export const { createActivity, updateActivity, toggleActivity, archiveActivity } = activitySlice.actions
 
 export const { 
-  selectAll: selectAllActivities, selectById: selectActivityById 
+  selectAll: selectAllActivities, selectById: selectActivityById, selectEntities: selectActivityEntities,
 } = activityAdapter.getSelectors(state => state.activities)
 
 export default activitySlice.reducer

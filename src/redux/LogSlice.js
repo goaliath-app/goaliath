@@ -124,7 +124,7 @@ const logSlice = createSlice({
 export const { createLog, addEntry, upsertTodaysEntry, deleteOneTodaysEntry, toggleCompleted, startTimer, stopTimer, sortTodayLog } = logSlice.actions
 
 export const { 
-  selectAll: selectAllLogs, selectById: selectLogById
+  selectAll: selectAllLogs, selectById: selectLogById, selectEntities: selectLogEntities
 } = logAdapter.getSelectors(state => state.logs)
 
 export function selectTodayEntries(state){
