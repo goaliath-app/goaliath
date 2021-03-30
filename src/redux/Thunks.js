@@ -3,7 +3,7 @@ import { selectAllActivities,  createActivity } from './ActivitySlice'
 import { selectGoalById, createGoal } from './GoalsSlice'
 import { 
   deleteOneTodaysEntry, upsertTodaysEntry, selectTodayEntryByActivityId, selectLogById, 
-  createLog, addEntry
+  createLog, addEntry, sortTodayLog
 } from './LogSlice'
 
 
@@ -63,6 +63,7 @@ export function updateLogs(){
         }
       }
     }
+    dispatch(sortTodayLog())
   }
 }
 

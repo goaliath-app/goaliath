@@ -1,6 +1,17 @@
 import { createSlice, createEntityAdapter, current } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import { isActivityRunning } from '../util'
+import arrayMove from 'array-move'
+
+function compareEntries(a, b){
+  if( a.completed == b.completed ){
+    return 0
+  }
+  if( a.completed ){
+    return 1
+  }
+  return -1
+}
 
 const logAdapter = createEntityAdapter();
 const entryAdapter = createEntityAdapter();
@@ -58,6 +69,7 @@ const logSlice = createSlice({
       const today = DateTime.now().startOf('day').toISO()
       const todaysLog = state.entities[today].entries
       entryAdapter.upsertOne(todaysLog, entry)
+      //todaysLog.ids.sort((idA, idB) => {return compareEntries(todaysLog.entities[idA], todaysLog.entities[idB])})
     },
     deleteOneTodaysEntry(state, action){
       /* action.payload: id of the entry to delete */
@@ -69,8 +81,18 @@ const logSlice = createSlice({
       /* action.payload = {date: DateTime, id: logID}*/
       const { date, id } = action.payload
       const log = state.entities[date.startOf('day').toISO()].entries
+      let firstCompletedIndex = 0
+      for(let i = 0; i < log.ids.length; i++){
+        if(log.entities[log.ids[i]].completed){
+          firstCompletedIndex = i
+          break
+        }
+      }
       const entry = log.entities[id]
-      entryAdapter.upsertOne(log, {...entry, completed: !entry.completed})
+      const newCompleted = !entry.completed
+      entryAdapter.upsertOne(log, {...entry, completed: newCompleted})
+      const newPosition = newCompleted? -1 : firstCompletedIndex
+      log.ids = arrayMove(log.ids, log.ids.indexOf(id), newPosition)
     },
     startTimer(state, action){
       const id = action.payload
@@ -90,20 +112,27 @@ const logSlice = createSlice({
       const todaysLog = state.entities[today]
       const activityEntry = todaysLog.entries.entities[id]
       stopActivity(activityEntry)
+    },
+    sortTodayLog(state, action){
+      const today = DateTime.now().startOf('day').toISO()
+      const todaysLog = state.entities[today].entries
+      todaysLog.ids.sort((idA, idB) => {return compareEntries(todaysLog.entities[idA], todaysLog.entities[idB])})
     }
   }
 })
 
-export const { createLog, addEntry, upsertTodaysEntry, deleteOneTodaysEntry, toggleCompleted, startTimer, stopTimer } = logSlice.actions
+export const { createLog, addEntry, upsertTodaysEntry, deleteOneTodaysEntry, toggleCompleted, startTimer, stopTimer, sortTodayLog } = logSlice.actions
 
 export const { 
   selectAll: selectAllLogs, selectById: selectLogById
 } = logAdapter.getSelectors(state => state.logs)
 
 export function selectTodayEntries(state){
-  const entriesEntitiesObject = state.logs.entities[DateTime.now().startOf('day').toISO()]?.entries.entities
-  if(entriesEntitiesObject){
-    return Object.values(entriesEntitiesObject)
+  const entrySelectors = entryAdapter.getSelectors()
+  const todayLog = state.logs.entities[DateTime.now().startOf('day').toISO()]
+  if(todayLog){
+    const todayEntries = entrySelectors.selectAll(todayLog.entries)
+    return todayEntries
   }else{
     return []
   }

@@ -21,7 +21,7 @@ const WeekScreen = ({ todaysActivities, navigation, updateLogs }) => {
   )
 
   return(
-    <View>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
       <Header title='This Week' left='hamburger' navigation={navigation}/>
       <ActivityList data={todaysActivities} />
     </View>

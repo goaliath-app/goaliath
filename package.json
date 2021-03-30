@@ -14,6 +14,7 @@
     "@react-navigation/native": "^5.9.3",
     "@react-navigation/stack": "^5.14.3",
     "@reduxjs/toolkit": "^1.5.0",
+    "array-move": "^3.0.1",
     "expo": "~40.0.0",
     "expo-status-bar": "~1.0.3",
     "luxon": "^1.26.0",
@@ -26,6 +27,7 @@
     "react-native-reanimated": "~1.13.0",
     "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "~2.15.2",
+    "react-native-svg": "^12.1.0",
     "react-native-web": "~0.13.12",
     "react-redux": "^7.2.2",
     "redux-persist": "^6.0.0"

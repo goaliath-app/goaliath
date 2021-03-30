@@ -63,7 +63,7 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
         }
         
         const newActivity = { 
-          name, repeatMode, goal, timeGoal, 
+          name, repeatMode, goal, timeGoal: goal=='time'?timeGoal:0, 
           weekDays, timesPerWeek: Number.parseInt(timesPerWeek), goalId: goalId }
         if(validate(newActivity)){
           if(activity){

@@ -1,11 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Image } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Checkbox, IconButton, Text } from 'react-native-paper'
+import { List, Checkbox, IconButton, Text, ProgressBar } from 'react-native-paper'
 import { DateTime } from 'luxon'
 import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue } from '../util'
 import { toggleCompleted, startTimer, stopTimer } from '../redux'
+import PlayFilledIcon from '../../assets/play-filled'
+import PlayOutlinedIcon from '../../assets/play-outlined'
+import PauseFilledIcon from '../../assets/pause-filled'
+import PauseOutlinedIcon from '../../assets/pause-outlined'
 
 const ActivityListItem = ({ 
   timeGoal,    // number of seconds of the time goal for this activity or null if it is not a timed activity
@@ -22,14 +26,23 @@ const ActivityListItem = ({
   startTimer,
   stopTimer
 }) => {
+  function update(){
+    const currentTime = getTodayTime(intervals)
+    setTodayTime(currentTime)
+    if(timeGoal && currentTime.as('seconds') >= timeGoal && !completed){
+      toggleCompleted({date: DateTime.now(), id: id})
+    }
+  }
+
   React.useEffect(() => {
+    update()
     if (isActivityRunning(intervals)) {
       const intervalId = setInterval(() => {
-        setTodayTime(getTodayTime(intervals))    
+        update()
       }, 1000)
       return () => clearInterval(intervalId)
     }
-  }, [intervals])
+  }, [intervals, completed, timeGoal])
 
   function onPressPlay(){
     startTimer(id)
@@ -45,42 +58,49 @@ const ActivityListItem = ({
 
   let leftSlot, rightSlot, description;
 
-  if(timeGoal==undefined && completed){
+  if(!timeGoal && completed){
     leftSlot = (
-      <Checkbox 
-      status='checked'
-      onPress={() => {
-        toggleCompleted({date: DateTime.now(), id: id})
-      }}/>
+      <View style={styles.checkboxView}>
+        <Checkbox 
+          color='black'
+          status='checked'
+          onPress={() => {
+            toggleCompleted({date: DateTime.now(), id: id})
+        }}/>
+      </View>
     )
-  }else if(timeGoal==undefined && !completed){
+  }else if(!timeGoal && !completed){
     leftSlot = (
-      <Checkbox 
-      status='unchecked' 
-      onPress={() => {
-        toggleCompleted({date: DateTime.now(), id: id})
-      }}  />
+      <View style={styles.checkboxView}>
+        <Checkbox 
+          color='black'
+          uncheckedColor='black'
+          status='unchecked' 
+          onPress={() => {
+            toggleCompleted({date: DateTime.now(), id: id})
+        }}  />
+      </View>
     )
-  }else if(timeGoal!==undefined && current && !completed){
-    leftSlot = <IconButton icon={require('../../assets/pause-outlined.png')} onPress={onPressPause} />
-  }else if(timeGoal!==undefined && current && completed){
-    leftSlot = <IconButton icon={require('../../assets/pause.png')} onPress={onPressPause} />
-  }else if(timeGoal!==undefined && completed){
+  }else if(timeGoal && current && !completed){
+    leftSlot = <IconButton icon={() => <PauseOutlinedIcon />} onPress={onPressPause} />
+  }else if(timeGoal && current && completed){
+    leftSlot = <IconButton icon={() => <PauseFilledIcon />} onPress={onPressPause} />
+  }else if(timeGoal && completed){
     leftSlot = (
       <IconButton 
-        icon={require('../../assets/play.png')} 
+        icon={() => <PlayFilledIcon />} 
         onPress={onPressPlay}  
       />)
   }else{
-    leftSlot = <IconButton icon={require('../../assets/play-outlined.png')} onPress={onPressPlay} />
+    leftSlot = <IconButton icon={() => <PlayOutlinedIcon />} onPress={onPressPlay} />
   }
 
-  if((repeatMode == 'daily' || repeatMode == 'select') && timeGoal!==undefined){
+  if((repeatMode == 'daily' || repeatMode == 'select') && timeGoal){
     const expression = getPreferedExpression(timeGoal)
     description = `Goal: ${expression.value} ${expression.unit}`
-  }else if(repeatMode=='weekly' && timeGoal==undefined){
+  }else if(repeatMode=='weekly' && !timeGoal){
     description = `Done ${weeklyTimes} of ${timesPerWeek} days`
-  }else if(repeatMode=='weekly' && timeGoal!==undefined){
+  }else if(repeatMode=='weekly' && timeGoal){
     const expression = getPreferedExpression(timeGoal)
     description = `Done ${roundValue(weeklyTime.as(expression.unit))} of ${expression.value} ${expression.unit}`
   }
@@ -91,39 +111,37 @@ const ActivityListItem = ({
 
   const navigation = useNavigation();
 
+  const progress = Math.min(todayTime.as('seconds') / timeGoal, 1)
+
   return (
     archived? <></> : 
-    <List.Item
-      left={() => leftSlot}
-      title={name}
-      description={description}
-      right={() => rightSlot}
-      onPress={() => navigation.navigate('ActivityDetail', {activityId: id, showLog: true})}
-    />
+    <View>
+      <List.Item
+        style={{ backgroundColor: current? '#E6FBF9':'white' }}
+        left={() => leftSlot}
+        title={name}
+        description={description}
+        right={() => rightSlot}
+        onPress={() => navigation.navigate('ActivityDetail', {activityId: id, showLog: true})}
+      />
+      {current?
+        <ProgressBar progress={progress} />  
+      : <></> }
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  checkboxView: {
+    padding: 6
+  },
   iconButton: {
     margin: 0,
   },
   timeLabel: {
-    margin: 'auto',
-    marginRight: 12
-  },
-  playIcon: {
-    height: 20,
-    width: 18,
-    margin: 'auto',
-    marginRight: 10,
-    marginLeft: 10,
-  },
-  pauseIcon: {
-    height: 17.5,
-    width: 17.5,
-    margin: 'auto',
-    marginRight: 10,
-    marginLeft: 10,
+    alignSelf: 'center',
+    marginRight: 12,
+    fontSize: 15,
   },
 })
 
