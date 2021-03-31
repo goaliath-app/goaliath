@@ -6,11 +6,13 @@ import { persistReducer } from 'redux-persist'
 import goalsReducer from './GoalsSlice'
 import activitySlice from './ActivitySlice'
 import logSlice from './LogSlice'
+import settingsSlice from './SettingsSlice'
 
 const rootReducer = combineReducers({
   goals: goalsReducer,
   activities: activitySlice,
-  logs: logSlice
+  logs: logSlice,
+  settings: settingsSlice,
 })
 
 const persistConfig = {

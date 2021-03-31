@@ -20,3 +20,5 @@ export {
 export { 
     generateDummyData, updateLogs
 } from './Thunks'
+
+export { setDayStartHour } from './SettingsSlice'
