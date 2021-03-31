@@ -8,10 +8,10 @@ const renderItem = ({ item }) => (
     />
 )
 
-const ActivityList = ({ data }) => (
+const ActivityList = ({ data, disabled=false }) => (
       <FlatList
         data={data}
-        renderItem={renderItem}
+        renderItem={({ item }) => renderItem({item: {...item, disabled}})}
       />
 )
 

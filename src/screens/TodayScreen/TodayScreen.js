@@ -2,9 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
+import { DateTime } from 'luxon'
 import { ActivityList } from '../../components'
 import { Header } from '../../components';
 import { selectTodayEntries, selectActivityById, updateLogs } from '../../redux'
+import { extractActivityLists } from '../../util'
 
 
 const data = [
@@ -32,18 +34,8 @@ const TodayScreen = ({ todaysActivities, navigation, updateLogs }) => {
 }
 
 const mapStateToProps = (state) => {
-  let todaysActivities = []
-  const logs = selectTodayEntries(state)
-  for(let log of logs){
-    const activity = selectActivityById(state, log.id)
-    if(!(activity.repeatMode == 'weekly')){
-      todaysActivities.push({
-        ...activity,
-        ...log,
-      })
-    }
-  }
-  return { todaysActivities }
+  const { dayActivities } = extractActivityLists(state, DateTime.now())
+  return { todaysActivities: dayActivities }
 }
 
 const actionsToProps = {

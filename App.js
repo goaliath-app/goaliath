@@ -10,7 +10,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
 import { 
   TodayScreen, WeekScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, ActivityFormScreen,
-  GoalFormScreen, CalendarScreen, SettingsScreen,
+  GoalFormScreen, CalendarScreen, SettingsScreen, DayInCalendarScreen
 } from './src/screens'
 import { store, generateDummyData, updateLogs } from './src/redux'
 
@@ -48,6 +48,7 @@ const GoalsStack = () => (
 const CalendarStack = () => (
   <Stack.Navigator initialRouteName='Calendar' headerMode='none' >
     <Stack.Screen name='Calendar' component={CalendarScreen} />
+    <Stack.Screen name='DayInCalendar' component={DayInCalendarScreen} />
   </Stack.Navigator>
 )
 

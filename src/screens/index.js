@@ -7,3 +7,4 @@ export { default as ActivityFormScreen } from './ActivityFormScreen/ActivityForm
 export { default as GoalFormScreen } from './GoalFormScreen/GoalFormScreen'
 export { default as CalendarScreen } from './CalendarScreen/CalendarScreen'
 export { default as SettingsScreen } from './SettingsScreen/SettingsScreen'
+export { default as DayInCalendarScreen } from './DayInCalendarScreen/DayInCalendarScreen'

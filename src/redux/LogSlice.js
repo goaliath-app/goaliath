@@ -127,6 +127,17 @@ export const {
   selectAll: selectAllLogs, selectById: selectLogById, selectEntities: selectLogEntities
 } = logAdapter.getSelectors(state => state.logs)
 
+export function selectEntriesByDay(state, day){
+  const entrySelectors = entryAdapter.getSelectors()
+  const thatDayLog = state.logs.entities[day.startOf('day').toISO()]
+  if(thatDayLog){
+    const todayEntries = entrySelectors.selectAll(thatDayLog.entries)
+    return todayEntries
+  }else{
+    return []
+  }
+}
+
 export function selectTodayEntries(state){
   const entrySelectors = entryAdapter.getSelectors()
   const todayLog = state.logs.entities[DateTime.now().startOf('day').toISO()]
@@ -153,6 +164,19 @@ export function selectThisWeekEntriesByActivityId(state, activityId){
   let today = DateTime.now()
   for(let i = 0; i < 7; i++){
     const weekday = getStartOfWeekDay(today, i)
+    const entry = selectEntryByActivityIdAndDate(state, activityId, weekday)
+    if(entry){
+      entries[i] = entry
+    }
+  }
+  return entries
+}
+
+export function selectAllWeekEntriesByActivityId(state, activityId, date){
+  // date can be any moment of the week
+  let entries = {}
+  for(let i = 0; i < 7; i++){
+    const weekday = getStartOfWeekDay(date, i)
     const entry = selectEntryByActivityIdAndDate(state, activityId, weekday)
     if(entry){
       entries[i] = entry

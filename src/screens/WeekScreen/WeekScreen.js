@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
-import Duration from 'luxon/src/duration.js'
+import { DateTime } from 'luxon'
 import { ActivityList } from '../../components'
 import { Header } from '../../components';
-import { selectTodayEntries, selectActivityById, updateLogs, selectThisWeekEntriesByActivityId } from '../../redux'
-import { getTodayTime } from '../../util'
+import { updateLogs } from '../../redux'
+import { extractActivityLists } from '../../util'
 
 const data = [
     {title: 'Genki', completed: true, current: true, period: 'weekly', todayTime: 0, weeklyTimesObjective: 2, weeklyTimes: 0},
@@ -29,28 +29,8 @@ const WeekScreen = ({ todaysActivities, navigation, updateLogs }) => {
 }
 
 const mapStateToProps = (state) => {
-  let todaysActivities = []
-  const logs = selectTodayEntries(state)
-  for(let log of logs){
-    const activity = selectActivityById(state, log.id)
-    if(activity.repeatMode == 'weekly'){
-      // we have to inyect weeklyTime and weeklyTimes
-      const weekLogs = selectThisWeekEntriesByActivityId(state, activity.id)
-      let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
-      let weeklyTimes = 0
-      for(let day in weekLogs){
-        weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[day].intervals))
-        weeklyTimes += weekLogs[day].completed?1:0
-      }
-      todaysActivities.push({
-        ...activity,
-        ...log,
-        weeklyTime,
-        weeklyTimes
-      })
-    }
-  }
-  return { todaysActivities }
+  const { weekActivities } = extractActivityLists(state, DateTime.now())
+  return { todaysActivities: weekActivities }
 }
 
 const actionsToProps = {

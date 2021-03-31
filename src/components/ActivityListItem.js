@@ -24,7 +24,8 @@ const ActivityListItem = ({
   id,
   toggleCompleted,
   startTimer,
-  stopTimer
+  stopTimer,
+  disabled
 }) => {
   function update(){
     const currentTime = getTodayTime(intervals)
@@ -45,10 +46,12 @@ const ActivityListItem = ({
   }, [intervals, completed, timeGoal])
 
   function onPressPlay(){
+    if(disabled) return
     startTimer(id)
   }
 
   function onPressPause(){
+    if(disabled) return
     stopTimer(id)
   }
 
@@ -65,6 +68,7 @@ const ActivityListItem = ({
           color='black'
           status='checked'
           onPress={() => {
+            if(disabled) return
             toggleCompleted({date: DateTime.now(), id: id})
         }}/>
       </View>
@@ -77,6 +81,7 @@ const ActivityListItem = ({
           uncheckedColor='black'
           status='unchecked' 
           onPress={() => {
+            if(disabled) return
             toggleCompleted({date: DateTime.now(), id: id})
         }}  />
       </View>
@@ -122,7 +127,10 @@ const ActivityListItem = ({
         title={name}
         description={description}
         right={() => rightSlot}
-        onPress={() => navigation.navigate('ActivityDetail', {activityId: id, showLog: true})}
+        onPress={() => {
+          if(disabled) return
+          navigation.navigate('ActivityDetail', {activityId: id, showLog: true})
+        }}
       />
       {current?
         <ProgressBar progress={progress} />  
