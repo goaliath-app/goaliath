@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { DateTime } from 'luxon'
 
 const initialState = {
-    dayStartHour: 4 
+    dayStartHour: DateTime.fromObject({hour:4, minute:0}).toISO() 
 }
 
 const settingsSlice = createSlice({
