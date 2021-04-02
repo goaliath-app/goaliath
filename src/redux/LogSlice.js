@@ -62,14 +62,11 @@ const logSlice = createSlice({
       const selectedDay = state.entities[date.startOf('day').toISO()]
       entryAdapter.addOne(selectedDay.entries, entry)
     },
-    upsertTodaysEntry(state, action){
-      /* upsert a single entry to todays daily log
-      action.payload: a entry object to be upserted*/
-      const entry = action.payload
-      const today = DateTime.now().startOf('day').toISO()
-      const todaysLog = state.entities[today].entries
-      entryAdapter.upsertOne(todaysLog, entry)
-      //todaysLog.ids.sort((idA, idB) => {return compareEntries(todaysLog.entities[idA], todaysLog.entities[idB])})
+    upsertEntry(state, action){
+      const { date, entry } = action.payload
+      const day = date.startOf('day').toISO()
+      const dayLog = state.entities[day].entries
+      entryAdapter.upsertOne(dayLog, entry)
     },
     deleteOneTodaysEntry(state, action){
       /* action.payload: id of the entry to delete */
@@ -121,7 +118,10 @@ const logSlice = createSlice({
   }
 })
 
-export const { createLog, addEntry, upsertTodaysEntry, deleteOneTodaysEntry, toggleCompleted, startTimer, stopTimer, sortTodayLog } = logSlice.actions
+export const { 
+  createLog, addEntry, deleteOneTodaysEntry, toggleCompleted, startTimer, 
+  stopTimer, sortTodayLog, upsertEntry, 
+} = logSlice.actions
 
 export const { 
   selectAll: selectAllLogs, selectById: selectLogById, selectEntities: selectLogEntities
@@ -154,7 +154,7 @@ export function selectTodayEntryByActivityId(state, activityId){
   return todayLog?.entries.entities[activityId]
 }
 
-function selectEntryByActivityIdAndDate(state, activityId, date){
+export function selectEntryByActivityIdAndDate(state, activityId, date){
   const thatDaysLog = state.logs.entities[date.startOf('day').toISO()]
   return thatDaysLog?.entries.entities[activityId]
 }

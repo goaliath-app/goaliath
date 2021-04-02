@@ -2,10 +2,10 @@ import React from 'react';
 import { View } from 'react-native'
 import { Button, List, Checkbox, Divider } from 'react-native-paper';
 import { TimeInput } from '../../components';
-import { getTodayTime, isActivityRunning } from '../../util'
+import { getTodayTime, isActivityRunning, isToday } from '../../util'
 import { DateTime } from 'luxon';
 
-const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertTodaysEntry }) => {
+const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntry, date }) => {
     React.useEffect(() => {
       if (isActivityRunning(entry.intervals)) {
         const intervalId = setInterval(() => {
@@ -26,11 +26,14 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertToda
     const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
     
     function updateTotalTime(seconds){
-      const newInterval = {
+      const newInterval = dateIsToday?{
         startDate: DateTime.now().minus({seconds}).toISO(), 
         endDate: DateTime.now().toISO()
+      }:{
+        startDate: date.startOf('day').toISO(),
+        endDate: date.plus({seconds}).toISO()
       }
-      upsertTodaysEntry({...entry, intervals: [newInterval]})
+      upsertEntry({date: date, entry: {...entry, intervals: [newInterval]}})
     }
   
     function setHours(value){
@@ -46,6 +49,8 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertToda
       updateTotalTime(todayTime.as('seconds'))
     }
   
+    const dateIsToday = isToday(date)
+
     let seconds, minutes, hours
     seconds = String(todayTime.seconds).padStart(2, '0')
     minutes = String(todayTime.minutes).padStart(2, '0')
@@ -55,13 +60,15 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertToda
       <View>
         <List.Item
           title='Today'
-          right={() => <Checkbox status={entry.completed? 'checked':'unchecked'} onPress={() => {toggleCompleted({date: DateTime.now(), id: entry.id})} }/>}
+          right={() => <Checkbox status={entry.completed? 'checked':'unchecked'} onPress={() => {toggleCompleted({date: date, id: entry.id})} }/>}
         />
         <TimeInput seconds={seconds} minutes={minutes} hours={hours} setHours={setHours} setMinutes={setMinutes} setSeconds={setSeconds} />
-        {isActivityRunning(entry.intervals)?
-          <Button onPress={onPressPause}>Stop Timer</Button>
-        :
-          <Button onPress={onPressPlay}>Start Timer</Button>
+        {dateIsToday?
+          (isActivityRunning(entry.intervals)?
+            <Button onPress={onPressPause}>Stop Timer</Button>
+          :
+            <Button onPress={onPressPlay}>Start Timer</Button>)
+        : null
         }
         <Divider />
       </View>

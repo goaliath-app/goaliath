@@ -49,6 +49,7 @@ const CalendarStack = () => (
   <Stack.Navigator initialRouteName='Calendar' headerMode='none' >
     <Stack.Screen name='Calendar' component={CalendarScreen} />
     <Stack.Screen name='DayInCalendar' component={DayInCalendarScreen} />
+    <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
   </Stack.Navigator>
 )
 

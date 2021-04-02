@@ -59,7 +59,7 @@ export function extractActivityLists(state, day){
 
   for(let log of logs){
     const activity = selectActivityById(state, log.id)
-    const fullLog = {...activity, ...log}
+    const fullLog = {...activity, ...log, date: day}
 
     if(!(fullLog.repeatMode == 'weekly')){
       dayActivities.push(fullLog)
@@ -79,4 +79,8 @@ export function extractActivityLists(state, day){
   }
 
   return { dayActivities, weekActivities }
+}
+
+export function isToday(date){
+  return date?.startOf('day').toISO()==DateTime.now().startOf('day').toISO()
 }

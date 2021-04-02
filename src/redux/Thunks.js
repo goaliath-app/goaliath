@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { selectAllActivities,  createActivity } from './ActivitySlice'
 import { selectGoalById, createGoal } from './GoalsSlice'
 import { 
-  deleteOneTodaysEntry, upsertTodaysEntry, selectTodayEntryByActivityId, selectLogById, 
+  deleteOneTodaysEntry, upsertEntry, selectTodayEntryByActivityId, selectLogById, 
   createLog, addEntry, sortTodayLog
 } from './LogSlice'
 
@@ -50,14 +50,14 @@ export function updateLogs(){
 
       if(dueToday(activity, goal)){
         if(oldLog){
-          dispatch(upsertTodaysEntry({ ...oldLog, archived: false }))
+          dispatch(upsertEntry({date: today, entry: { ...oldLog, archived: false }}))
         }else{
           const entry = newEntry(activity)
           dispatch(addEntry({date: today, entry}))
         }
       }else{
         if(oldLog?.intervals || oldLog?.completed){
-          dispatch(upsertTodaysEntry({ ...oldLog, archived: true }))
+          dispatch(upsertEntry({date: today, entry: { ...oldLog, archived: true }}))
         }else if(oldLog){
           dispatch(deleteOneTodaysEntry(oldLog.id))
         }

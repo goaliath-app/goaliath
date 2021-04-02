@@ -25,7 +25,8 @@ const ActivityListItem = ({
   toggleCompleted,
   startTimer,
   stopTimer,
-  disabled
+  disabled,
+  date
 }) => {
   function update(){
     const currentTime = getTodayTime(intervals)
@@ -128,8 +129,7 @@ const ActivityListItem = ({
         description={description}
         right={() => rightSlot}
         onPress={() => {
-          if(disabled) return
-          navigation.navigate('ActivityDetail', {activityId: id, showLog: true})
+          navigation.navigate('ActivityDetail', {activityId: id, date: date})
         }}
       />
       {current?
