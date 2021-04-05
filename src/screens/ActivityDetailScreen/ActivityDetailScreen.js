@@ -25,8 +25,8 @@ const ActivityDetailScreen = ({
   archiveActivity,     // function to call when the activity is archived (deleted)
   date,
 }) => {
-  const dateIsToday = isToday(date)
-  const dateTitle = date.toFormat('d MMMM yyyy')
+  const dateIsToday = date?isToday(date):false
+  const dateTitle = date?date.toFormat('d MMMM yyyy'):null
 
   const [menuVisible, setMenuVisible] = React.useState(false);  // sets the visibility of the threeDotsMenu
   const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
@@ -52,10 +52,12 @@ const ActivityDetailScreen = ({
   )
 
   const headerButtons =  (
-    dateIsToday?
+    date && !dateIsToday?
+    null
+    :
     <ThreeDotsMenu 
       menuItems={menuItems} openMenu= {openMenu} closeMenu= {closeMenu} visible={menuVisible} 
-    />:null
+    />
   )
 
 
@@ -63,9 +65,7 @@ const ActivityDetailScreen = ({
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <View>
         <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
-        {dateIsToday? 
-          null
-        :
+        {date && !dateIsToday? 
         <>
           <List.Item 
             title={<Title>{dateTitle}</Title>} 
@@ -79,6 +79,7 @@ const ActivityDetailScreen = ({
           />
           <Divider />
         </>
+        : null
         }
         <BasicActivityInfo activity={activity} goal={goal} />
   
