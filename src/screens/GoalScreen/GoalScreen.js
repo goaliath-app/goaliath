@@ -5,13 +5,14 @@ import { List, Switch, Appbar, Menu, Text, Card, Paragraph, Portal, Dialog, Butt
 import { Header, ThreeDotsMenu, DeleteDialog } from '../../components';
 import { useNavigation } from '@react-navigation/native';
 import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal } from '../../redux'
+import { frequency } from '../../util'
 
 const data = [
   {name: 'Study Anki', repeatMode: 'daily', active: true},
   {name: 'Watch Shirokuma Cafe', repeatMode: 'weekly', active: false},
 ]
 
-const Activity = ({ name, active, id, toggleActivity }) => {
+const Activity = ({ name, active, id, toggleActivity, activity }) => {
   const navigation = useNavigation();
 
   return (
@@ -32,6 +33,7 @@ const Activity = ({ name, active, id, toggleActivity }) => {
           />
         </Pressable>
       )}
+      description={frequency(activity)} 
     />
         
   );
@@ -63,7 +65,8 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
       name={item.name}
       active={item.active}
       id={item.id}
-      toggleActivity={toggleActivity} />
+      toggleActivity={toggleActivity}
+      activity={item} />
   )
   //const { goalId, goalName, goalMotivation } = route.params
   const headerButtons = (
