@@ -2,10 +2,10 @@ import React from 'react';
 import { View } from 'react-native'
 import { Button, List, Checkbox, Divider } from 'react-native-paper';
 import { TimeInput } from '../../components';
-import { getTodayTime, isActivityRunning, isToday } from '../../util'
+import { getTodayTime, isActivityRunning, isToday, startOfDay } from '../../util'
 import { DateTime } from 'luxon';
 
-const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntry, date }) => {
+const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntry, date, dayStartHour }) => {
     React.useEffect(() => {
       if (isActivityRunning(entry.intervals)) {
         const intervalId = setInterval(() => {
@@ -30,7 +30,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
         startDate: DateTime.now().minus({seconds}).toISO(), 
         endDate: DateTime.now().toISO()
       }:{
-        startDate: date.startOf('day').toISO(),
+        startDate: startOfDay(date, dayStartHour).toISO(),
         endDate: date.plus({seconds}).toISO()
       }
       upsertEntry({date: date, entry: {...entry, intervals: [newInterval]}})
@@ -58,7 +58,8 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
       updateTotalTime(todayTime.as('seconds'))
     }
   
-    const dateIsToday = isToday(date)
+    const dateIsToday = isToday(date, dayStartHour)
+    console.log(`dateistoday? ${dateIsToday}`)
 
     let seconds, minutes, hours
     seconds = String(todayTime.seconds).padStart(2, '0')

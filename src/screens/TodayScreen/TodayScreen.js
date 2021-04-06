@@ -1,12 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useStore } from 'react-redux';
 import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
-import { DateTime } from 'luxon'
 import { ActivityList } from '../../components'
 import { Header } from '../../components';
-import { selectTodayEntries, selectActivityById, updateLogs } from '../../redux'
-import { extractActivityLists } from '../../util'
+import { updateLogs } from '../../redux'
+import { extractActivityLists, getToday } from '../../util'
 
 
 const data = [
@@ -18,13 +17,12 @@ const data = [
   {name: 'Genki', timeGoal: 5, completed: true, period: 'daily', intervals: []},
  ]
 
-const TodayScreen = ({ todaysActivities, navigation, updateLogs }) => {
+const TodayScreen = ({ todaysActivities, navigation, updateLogs, dayStartHour }) => {
   useFocusEffect(
     React.useCallback(() => {
       updateLogs()
-    }, [])
+    }, [dayStartHour])
   )
-
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <Header title='Today' left='hamburger' navigation={navigation}/>
@@ -34,8 +32,9 @@ const TodayScreen = ({ todaysActivities, navigation, updateLogs }) => {
 }
 
 const mapStateToProps = (state) => {
-  const { dayActivities } = extractActivityLists(state, DateTime.now())
-  return { todaysActivities: dayActivities }
+  const { dayStartHour } = state.settings
+  const { dayActivities } = extractActivityLists(state, getToday(dayStartHour))
+  return { todaysActivities: dayActivities, dayStartHour }
 }
 
 const actionsToProps = {

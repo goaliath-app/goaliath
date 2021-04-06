@@ -32,7 +32,7 @@ const ActivityListItem = ({
     const currentTime = getTodayTime(intervals)
     setTodayTime(currentTime)
     if(timeGoal && currentTime.as('seconds') >= timeGoal && !completed){
-      toggleCompleted({date: DateTime.now(), id: id})
+      toggleCompleted({date: date, id: id})
     }
   }
 
@@ -70,7 +70,7 @@ const ActivityListItem = ({
           status='checked'
           onPress={() => {
             if(disabled) return
-            toggleCompleted({date: DateTime.now(), id: id})
+            toggleCompleted({date: date, id: id})
         }}/>
       </View>
     )
@@ -83,7 +83,7 @@ const ActivityListItem = ({
           status='unchecked' 
           onPress={() => {
             if(disabled) return
-            toggleCompleted({date: DateTime.now(), id: id})
+            toggleCompleted({date: date, id: id})
         }}  />
       </View>
     )

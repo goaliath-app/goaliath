@@ -24,8 +24,9 @@ const ActivityDetailScreen = ({
   upsertEntry,  // function to call when needed to modify the activity entry
   archiveActivity,     // function to call when the activity is archived (deleted)
   date,
+  dayStartHour,
 }) => {
-  const dateIsToday = date?isToday(date):false
+  const dateIsToday = date?isToday(date, dayStartHour):false
   const dateTitle = date?date.toFormat('d MMMM yyyy'):null
 
   const [menuVisible, setMenuVisible] = React.useState(false);  // sets the visibility of the threeDotsMenu
@@ -84,10 +85,10 @@ const ActivityDetailScreen = ({
         <BasicActivityInfo activity={activity} goal={goal} />
   
         {dateIsToday?
-          <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={startTimer} stopTimer={stopTimer} upsertEntry={upsertEntry} date={date} /> 
+          <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={startTimer} stopTimer={stopTimer} upsertEntry={upsertEntry} date={date} dayStartHour={dayStartHour} /> 
           : 
           entry?
-            <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={()=>{}} stopTimer={()=>{}} upsertEntry={upsertEntry} date={date} />
+            <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={()=>{}} stopTimer={()=>{}} upsertEntry={upsertEntry} date={date} dayStartHour={dayStartHour} />
             :
             null
         }
@@ -129,8 +130,8 @@ const mapStateToProps = (state, ownProps) => {
     entry = selectEntryByActivityIdAndDate(state, activityId, date)
     activity = { ...activity, ...entry }  // use entry data to override possible overlapping values.
   }
-      
-  return { activity, goal, entry, date }
+  const { dayStartHour } = state.settings
+  return { activity, goal, entry, date, dayStartHour }
 }
 
 const actionToProps = {

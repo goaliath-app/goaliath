@@ -11,7 +11,6 @@ import { extractActivityLists } from '../../util'
 
 const DayInCalendarScreen = ({ navigation, dayActivities, weekActivities, day }) => {
   const [ viewMode, setViewMode ] = React.useState('day') // can be 'day' or 'week'
-  console.log(JSON.stringify(viewMode=='day'?dayActivities:weekActivities))
   
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>

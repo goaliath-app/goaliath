@@ -1,3 +1,4 @@
+import { useStore } from 'react-redux'
 import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
 import { selectEntriesByDay, selectActivityById, selectAllWeekEntriesByActivityId } from './redux'
@@ -81,10 +82,41 @@ export function extractActivityLists(state, day){
   return { dayActivities, weekActivities }
 }
 
-export function isToday(date){
-  return date?.startOf('day').toISO()==DateTime.now().startOf('day').toISO()
+export function isToday(date, dayStartDate){
+  /* accepts both ISO and DateTime as arguments */
+  if(!date) return false
+  date = DateTime.fromISO(date)
+  dayStartDate = DateTime.fromISO(dayStartDate)
+  const today = getToday(dayStartDate)
+  return today.toISO() == date.toISO()
 }
 
+export function startOfDay(date, dayStartDate){
+  /* accepts both ISO and DateTime as arguments
+  returns DateTime */
+  const dayStart = DateTime.fromISO(dayStartDate)
+  date = DateTime.fromISO(date)
+  const naturalStartOfDay = date.startOf('day')
+  if( date.hour < dayStart.hour
+    || date.hour == dayStart.hour && date.minute < dayStart.minute ){
+      return naturalStartOfDay.minus({ days: 1 })
+    }else{
+      return naturalStartOfDay
+    }
+}
+
+export function startOfWeek(date, dayStartDate){
+  /* accepts both ISO and DateTime as arguments
+  returns DateTime */
+  const day = startOfDay(date, dayStartDate)
+  return day.startOf('week')
+}
+
+export function getToday(dayStartHour){
+  /* accepts both ISO and DateTime as arguments
+  returns DateTime */
+  return startOfDay(DateTime.now(), dayStartHour)
+}
 export function frequency(activity){
   let frequency 
     switch(activity.repeatMode){

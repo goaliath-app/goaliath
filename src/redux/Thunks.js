@@ -5,14 +5,17 @@ import {
   deleteOneTodaysEntry, upsertEntry, selectTodayEntryByActivityId, selectLogById, 
   createLog, addEntry, sortTodayLog
 } from './LogSlice'
+import { getToday } from './../util'
 
 
 export function generateDummyData(){
   return function(dispatch, getState){
+    const { dayStartHour } = getState().settings
+    const today = getToday(dayStartHour)
     dispatch(createGoal({name: 'dummy goal'}))
-    dispatch(createLog({date: DateTime.now()}))
-    dispatch(createLog({date: DateTime.now().plus({day: -1})}))
-    dispatch(createLog({date: DateTime.now().plus({day: -2})}))
+    dispatch(createLog({date: today}))
+    dispatch(createLog({date: today.plus({day: -1})}))
+    dispatch(createLog({date: today.plus({day: -2})}))
     // Daily activities
     dispatch(createActivity({name: 'Social Media', goalId: '0', goal: 'time', timeGoal: 10800, repeatMode: 'daily'}))
     dispatch(createActivity({name: 'Call a pal', goalId: '0', goal: 'check', repeatMode: 'daily'}))
@@ -20,25 +23,26 @@ export function generateDummyData(){
     dispatch(createActivity({name: 'Watch anime', goalId: '0', goal: 'time', timeGoal: 10800, repeatMode: 'daily'}))   
     dispatch(createActivity({name: 'Play guitar', goalId: '0', goal: 'time', timeGoal: 3600, repeatMode: 'daily'}))
     dispatch(createActivity({name: 'Anki', goalId: '0', goal: 'check', repeatMode: 'daily'}))
-    dispatch(addEntry({date: DateTime.now(), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00'}], completed: false, id: 2, archived: false }}))
-    dispatch(addEntry({date: DateTime.now(), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: false, id: 3, archived: false }}))
-    dispatch(addEntry({date: DateTime.now(), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:53:26.690+01:00'}], completed: true, id: 4, archived: false }}))
-    dispatch(addEntry({date: DateTime.now(), entry: {intervals: [], completed: true, id: 5, archived: false }}))
+    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00'}], completed: false, id: 2, archived: false }}))
+    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: false, id: 3, archived: false }}))
+    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:53:26.690+01:00'}], completed: true, id: 4, archived: false }}))
+    dispatch(addEntry({date: today, entry: {intervals: [], completed: true, id: 5, archived: false }}))
 
     // weekly activities
     dispatch(createActivity({name: 'Call a pal', goalId: '0', goal: 'check', timesPerWeek: 3, repeatMode: 'weekly'}))
-    dispatch(addEntry({date: DateTime.now().plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: 6, archived: false }}))
-    dispatch(addEntry({date: DateTime.now().plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: 6, archived: false }}))
+    dispatch(addEntry({date: today.plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: 6, archived: false }}))
+    dispatch(addEntry({date: today.plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: 6, archived: false }}))
     dispatch(createActivity({name: 'Social Media', goalId: '0', goal: 'time', timeGoal: 3, repeatMode: 'weekly'}))
-    dispatch(addEntry({date: DateTime.now().plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: 7, archived: false }}))
-    dispatch(addEntry({date: DateTime.now().plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: 7, archived: false }}))
+    dispatch(addEntry({date: today.plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: 7, archived: false }}))
+    dispatch(addEntry({date: today.plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: 7, archived: false }}))
   }
 }
 
 export function updateLogs(){
   return function(dispatch, getState){
     const state = getState()
-    const today = DateTime.now()
+    const { dayStartHour } = state.settings
+    const today = getToday(dayStartHour)
     
     if(!selectLogById(state, today)){ 
       dispatch(createLog({date: today}))
@@ -48,7 +52,7 @@ export function updateLogs(){
       const goal = selectGoalById(state, activity.goalId)
       const oldLog = selectTodayEntryByActivityId(state, activity.id)
 
-      if(dueToday(activity, goal)){
+      if(dueToday(today, activity, goal)){
         if(oldLog){
           dispatch(upsertEntry({date: today, entry: { ...oldLog, archived: false }}))
         }else{
@@ -78,8 +82,7 @@ function newEntry(activity){
   )
 }
 
-function dueToday(activity, activityGoal){
-  const today = DateTime.now()
+function dueToday(today, activity, activityGoal){
   if(activity.archived || activityGoal.archived){
     return false
   }

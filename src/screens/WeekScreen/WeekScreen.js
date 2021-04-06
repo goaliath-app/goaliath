@@ -2,16 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
-import { DateTime } from 'luxon'
 import { ActivityList } from '../../components'
 import { Header } from '../../components';
 import { updateLogs } from '../../redux'
-import { extractActivityLists } from '../../util'
+import { extractActivityLists, getToday } from '../../util'
 
-const data = [
-    {title: 'Genki', completed: true, current: true, period: 'weekly', todayTime: 0, weeklyTimesObjective: 2, weeklyTimes: 0},
-    {title: 'Genki', timeGoal: 5, completed: true, current: false, period: 'weekly', todayTime: 0, weeklyTimeGoal: 20, weeklyTime: 10, todayTime: 10},
-  ]
 
 const WeekScreen = ({ todaysActivities, navigation, updateLogs }) => {
   useFocusEffect(
@@ -29,7 +24,8 @@ const WeekScreen = ({ todaysActivities, navigation, updateLogs }) => {
 }
 
 const mapStateToProps = (state) => {
-  const { weekActivities } = extractActivityLists(state, DateTime.now())
+  const { dayStartHour } = state.settings
+  const { weekActivities } = extractActivityLists(state, getToday(dayStartHour))
   return { todaysActivities: weekActivities }
 }
 

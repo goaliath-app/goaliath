@@ -8,19 +8,27 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import { DateTime } from 'luxon'
 import { selectLogEntities, selectActivityEntities } from '../../redux'
 import { Header } from '../../components';
-import { getTodayTime, getPreferedExpression } from '../../util'
+import { getTodayTime, getPreferedExpression, getToday } from '../../util'
 
-const CalendarScreen = ({ navigation, logs, activities }) => {
-  const [ selectedDate, setSelectedDate ] = React.useState(DateTime.now().toFormat('yyyy-MM-dd'))
+const CalendarScreen = ({ navigation, logs, activities, dayStartHour }) => {
+  const today = getToday(dayStartHour).toFormat('yyyy-MM-dd')
+  const [ selectedDate, setSelectedDate ] = React.useState(today)
   const markedDates = (
     selectedDate? {
-      [selectedDate]: {selected: true}
+      [today]: {
+        customStyles: {
+          text: {
+            color: 'blue',
+          }
+        }
+      },
+      [selectedDate]: {selected: true},
     }
     :
     {}
   )
   const dateTime = DateTime.fromFormat(selectedDate, 'yyyy-MM-dd')
-  const selectedDayLog = logs[dateTime.startOf('day').toISO()]
+  const selectedDayLog = logs[dateTime.toISO()]
   const dateLabel = dateTime.toFormat("d MMMM yyyy")
   let completedActivities = 0
   let undoneActivities = 0
@@ -58,9 +66,11 @@ const CalendarScreen = ({ navigation, logs, activities }) => {
           )}
           // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday.
           firstDay={1}
-          // Enable the option to swipe between months. Default = false
-          enableSwipeMonths={true}
+          markingType={'custom'}
           markedDates={markedDates}
+          theme={{
+            todayTextColor: '#2d4150'
+          }}
         />
       </View>
       <View style={{marginLeft: 24, marginRight: 25}}>
@@ -75,7 +85,8 @@ const CalendarScreen = ({ navigation, logs, activities }) => {
 }
 
 const mapStateToProps = (state) => {
-  return {logs: selectLogEntities(state), activities: selectActivityEntities(state)}
+  const { dayStartHour } = state.settings
+  return {logs: selectLogEntities(state), activities: selectActivityEntities(state), dayStartHour}
 }
 
 const actionsToProps = {
