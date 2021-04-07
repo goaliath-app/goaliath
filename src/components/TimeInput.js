@@ -9,6 +9,8 @@ const TimeInput = ({ hours, setHours, minutes, setMinutes, seconds, setSeconds }
         style={{flex: 2, fontSize: 40, padding: 5, textAlign: 'center'}} keyboardType='numeric'
         value={hours} 
         onChangeText={setHours}
+        selectTextOnFocus={true}
+        maxLength={2}
       />
       <Text style={{flex: 1, fontSize: 50,  textAlign: 'center'}}>:</Text>
   
@@ -16,6 +18,8 @@ const TimeInput = ({ hours, setHours, minutes, setMinutes, seconds, setSeconds }
         style={{flex: 2, fontSize: 40, padding: 5, textAlign: 'center'}} keyboardType='numeric'
         value={minutes} 
         onChangeText={setMinutes}
+        selectTextOnFocus={true}
+        maxLength={2}
       />
       <Text style={{flex: 1, fontSize: 50, textAlign: 'center'}}>:</Text>
   
@@ -23,6 +27,8 @@ const TimeInput = ({ hours, setHours, minutes, setMinutes, seconds, setSeconds }
         style={{flex: 2, fontSize: 40, padding: 5, textAlign: 'center'}} keyboardType='numeric' 
         value={seconds} 
         onChangeText={setSeconds}
+        selectTextOnFocus={true}
+        maxLength={2}
       />
      
   
