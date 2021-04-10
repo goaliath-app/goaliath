@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { View, FlatList, Pressable } from 'react-native';
-import { List, Switch, Appbar, Menu, Text, Card, Paragraph, Portal, Dialog, Button } from 'react-native-paper';
+import { List, Switch, Appbar, Menu, Card, Paragraph } from 'react-native-paper';
 import { Header, ThreeDotsMenu, DeleteDialog } from '../../components';
 import { useNavigation } from '@react-navigation/native';
 import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal } from '../../redux'
@@ -18,13 +18,7 @@ const Activity = ({ name, active, id, toggleActivity, activity }) => {
   return (
     <List.Item
      onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
-      title={
-        <View style={{width: '100%' }}>
-          <Text>
-            {name}
-          </Text>
-        </View>
-      }
+      title={name}
       right={() => (
         <Pressable onPress={() => {}}>
           <Switch
