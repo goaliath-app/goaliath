@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { View } from 'react-native'
+import { View, Share, StyleSheet } from 'react-native'
 import { connect } from 'react-redux';
-import { Text, List, Divider } from 'react-native-paper'
+import { Text, List, Divider, IconButton } from 'react-native-paper'
 import { DateTime } from 'luxon'
 import { setDayStartHour } from '../../redux'
 import { Header } from '../../components'
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePickerModal from "react-native-modal-datetime-picker"
+import email from 'react-native-email'
+import { faShareAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 const SettingsScreen = ({ settings, setDayStartHour, navigation }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -40,10 +43,23 @@ const SettingsScreen = ({ settings, setDayStartHour, navigation }) => {
         date={DateTime.fromISO(settings.dayStartHour).toJSDate()}
       />
       <Divider />
+      <List.Item
+        title='Send feedback'
+        description='Send a message to the developers'
+        onPress={() => email('jimenaa971@gmail.com')}
+      />
+      <Divider />
+      <List.Item
+        title='Share'
+        description='Introduce us to your friends'
+        onPress={() => Share.share({message:"It's a nice app to achieve your goals, ¡try it!"})}
+      />
+      <Divider />
     </View>
     
   );
 };
+
 
 const mapStateToProps = (state) => {
   const settings = state.settings
