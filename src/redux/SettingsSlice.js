@@ -11,10 +11,14 @@ const settingsSlice = createSlice({
     reducers: {
         setDayStartHour(state, action){
             state.dayStartHour = action.payload
+        },
+        setState(state, action){
+            const { newState } = action.payload
+            return newState
         }
     }
 })
 
-export const { setDayStartHour } = settingsSlice.actions
+export const { setDayStartHour, setState } = settingsSlice.actions
 
 export default settingsSlice.reducer

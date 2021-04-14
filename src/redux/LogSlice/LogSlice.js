@@ -110,13 +110,17 @@ const logSlice = createSlice({
       const today = date.toISO()
       const todaysLog = state.entities[today].entries
       todaysLog.ids.sort((idA, idB) => {return compareEntries(todaysLog.entities[idA], todaysLog.entities[idB])})
+    },
+    setState(state, action){
+      const { newState } = action.payload
+      return newState
     }
   }
 })
 
 export const { 
   createLog, addEntry, deleteEntry, toggleCompleted, startTimer, 
-  stopTimer, sortLog, upsertEntry, 
+  stopTimer, sortLog, upsertEntry, setState,
 } = logSlice.actions
 
 export const { 

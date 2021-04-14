@@ -1,5 +1,5 @@
 export {
-    createLog, addEntry, upsertEntry, toggleCompleted,
+    createLog, addEntry, upsertEntry, toggleCompleted, setState,
     selectAllLogs, selectLogById, selectTodayEntries, selectTodayEntryByActivityId, 
     selectThisWeekEntriesByActivityId, selectLogEntities, selectEntriesByDay,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate

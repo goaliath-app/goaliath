@@ -40,11 +40,15 @@ const activitySlice = createSlice({
     archiveActivity(state, action){
       const activityId = action.payload
       activityAdapter.updateOne(state, {id: activityId, changes: {archived: true}})
+    },
+    setState(state, action){
+      const { newState } = action.payload
+      return newState
     }
   }
 })
 
-export const { createActivity, updateActivity, toggleActivity, archiveActivity } = activitySlice.actions
+export const { createActivity, updateActivity, toggleActivity, archiveActivity, setState } = activitySlice.actions
 
 export const { 
   selectAll: selectAllActivities, selectById: selectActivityById, selectEntities: selectActivityEntities,

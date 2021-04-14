@@ -33,11 +33,15 @@ const goalsSlice = createSlice({
     archiveGoal(state, action){
       const goalId = action.payload
       goalsAdapter.updateOne(state, {id: goalId, changes: {archived: true}})
+    },
+    setState(state, action){
+      const { newState } = action.payload
+      return newState
     }
   }
 })
 
-export const { createGoal, toggleGoal, updateGoal, archiveGoal } = goalsSlice.actions
+export const { createGoal, toggleGoal, updateGoal, archiveGoal, setState } = goalsSlice.actions
 
 export const { 
   selectAll: selectAllGoals, 

@@ -19,7 +19,7 @@ export {
 } from './LogSlice'
 
 export { 
-    generateDummyData, updateLogs
+    generateDummyData, updateLogs, importState,
 } from './Thunks'
 
 export { setDayStartHour } from './SettingsSlice'

@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
-import { View, Share, StyleSheet } from 'react-native'
-import { connect } from 'react-redux';
-import { Text, List, Divider, IconButton } from 'react-native-paper'
+import React from 'react';
+import { View, Share } from 'react-native'
+import { connect, useStore } from 'react-redux';
+import { Text, List, Divider, Paragraph, Portal, Dialog, Button } from 'react-native-paper'
 import { DateTime } from 'luxon'
-import { setDayStartHour } from '../../redux'
+import { setDayStartHour, importState } from '../../redux'
 import { Header } from '../../components'
 import DateTimePickerModal from "react-native-modal-datetime-picker"
 import email from 'react-native-email'
-import { faShareAlt } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import * as FileSystem from 'expo-file-system'
+import * as Sharing from 'expo-sharing'
+import * as DocumentPicker from 'expo-document-picker'
 
-const SettingsScreen = ({ settings, setDayStartHour, navigation }) => {
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+const SettingsScreen = ({ settings, setDayStartHour, navigation, state, importState }) => {
+  const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -26,6 +28,30 @@ const SettingsScreen = ({ settings, setDayStartHour, navigation }) => {
     hideDatePicker();
     setDayStartHour(dateTime.toISO());
   };
+
+  const [dialogVisible, setDialogVisible] = React.useState(false);
+  const showDialog = () => setDialogVisible(true);
+  const hideDialog = () => setDialogVisible(false);
+  
+  const [text, setText] = React.useState('');
+
+  const readFile = () => {
+    DocumentPicker.getDocumentAsync({type: 'application/oda'})
+      .then(({ type, uri }) => FileSystem.readAsStringAsync(uri)
+        .then((text) => {
+          setText(text)
+          showDialog()
+          }
+        )
+      )
+  }
+
+  function importStateFromText(text){
+    // TODO: dont break if file is bad formatted
+    hideDialog()
+    const state = JSON.parse(text)
+    importState(state)
+  }
 
   return (
     <View>
@@ -52,23 +78,56 @@ const SettingsScreen = ({ settings, setDayStartHour, navigation }) => {
       <List.Item
         title='Share'
         description='Introduce us to your friends'
-        onPress={() => Share.share({message:"It's a nice app to achieve your goals, ¡try it!"})}
+        onPress={() => Share.share({message:"Goaliat is a nice app to achieve your goals, ¡try it!"})}
       />
       <Divider />
+      <List.Item
+        title='Export'
+        description='Save your data'
+        onPress={() => writeFile(state)}
+      />
+      <Divider />
+      <List.Item
+        title='Import'
+        description='Do you have any backup? Restore your data'
+        onPress={() => readFile()}
+      />
+      <Divider />
+
+      <Portal>
+        <Dialog visible={dialogVisible} onDismiss={() => {hideDialog()}}>
+          <Dialog.Title>Import data?</Dialog.Title>
+          <Dialog.Content>
+            <Paragraph>This can't be undone, your app data will be rewrite.</Paragraph>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => importStateFromText(text)}>Import</Button>
+            <Button onPress={() => hideDialog()}>Cancel</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
     </View>
     
   );
 };
 
+const writeFile =  (state) => {
+  const date = DateTime.now().toFormat('dd-MM-yy')
+  let fileUri = FileSystem.cacheDirectory + `Goaliat_Export_${date}.oda`
+  FileSystem.writeAsStringAsync(fileUri, JSON.stringify(state, null, 2), { encoding: FileSystem.EncodingType.UTF8 })
+    .then(()=>Sharing.shareAsync(fileUri))
+}
 
 const mapStateToProps = (state) => {
   const settings = state.settings
-  return { settings }
+  return { settings, state }
 }
 
 
 const actionToProps = {
-    setDayStartHour
+    setDayStartHour,
+    importState
 }
 
 export default connect(mapStateToProps, actionToProps)(SettingsScreen);
