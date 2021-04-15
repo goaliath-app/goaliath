@@ -21,7 +21,7 @@ const TodayScreen = ({ todaysActivities, navigation, updateLogs, dayStartHour })
   useFocusEffect(
     React.useCallback(() => {
       updateLogs()
-    }, [dayStartHour])
+    }, [])
   )
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>

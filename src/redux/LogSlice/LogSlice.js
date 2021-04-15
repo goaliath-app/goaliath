@@ -149,10 +149,6 @@ export function selectEntryByActivityIdAndDate(state, activityId, date){
   return thatDaysLog?.entries.entities[activityId]
 }
 
-export function selectTodayEntryByActivityId(state, activityId){
-  selectEntryByActivityIdAndDate(state, activityId, DateTime.now())
-}
-
 export function selectAllWeekEntriesByActivityId(state, activityId, date){
   // date can be any moment of the week
   const { dayStartHour } = state.settings

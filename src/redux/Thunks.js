@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { selectAllActivities,  createActivity, setState as setActivitiesState } from './ActivitySlice'
 import { selectGoalById, createGoal, setState as setGoalsState } from './GoalsSlice'
 import { 
-  deleteOneTodaysEntry, upsertEntry, selectTodayEntryByActivityId, selectLogById, 
+  deleteOneTodaysEntry, upsertEntry, selectEntryByActivityIdAndDate, selectLogById, 
   createLog, addEntry, sortTodayLog, setState as setLogsState
 } from './LogSlice'
 import { getToday } from './../util'
@@ -51,7 +51,7 @@ export function updateLogs(){
 
     for(let activity of selectAllActivities(state)){
       const goal = selectGoalById(state, activity.goalId)
-      const oldLog = selectTodayEntryByActivityId(state, activity.id)
+      const oldLog = selectEntryByActivityIdAndDate(state, activity.id, getToday(state.settings.dayStartHour))
 
       if(dueToday(today, activity, goal)){
         if(oldLog){
