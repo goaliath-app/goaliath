@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "app-rutinas",
-    "slug": "app-rutinas",
-    "version": "1.0.0",
+    "name": "Goaliath",
+    "slug": "Goaliath",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -24,7 +24,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "app.rutinas"
+      "package": "app.goaliath"
     },
     "web": {
       "favicon": "./assets/favicon.png"
