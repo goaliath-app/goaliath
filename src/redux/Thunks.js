@@ -24,18 +24,18 @@ export function generateDummyData(){
     dispatch(createActivity({name: 'Watch anime', goalId: '0', goal: 'time', timeGoal: 10800, repeatMode: 'daily'}))   
     dispatch(createActivity({name: 'Play guitar', goalId: '0', goal: 'time', timeGoal: 3600, repeatMode: 'daily'}))
     dispatch(createActivity({name: 'Anki', goalId: '0', goal: 'check', repeatMode: 'daily'}))
-    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00'}], completed: false, id: 2, archived: false }}))
-    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: false, id: 3, archived: false }}))
-    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:53:26.690+01:00'}], completed: true, id: 4, archived: false }}))
-    dispatch(addEntry({date: today, entry: {intervals: [], completed: true, id: 5, archived: false }}))
+    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00'}], completed: false, id: "2", archived: false }}))
+    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: false, id: "3", archived: false }}))
+    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:53:26.690+01:00'}], completed: true, id: "4", archived: false }}))
+    dispatch(addEntry({date: today, entry: {intervals: [], completed: true, id: "5", archived: false }}))
 
     // weekly activities
     dispatch(createActivity({name: 'Call a pal', goalId: '0', goal: 'check', timesPerWeek: 3, repeatMode: 'weekly'}))
-    dispatch(addEntry({date: today.plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: 6, archived: false }}))
-    dispatch(addEntry({date: today.plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: 6, archived: false }}))
+    dispatch(addEntry({date: today.plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: "6", archived: false }}))
+    dispatch(addEntry({date: today.plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: "6", archived: false }}))
     dispatch(createActivity({name: 'Social Media', goalId: '0', goal: 'time', timeGoal: 3, repeatMode: 'weekly'}))
-    dispatch(addEntry({date: today.plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: 7, archived: false }}))
-    dispatch(addEntry({date: today.plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: 7, archived: false }}))
+    dispatch(addEntry({date: today.plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: "7", archived: false }}))
+    dispatch(addEntry({date: today.plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: "7", archived: false }}))
   }
 }
 

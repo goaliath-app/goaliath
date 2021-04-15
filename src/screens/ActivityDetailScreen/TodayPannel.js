@@ -59,7 +59,6 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
     }
   
     const dateIsToday = isToday(date, dayStartHour)
-    console.log(`dateistoday? ${dateIsToday}`)
 
     let seconds, minutes, hours
     seconds = String(todayTime.seconds).padStart(2, '0')
