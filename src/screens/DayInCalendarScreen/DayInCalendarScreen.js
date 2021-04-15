@@ -33,7 +33,8 @@ const DayInCalendarScreen = ({ navigation, dayActivities, weekActivities, day })
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const day = ownProps.route.params.day
+  const dateString = ownProps.route.params.day
+  const day = DateTime.fromFormat(dateString, 'yyyy-MM-dd')
 
   const { dayActivities, weekActivities } = extractActivityLists(state, day)
 

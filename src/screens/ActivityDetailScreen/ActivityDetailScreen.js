@@ -120,18 +120,19 @@ const ActivityDetailScreen = ({
 const mapStateToProps = (state, ownProps) => {
   const { 
     activityId,  // id of the activity to show
-    date         // (optional) luxon datetime of the log entry to show
+    date         // (optional) iso string datetime of the log entry to show
   } = ownProps.route.params
+  const dateTime = DateTime.fromISO(date)
   let activity = selectActivityById(state, activityId)
   const activityGoalId = activity.goalId
   const goal = selectGoalById(state, activityGoalId)
   let entry 
-  if(date){
-    entry = selectEntryByActivityIdAndDate(state, activityId, date)
+  if(dateTime){
+    entry = selectEntryByActivityIdAndDate(state, activityId, dateTime)
     activity = { ...activity, ...entry }  // use entry data to override possible overlapping values.
   }
   const { dayStartHour } = state.settings
-  return { activity, goal, entry, date, dayStartHour }
+  return { activity, goal, entry, date: dateTime, dayStartHour }
 }
 
 const actionToProps = {

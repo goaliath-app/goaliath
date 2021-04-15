@@ -129,7 +129,7 @@ const ActivityListItem = ({
         description={description}
         right={() => rightSlot}
         onPress={() => {
-          navigation.navigate('ActivityDetail', {activityId: id, date: date})
+          navigation.navigate('ActivityDetail', {activityId: id, date: date.toISO()})
         }}
       />
       {current?

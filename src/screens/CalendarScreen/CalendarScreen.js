@@ -77,7 +77,7 @@ const CalendarScreen = ({ navigation, logs, activities, dayStartHour }) => {
         <Title>{dateLabel}</Title>
         <Paragraph>{`${completedActivities} tasks done, ${timeDedicated.value} ${timeDedicated.unit} dedicated\n${undoneActivities} task undone, ${timeLeft.value} ${timeLeft.unit} left`}</Paragraph>
         <Button mode="contained" style={{marginBottom: 20, marginTop: 14}} onPress={
-          () => navigation.navigate('DayInCalendar', {day: DateTime.fromFormat(selectedDate, 'yyyy-MM-dd')})
+          () => navigation.navigate('DayInCalendar', {day: selectedDate})
         }>Open day</Button>
       </View>
     </View>
