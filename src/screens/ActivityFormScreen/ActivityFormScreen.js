@@ -20,7 +20,7 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
   const [weekDays, setWeekDays] = React.useState(activity?.weekDays?activity.weekDays:{
     '1': false, '2': false, '3': false, '4': false, '5': false, '6': false, '7': false
   })
-  const [timesPerWeek, setTimesPerWeek] = React.useState(activity?.timesPerWeek?activity.timesPerWeek:'1')
+  const [timesPerWeek, setTimesPerWeek] = React.useState(activity?.timesPerWeek?String(activity.timesPerWeek):'1')
 
   const validate = ( newActivity ) => {
     const { name, repeatMode, goal, goalId, timeGoal, weekDays } = newActivity

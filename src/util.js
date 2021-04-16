@@ -65,15 +65,18 @@ export function extractActivityLists(state, day){
     if(!(fullLog.repeatMode == 'weekly')){
       dayActivities.push(fullLog)
     }else{
-      // we have to calculate and inyect weeklyTime and weeklyTimes
+      // we have to calculate and inyect weeklyTime and weeklyTimes (not counting today or future days)
       let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
       let weeklyTimes = 0
 
       const weekLogs = selectAllWeekEntriesByActivityId(state, fullLog.id, day)
 
-      for(let day in weekLogs){
-        weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[day].intervals))
-        weeklyTimes += weekLogs[day].completed?1:0
+      for(let thatDay in weekLogs){
+        if(day.weekday-1==thatDay){
+          break
+        }
+        weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[thatDay].intervals))
+        weeklyTimes += weekLogs[thatDay].completed?1:0
       }
       weekActivities.push({ ...fullLog, weeklyTime, weeklyTimes })
     }

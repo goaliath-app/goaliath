@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, useWindowDimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, Checkbox, IconButton, Text, ProgressBar } from 'react-native-paper'
-import { DateTime } from 'luxon'
+import * as Progress from 'react-native-progress';
 import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue } from '../util'
 import { toggleCompleted, startTimer, stopTimer } from '../redux'
 import PlayFilledIcon from '../../assets/play-filled'
@@ -15,7 +15,7 @@ const ActivityListItem = ({
   timeGoal,    // number of seconds of the time goal for this activity or null if it is not a timed activity
   name,        // name of the activity
   repeatMode,      // 'daily' or 'weekly'
-  weeklyTime,    // time spent this week (just used in 'weekly' repeatMode activities)
+  weeklyTime,    // time spent this week, not counting today (just used in 'weekly' repeatMode activities)
   completed,   // boolean value
   timesPerWeek, // number of days that the activity should be completed each week
   weeklyTimes, // number of times that the activity has been done this week (counting today)
@@ -31,7 +31,8 @@ const ActivityListItem = ({
   function update(){
     const currentTime = getTodayTime(intervals)
     setTodayTime(currentTime)
-    if(timeGoal && currentTime.as('seconds') >= timeGoal && !completed){
+    const totalTime = weeklyTime?currentTime.plus(weeklyTime):currentTime
+    if(timeGoal && totalTime.as('seconds') >= timeGoal && !completed){
       toggleCompleted({date: date, id: id})
     }
   }
@@ -58,11 +59,13 @@ const ActivityListItem = ({
 
   const current = isActivityRunning(intervals)
   const [todayTime, setTodayTime] = React.useState(getTodayTime(intervals))
-
+  
+  const totalTime = weeklyTime?todayTime.plus(weeklyTime):todayTime
+  const totalTimes = weeklyTimes?(weeklyTimes+(completed?1:0)):(completed?1:0)
 
   let leftSlot, rightSlot, description;
 
-  if(!timeGoal && completed){
+  if((!timeGoal && completed)){
     leftSlot = (
       <View style={styles.checkboxView}>
         <Checkbox 
@@ -71,6 +74,17 @@ const ActivityListItem = ({
           onPress={() => {
             if(disabled) return
             toggleCompleted({date: date, id: id})
+        }}/>
+      </View>
+    )
+  }else if(weeklyTimes?(totalTimes >= timesPerWeek):false){
+    leftSlot = (
+      <View style={styles.checkboxView}>
+        <Checkbox 
+          color='gray'
+          status='checked'
+          onPress={() => {
+            return
         }}/>
       </View>
     )
@@ -105,10 +119,10 @@ const ActivityListItem = ({
     const expression = getPreferedExpression(timeGoal)
     description = `Goal: ${expression.value} ${expression.unit}`
   }else if(repeatMode=='weekly' && !timeGoal){
-    description = `Done ${weeklyTimes} of ${timesPerWeek} days`
+    description = `Done ${totalTimes} of ${timesPerWeek} days`
   }else if(repeatMode=='weekly' && timeGoal){
     const expression = getPreferedExpression(timeGoal)
-    description = `Done ${roundValue(weeklyTime.as(expression.unit))} of ${expression.value} ${expression.unit}`
+    description = `Done ${roundValue(totalTime.as(expression.unit))} of ${expression.value} ${expression.unit}`
   }
 
   if(todayTime.as('seconds') > 0){
@@ -117,13 +131,14 @@ const ActivityListItem = ({
 
   const navigation = useNavigation();
 
-  const progress = Math.min(todayTime.as('seconds') / timeGoal, 1)
+  const progress = Math.min(totalTime.as('seconds') / timeGoal, 1)
+  const weeklyProgress = weeklyTime?
+    Math.min(weeklyTime.as('seconds') / timeGoal, 1) : 0
 
   return (
     archived? <></> : 
-    <View>
+    <View style={{ backgroundColor: current? '#E6FBF9':'white' }}>
       <List.Item
-        style={{ backgroundColor: current? '#E6FBF9':'white' }}
         left={() => leftSlot}
         title={name}
         description={description}
@@ -133,11 +148,24 @@ const ActivityListItem = ({
         }}
       />
       {current?
-        <ProgressBar progress={progress} />  
+        <DoubleProgressBar 
+          height={4}
+          firstColor='midnightblue' 
+          secondColor='dodgerblue' 
+          backgroundColor='mistyrose' 
+          firstProgress={weeklyProgress} 
+          secondProgress={progress} />
       : <></> }
     </View>
   );
 }
+
+const DoubleProgressBar = ({firstColor, secondColor, backgroundColor, firstProgress, secondProgress, height}) => (
+  <View >
+    <Progress.Bar progress={secondProgress} width={null} height={height} unfilledColor={backgroundColor} borderRadius={0} borderWidth={0} color={secondColor} />
+    <Progress.Bar style={{position: 'absolute'}} progress={firstProgress} height={height} color={firstColor} unfilledColor='transparent' borderWidth={0} width={useWindowDimensions().width} borderRadius={0} />
+  </View>
+)
 
 const styles = StyleSheet.create({
   checkboxView: {
