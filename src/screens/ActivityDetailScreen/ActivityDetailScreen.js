@@ -122,7 +122,7 @@ const mapStateToProps = (state, ownProps) => {
     activityId,  // id of the activity to show
     date         // (optional) iso string datetime of the log entry to show
   } = ownProps.route.params
-  const dateTime = DateTime.fromISO(date)
+  const dateTime = date?DateTime.fromISO(date):null
   let activity = selectActivityById(state, activityId)
   const activityGoalId = activity.goalId
   const goal = selectGoalById(state, activityGoalId)
