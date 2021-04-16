@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { FlatList, View, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, Switch, Appbar } from 'react-native-paper';
-import { Header } from '../../components'
+import { Header, InfoCard } from '../../components'
 import { selectAllGoals, toggleGoal } from '../../redux'
+import { hasSomethingToShow } from '../../util'
 
 
 const GoalListItem = ({ name, active, toggleGoal, id }) => {
@@ -35,14 +36,22 @@ const GoalsScreen = ({ navigation, goals, toggleGoal }) => {
       motivation={item.motivation} />
   )
 
+  const infoContent = "You have no goals right now.\n\nGoals are the base of Goaliath. They are the meaningful things you want to archieve, work on or dedicate time to.\n\nYou can create a new goal pressing the + icon on the top right."
+
   return(
-    <View>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
       <Header 
         title='Goals' left='hamburger' navigation={navigation} 
         buttons={
           <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} />
         }/>
-      <FlatList data={goals} renderItem={renderItem} />
+      {hasSomethingToShow(goals)?
+        <FlatList data={goals} renderItem={renderItem} />
+      :
+        <InfoCard content={infoContent} />
+      }
+      
+      
     </View>
   )
 }

@@ -2,10 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { View, FlatList, Pressable } from 'react-native';
 import { List, Switch, Appbar, Menu, Card, Paragraph } from 'react-native-paper';
-import { Header, ThreeDotsMenu, DeleteDialog } from '../../components';
+import { Header, ThreeDotsMenu, DeleteDialog, InfoCard } from '../../components';
 import { useNavigation } from '@react-navigation/native';
 import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal } from '../../redux'
-import { frequency } from '../../util'
+import { frequency, hasSomethingToShow } from '../../util'
 
 const data = [
   {name: 'Study Anki', repeatMode: 'daily', active: true},
@@ -73,6 +73,8 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
     </>
   )
 
+  const infoContent = "This goal doesn't have any activities yet.\n\nAn activity is a recurring task that may have a time dedication requisite or not.\n\nFor each goal you should create the activities that you believe will make you reach the goal if done consistently.\n\nDesigning your activities this way will allow you to go to bed thinking: \"Today I've done all I had to\"."
+
   return (
     <>
     <DeleteDialog 
@@ -86,10 +88,15 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
       title='Delete goal?'
       body="This will delete all its activities. Can't be undone."
     />
-    <View style={{height: '100%', justifyContent: 'space-between'}}>
+    <View style={{height: '100%', justifyContent: 'space-between', backgroundColor: 'white'}}>
       <View>
         <Header title={goal.name} left='back' navigation={navigation} buttons={headerButtons}/>
-        <FlatList data={activities} renderItem={renderItem} />
+        {hasSomethingToShow(activities)?
+          <FlatList data={activities} renderItem={renderItem} />
+        :
+          <InfoCard content={infoContent} />
+        }
+        
       </View>
       {goal.motivation?
         <Card>

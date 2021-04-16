@@ -3,6 +3,16 @@ import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
 import { selectEntriesByDay, selectActivityById, selectAllWeekEntriesByActivityId } from './redux'
 
+export function hasSomethingToShow(activityList){
+  /* also works for lists of goals and entries */
+  for(let activity of activityList){
+    if(!activity.archived){
+      return true
+    }
+  }
+  return false
+}
+
 export function getTodayTime(intervals){
   if(!intervals) {return 0}
   let todayTime = 0

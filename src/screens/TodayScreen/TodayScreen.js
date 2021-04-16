@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect, useStore } from 'react-redux';
 import { View } from 'react-native'
+import { Paragraph, Card } from 'react-native-paper'
 import { useFocusEffect } from '@react-navigation/native';
 import { ActivityList } from '../../components'
-import { Header } from '../../components';
+import { Header, InfoCard } from '../../components';
 import { updateLogs } from '../../redux'
-import { extractActivityLists, getToday } from '../../util'
+import { extractActivityLists, getToday, hasSomethingToShow } from '../../util'
+import createPersistoid from 'redux-persist/es/createPersistoid';
 
 
 const data = [
@@ -23,10 +25,18 @@ const TodayScreen = ({ todaysActivities, navigation, updateLogs, dayStartHour })
       updateLogs()
     }, [])
   )
+
+  const infoContent = 'There are no activities scheduled for today. You can go to the "Goals" section of the app to create new activities.'
+
+  console.log(todaysActivities)
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <Header title='Today' left='hamburger' navigation={navigation}/>
-      <ActivityList data={todaysActivities} />
+      {hasSomethingToShow(todaysActivities)?
+        <ActivityList data={todaysActivities} />
+      :
+        <InfoCard content={infoContent} />
+      }
     </View>
   );
 }
