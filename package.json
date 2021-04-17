@@ -29,6 +29,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
+    "react-native-app-intro-slider": "^4.0.4",
     "react-native-calendars": "^1.1254.0",
     "react-native-email": "^1.1.0",
     "react-native-gesture-handler": "~1.8.0",

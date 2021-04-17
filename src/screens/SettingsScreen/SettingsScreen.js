@@ -78,7 +78,7 @@ const SettingsScreen = ({ settings, setDayStartHour, navigation, state, importSt
       <List.Item
         title='Share'
         description='Introduce us to your friends'
-        onPress={() => Share.share({message:"Goaliath is a nice app to achieve your goals, ¡try it!\n\nIt is not available from the play store yet, but you can download it here: (android)\nhttps://cdn-107.anonfiles.com/v4Y6qbr4u0/08d274cf-1618494038/Goaliath-fba7da011f36483eb5397bb30b586357-signed.apk \n\nIt is open source, you can check the code here: \nhttps://github.com/OliverLSanz/routines-app"})}
+        onPress={() => Share.share({message:"Goaliath is a nice app to achieve your goals, ¡try it!\n\nIt is not available from the play store yet, but you can download it here: (android)\nhttps://anonfiles.com/r4G5B4raue/Goaliath-1ac4cc84001d4f32980c40e9869c79d9-signed_apk \n\nIt is open source, you can check the code here: \nhttps://github.com/OliverLSanz/routines-app"})}
       />
       <Divider />
       <List.Item

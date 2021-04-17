@@ -10,9 +10,9 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
 import { 
   TodayScreen, WeekScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, ActivityFormScreen,
-  GoalFormScreen, CalendarScreen, SettingsScreen, DayInCalendarScreen
+  GoalFormScreen, CalendarScreen, SettingsScreen, DayInCalendarScreen, OnboardingScreen
 } from './src/screens'
-import { store, generateDummyData, updateLogs } from './src/redux'
+import { store, generateDummyData, updateLogs, finishOnboarding as finishOnboardingAction } from './src/redux'
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -58,12 +58,20 @@ export default function App() {
     // store.dispatch(generateDummyData())
     store.dispatch(updateLogs())
   })
+  const [newUser, setNewUser] = React.useState()
+  function finishOnboarding(){
+    store.dispatch(finishOnboardingAction())
+    setNewUser(false)
+  }
 
   return (
     <ReduxProvider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate loading={null} persistor={persistor} onBeforeLift={()=>setNewUser(store.getState().settings.newUser)}>
         <PaperProvider>
           <NavigationContainer>
+            {newUser?
+            <OnboardingScreen finishOnboarding={finishOnboarding}/>
+          : 
             <Drawer.Navigator initialRouteName='Today'>
               <Drawer.Screen name='Today' component={TodayStack} />
               <Drawer.Screen name='Week' component={WeekStack} />
@@ -71,6 +79,7 @@ export default function App() {
               <Drawer.Screen name='Calendar' component={CalendarStack} />
               <Drawer.Screen name='Settings' component={SettingsScreen} />
             </Drawer.Navigator>
+          } 
           </NavigationContainer>
         </PaperProvider>
       </PersistGate>

@@ -28,7 +28,6 @@ const TodayScreen = ({ todaysActivities, navigation, updateLogs, dayStartHour })
 
   const infoContent = 'There are no activities scheduled for today. You can go to the "Goals" section of the app to create new activities.'
 
-  console.log(todaysActivities)
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <Header title='Today' left='hamburger' navigation={navigation}/>
