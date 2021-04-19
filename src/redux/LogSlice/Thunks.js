@@ -3,7 +3,8 @@ import {
   deleteEntry,
   startTimer as pureStartTimer,
   stopTimer as pureStopTimer,
-  sortLog
+  sortLog,
+  capAllTimers as pureCapAllTimers,
 } from './LogSlice'
 import { getToday } from './../../util'
 
@@ -36,5 +37,17 @@ export function sortTodayLog(){
     const { dayStartHour } = getState().settings
     const today = getToday(dayStartHour)
     dispatch(sortLog({ date: today }))
+  }
+}
+
+export function capAllTimers({ date }){
+  return function(dispatch, getState){
+    const state = getState()
+    const dayStartHour = state.settings.dayStartHour
+    const capDate = date.plus({ days: 1, hours: dayStartHour.hours, minutes: dayStartHour.minutes })
+    dispatch(pureCapAllTimers({ 
+      isoDate: date.toISO(), 
+      capIsoDate: capDate.toISO() 
+    }))
   }
 }

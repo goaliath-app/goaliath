@@ -11,8 +11,8 @@ export {
 } from './ActivitySlice' 
 
 export { 
-    createLog, addEntry, deleteOneTodaysEntry, toggleCompleted,
-    startTimer, stopTimer, sortTodayLog, upsertEntry,
+    createLog, addEntry, deleteOneTodaysEntry, toggleCompleted, deleteLog,
+    startTimer, stopTimer, sortTodayLog, upsertEntry, replaceEntry,
     selectAllLogs, selectLogById, selectTodayEntries, 
     selectThisWeekEntriesByActivityId, selectLogEntities, selectEntriesByDay,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate

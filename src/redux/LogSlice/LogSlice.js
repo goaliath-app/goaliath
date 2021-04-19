@@ -64,6 +64,12 @@ const logSlice = createSlice({
       const dayLog = state.entities[day].entries
       entryAdapter.upsertOne(dayLog, entry)
     },
+    replaceEntry(state, action){
+      const { date, entry } = action.payload
+      const day = date.toISO()
+      const dayLog = state.entities[day].entries.entities
+      dayLog[entry.id] = entry
+    },
     deleteEntry(state, action){
       const { date, entryId } = action.payload
       const today = date.toISO()
@@ -114,13 +120,41 @@ const logSlice = createSlice({
     setState(state, action){
       const { newState } = action.payload
       return newState
+    },
+    deleteLog(state, action){
+      const { isoDate } = action.payload
+      logAdapter.removeOne(state, isoDate)
+    },
+    capAllTimers(state, action){
+      const { isoDate, capIsoDate } = action.payload
+      const log = state.entities[isoDate]
+      const entries = log.entries.entities
+
+      for(let entryId in entries){
+        const entry = entries[entryId]
+
+        // remove all open intrevals that start past the cap date
+        entry.intervals = entry.intervals.filter((interval => (
+          interval.endDate ||
+          DateTime.fromISO(interval.startDate) < DateTime.fromISO(capIsoDate)
+        )))
+
+        // set open interval's endDate to capIsoDate
+        entry.intervals = entry.intervals.map((interval) => (
+          interval.endDate?
+            interval
+          :
+            {...interval, endDate: capIsoDate}
+        ))
+      }
     }
   }
 })
 
 export const { 
   createLog, addEntry, deleteEntry, toggleCompleted, startTimer, 
-  stopTimer, sortLog, upsertEntry, setState,
+  stopTimer, sortLog, upsertEntry, setState, deleteLog, replaceEntry,
+  capAllTimers
 } = logSlice.actions
 
 export const { 

@@ -1,18 +1,19 @@
 import { DateTime } from 'luxon'
-import { selectAllActivities,  createActivity, setState as setActivitiesState } from './ActivitySlice'
+import { selectAllActivities,  createActivity, setState as setActivitiesState, selectActivityById } from './ActivitySlice'
 import { selectGoalById, createGoal, setState as setGoalsState } from './GoalsSlice'
 import { 
-  deleteOneTodaysEntry, upsertEntry, selectEntryByActivityIdAndDate, selectLogById, 
-  createLog, addEntry, sortTodayLog, setState as setLogsState
+  deleteOneTodaysEntry, upsertEntry, sortLog, selectEntryByActivityIdAndDate, selectLogById, deleteEntry,
+  createLog, addEntry, sortTodayLog, setState as setLogsState, selectEntriesByDay, deleteLog, replaceEntry,
+  capAllTimers,
 } from './LogSlice'
-import { getToday } from './../util'
+import { getToday, startOfDay } from './../util'
 import { setState as setSettingsState } from './SettingsSlice'
 
 
 export function generateDummyData(){
   return function(dispatch, getState){
     const { dayStartHour } = getState().settings
-    const today = getToday(dayStartHour)
+    const today = getToday(dayStartHour).plus({day: -5})
     dispatch(createGoal({name: 'dummy goal'}))
     dispatch(createLog({date: today}))
     dispatch(createLog({date: today.plus({day: -1})}))
@@ -39,36 +40,127 @@ export function generateDummyData(){
   }
 }
 
+
+function getNewestDate(isoDatesList){
+  const epoch = DateTime.fromMillis(0)
+
+  const loggedDateTimes = isoDatesList.map((isoDate) => DateTime.fromISO(isoDate))
+  
+  const newestLogDate = loggedDateTimes.reduce((curr, prev) => {
+    return curr>=prev? curr : prev
+  }, epoch)
+
+  return newestLogDate
+}
+
 export function updateLogs(){
+  // TODO close open time intervals on day change.
   return function(dispatch, getState){
-    const state = getState()
-    const { dayStartHour } = state.settings
+    const { 
+      settings: { dayStartHour }, 
+      logs: { ids: loggedDatesISO } 
+    } = getState()
     const today = getToday(dayStartHour)
+    const epoch = DateTime.fromMillis(0)
     
-    if(!selectLogById(state, today)){ 
-      dispatch(createLog({date: today}))
+    // find latest logged day
+    let newestLogDate = getNewestDate(loggedDatesISO)
+
+    // if tomorrows log already exists (due to a daystarthour change)
+    while(newestLogDate > today){
+      dispatch(deleteLog({ isoDate: newestLogDate.toISO() }))
+      const { logs: { ids: newLoggedDatesISO } } = getState()
+      newestLogDate = getNewestDate(newLoggedDatesISO)
     }
 
+    // there are no logs
+    if(newestLogDate.toISO() == epoch.toISO()){
+      dispatch(createLog({ date: today }))
+      dispatch(updateLog({ date: today }))
+
+    // today log has already been created
+    }else if(newestLogDate.toISO() == today.toISO()){    
+      dispatch(unembalmLog({ date: today }))
+      dispatch(updateLog({ date: today }))
+
+    // there are logs, but today log has not been created yet
+    }else{
+      dispatch(capAllTimers({ date: newestLogDate }))
+
+      // from next day of newestLogDate to today (including both), create and update logs.
+      for(let date = newestLogDate.plus({ days: 1 }); date <= today; date = date.plus({ days: 1 })){
+        dispatch(createLog({ date }))
+        dispatch(updateLog({ date }))
+      }
+    
+      // from newestLogDate to yesterday (including both), embalm their logs.
+      for(let date = newestLogDate; date < today; date = date.plus({ days: 1 })){
+        dispatch(embalmLog({ date }))
+      }
+    }
+  }
+}
+
+function updateLog({ date }){
+  return function(dispatch, getState){
+    const state = getState() 
+    
     for(let activity of selectAllActivities(state)){
       const goal = selectGoalById(state, activity.goalId)
-      const oldLog = selectEntryByActivityIdAndDate(state, activity.id, getToday(state.settings.dayStartHour))
+      const oldLog = selectEntryByActivityIdAndDate(state, activity.id, date)
 
-      if(dueToday(today, activity, goal)){
+      if(dueToday(date, activity, goal)){
         if(oldLog){
-          dispatch(upsertEntry({date: today, entry: { ...oldLog, archived: false }}))
+          dispatch(upsertEntry({ date, entry: { ...oldLog, archived: false }}))
         }else{
           const entry = newEntry(activity)
-          dispatch(addEntry({date: today, entry}))
+          dispatch(addEntry({ date, entry }))
         }
       }else{
         if(oldLog?.intervals || oldLog?.completed){
-          dispatch(upsertEntry({date: today, entry: { ...oldLog, archived: true }}))
+          dispatch(upsertEntry({ date, entry: { ...oldLog, archived: true }}))
         }else if(oldLog){
-          dispatch(deleteOneTodaysEntry(oldLog.id))
+          dispatch(deleteEntry({ date, entryId: oldLog.id }))
         }
       }
     }
-    dispatch(sortTodayLog())
+    dispatch(sortLog({ date }))
+  }
+}
+
+function embalmLog({ date }){
+  /* Puts into all entries of the specified date the current data
+  of their corresponding activities. This way, even if the activity
+  name, repeatMode or whatever gets changed, it won't change the embalmed
+  logs appearance in the calendar. */
+  return function(dispatch, getState){
+    const state = getState()
+    const logEntries = selectEntriesByDay(state, date)
+    for(let entry of logEntries){
+      const activity = selectActivityById(state, entry.id)
+      const embalmedEntry = { ...activity, ...entry, embalmed: true }
+      dispatch(upsertEntry({ date, entry: embalmedEntry }))
+    }
+  }
+}
+
+function unembalmLog({ date }){
+  return function(dispatch, getState){
+    const state = getState()
+    const log = selectLogById(state, date.toISO())
+    const entries = log.entries.entities
+    for(let entryId in entries){
+      const entry = entries[entryId]
+      if(entry.embalmed){
+        const unembalmedEntry = {
+          ...newEntry({ id: entry.id }),
+          completed: entry.completed,
+          intervals: entry.intervals
+        }
+
+        dispatch(replaceEntry({ date, entry: unembalmedEntry }))
+      }
+    }
   }
 }
 

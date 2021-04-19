@@ -54,19 +54,24 @@ const CalendarStack = () => (
 )
 
 export default function App() {
-  useEffect(() => {
-    // store.dispatch(generateDummyData())
-    store.dispatch(updateLogs())
-  })
+  // useEffect(() => {
+  //   store.dispatch(generateDummyData())
+  // }, [])
+
   const [newUser, setNewUser] = React.useState()
+
   function finishOnboarding(){
     store.dispatch(finishOnboardingAction())
     setNewUser(false)
   }
 
+  function onStoreRehydration(){
+    setNewUser(store.getState().settings.newUser)
+  }
+
   return (
     <ReduxProvider store={store}>
-      <PersistGate loading={null} persistor={persistor} onBeforeLift={()=>setNewUser(store.getState().settings.newUser)}>
+      <PersistGate loading={null} persistor={persistor} onBeforeLift={()=>onStoreRehydration()}>
         <PaperProvider>
           <NavigationContainer>
             {newUser?
