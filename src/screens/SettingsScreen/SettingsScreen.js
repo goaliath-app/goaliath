@@ -3,18 +3,21 @@ import { View, Share } from 'react-native'
 import { connect, useStore } from 'react-redux';
 import { Text, List, Divider, Paragraph, Portal, Dialog, Button } from 'react-native-paper'
 import { DateTime } from 'luxon'
-import { setDayStartHour, importState } from '../../redux'
+import { setDayStartHour, importState, setLanguage } from '../../redux'
 import { Header } from '../../components'
 import DateTimePickerModal from "react-native-modal-datetime-picker"
 import email from 'react-native-email'
 import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker'
+import { useTranslation } from 'react-i18next'
 
 
-const SettingsScreen = ({ settings, setDayStartHour, navigation, state, importState }) => {
+const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, state, importState }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
 
+  const { t, i18n } = useTranslation()
+  
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -29,9 +32,13 @@ const SettingsScreen = ({ settings, setDayStartHour, navigation, state, importSt
     setDayStartHour(dateTime.toISO());
   };
 
-  const [dialogVisible, setDialogVisible] = React.useState(false);
-  const showDialog = () => setDialogVisible(true);
-  const hideDialog = () => setDialogVisible(false);
+  const [languageDialogVisible, setLanguageDialogVisible] = React.useState(false);
+  const showLanguageDialog = () => setLanguageDialogVisible(true);
+  const hideLanguageDialog = () => setLanguageDialogVisible(false);
+
+  const [importDialogVisible, setImportDialogVisible] = React.useState(false);
+  const showImportDialog = () => setImportDialogVisible(true);
+  const hideImportDialog = () => setImportDialogVisible(false);
   
   const [text, setText] = React.useState('');
 
@@ -40,7 +47,7 @@ const SettingsScreen = ({ settings, setDayStartHour, navigation, state, importSt
       .then(({ type, uri }) => FileSystem.readAsStringAsync(uri)
         .then((text) => {
           setText(text)
-          showDialog()
+          showImportDialog()
           }
         )
       )
@@ -48,17 +55,17 @@ const SettingsScreen = ({ settings, setDayStartHour, navigation, state, importSt
 
   function importStateFromText(text){
     // TODO: dont break if file is bad formatted
-    hideDialog()
+    hideImportDialog()
     const state = JSON.parse(text)
     importState(state)
   }
 
   return (
     <View>
-      <Header title='Settings' left='hamburger' navigation={navigation}/>
+      <Header title={t('settings.headerTitle')} left='hamburger' navigation={navigation}/>
       <List.Item 
-        title="Start of next day"
-        description='At this time the daily activities will reset.' 
+        title={t('settings.startHour')}
+        description={t('settings.startHourDescription')}
         onPress={showDatePicker} 
         right={() => <Text style={{marginRight: 10, marginTop: 10, color:'blue', fontSize: 17}}>{DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}</Text>} />
       <DateTimePickerModal
@@ -70,42 +77,61 @@ const SettingsScreen = ({ settings, setDayStartHour, navigation, state, importSt
       />
       <Divider />
       <List.Item
-        title='Send feedback'
-        description='Send a message to the developers'
+        title={t('settings.feedback')}
+        description={t('settings.feedbackDescription')}
         onPress={() => email('jimenaa971@gmail.com')}
       />
       <Divider />
       <List.Item
-        title='Share'
-        description='Introduce us to your friends'
-        onPress={() => Share.share({message:"Goaliath is a nice app to achieve your goals, ¡try it!\n\nIt is not available from the play store yet, but you can download it here: (android)\nhttps://anonfiles.com/r4G5B4raue/Goaliath-1ac4cc84001d4f32980c40e9869c79d9-signed_apk \n\nIt is open source, you can check the code here: \nhttps://github.com/OliverLSanz/routines-app"})}
+        title={t('settings.share')}
+        description={t('settings.shareDescription')}
+        onPress={() => Share.share({message: t('settings.shareMessage')})}
       />
       <Divider />
       <List.Item
-        title='Export'
-        description='Save your data'
+        title={t('settings.export')}
+        description={t('settings.exportDescription')}
         onPress={() => writeFile(state)}
       />
       <Divider />
       <List.Item
-        title='Import'
-        description='Do you have any backup? Restore your data'
+        title={t('settings.import')}
+        description={t('settings.importDescription')}
         onPress={() => readFile()}
       />
       <Divider />
+      <List.Item
+        title={t('settings.language')}
+        description={t('settings.languageDescription')}
+        onPress={() => showLanguageDialog()}
+        right={() => <Text style={{marginRight: 10, marginTop: 10, color:'blue', fontSize: 17}}>{t('settings.languageLocale')}</Text>} />
+      <Divider />
 
       <Portal>
-        <Dialog visible={dialogVisible} onDismiss={() => {hideDialog()}}>
-          <Dialog.Title>Import data?</Dialog.Title>
+        <Dialog visible={importDialogVisible} onDismiss={() => {hideImportDialog()}}>
+          <Dialog.Title>{t('settings.importDialog.title')}</Dialog.Title>
           <Dialog.Content>
-            <Paragraph>This can't be undone, your app data will be rewrite.</Paragraph>
+            <Paragraph>{t('settings.importDialog.content')}</Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => importStateFromText(text)}>Import</Button>
-            <Button onPress={() => hideDialog()}>Cancel</Button>
+            <Button onPress={() => importStateFromText(text)}>{t('settings.importDialog.buttonAcept')}</Button>
+            <Button onPress={() => hideImportDialog()}>{t('settings.importDialog.buttonCancel')}</Button>
           </Dialog.Actions>
         </Dialog>
+
+        <Dialog visible={languageDialogVisible} onDismiss={() => {hideLanguageDialog()}}>
+          <Dialog.Title>{t('settings.languageDialog.title')}</Dialog.Title>
+            <Dialog.Content>
+              <Divider />
+              <List.Item title={t('settings.languageDialog.english')} onPress={() => {i18n.changeLanguage('en'); setLanguage('en'); hideLanguageDialog(); /*onChangeLanguage()*/}} />
+              <Divider />
+              <List.Item title={t('settings.languageDialog.spanish')} onPress={() => {i18n.changeLanguage('es'); setLanguage('es'); hideLanguageDialog(); /*onChangeLanguage()*/}} />
+              <Divider />
+            </Dialog.Content>
+        </Dialog>
+
       </Portal>
+
 
     </View>
     
@@ -127,7 +153,8 @@ const mapStateToProps = (state) => {
 
 const actionToProps = {
     setDayStartHour,
-    importState
+    importState,
+    setLanguage
 }
 
 export default connect(mapStateToProps, actionToProps)(SettingsScreen);

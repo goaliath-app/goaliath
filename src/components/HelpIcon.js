@@ -3,11 +3,14 @@ import { View, Pressable } from 'react-native'
 import { Portal, Button, Dialog, Text } from 'react-native-paper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import  { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
+import { useTranslation } from 'react-i18next'
 
 const HelpIcon = ({
   dialogContent
 }) => {
   const [ visible, setVisible ] = React.useState(false)
+
+  const { t, i18n } = useTranslation()
 
   return(
     <View>
@@ -23,7 +26,7 @@ const HelpIcon = ({
             {dialogContent}
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => {setVisible(false)}}>OK</Button>
+            <Button onPress={() => {setVisible(false)}}>{t('helpIcon.closeButton')}</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

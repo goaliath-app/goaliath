@@ -13,6 +13,8 @@ import {
   GoalFormScreen, CalendarScreen, SettingsScreen, DayInCalendarScreen, OnboardingScreen
 } from './src/screens'
 import { store, generateDummyData, updateLogs, finishOnboarding as finishOnboardingAction } from './src/redux'
+import i18n from './src/i18n'
+import { useTranslation } from 'react-i18next'
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -67,7 +69,10 @@ export default function App() {
 
   function onStoreRehydration(){
     setNewUser(store.getState().settings.newUser)
+    i18n.changeLanguage(store.getState().settings.language)
   }
+
+  const { t, i18 } = useTranslation()
 
   return (
     <ReduxProvider store={store}>
@@ -78,11 +83,11 @@ export default function App() {
             <OnboardingScreen finishOnboarding={finishOnboarding}/>
           : 
             <Drawer.Navigator initialRouteName='Today'>
-              <Drawer.Screen name='Today' component={TodayStack} />
-              <Drawer.Screen name='Week' component={WeekStack} />
-              <Drawer.Screen name='Goals' component={GoalsStack} />
-              <Drawer.Screen name='Calendar' component={CalendarStack} />
-              <Drawer.Screen name='Settings' component={SettingsScreen} />
+              <Drawer.Screen name='Today' component={TodayStack} options={{ title: t('app.drawer.today') }} />
+              <Drawer.Screen name='Week' component={WeekStack} options={{ title: t('app.drawer.week') }} />
+              <Drawer.Screen name='Goals' component={GoalsStack} options={{ title: t('app.drawer.goals') }} />
+              <Drawer.Screen name='Calendar' component={CalendarStack} options={{ title: t('app.drawer.calendar') }} />
+              <Drawer.Screen name='Settings' component={SettingsScreen} options={{ title: t('app.drawer.settings') }} />
             </Drawer.Navigator>
           } 
           </NavigationContainer>

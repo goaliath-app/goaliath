@@ -4,6 +4,7 @@ import { Button, List, Checkbox, Divider } from 'react-native-paper';
 import { TimeInput } from '../../components';
 import { getTodayTime, isActivityRunning, isToday, startOfDay } from '../../util'
 import { DateTime } from 'luxon';
+import { useTranslation } from 'react-i18next'
 
 const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntry, date, dayStartHour }) => {
     React.useEffect(() => {
@@ -14,6 +15,8 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
         return () => clearInterval(intervalId)
       }
     }, [entry.intervals])
+
+    const { t, i18n } = useTranslation()
   
     function onPressPlay(){
       startTimer(entry.id)
@@ -68,15 +71,15 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
     return(
       <View>
         <List.Item
-          title='Today'
+          title={t('todayPannel.title')}
           right={() => <Checkbox status={entry.completed? 'checked':'unchecked'} onPress={() => {toggleCompleted({date: date, id: entry.id})} }/>}
         />
         <TimeInput seconds={seconds} minutes={minutes} hours={hours} setHours={setHours} setMinutes={setMinutes} setSeconds={setSeconds} />
         {dateIsToday?
           (isActivityRunning(entry.intervals)?
-            <Button onPress={onPressPause}>Stop Timer</Button>
+            <Button onPress={onPressPause}>{t('todayPannel.stopButton')}</Button>
           :
-            <Button onPress={onPressPlay}>Start Timer</Button>)
+            <Button onPress={onPressPlay}>{t('todayPannel.startButton')}</Button>)
         : null
         }
         <Divider />

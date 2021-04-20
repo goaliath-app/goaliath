@@ -6,20 +6,23 @@ import { ActivityList } from '../../components'
 import { Header, InfoCard } from '../../components';
 import { updateLogs } from '../../redux'
 import { extractActivityLists, getToday, hasSomethingToShow } from '../../util'
+import { useTranslation } from 'react-i18next'
 
 
 const WeekScreen = ({ todaysActivities, navigation, updateLogs }) => {
+  const { t, i18n } = useTranslation()
+
+  const infoContent = t('week.infoContent')
+  
   useFocusEffect(
     React.useCallback(() => {
       updateLogs()
     }, [])
   )
 
-  const infoContent = 'There are no activities scheduled for this week. You can go to the "Goals" section of the app to create new activities.'
-
   return(
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <Header title='This Week' left='hamburger' navigation={navigation}/>
+      <Header title={t('week.headerTitle')} left='hamburger' navigation={navigation}/>
       {hasSomethingToShow(todaysActivities)?
         <ActivityList data={todaysActivities} />
       :

@@ -22,4 +22,4 @@ export {
     generateDummyData, updateLogs, importState,
 } from './Thunks'
 
-export { setDayStartHour, finishOnboarding } from './SettingsSlice'
+export { setDayStartHour, finishOnboarding, setLanguage } from './SettingsSlice'

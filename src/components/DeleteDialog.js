@@ -1,7 +1,11 @@
 import React from 'react';
 import { Paragraph, Portal, Dialog, Button } from 'react-native-paper';
+import { useTranslation } from 'react-i18next'
+
 
 const DeleteDialog = ({visible, setVisible, onDelete, title, body}) => {
+  const { t, i18n } = useTranslation()
+
     return (
       <Portal>
         <Dialog visible={visible} onDismiss={() => {setVisible(false)}}>
@@ -10,8 +14,8 @@ const DeleteDialog = ({visible, setVisible, onDelete, title, body}) => {
             <Paragraph>{body}</Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={onDelete}>Delete</Button>
-            <Button onPress={() => {setVisible(false)}}>Cancel</Button>
+            <Button onPress={onDelete}>{t('deleteDialog.delete')}</Button>
+            <Button onPress={() => {setVisible(false)}}>{t('deleteDialog.cancel')}</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

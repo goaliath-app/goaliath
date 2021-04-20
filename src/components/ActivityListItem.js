@@ -10,6 +10,7 @@ import PlayFilledIcon from '../../assets/play-filled'
 import PlayOutlinedIcon from '../../assets/play-outlined'
 import PauseFilledIcon from '../../assets/pause-filled'
 import PauseOutlinedIcon from '../../assets/pause-outlined'
+import { useTranslation } from 'react-i18next'
 
 const ActivityListItem = ({ 
   timeGoal,    // number of seconds of the time goal for this activity or null if it is not a timed activity
@@ -36,6 +37,8 @@ const ActivityListItem = ({
       toggleCompleted({date: date, id: id})
     }
   }
+
+  const { t, i18n } = useTranslation()
 
   React.useEffect(() => {
     update()
@@ -116,13 +119,14 @@ const ActivityListItem = ({
   }
 
   if((repeatMode == 'daily' || repeatMode == 'select') && timeGoal){
-    const expression = getPreferedExpression(timeGoal)
-    description = `Goal: ${expression.value} ${expression.unit}`
+    const expression = getPreferedExpression(timeGoal, t)
+    description = t('activityListItem.description.todayTimeGoal', { expressionValue: expression.value, expressionUnit: expression.localeUnit })
   }else if(repeatMode=='weekly' && !timeGoal){
-    description = `Done ${totalTimes} of ${timesPerWeek} days`
+    description = t('activityListItem.description.weekCheck', { totalTimes, timesPerWeek })
   }else if(repeatMode=='weekly' && timeGoal){
-    const expression = getPreferedExpression(timeGoal)
-    description = `Done ${roundValue(totalTime.as(expression.unit))} of ${expression.value} ${expression.unit}`
+    const expression = getPreferedExpression(timeGoal, t)
+    const weeklyTimeNumber = roundValue(totalTime.as(expression.unit))
+    description = t('activityListItem.description.weekTimeGoal', {weeklyTimeNumber, expressionValue: expression.value, expressionUnit: expression.localeUnit})
   }
 
   if(todayTime.as('seconds') > 0){

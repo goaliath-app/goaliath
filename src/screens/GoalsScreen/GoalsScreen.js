@@ -6,6 +6,7 @@ import { List, Switch, Appbar } from 'react-native-paper';
 import { Header, InfoCard } from '../../components'
 import { selectAllGoals, toggleGoal } from '../../redux'
 import { hasSomethingToShow } from '../../util'
+import { useTranslation } from 'react-i18next'
 
 
 const GoalListItem = ({ name, active, toggleGoal, id }) => {
@@ -29,19 +30,21 @@ const GoalListItem = ({ name, active, toggleGoal, id }) => {
 const GoalsScreen = ({ navigation, goals, toggleGoal }) => {
   const renderItem = ({ item }) => (
     <GoalListItem
-      id={item.id}
-      name={item.name}
-      active={item.active} 
-      toggleGoal={toggleGoal}
-      motivation={item.motivation} />
-  )
-
-  const infoContent = "You have no goals right now.\n\nGoals are the base of Goaliath. They are the meaningful things you want to archieve, work on or dedicate time to.\n\nYou can create a new goal pressing the + icon on the top right."
-
+    id={item.id}
+    name={item.name}
+    active={item.active} 
+    toggleGoal={toggleGoal}
+    motivation={item.motivation} />
+    )
+    
+  const { t, i18n } = useTranslation()
+    
+  const infoContent = t('goals.infoContent')
+  
   return(
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <Header 
-        title='Goals' left='hamburger' navigation={navigation} 
+        title={t('goals.headerTitle')} left='hamburger' navigation={navigation} 
         buttons={
           <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} />
         }/>

@@ -6,6 +6,7 @@ import { Header, ThreeDotsMenu, DeleteDialog, InfoCard } from '../../components'
 import { useNavigation } from '@react-navigation/native';
 import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal } from '../../redux'
 import { frequency, hasSomethingToShow } from '../../util'
+import { useTranslation } from 'react-i18next'
 
 const data = [
   {name: 'Study Anki', repeatMode: 'daily', active: true},
@@ -14,6 +15,7 @@ const data = [
 
 const Activity = ({ name, active, id, toggleActivity, activity }) => {
   const navigation = useNavigation();
+  const { t, i18 } = useTranslation()
 
   return (
     <List.Item
@@ -27,7 +29,7 @@ const Activity = ({ name, active, id, toggleActivity, activity }) => {
           />
         </Pressable>
       )}
-      description={frequency(activity)} 
+      description={frequency(activity, t)} 
     />
         
   );
@@ -38,10 +40,14 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
   const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
-  
+
+  const { t, i18n } = useTranslation()
+
+  const infoContent = t('goal.infoContent')
+
   const menuItems = (
     <>
-    <Menu.Item title='Edit goal' 
+    <Menu.Item title={t('goal.threeDotsMenu.editGoal')} 
       onPress={() => {
         closeMenu()
         navigation.navigate('GoalForm', { id: goal.id } )
@@ -50,7 +56,7 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
     <Menu.Item onPress={() => {
       setMenuVisible(false)
       setDeleteDialogVisible(true)
-      }} title='Delete goal' />
+      }} title={t('goal.threeDotsMenu.deleteGoal')}  />
     </>
   )
 
@@ -73,7 +79,6 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
     </>
   )
 
-  const infoContent = "This goal doesn't have any activities yet.\n\nAn activity is a recurring task that may have a time dedication requisite or not.\n\nFor each goal you should create the activities that you believe will make you reach the goal if done consistently.\n\nDesigning your activities this way will allow you to go to bed thinking: \"Today I've done all I had to\"."
 
   return (
     <>
@@ -85,8 +90,8 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
         setDeleteDialogVisible(false)
         navigation.goBack()
       }}
-      title='Delete goal?'
-      body="This will delete all its activities. Can't be undone."
+      title={t('goal.deleteDialog.title')}
+      body={t('goal.deleteDialog.body')}
     />
     <View style={{height: '100%', justifyContent: 'space-between', backgroundColor: 'white'}}>
       <View>

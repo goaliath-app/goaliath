@@ -8,7 +8,7 @@ import { Header, InfoCard } from '../../components';
 import { updateLogs } from '../../redux'
 import { extractActivityLists, getToday, hasSomethingToShow } from '../../util'
 import createPersistoid from 'redux-persist/es/createPersistoid';
-
+import { useTranslation } from 'react-i18next'
 
 const data = [
   {name: 'Anki', completed: true, current: false, period: 'daily', intervals: []},
@@ -25,17 +25,20 @@ const TodayScreen = ({ todaysActivities, navigation, updateLogs, dayStartHour })
       updateLogs()
     }, [])
   )
+  
+  const { t, i18n } = useTranslation()
 
-  const infoContent = 'There are no activities scheduled for today. You can go to the "Goals" section of the app to create new activities.'
-
+  const infoContent = t('today.infoContent')
+  
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <Header title='Today' left='hamburger' navigation={navigation}/>
+      <Header title={t('today.headerTitle')} left='hamburger' navigation={navigation}/>
       {hasSomethingToShow(todaysActivities)?
         <ActivityList data={todaysActivities} />
       :
         <InfoCard content={infoContent} />
       }
+  
     </View>
   );
 }

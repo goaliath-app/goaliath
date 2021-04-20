@@ -4,12 +4,15 @@ import { View, StyleSheet, Alert } from 'react-native';
 import { Subheading, Appbar, Text, TextInput, Button, List, Checkbox } from 'react-native-paper';
 import { Header, TimeInput } from '../../components';
 import { createActivity, updateActivity, selectActivityById } from '../../redux'
+import { useTranslation } from 'react-i18next'
 
 
 const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId=null, activity=null }) => {
   if(activity){
     goalId = activity.goalId
   }
+
+  const { t, i18n } = useTranslation()
   
   const [name, setName] = React.useState(activity?.name?activity.name:'');
   const [repeatMode, setRepeatMode] = React.useState(activity?.repeatMode?activity.repeatMode:null);  // 'daily', 'select' or 'weekly'
@@ -25,23 +28,23 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
   const validate = ( newActivity ) => {
     const { name, repeatMode, goal, goalId, timeGoal, weekDays } = newActivity
     if(!name || !repeatMode || !goal || !goalId){
-      Alert.alert('Missing name, repeatMode, goal or goalId')
+      Alert.alert(t('activityForm.alerts.multipleMissing'))
       return false
     }
     if(goal == 'time' && !timeGoal){
-      Alert.alert('Please enter a time')
+      Alert.alert(t('activityForm.alerts.noTimeGoal'))
       return false
     }
     if(repeatMode == 'select'){
       for(let day in weekDays){
         if (weekDays[day] == true){ return true }
       }
-      Alert.alert('Please select at least one day')
+      Alert.alert(t('activityForm.alerts.noSelectDays'))
       return false
     }
     if(repeatMode == 'weekly' && goal == 'check'){
       if(!timesPerWeek){
-        Alert.alert('Please enter number of days per week')
+        Alert.alert(t('activityForm.alerts.noWeekCheck'))
         return false
       }
     }
@@ -79,24 +82,34 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
 
   return(
     <View>
-      <Header title={activity?.name?activity.name:'New Activity'} left='back' navigation={navigation} buttons={headerButtons}/>
-      <TextInput style={styles.textInput} mode= 'outlined' label="Activity's name" value={name} onChangeText={name => setName(name)} />
-      <ActivityTypeSelector repeatMode={repeatMode} setRepeatMode={setRepeatMode}/>
+      <Header 
+        title={activity?.name?activity.name:t('activityForm.headerTitle')} 
+        left='back' navigation={navigation} 
+        buttons={headerButtons}
+      />
+      <TextInput 
+        style={styles.textInput} 
+        mode= 'outlined' 
+        label={t('activityForm.activity.nameTextInput')} 
+        value={name} 
+        onChangeText={name => setName(name)} 
+      />
+      <ActivityTypeSelector repeatMode={repeatMode} setRepeatMode={setRepeatMode} t={t} />
       {repeatMode=='select'?
-        <WeekdaySelector weekDays={weekDays} setWeekDays={setWeekDays}/>
+        <WeekdaySelector weekDays={weekDays} setWeekDays={setWeekDays} t={t} />
       : <></>}
       {repeatMode=='daily' || repeatMode=='select'?
-        <TimeGoal goal={goal} setGoal={setGoal} />
+        <TimeGoal goal={goal} setGoal={setGoal} t={t} />
       : <></> }
       {repeatMode=='weekly'?
         <>
-        <Subheading style={styles.subheading}>Goal</Subheading>
-        <WeeklyGoalSelector goal={goal} setGoal={setGoal} />
+        <Subheading style={styles.subheading}>{t('activityForm.activity.weeklyGoal')}</Subheading>
+        <WeeklyGoalSelector goal={goal} setGoal={setGoal} t={t} />
         </>
       : <></> }
       {goal=='time' && repeatMode == 'weekly'?
       <>
-        <Subheading style={styles.subheading}>How much time?</Subheading>
+        <Subheading style={styles.subheading}>{t('activityForm.activity.weeklyTimeGoal')}</Subheading>
         <TimeInput
           hours={hours} setHours={setHours} 
           minutes={minutes} setMinutes={setMinutes} 
@@ -112,7 +125,7 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
         />
       : <></> }
       {goal=='check' && repeatMode == 'weekly'?
-        <NumberOfWeeklyDaysInput timesPerWeek={timesPerWeek} setTimesPerWeek={setTimesPerWeek} />
+        <NumberOfWeeklyDaysInput timesPerWeek={timesPerWeek} setTimesPerWeek={setTimesPerWeek} t={t}/>
       : <></> }
     </View>
   )
@@ -131,51 +144,53 @@ const ButtonSwitchBar = ({ options, state, setState }) => (
   </View>
 )
 
-const NumberOfWeeklyDaysInput = ({ timesPerWeek, setTimesPerWeek }) => (
+const NumberOfWeeklyDaysInput = ({ timesPerWeek, setTimesPerWeek, t }) => (
   <View>
-    <Subheading style={styles.subheading}>How many days per week?</Subheading>
+    <Subheading style={styles.subheading}>{t('activityForm.activity.weeklyDaysGoal')}</Subheading>
     <TextInput style={styles.numberInput} value={timesPerWeek} onChangeText={setTimesPerWeek}  keyboardType='numeric' />
   </View>
 )
 
-const WeeklyGoalSelector = ( {goal, setGoal }) => (
-  <ButtonSwitchBar
-    options={[
-      {label: 'complete', value: 'check'},
-      {label: 'dedicate time', value: 'time'}
-    ]} 
-    state={goal} setState={setGoal} />
-)
-
-const ActivityTypeSelector = ({ repeatMode, setRepeatMode }) => (
-  <>
-    <Subheading style={styles.subheading}>Repeat</Subheading>
+const WeeklyGoalSelector = ( {goal, setGoal, t }) => (
     <ButtonSwitchBar
       options={[
-        {label: 'daily', value: 'daily'},
-        {label: 'select days', value: 'select'},
-        {label: 'weekly', value: 'weekly'},
-      ]}
-      state={repeatMode} setState={setRepeatMode}
-    />
-    <PeriodDescription repeatMode={repeatMode} />
-  </>
-)
+        {label: t('activityForm.activity.weeklyDays'), value: 'check'},
+        {label: t('activityForm.activity.weeklyTime'), value: 'time'}
+      ]} 
+      state={goal} setState={setGoal} />
+  )
 
-const PeriodDescription = ({ repeatMode }) => {
+
+const ActivityTypeSelector = ({ repeatMode, setRepeatMode, t }) => (
+    <>
+      <Subheading style={styles.subheading}>{t('activityForm.activity.repeat')}</Subheading>
+      <ButtonSwitchBar
+        options={[
+          {label: t('activityForm.activity.repeatDaily'), value: 'daily'},
+          {label: t('activityForm.activity.repeatSelect'), value: 'select'},
+          {label: t('activityForm.activity.repeatWeekly'), value: 'weekly'},
+        ]}
+        state={repeatMode} setState={setRepeatMode}
+      />
+      <PeriodDescription repeatMode={repeatMode} t={t} />
+    </>
+  )
+
+
+const PeriodDescription = ({ repeatMode, t }) => {
   let out = <></>
 
   switch(repeatMode) {
     case 'daily':
       out = (
-        <Text style={styles.infoText}>You will do the activity every day.</Text>
+        <Text style={styles.infoText}>{t('activityForm.activity.repeatDailyDescription')}</Text>
       );
       break;
     case 'select':
-      out = <Text style={styles.infoText}>You will do the activity these days.</Text>;
+      out = <Text style={styles.infoText}>{t('activityForm.activity.repeatSelectDescription')}</Text>;
       break;
     case 'weekly':
-      out = <Text style={styles.infoText}>You can do the activity any day of the week.</Text>
+      out = <Text style={styles.infoText}>{t('activityForm.activity.repeatWeeklyDescription')}</Text>
       break;
   }
   
@@ -184,34 +199,30 @@ const PeriodDescription = ({ repeatMode }) => {
   )
 }
 
-const TimeGoal = ({ 
-    goal, setGoal
-  }) => {
-  return (
+const TimeGoal = ({ goal, setGoal, t }) => (
     <>
-    <List.Item 
-      title='Time dedication goal' 
-      right={()=>(
-        <Checkbox
-          status={goal=='time' ? 'checked' : 'unchecked'}
-          onPress={() => {setGoal(goal!=='time'?'time':'check')}}
-        />
-      )}
-    />
-    
+      <List.Item 
+        title={t('activityForm.activity.timeGoal')}
+        right={()=>(
+          <Checkbox
+            status={goal=='time' ? 'checked' : 'unchecked'}
+            onPress={() => {setGoal(goal!=='time'?'time':'check')}}
+          />
+        )}
+      />
     </>
   )
-}
 
-const WeekdaySelector = ({ weekDays, setWeekDays }) => (
+
+const WeekdaySelector = ({ weekDays, setWeekDays, t }) => (
   <View style={styles.weekdaySelectorView}>
-    <WeekdaySelectorItem label='Mo' day='1' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem label='Tu' day='2' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem label='We' day='3' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem label='Th' day='4' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem label='Fr' day='5' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem label='Sa' day='6' weekDays={weekDays} setWeekDays={setWeekDays}/>
-    <WeekdaySelectorItem label='Su' day='7' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label={t('units.dayNamesInitials.monday')} day='1' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label={t('units.dayNamesInitials.tuesday')} day='2' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label={t('units.dayNamesInitials.wednesday')} day='3' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label={t('units.dayNamesInitials.thursday')} day='4' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label={t('units.dayNamesInitials.friday')} day='5' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label={t('units.dayNamesInitials.saturday')} day='6' weekDays={weekDays} setWeekDays={setWeekDays}/>
+    <WeekdaySelectorItem label={t('units.dayNamesInitials.sunday')} day='7' weekDays={weekDays} setWeekDays={setWeekDays}/>
   </View>
 )
 

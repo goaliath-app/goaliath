@@ -12,6 +12,7 @@ import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
 import { GenericStats, WeekStats } from './Stats'
 import { isToday } from '../../util'
+import { useTranslation } from 'react-i18next'
 
 const ActivityDetailScreen = ({ 
   activity,           // activity object to show on the screen (see ActivitySlice)
@@ -36,10 +37,12 @@ const ActivityDetailScreen = ({
   const openDeleteDialog = () => setDeleteDialogVisible(true)
   const closeDeleteDialog = () => setDeleteDialogVisible(false)
 
+  const { t, i18n } = useTranslation()
+
   // items that appear in the three dots menu
   const menuItems = (
     <>
-    <Menu.Item title='Edit activity'
+    <Menu.Item title={t('activityDetail.threeDotsMenu.editActivity')} 
       onPress={() => {
         closeMenu()
         navigation.navigate('ActivityForm', { activityId: activity.id })
@@ -48,7 +51,7 @@ const ActivityDetailScreen = ({
     <Menu.Item onPress={() => {
       openDeleteDialog()
       closeMenu()
-    }} title='Delete activity' />
+    }} title={t('activityDetail.threeDotsMenu.deleteActivity')}  />
     </>
   )
 
@@ -73,7 +76,7 @@ const ActivityDetailScreen = ({
             right={() => (
               <View style={{alignSelf: 'center', paddingRight: 12}}>
                 <HelpIcon dialogContent={
-                  <Paragraph>These are the details of a past activity. Even if you have modified the activity goal or frequency, here you will see them as they were this specific day.</Paragraph>
+                  <Paragraph>{t('activityDetail.helpIconText')}</Paragraph>
                 }/>
               </View>
             )}
@@ -108,8 +111,8 @@ const ActivityDetailScreen = ({
           closeDeleteDialog()
           navigation.goBack()
         }}
-        title="Delete activity?"
-        body="This can't be undone."
+        title={t('activityDetail.deleteDialog.title')}
+        body={t('activityDetail.deleteDialog.body')}
       />
 
     </View>

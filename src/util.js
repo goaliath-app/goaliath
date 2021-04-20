@@ -52,13 +52,18 @@ export function roundValue(value){
   return Math.round((value + Number.EPSILON) * 10) / 10
 }
 
-export function getPreferedExpression(duration){
+export function getPreferedExpression(duration, t){
   if(!Duration.isDuration(duration)){
     duration = Duration.fromObject({seconds: duration}).shiftTo('hours', 'minutes', 'seconds')
   }
   const unit = getPreferedExpressionUnit(duration)
   const value = roundValue(duration.as(unit))
-  return {value: value, unit: unit}
+  const unitStrings = {
+    'seconds': t('units.time.seconds'),
+    'minutes': t('units.time.minutes'),
+    'hours': t('units.time.hours')
+  }
+  return {value: value, unit, localeUnit: unitStrings[unit]}
 }
 
 export function newEntry(activity){
@@ -151,42 +156,50 @@ export function getToday(dayStartHour){
   returns DateTime */
   return startOfDay(DateTime.now(), dayStartHour)
 }
-export function frequency(activity){
+export function frequency(activity, t){
   let frequency 
     switch(activity.repeatMode){
       case 'weekly':
         if(activity.goal=='check'){
-          frequency = `${activity.timesPerWeek} days per week.`
+          frequency = t('util.frequency.weekly.check', { activityTimesPerWeek: activity.timesPerWeek })
         }else{
-          const expression = getPreferedExpression(activity.timeGoal)
-          frequency = `${expression.value} ${expression.unit} per week.`
+          const expression = getPreferedExpression(activity.timeGoal, t)
+          frequency = t('util.frequency.weekly.time', { expressionValue: expression.value, expressionUnit: expression.localeUnit })
         }
         break
       case 'select':
         let days = ''
-        const labels = {1: 'Mon', 2: 'Tue', 3: 'Wed', 4: 'Thu', 5: 'Fri', 6: 'Sat', 7: 'Sun'}
+        const labels = {
+          1: t('units.dayNamesShort2.monday'), 
+          2: t('units.dayNamesShort2.tuesday'), 
+          3: t('units.dayNamesShort2.wednesday'), 
+          4: t('units.dayNamesShort2.thursday'), 
+          5: t('units.dayNamesShort2.friday'), 
+          6: t('units.dayNamesShort2.saturday'), 
+          7: t('units.dayNamesShort2.sunday')
+        }
         for (let day in activity.weekDays){
           if (activity.weekDays[day]){
             days = `${days} ${labels[day]}`
           }
         }
         if(activity.goal=='check'){
-          frequency = `Do on ${days}`
+          frequency = t('util.frequency.select.check', { days })
         }else{
-          const expression = getPreferedExpression(activity.timeGoal)
-          frequency = `${expression.value} ${expression.unit} on ${days}`
+          const expression = getPreferedExpression(activity.timeGoal, t)
+          frequency = t('util.frequency.select.time', { expressionValue: expression.value, expressionUnit: expression.localeUnit, days })
         }
         break
       case 'daily':
         if(activity.goal=='check'){
-          frequency = "Every day."
+          frequency = t('util.frequency.daily.check')
         }else{
-          const expression = getPreferedExpression(activity.timeGoal)
-          frequency = `${expression.value} ${expression.unit} every day.`
+          const expression = getPreferedExpression(activity.timeGoal, t)
+          frequency = t('util.frequency.daily.time', { expressionValue: expression.value, expressionUnit: expression.localeUnit })
         }
         break
       default:
-        frequency = 'ERROR'
+        frequency = t('util.frequency.error')
     }
   return (frequency)
 }

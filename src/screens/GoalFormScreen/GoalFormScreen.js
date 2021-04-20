@@ -4,16 +4,19 @@ import { View, Alert, StyleSheet } from 'react-native'
 import { Appbar, TextInput, Subheading } from 'react-native-paper';
 import { Header } from '../../components'
 import { createGoal, updateGoal, selectGoalById } from '../../redux';
+import { useTranslation } from 'react-i18next'
+
 
 
 const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
+  const { t, i18n } = useTranslation()
 
   const [name, setName] = React.useState(goal?.name?goal.name:'')
   const [motivation, setMotivation] = React.useState(goal?.motivation?goal.motivation:'')
   
   const validate = ( newGoal ) => {
     if(!newGoal.name){
-      Alert.alert("Please enter a name for your goal")
+      Alert.alert(t('goalForm.nameAlert'))
       return false
     }
     return true
@@ -39,19 +42,19 @@ const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
 
   return(
     <View>
-      <Header title='New Goal' left='back' navigation={navigation} buttons={headerButtons} />
-      <Subheading style={styles.subheading}>What do you want to achieve?</Subheading>
+      <Header title={t('goalForm.headerTitle')} left='back' navigation={navigation} buttons={headerButtons} />
+      <Subheading style={styles.subheading}>{t('goalForm.goalNameSubheading')}</Subheading>
       <TextInput 
         style={styles.textInput}
         mode='outlined' 
-        label="Goal Name" 
+        label={t('goalForm.nameTextInputLabel')}
         value={name} 
         onChangeText={setName} />
-      <Subheading style={styles.subheading}>Why do you want to achieve this goal?</Subheading>
+      <Subheading style={styles.subheading}>{t('goalForm.goalMotivationSubheading')}</Subheading>
       <TextInput
         style={styles.textInput}
         mode='outlined'
-        label="Goal Motivation"
+        label={t('goalForm.motivationTextInputLabel')}
         multiline={true}
         numberOfLines={10}
         value={motivation}
