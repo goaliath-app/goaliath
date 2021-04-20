@@ -61,12 +61,33 @@ export function getPreferedExpression(duration){
   return {value: value, unit: unit}
 }
 
+export function newEntry(activity){
+  return(
+    {
+      intervals: [], 
+      completed: false, 
+      id: activity.id,
+      archived: false
+    }
+  )
+}
 
-export function extractActivityLists(state, day){
+export function extractActivityLists(state, day, predictedEntries){
   let dayActivities = [] 
   let weekActivities = []
-
-  const logs = selectEntriesByDay(state, day)
+  var logs
+  if(predictedEntries){
+    logs = predictedEntries
+  }else{
+    logs = selectEntriesByDay(state, day)
+  }
+  // const logs = (
+  //   predictedEntries !== null?
+  //     predictedEntries
+  //     :
+  //     selectEntriesByDay(state, day)
+  // )
+  //const logs = selectEntriesByDay(state, day)
 
   for(let log of logs){
     const activity = selectActivityById(state, log.id)
@@ -168,4 +189,25 @@ export function frequency(activity){
         frequency = 'ERROR'
     }
   return (frequency)
+}
+
+export function dueToday(today, activity, activityGoal){
+  if(activity.archived || activityGoal.archived){
+    return false
+  }
+  if(!activity.active || !activityGoal.active){
+    return false
+  }
+  if(activity.repeatMode == 'daily'){
+    return true
+  }
+  if(activity.repeatMode == 'weekly'){
+    return true
+  }
+  if(activity.repeatMode == 'select'){
+    if(activity.weekDays[today.weekday]){
+      return true
+    }
+  }
+  return false
 }

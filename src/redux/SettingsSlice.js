@@ -19,7 +19,6 @@ const settingsSlice = createSlice({
         },
         finishOnboarding(state, action){
             state.newUser = false
-            console.log("Cambiado el estado")
         }
     }
 })

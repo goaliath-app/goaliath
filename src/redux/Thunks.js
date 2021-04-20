@@ -6,7 +6,7 @@ import {
   createLog, addEntry, sortTodayLog, setState as setLogsState, selectEntriesByDay, deleteLog, replaceEntry,
   capAllTimers,
 } from './LogSlice'
-import { getToday, startOfDay } from './../util'
+import { getToday, startOfDay, dueToday, newEntry } from './../util'
 import { setState as setSettingsState } from './SettingsSlice'
 
 
@@ -163,39 +163,6 @@ function unembalmLog({ date }){
     }
   }
 }
-
-function newEntry(activity){
-  return(
-    {
-      intervals: [], 
-      completed: false, 
-      id: activity.id,
-      archived: false
-    }
-  )
-}
-
-function dueToday(today, activity, activityGoal){
-  if(activity.archived || activityGoal.archived){
-    return false
-  }
-  if(!activity.active || !activityGoal.active){
-    return false
-  }
-  if(activity.repeatMode == 'daily'){
-    return true
-  }
-  if(activity.repeatMode == 'weekly'){
-    return true
-  }
-  if(activity.repeatMode == 'select'){
-    if(activity.weekDays[today.weekday]){
-      return true
-    }
-  }
-  return false
-}
-
 
 export function importState(newState){
   return function(dispatch, getState){
