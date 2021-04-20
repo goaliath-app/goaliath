@@ -15,7 +15,7 @@ const settingsSlice = createSlice({
         },
         setState(state, action){
             const { newState } = action.payload
-            return newState
+            return { ...initialState, ...newState }
         },
         finishOnboarding(state, action){
             state.newUser = false
