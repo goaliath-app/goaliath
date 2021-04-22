@@ -14,7 +14,7 @@ const es= {
     },
   
     helpIcon: {
-        closeButtton: 'OK'
+        closeButton: 'OK'
     },
   
     activityDetail: {
@@ -56,28 +56,29 @@ const es= {
     },
 
     activityForm: {
-        alerts: {
-          multipleMissing: 'Falta nombre, modo de repetición, meta o id de la meta',
-          noTimeGoal: 'Por favor, introduzca tiempo',
-          noSelectDays: 'Por favor, seleccione al menos un día',
-          noWeekCheck: 'Por favor, introduzca el número de días por semana'
-        },
         headerTitle: 'Nueva actividad',
-        activity: {
-          nameTextInput: "Nombre de la actividad",
-          repeat: 'Repetición',
-          repeatDaily: 'diaria',
-          repeatDailyDescription: 'Harás esta actividad todos los días.',
-          repeatSelect: 'días seleccionados',
-          repeatSelectDescription: 'Harás esta actividad los días que selecciones.',
-          repeatWeekly: 'semanal',
-          repeatWeeklyDescription: 'Podrás hacer esta actividad cualquier día de la semana',
-          timeGoal: 'Dedicar tiempo',
-          weeklyGoal: 'Objetivo',
-          weeklyTime: 'dedicar tiempo',
-          weeklyTimeGoal: '¿Cuánto tiempo?',
-          weeklyDays: 'completar',
-          weeklyDaysGoal: '¿Cuántos días a la semana?'
+        nameInputLabel: 'Nombre de la actividad',
+        repeatSwitchBar: {
+          title: 'Periodicidad',
+          daily: 'diaria',
+          select: 'seleccionar',
+          weekly: 'semanal'
+        },
+        repeatInfoDialog: {
+          mainTitle: 'Periodicidad',
+          dailyTitle: 'Diaria',
+          dailyText: 'Tu meta es hacer la actividad todos los días.',
+          selectTitle: 'Seleccionar',
+          selectText: 'Como la diaria, pero solo ciertos días de la semana.',
+          weeklyTitle: 'Semanal',
+          weeklyText: 'Puedes hacer la actividad cualquier día de la semana. Aparecerá en la sección "Esta semana".',
+        },
+        objectiveSwitchLabel: 'Objetivo de tiempo',
+        weeklyDaysLabel: 'Días a la semana',
+        errors: {
+          noName: 'Es necesario un nombre para tu actividad',
+          noDaysSelected: 'Selecciona al menos un día',
+          noTime: 'Por favor introduce el tiempo a dedicar'
         },
       },
       

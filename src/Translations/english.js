@@ -14,7 +14,7 @@ const en = {
     },
 
     helpIcon: {
-      closeButtton: 'OK'
+      closeButton: 'OK'
     },
 
     activityDetail: {
@@ -56,29 +56,30 @@ const en = {
     },
 
     activityForm: {
-      alerts: {
-        multipleMissing: 'Missing name, repeatMode, goal or goalId',
-        noTimeGoal: 'Please enter a time',
-        noSelectDays: 'Please select at least one day',
-        noWeekCheck: 'Please enter number of days per week'
-      },
       headerTitle: 'New activity',
-      activity: {
-        nameTextInput: "Activity's name",
-        repeat: 'Repeat',
-        repeatDaily: 'daily',
-        repeatDailyDescription: 'You will do the activity every day.',
-        repeatSelect: 'select days',
-        repeatSelectDescription: 'You will do the activity these days.',
-        repeatWeekly: 'weekly',
-        repeatWeeklyDescription: 'You can do the activity any day of the week.',
-        timeGoal: 'Time dedication goal',
-        weeklyGoal: 'Goal',
-        weeklyTime: 'dedicate time',
-        weeklyTimeGoal: 'How much time?',
-        weeklyDays: 'complete',
-        weeklyDaysGoal: 'How many days per week?'
-      }
+      nameInputLabel: 'Activity\'s name',
+      repeatSwitchBar: {
+        title: 'Repeat',
+        daily: 'daily',
+        select: 'select days',
+        weekly: 'weekly'
+      },
+      repeatInfoDialog: {
+        mainTitle: 'Repeat modes',
+        dailyTitle: 'Daily',
+        dailyText: 'You aim to do the activity every day.',
+        selectTitle: 'Select',
+        selectText: 'Like daily, but at specific week days.',
+        weeklyTitle: 'Weekly',
+        weeklyText: 'You can do it any day of the week. It will appear in the "Week" tab.',
+      },
+      objectiveSwitchLabel: 'Time objective',
+      weeklyDaysLabel: 'Days each week',
+      errors: {
+        noName: 'A name is required',
+        noDaysSelected: 'At least select one day',
+        noTime: 'Please enter a time'
+      },
     },
     
     calendar: {
