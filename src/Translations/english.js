@@ -51,8 +51,8 @@ const en = {
     todayPannel: {
       title: 'Today',
       stopButton: 'Stop Timer',
-      startButton: 'Start Timer'
-
+      startButton: 'Start Timer',
+      checkboxLabel: 'Done',
     },
 
     activityForm: {

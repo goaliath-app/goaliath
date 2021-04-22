@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native'
+import { View, KeyboardAvoidingView, ScrollView } from 'react-native'
 import { connect } from 'react-redux';
 import { Paragraph, Menu, Subheading, Title, Divider, List } from 'react-native-paper';
 import { DateTime } from 'luxon'
@@ -66,34 +66,33 @@ const ActivityDetailScreen = ({
 
 
   return(
-    <View style={{ backgroundColor: 'white', flex: 1 }}>
-      <View>
-        <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
+    <KeyboardAvoidingView style={{flex:1}}>
+      <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
+      <ScrollView style={{ backgroundColor: 'white', flex: 1 }}>
         {date && !dateIsToday? 
         <>
-          <List.Item 
-            title={<Title>{dateTitle}</Title>} 
-            right={() => (
-              <View style={{alignSelf: 'center', paddingRight: 12}}>
-                <HelpIcon dialogContent={
-                  <Paragraph>{t('activityDetail.helpIconText')}</Paragraph>
-                }/>
-              </View>
-            )}
-          />
-          <Divider />
+        <List.Item 
+          title={<Title>{dateTitle}</Title>} 
+          right={() => (
+            <View style={{alignSelf: 'center', paddingRight: 12}}>
+              <HelpIcon dialogContent={
+                <Paragraph>{t('activityDetail.helpIconText')}</Paragraph>
+              }/>
+            </View>
+          )}
+        />
+        <Divider />
         </>
         : null
         }
         <BasicActivityInfo activity={activity} goal={goal} />
-  
         {dateIsToday?
-          <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={startTimer} stopTimer={stopTimer} upsertEntry={upsertEntry} date={date} dayStartHour={dayStartHour} /> 
-          : 
+        <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={startTimer} stopTimer={stopTimer} upsertEntry={upsertEntry} date={date} dayStartHour={dayStartHour} /> 
+        : 
           entry?
-            <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={()=>{}} stopTimer={()=>{}} upsertEntry={upsertEntry} date={date} dayStartHour={dayStartHour} />
-            :
-            null
+          <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={()=>{}} stopTimer={()=>{}} upsertEntry={upsertEntry} date={date} dayStartHour={dayStartHour} />
+          :
+          null
         }
 
         {/* future work:
@@ -101,7 +100,7 @@ const ActivityDetailScreen = ({
         <GenericStats /> 
         */}
 
-      </View>
+      </ScrollView>
 
       <DeleteDialog 
         visible={deleteDialogVisible} 
@@ -114,8 +113,7 @@ const ActivityDetailScreen = ({
         title={t('activityDetail.deleteDialog.title')}
         body={t('activityDetail.deleteDialog.body')}
       />
-
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { View } from 'react-native'
-import { Button, List, Checkbox, Divider } from 'react-native-paper';
+import { Button, List, Checkbox, Divider, Paragraph } from 'react-native-paper';
 import { TimeInput } from '../../components';
 import { getTodayTime, isActivityRunning, isToday, startOfDay } from '../../util'
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
 
 const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntry, date, dayStartHour }) => {
@@ -62,6 +62,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
     }
   
     const dateIsToday = isToday(date, dayStartHour)
+    const activityRunning = isActivityRunning(entry.intervals)
 
     let seconds, minutes, hours
     seconds = String(todayTime.seconds).padStart(2, '0')
@@ -72,16 +73,37 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
       <View>
         <List.Item
           title={t('todayPannel.title')}
-          right={() => <Checkbox status={entry.completed? 'checked':'unchecked'} onPress={() => {toggleCompleted({date: date, id: entry.id})} }/>}
+          right={() => (
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Paragraph style={{marginRight: 6}}>{t('todayPannel.checkboxLabel')}</Paragraph>
+              <Checkbox 
+                status={entry.completed? 'checked':'unchecked'} 
+                onPress={() => {toggleCompleted({date: date, id: entry.id})} }
+              />
+            </View>
+          )}
         />
-        <TimeInput seconds={seconds} minutes={minutes} hours={hours} setHours={setHours} setMinutes={setMinutes} setSeconds={setSeconds} />
-        {dateIsToday?
-          (isActivityRunning(entry.intervals)?
-            <Button onPress={onPressPause}>{t('todayPannel.stopButton')}</Button>
-          :
-            <Button onPress={onPressPlay}>{t('todayPannel.startButton')}</Button>)
-        : null
-        }
+          <TimeInput 
+            regularColor={activityRunning?'#6200C5':'black'}
+            value={todayTime.as('seconds')} 
+            onValueChange={(value) => { 
+              setTodayTime(
+                Duration
+                  .fromObject({ seconds: value })
+                  .shiftTo('hours', 'minutes', 'seconds')
+              ) 
+            }} 
+            />
+          {dateIsToday?
+            (activityRunning?
+              <Button onPress={onPressPause}>{t('todayPannel.stopButton')}</Button>
+              :
+              <Button 
+                onPress={onPressPlay}
+                >
+                  {t('todayPannel.startButton')}</Button>)
+              : null
+            }
         <Divider />
       </View>
     )

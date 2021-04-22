@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { View, StyleSheet, Alert, Pressable, FlatList, KeyboardAvoidingView, Platform, ScrollView, Keyboard } from 'react-native';
 import { Subheading, Appbar, Text, TextInput, Button, List, Checkbox, Title, Paragraph, HelperText, Caption } from 'react-native-paper';
-import { Header, HelpIcon } from '../../components';
+import { Header, HelpIcon, TimeInput } from '../../components';
 import { createActivity, updateActivity, selectActivityById } from '../../redux'
 import { useTranslation } from 'react-i18next'
 
@@ -18,9 +18,9 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
   const [name, setName] = React.useState(activity?.name?activity.name:'');
   const [repeatMode, setRepeatMode] = React.useState(activity?.repeatMode?activity.repeatMode:'daily');  // 'daily', 'select' or 'weekly'
   const [goal, setGoal] = React.useState(activity?.goal?activity.goal:'check');  // 'time' or 'check'
-  const [seconds, setSeconds] = React.useState(activity?.timeGoal?(activity.timeGoal%60).toString().padStart(2, '0'):'00');
-  const [minutes, setMinutes] = React.useState(activity?.timeGoal?(Math.floor((activity.timeGoal%3600)/60)).toString().padStart(2, '0'):'00');
-  const [hours, setHours] = React.useState(activity?.timeGoal?(Math.floor((activity.timeGoal/3600))).toString().padStart(2, '0'):'00');
+
+  const [timeGoal, setTimeGoal] = React.useState(activity?.timeGoal?activity.timeGoal:0);
+
   const [weekDays, setWeekDays] = React.useState(activity?.weekDays?activity.weekDays:{
     '1': false, '2': false, '3': false, '4': false, '5': false, '6': false, '7': false
   })
@@ -64,17 +64,6 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
   const headerButtons = (
     <Appbar.Action icon='check' onPress={() => {
         Keyboard.dismiss()
-        let timeGoal
-        if( hours || minutes || seconds ){
-          const secondsFromHour = Number.parseInt(hours)*3600
-          const secondsFromMinute = Number.parseInt(minutes)*60
-          const secondsFromSeconds = Number.parseInt(seconds)
-          timeGoal = (
-            (secondsFromHour?secondsFromHour:0) 
-            + (secondsFromMinute?secondsFromMinute:0) 
-            + (secondsFromSeconds?secondsFromSeconds:0)
-          )
-        }
         
         const newActivity = { 
           name, repeatMode, goal, timeGoal: goal=='time'?timeGoal:0, 
@@ -127,10 +116,11 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
         
         {goal=='time'?
           <TimeInput
-            hours={hours} setHours={setHours} 
-            minutes={minutes} setMinutes={setMinutes} 
-            seconds={seconds} setSeconds={setSeconds}
-            setTimeInputError={setTimeInputError}
+            value={timeGoal}
+            onValueChange={ (value) => {
+              setTimeGoal(value)
+              setTimeInputError(false)
+            }}
           />
         : null }
         {goal=='check' && repeatMode == 'weekly'?
@@ -168,93 +158,6 @@ const ButtonSwitchBar = ({ options, state, setState }) => {
         </Button>
       ))}
     </View>
-  )
-}
-
-const TimeInput = ({ hours, setHours, minutes, setMinutes, seconds, setSeconds, setTimeInputError }) => {
-  const hoursInput = React.useRef()
-  const minutesInput = React.useRef()
-  const secondsInput = React.useRef()
-
-  // used to fix some weird behavior with selection
-  const [hoursSelection, setHoursSelection] = React.useState()
-
-  const [currentFocus, setCurrentFocus] = React.useState()
-
-  const commonProps = {
-    style: {
-      fontSize: 50, padding: 5, textAlign: 'center', 
-      backgroundColor: 'transparent', underlineColorAndroid: 'transparent',
-    },
-    keyboardType: 'number-pad',
-    selectTextOnFocus: true,
-    maxLength: 2,
-    caretHidden: false,
-    underlineColor: 'transparent',
-    selectionColor: 'transparent',
-    //theme: { colors: { primary: 'transparent' } }
-  }
-  const getTheme = (isFocused)=>({ colors: { primary: 'transparent', text: isFocused?'#7B61FF':'black' } })
-
-  return(
-      <View style={{flexDirection: 'row', marginLeft: 20, marginRight: 20, justifyContent: 'center', alignItems: 'center'}}>
-        <TextInput 
-          value={hours} onChangeText={(value) => {
-            value = value<24?value:'24'
-            setHours(value)
-            setHoursSelection({start: value.length, end: value.length})
-            setTimeInputError(false)
-          }} 
-          ref={hoursInput}
-          onFocus={ () => {
-            setHoursSelection({start: 0, end: hours.length})
-            setCurrentFocus('hours')
-          }} 
-          theme={getTheme(currentFocus=='hours')}
-          onBlur={()=>{
-            if(currentFocus=='hours') setCurrentFocus('')
-            setHours(hours.padStart(2, '0'))
-          }}
-          selection={hoursSelection}
-          {...commonProps} 
-        />
-        <Text style={{fontSize: 50, marginBottom: 5}}>:</Text>
-        <TextInput 
-          value={minutes} 
-          onChangeText={(value) => {
-            value = value<59?value:'59'
-            setMinutes(value)
-            setTimeInputError(false)
-          }} 
-          ref={minutesInput} 
-          onFocus={()=>{
-            setCurrentFocus('minutes')
-          }} theme={getTheme(currentFocus=='minutes')}
-          onBlur={()=>{
-            if(currentFocus=='minutes') setCurrentFocus('')
-            setMinutes(minutes.padStart(2, '0'))
-          }}
-          {...commonProps} 
-        />
-        <Text style={{fontSize: 50, marginBottom: 5}}>:</Text>
-        <TextInput 
-          value={seconds} 
-          onChangeText={(value) => {
-            value = value<59?value:'59'
-            setSeconds(value)
-            setTimeInputError(false)
-          }} 
-          ref={secondsInput} 
-          onFocus={()=>{
-            setCurrentFocus('seconds')
-          }} theme={getTheme(currentFocus=='seconds')}
-          onBlur={()=>{
-            if(currentFocus=='seconds') setCurrentFocus('')
-            setSeconds(seconds.padStart(2, '0'))
-          }}
-          {...commonProps} 
-        />
-      </View>
   )
 }
 

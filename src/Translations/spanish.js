@@ -51,8 +51,8 @@ const es= {
     todayPannel: {
       title: 'Hoy',
       stopButton: 'Parar temporizador',
-      startButton: 'Empezar temporizador'
-
+      startButton: 'Empezar temporizador',
+      checkboxLabel: 'Hecho',
     },
 
     activityForm: {
