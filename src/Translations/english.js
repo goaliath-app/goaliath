@@ -94,13 +94,15 @@ const en = {
     },
 
     goalForm: {
+      nameError: "Enter a name",
+      descriptionHelpDialogTitle: "Motivation",
+      descriptionHelpDialog: "Your answer will be visible in the goal's screen. Use it to remember and mantain your motivation over time.",
       nameAlert: "Please enter a name for your goal",
       headerTitle: 'New goal',
       goalNameSubheading: 'What do you want to achieve?',
       nameTextInputLabel: 'Goal Name',
       goalMotivationSubheading: 'Why do you want to achieve this goal?',
-      motivationTextInputLabel: 'Goal Motivation',
-
+      motivationTextInputLabel: 'Goal Motivation (optional)',
     },
 
     goal: {

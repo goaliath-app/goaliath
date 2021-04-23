@@ -94,13 +94,14 @@ const es= {
       },
 
     goalForm: {
-      nameAlert: "Por favor, introduzca un nombre para su meta",
+      nameError: "Introduce un nombre",
+      descriptionHelpDialogTitle: "Motivación",
+      descriptionHelpDialog: "Tu respuesta será visible en la pantalla de la meta. Úsala para recordar y mantener tu motivación a lo largo del tiempo.",
       headerTitle: 'Nueva meta',
       goalNameSubheading: '¿Qué quieres conseguir?',
       nameTextInputLabel: 'Nombre de la meta',
       goalMotivationSubheading: '¿Por qué quieres llegar a esa meta?',
-      motivationTextInputLabel: 'Motivación de la meta',
-
+      motivationTextInputLabel: 'Motivación de la meta (optional)',
     },
 
     goal: {
