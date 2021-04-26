@@ -39,28 +39,6 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
       upsertEntry({date: date, entry: {...entry, intervals: [newInterval]}})
     }
   
-    function setHours(value){
-      value==''?
-      setTodayTime(todayTime.set({hours: 0})) : value>=23?
-      setTodayTime(todayTime.set({hours: 23})) :
-      setTodayTime(todayTime.set({hours: value}))
-      updateTotalTime(todayTime.as('seconds'))
-    }
-    function setMinutes(value){
-      value==''?
-      setTodayTime(todayTime.set({minutes: 0})) : value>=59?
-      setTodayTime(todayTime.set({minutes: 59})) :
-      setTodayTime(todayTime.set({minutes: value}))
-      updateTotalTime(todayTime.as('seconds'))
-    }
-    function setSeconds(value){
-      value==''?
-      setTodayTime(todayTime.set({seconds: 0})) : value>=59?
-      setTodayTime(todayTime.set({seconds: 59})) :
-      setTodayTime(todayTime.set({seconds: value}))
-      updateTotalTime(todayTime.as('seconds'))
-    }
-  
     const dateIsToday = isToday(date, dayStartHour)
     const activityRunning = isActivityRunning(entry.intervals)
 
@@ -92,6 +70,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
                   .fromObject({ seconds: value })
                   .shiftTo('hours', 'minutes', 'seconds')
               ) 
+              updateTotalTime(value)
             }} 
             />
           {dateIsToday?
