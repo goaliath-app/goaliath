@@ -19,6 +19,7 @@
     "@react-navigation/native": "^5.9.3",
     "@react-navigation/stack": "^5.14.3",
     "@reduxjs/toolkit": "^1.5.0",
+    "@unimodules/core": "~6.0.0",
     "array-move": "^3.0.1",
     "expo": "~40.0.0",
     "expo-document-picker": "~8.4.1",
@@ -46,8 +47,7 @@
     "react-native-svg": "^12.1.0",
     "react-native-web": "~0.13.12",
     "react-redux": "^7.2.2",
-    "redux-persist": "^6.0.0",
-    "@unimodules/core": "~6.0.0"
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

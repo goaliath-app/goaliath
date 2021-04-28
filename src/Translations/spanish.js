@@ -101,10 +101,11 @@ const es= {
       goalNameSubheading: '¿Qué quieres conseguir?',
       nameTextInputLabel: 'Nombre de la meta',
       goalMotivationSubheading: '¿Por qué quieres llegar a esa meta?',
-      motivationTextInputLabel: 'Motivación de la meta (optional)',
+      motivationTextInputLabel: 'Motivación de la meta (opcional)',
     },
 
     goal: {
+      motivation: 'Motivación',
       threeDotsMenu: {
         editGoal: 'Editar meta',
         deleteGoal: 'Eliminar meta',

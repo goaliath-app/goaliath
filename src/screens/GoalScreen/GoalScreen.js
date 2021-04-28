@@ -1,12 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, FlatList, Pressable } from 'react-native';
-import { List, Switch, Appbar, Menu, Card, Paragraph } from 'react-native-paper';
+import { View, FlatList, Pressable, StyleSheet, ScrollView } from 'react-native';
+import { List, Switch, Appbar, Menu, Paragraph, Divider, Title } from 'react-native-paper';
 import { Header, ThreeDotsMenu, DeleteDialog, InfoCard } from '../../components';
 import { useNavigation } from '@react-navigation/native';
 import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal } from '../../redux'
 import { frequency, hasSomethingToShow } from '../../util'
 import { useTranslation } from 'react-i18next'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 
 const data = [
   {name: 'Study Anki', repeatMode: 'daily', active: true},
@@ -18,11 +20,13 @@ const Activity = ({ name, active, id, toggleActivity, activity }) => {
   const { t, i18 } = useTranslation()
 
   return (
-    <List.Item
-     onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
+    <View>
+      <List.Item
+      style={{paddingTop: 5}}
+      onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
       title={name}
       right={() => (
-        <Pressable onPress={() => {}}>
+        <Pressable style= {{justifyContent: 'center'}} onPress={() => {}}>
           <Switch
             onValueChange={() => toggleActivity({id: id})} 
             value={active}
@@ -30,14 +34,16 @@ const Activity = ({ name, active, id, toggleActivity, activity }) => {
         </Pressable>
       )}
       description={frequency(activity, t)} 
-    />
-        
+      />
+      <Divider />
+    </View>    
   );
 }
 
 const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal }) => {
   const [menuVisible, setMenuVisible] = React.useState(false);
   const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)
+  const [motivationCollapsed, setMotivationCollapsed] = React.useState(true)
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
 
@@ -82,34 +88,47 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
 
   return (
     <>
-    <DeleteDialog 
-      visible={deleteDialogVisible} 
-      setVisible={setDeleteDialogVisible} 
-      onDelete={()=>{
-        archiveGoal(goal.id)
-        setDeleteDialogVisible(false)
-        navigation.goBack()
-      }}
-      title={t('goal.deleteDialog.title')}
-      body={t('goal.deleteDialog.body')}
-    />
-    <View style={{height: '100%', justifyContent: 'space-between', backgroundColor: 'white'}}>
-      <View>
+      <DeleteDialog 
+        visible={deleteDialogVisible} 
+        setVisible={setDeleteDialogVisible} 
+        onDelete={()=>{
+          archiveGoal(goal.id)
+          setDeleteDialogVisible(false)
+          navigation.goBack()
+        }}
+        title={t('goal.deleteDialog.title')}
+        body={t('goal.deleteDialog.body')}
+      />
+      <View style={{flex: 1, backgroundColor: 'white'}}>
         <Header title={goal.name} left='back' navigation={navigation} buttons={headerButtons}/>
-        {hasSomethingToShow(activities)?
-          <FlatList data={activities} renderItem={renderItem} />
-        :
-          <InfoCard content={infoContent} />
-        }
-        
+        <View style={{ flex: 1 }}>
+          <View style={{flexShrink: 1}}>
+            {hasSomethingToShow(activities)?
+              <FlatList data={activities} renderItem={renderItem} />
+              :
+              <InfoCard content={infoContent} />
+            } 
+          </View>
+          {goal.motivation?
+          <View style={{ flexGrow: 1 }} >
+            <View style={{ flex: 1 }}></View>
+            <View style={{ flex: -1 , borderTopWidth: 1,  borderColor: '#F4F4F4' }}>
+              <Pressable onPress={()=> setMotivationCollapsed(!motivationCollapsed)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                <Title style={{ padding: 7, fontSize: 18}}>{t('goal.motivation')}</Title>
+                <FontAwesomeIcon icon={motivationCollapsed? faAngleUp : faAngleDown } size={20}/> 
+              </Pressable>
+            </View>
+            {motivationCollapsed? null:
+              <View >
+                <ScrollView style={{ flexGrow: 0}}>
+                  <Paragraph style={{color: 'grey', padding: 15, paddingTop: 0}}>{goal.motivation}</Paragraph>
+                </ScrollView>
+              </View>}
+          </View>
+          :
+          <></>}
+        </View>
       </View>
-      {goal.motivation?
-        <Card>
-          <Card.Content>        
-            <Paragraph>{goal.motivation}</Paragraph>
-          </Card.Content>
-        </Card> : <></>}
-    </View>
     </>
   )
 }

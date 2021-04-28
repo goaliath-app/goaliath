@@ -100,12 +100,14 @@ const en = {
       nameAlert: "Please enter a name for your goal",
       headerTitle: 'New goal',
       goalNameSubheading: 'What do you want to achieve?',
-      nameTextInputLabel: 'Goal Name',
+      nameTextInputLabel: 'Your Goal',
       goalMotivationSubheading: 'Why do you want to achieve this goal?',
-      motivationTextInputLabel: 'Goal Motivation (optional)',
+      motivationTextInputLabel: 'Your Motivation (optional)',
+
     },
 
     goal: {
+      motivation: 'Motivation',
       threeDotsMenu: {
         editGoal: 'Edit goal',
         deleteGoal: 'Delete goal',

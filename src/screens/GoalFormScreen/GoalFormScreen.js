@@ -81,6 +81,7 @@ const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
           label={t('goalForm.motivationTextInputLabel')}
           multiline={true}
           numberOfLines={10}
+          maxLength={1200}
           value={motivation}
           onChangeText={setMotivation}
           />
