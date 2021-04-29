@@ -1,9 +1,10 @@
 import 'react-native-gesture-handler';  // this import needs to be at the top.
 import React, { useEffect } from 'react';
+import { Linking } from 'react-native'
 import { Provider as ReduxProvider } from 'react-redux';
 import { Provider as PaperProvider } from  'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { DateTime } from 'luxon'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -55,6 +56,18 @@ const CalendarStack = () => (
   </Stack.Navigator>
 )
 
+function CustomDrawerContent(props) {
+  return (
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <DrawerItem
+        label="Blog"
+        onPress={() => Linking.openURL('https://goaliath-app.github.io')}
+      />
+    </DrawerContentScrollView>
+  );
+}
+
 export default function App() {
   // useEffect(() => {
   //   store.dispatch(generateDummyData())
@@ -80,9 +93,9 @@ export default function App() {
         <PaperProvider>
           <NavigationContainer>
             {newUser?
-            <OnboardingScreen finishOnboarding={finishOnboarding}/>
+            <OnboardingScreen finishOnboarding={finishOnboarding} />
           : 
-            <Drawer.Navigator initialRouteName='Today'>
+            <Drawer.Navigator initialRouteName='Today' drawerContent={CustomDrawerContent}>
               <Drawer.Screen name='Today' component={TodayStack} options={{ title: t('app.drawer.today') }} />
               <Drawer.Screen name='Week' component={WeekStack} options={{ title: t('app.drawer.week') }} />
               <Drawer.Screen name='Goals' component={GoalsStack} options={{ title: t('app.drawer.goals') }} />
