@@ -1,10 +1,9 @@
 import 'react-native-gesture-handler';  // this import needs to be at the top.
 import React, { useEffect } from 'react';
-import { Linking } from 'react-native'
 import { Provider as ReduxProvider } from 'react-redux';
 import { Provider as PaperProvider } from  'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { DateTime } from 'luxon'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -14,6 +13,7 @@ import {
   GoalFormScreen, CalendarScreen, SettingsScreen, DayInCalendarScreen, OnboardingScreen
 } from './src/screens'
 import { store, generateDummyData, updateLogs, finishOnboarding as finishOnboardingAction } from './src/redux'
+import { Drawer as CustomDrawer } from './src/components'
 import i18n from './src/i18n'
 import { useTranslation } from 'react-i18next'
 
@@ -56,17 +56,7 @@ const CalendarStack = () => (
   </Stack.Navigator>
 )
 
-function CustomDrawerContent(props) {
-  return (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      <DrawerItem
-        label="Blog"
-        onPress={() => Linking.openURL('https://goaliath-app.github.io')}
-      />
-    </DrawerContentScrollView>
-  );
-}
+
 
 export default function App() {
   // useEffect(() => {
@@ -95,7 +85,7 @@ export default function App() {
             {newUser?
             <OnboardingScreen finishOnboarding={finishOnboarding} />
           : 
-            <Drawer.Navigator initialRouteName='Today' drawerContent={CustomDrawerContent}>
+            <Drawer.Navigator initialRouteName='Today' drawerContent={(props) => <CustomDrawer {...props} />}>
               <Drawer.Screen name='Today' component={TodayStack} options={{ title: t('app.drawer.today') }} />
               <Drawer.Screen name='Week' component={WeekStack} options={{ title: t('app.drawer.week') }} />
               <Drawer.Screen name='Goals' component={GoalsStack} options={{ title: t('app.drawer.goals') }} />

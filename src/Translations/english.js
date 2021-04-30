@@ -278,6 +278,10 @@ const en = {
         saturday: 'S',
         sunday: 'S'
       }
+    },
+    
+    drawer: {
+      blog: 'Blog'
     }
   }
 }
