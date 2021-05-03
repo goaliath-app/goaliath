@@ -26,7 +26,7 @@
     "expo-file-system": "~9.3.0",
     "expo-localization": "~9.1.0",
     "expo-sharing": "~8.5.0",
-    "expo-status-bar": "~1.0.3",
+    "expo-status-bar": "^1.0.4",
     "i18next": "^20.2.1",
     "luxon": "^1.26.0",
     "react": "16.13.1",

@@ -16,6 +16,7 @@ import { store, generateDummyData, updateLogs, finishOnboarding as finishOnboard
 import { Drawer as CustomDrawer } from './src/components'
 import i18n from './src/i18n'
 import { useTranslation } from 'react-i18next'
+import { StatusBar } from 'expo-status-bar'
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -82,6 +83,7 @@ export default function App() {
       <PersistGate loading={null} persistor={persistor} onBeforeLift={()=>onStoreRehydration()}>
         <PaperProvider>
           <NavigationContainer>
+          <StatusBar style='light' translucent={false} backgroundColor={'#5c01f0'}/>
             {newUser?
             <OnboardingScreen finishOnboarding={finishOnboarding} />
           : 

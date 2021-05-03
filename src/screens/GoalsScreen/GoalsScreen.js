@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FlatList, View, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Switch, Appbar } from 'react-native-paper';
+import { List, Switch, Appbar, Divider } from 'react-native-paper';
 import { Header, InfoCard } from '../../components'
 import { selectAllGoals, toggleGoal } from '../../redux'
 import { hasSomethingToShow } from '../../util'
@@ -13,15 +13,22 @@ const GoalListItem = ({ name, active, toggleGoal, id }) => {
   const navigation = useNavigation();
 
   return (
-    <List.Item 
-      onPress={() => navigation.navigate('Goal', { goalId: id })}
-      title={name}
-       right={() => (
-        <Pressable onPress={() => {}}>
-          <Switch onStartShouldSetResponder={()=>{true}} value={active} onValueChange={ () => toggleGoal({id: id}) }/>
-        </Pressable>
-       )}
-    />
+    <View>
+      <List.Item 
+        onPress={() => navigation.navigate('Goal', { goalId: id })}
+        title={name}
+        right={() => (
+          <Pressable style= {{justifyContent: 'center'}} onPress={() => {}}>
+            <Switch 
+              onStartShouldSetResponder={()=>{true}} 
+              value={active} 
+              onValueChange={ () => toggleGoal({id: id}) }
+            />
+          </Pressable>
+        )}
+      />
+      <Divider />
+    </View>
   );
 }
 

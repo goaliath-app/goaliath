@@ -15,11 +15,11 @@ const Header = ({ title, subtitle, left, navigation, buttons }) => {
     }
 
     return (
-        <Appbar.Header>
+        <Appbar>
             {leftComponent}
             <Appbar.Content title={title} subtitle={subtitle} />
             {buttons}
-        </Appbar.Header>
+        </Appbar>
     )
 }
 

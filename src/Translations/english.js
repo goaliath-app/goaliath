@@ -281,7 +281,8 @@ const en = {
     },
     
     drawer: {
-      blog: 'Blog'
+      blog: 'Blog',
+      appName: 'Goaliath'
     }
   }
 }

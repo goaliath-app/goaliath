@@ -61,7 +61,7 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
   }
 
   return (
-    <View>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
       <Header title={t('settings.headerTitle')} left='hamburger' navigation={navigation}/>
       <List.Item 
         title={t('settings.startHour')}
@@ -129,9 +129,7 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
               <Divider />
             </Dialog.Content>
         </Dialog>
-
       </Portal>
-
 
     </View>
     

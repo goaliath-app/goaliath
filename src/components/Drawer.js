@@ -30,13 +30,17 @@ const Drawer = (props) => {
   const monthLabel = t('units.monthNames.' + date.toFormat('MMMM').toLowerCase())
   const weekdayLabel = t('units.dayNames.' + date.toFormat('cccc').toLowerCase())
   return (
-    <DrawerContentScrollView {...props}>
-      <View style={{paddingTop: 30, paddingBottom: 10, paddingHorizontal: 20}}>
+    <DrawerContentScrollView {...props} style={{marginTop: -4}}>
+      <View style={{ backgroundColor: '#674ffa', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingHorizontal: 20, paddingTop: 20, paddingBottom: 20}}>
+        <Image source={require('../../assets/icon.png')} style={{height: 50, width: 50}} resizeMode='contain' />
+        <Subheading style={{ fontSize: 25, paddingHorizontal: 20, paddingTop: 5, color: 'white'}}>{t('drawer.appName')}</Subheading>
+      </View>
+      <View style={{paddingTop: 10, paddingBottom: 10, paddingHorizontal: 20}}>
         <Subheading>{`${weekdayLabel}, ${date.day} ${monthLabel} ${date.year}`}</Subheading>
       </View>
       <CustomDrawerItem label={t('today.headerTitle')} icon={faCalendarDay} route={'Today'} index={0} />
       <CustomDrawerItem label={t('week.headerTitle')} icon={faCalendarWeek} route='Week' index={1} />
-      <Divider />
+      <Divider style={{marginHorizontal: 10}} />
       <CustomDrawerItem label={t('goals.headerTitle')} icon={faTrophy} route='Goals' index={2} />
       <CustomDrawerItem label={t('calendar.headerTitle')} icon={faCalendarAlt} route='Calendar' index={3} />
       <CustomDrawerItem label={t('settings.headerTitle')} icon={faCog} route='Settings' index={4} />

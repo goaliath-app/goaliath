@@ -83,7 +83,7 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
   return(
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{flex: 1}}
+      style={{flex: 1, backgroundColor: 'white'}}
     >
       <Header 
         title={activity?.name?activity.name:t('activityForm.headerTitle')} 
@@ -93,7 +93,7 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
       <ScrollView style={{flexGrow: 0}} overScrollMode='never' >
         <TextInput 
           error={nameInputError} 
-          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, height: 55}} 
+          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, height: 55, backgroundColor: '#FBFCFC'}} 
           mode= 'outlined' 
           label={t('activityForm.nameInputLabel')}
           value={name} 
