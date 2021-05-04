@@ -4,6 +4,7 @@ import { Portal, Button, Dialog, Text } from 'react-native-paper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import  { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 import { useTranslation } from 'react-i18next'
+import { HelpIconColor } from '../styles/Colors';
 
 const HelpIcon = ({
   dialogContent
@@ -15,7 +16,7 @@ const HelpIcon = ({
   return(
     <View>
       <Pressable onPress={() => setVisible(true)} >
-        <FontAwesomeIcon icon={faQuestionCircle} size={20} color='blue'/>
+        <FontAwesomeIcon icon={faQuestionCircle} size={20} color={HelpIconColor.helpIcon}/>
       </Pressable>
       <Portal>
         <Dialog 

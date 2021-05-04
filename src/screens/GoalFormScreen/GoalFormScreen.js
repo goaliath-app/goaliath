@@ -5,8 +5,7 @@ import { Appbar, TextInput, Subheading, Paragraph, HelperText, Title } from 'rea
 import { Header, HelpIcon } from '../../components'
 import { createGoal, updateGoal, selectGoalById } from '../../redux';
 import { useTranslation } from 'react-i18next'
-
-
+import { GeneralColor } from '../../styles/Colors';
 
 const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
   const { t, i18n } = useTranslation()
@@ -46,7 +45,7 @@ const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
   return(
     <KeyboardAvoidingView 
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, backgroundColor: 'white' }}>
+      style={{ flex: 1, backgroundColor: GeneralColor.screenBackground }}>
       <Header title={t('goalForm.headerTitle')} left='back' navigation={navigation} buttons={headerButtons} />
       <ScrollView style={{flex: 1, marginHorizontal: 16}} overScrollMode='never' >
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -103,7 +102,7 @@ const actionsToProps = {
 const styles = StyleSheet.create ({
   textInput: {
     fontSize: 16,
-    backgroundColor: '#FBFCFC'
+    backgroundColor: GeneralColor.textInputBackground
   },
   subheading: {
     marginTop: 16

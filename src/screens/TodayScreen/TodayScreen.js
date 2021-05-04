@@ -9,6 +9,7 @@ import { updateLogs } from '../../redux'
 import { extractActivityLists, getToday, hasSomethingToShow } from '../../util'
 import createPersistoid from 'redux-persist/es/createPersistoid';
 import { useTranslation } from 'react-i18next'
+import { GeneralColor } from '../../styles/Colors';
 
 const data = [
   {name: 'Anki', completed: true, current: false, period: 'daily', intervals: []},
@@ -31,7 +32,7 @@ const TodayScreen = ({ todaysActivities, navigation, updateLogs, dayStartHour })
   const infoContent = t('today.infoContent')
   
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('today.headerTitle')} left='hamburger' navigation={navigation}/>
       {hasSomethingToShow(todaysActivities)?
         <ActivityList data={todaysActivities} />

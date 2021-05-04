@@ -11,6 +11,7 @@ import PlayOutlinedIcon from '../../assets/play-outlined'
 import PauseFilledIcon from '../../assets/pause-filled'
 import PauseOutlinedIcon from '../../assets/pause-outlined'
 import { useTranslation } from 'react-i18next'
+import { ActivityListItemColors } from '../styles/Colors'
 
 const ActivityListItem = ({ 
   timeGoal,    // number of seconds of the time goal for this activity or null if it is not a timed activity
@@ -141,7 +142,7 @@ const ActivityListItem = ({
 
   return (
     archived? <></> : 
-    <View style={{ backgroundColor: current? '#E6FBF9':'white' }}>
+    <View style={{ backgroundColor: current? ActivityListItemColors.currentActivityBackground : ActivityListItemColors.listItemBackground }}>
       <List.Item
         left={() => leftSlot}
         title={name}
@@ -154,9 +155,9 @@ const ActivityListItem = ({
       {current?
         <DoubleProgressBar 
           height={4}
-          firstColor='midnightblue' 
-          secondColor='dodgerblue' 
-          backgroundColor='mistyrose' 
+          firstColor={ActivityListItemColors.progressBarFirstColor} 
+          secondColor={ActivityListItemColors.progressBarSecondColor} 
+          backgroundColor={ActivityListItemColors.progressBarBackground} 
           firstProgress={weeklyProgress} 
           secondProgress={progress} />
       : <></> }
@@ -167,7 +168,7 @@ const ActivityListItem = ({
 const DoubleProgressBar = ({firstColor, secondColor, backgroundColor, firstProgress, secondProgress, height}) => (
   <View >
     <Progress.Bar progress={secondProgress} width={null} height={height} unfilledColor={backgroundColor} borderRadius={0} borderWidth={0} color={secondColor} />
-    <Progress.Bar style={{position: 'absolute'}} progress={firstProgress} height={height} color={firstColor} unfilledColor='transparent' borderWidth={0} width={useWindowDimensions().width} borderRadius={0} />
+    <Progress.Bar style={{position: 'absolute'}} progress={firstProgress} height={height} color={firstColor} unfilledColor={ActivityListItemColors.progressBarUnfilledColor} borderWidth={0} width={useWindowDimensions().width} borderRadius={0} />
   </View>
 )
 

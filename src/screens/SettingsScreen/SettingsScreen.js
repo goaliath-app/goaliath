@@ -11,6 +11,7 @@ import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker'
 import { useTranslation } from 'react-i18next'
+import { GeneralColor, SettingsColor } from '../../styles/Colors';
 
 
 const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, state, importState }) => {
@@ -61,13 +62,13 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('settings.headerTitle')} left='hamburger' navigation={navigation}/>
       <List.Item 
         title={t('settings.startHour')}
         description={t('settings.startHourDescription')}
         onPress={showDatePicker} 
-        right={() => <Text style={{marginRight: 10, marginTop: 10, color:'blue', fontSize: 17}}>{DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}</Text>} />
+        right={() => <Text style={{marginRight: 10, marginTop: 10, color: SettingsColor.accentColor, fontSize: 17}}>{DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}</Text>} />
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="time"
@@ -104,7 +105,7 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
         title={t('settings.language')}
         description={t('settings.languageDescription')}
         onPress={() => showLanguageDialog()}
-        right={() => <Text style={{marginRight: 10, marginTop: 10, color:'blue', fontSize: 17}}>{t('settings.languageLocale')}</Text>} />
+        right={() => <Text style={{marginRight: 10, marginTop: 10, color: SettingsColor.accentColor, fontSize: 17}}>{t('settings.languageLocale')}</Text>} />
       <Divider />
 
       <Portal>

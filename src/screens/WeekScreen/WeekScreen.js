@@ -7,6 +7,7 @@ import { Header, InfoCard } from '../../components';
 import { updateLogs } from '../../redux'
 import { extractActivityLists, getToday, hasSomethingToShow } from '../../util'
 import { useTranslation } from 'react-i18next'
+import { GeneralColor } from '../../styles/Colors';
 
 
 const WeekScreen = ({ todaysActivities, navigation, updateLogs }) => {
@@ -21,7 +22,7 @@ const WeekScreen = ({ todaysActivities, navigation, updateLogs }) => {
   )
 
   return(
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('week.headerTitle')} left='hamburger' navigation={navigation}/>
       {hasSomethingToShow(todaysActivities)?
         <ActivityList data={todaysActivities} />

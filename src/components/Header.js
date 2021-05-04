@@ -1,5 +1,6 @@
 import React from 'react';
 import { Appbar, IconButton } from 'react-native-paper';
+import { HeaderColor } from '../styles/Colors';
 
 const Header = ({ title, subtitle, left, navigation, buttons }) => {
     let leftComponent;
@@ -10,7 +11,7 @@ const Header = ({ title, subtitle, left, navigation, buttons }) => {
         )
     }else if(left == 'hamburger'){
         leftComponent = (
-            <IconButton icon='menu' color='white' onPress={navigation.openDrawer}/>
+            <IconButton icon='menu' color={HeaderColor.icon} onPress={navigation.openDrawer}/>
         )
     }
 

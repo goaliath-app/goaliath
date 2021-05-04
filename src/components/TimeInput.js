@@ -2,8 +2,9 @@ import React from 'react';
 import { View } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 import { Duration } from 'luxon'
+import { TimeInputColor } from '../styles/Colors'
 
-const TimeInput = ({ value, onValueChange, regularColor='black', selectedColor='#7B61FF' }) => {
+const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularColor, selectedColor=TimeInputColor.selectedColor }) => {
 
   const [currentFocus, setCurrentFocus] = React.useState()
   const [selection, setSelection] = React.useState()
@@ -19,7 +20,7 @@ const TimeInput = ({ value, onValueChange, regularColor='black', selectedColor='
   const seconds = duration.seconds
 
   const getTheme = isFocused =>(
-    { colors: { primary: 'transparent', text: isFocused?selectedColor:regularColor } }
+    { colors: { primary: TimeInputColor.primary, text: isFocused?selectedColor:regularColor } }
   )
   
   const commonProps = ({ unit, maxValue }) => ({
@@ -27,8 +28,8 @@ const TimeInput = ({ value, onValueChange, regularColor='black', selectedColor='
       fontSize: 50, 
       padding: 5, 
       textAlign: 'center', 
-      backgroundColor: 'transparent', 
-      underlineColorAndroid: 'transparent',
+      backgroundColor: TimeInputColor.backgroundColor, 
+      underlineColorAndroid: TimeInputColor.underlineColorAndroid,
     },
     selection: selection,
     autoCorrect: false,
@@ -36,8 +37,8 @@ const TimeInput = ({ value, onValueChange, regularColor='black', selectedColor='
     maxLength: 2,
     keyboardType: 'number-pad',
     caretHidden: true,
-    underlineColor: 'transparent',
-    selectionColor: 'transparent',
+    underlineColor: TimeInputColor.underlineColor,
+    selectionColor: TimeInputColor.selectionColor,
     theme: getTheme(currentFocus==unit),
     onBlur: () => { 
       if(currentFocus==unit) setCurrentFocus('')

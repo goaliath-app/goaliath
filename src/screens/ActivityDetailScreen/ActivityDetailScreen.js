@@ -13,6 +13,7 @@ import TodayPannel from './TodayPannel'
 import { GenericStats, WeekStats } from './Stats'
 import { isToday } from '../../util'
 import { useTranslation } from 'react-i18next'
+import { GeneralColor } from '../../styles/Colors';
 
 const ActivityDetailScreen = ({ 
   activity,           // activity object to show on the screen (see ActivitySlice)
@@ -68,7 +69,7 @@ const ActivityDetailScreen = ({
   return(
     <KeyboardAvoidingView style={{flex:1}}>
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
-      <ScrollView style={{ backgroundColor: 'white', flex: 1 }}>
+      <ScrollView style={{ backgroundColor: GeneralColor.background, flex: 1 }}>
         {date && !dateIsToday? 
         <>
         <List.Item 

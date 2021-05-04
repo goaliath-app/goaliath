@@ -7,6 +7,7 @@ import { Header, InfoCard } from '../../components'
 import { selectAllGoals, toggleGoal } from '../../redux'
 import { hasSomethingToShow } from '../../util'
 import { useTranslation } from 'react-i18next'
+import { GeneralColor } from '../../styles/Colors';
 
 
 const GoalListItem = ({ name, active, toggleGoal, id }) => {
@@ -49,7 +50,7 @@ const GoalsScreen = ({ navigation, goals, toggleGoal }) => {
   const infoContent = t('goals.infoContent')
   
   return(
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header 
         title={t('goals.headerTitle')} left='hamburger' navigation={navigation} 
         buttons={

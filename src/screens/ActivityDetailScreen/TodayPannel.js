@@ -5,6 +5,7 @@ import { TimeInput } from '../../components';
 import { getTodayTime, isActivityRunning, isToday, startOfDay } from '../../util'
 import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
+import { TodayPannelColor } from '../../styles/Colors';
 
 const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntry, date, dayStartHour }) => {
     React.useEffect(() => {
@@ -62,7 +63,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
           )}
         />
           <TimeInput 
-            regularColor={activityRunning?'#6200C5':'black'}
+            regularColor={activityRunning? TodayPannelColor.activityRunning : TodayPannelColor.regularColor}
             value={todayTime.as('seconds')} 
             onValueChange={(value) => { 
               setTodayTime(

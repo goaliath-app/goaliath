@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCalendarDay, faCalendarWeek, faTrophy, faCalendarAlt, faCog, faBlog } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
+import { DrawerColor } from '../styles/Colors'
 
 
 const Drawer = (props) => {
@@ -31,9 +32,9 @@ const Drawer = (props) => {
   const weekdayLabel = t('units.dayNames.' + date.toFormat('cccc').toLowerCase())
   return (
     <DrawerContentScrollView {...props} style={{marginTop: -4}}>
-      <View style={{ backgroundColor: '#674ffa', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingHorizontal: 20, paddingTop: 20, paddingBottom: 20}}>
+      <View style={{ backgroundColor: DrawerColor.headerBackground, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingHorizontal: 20, paddingTop: 20, paddingBottom: 20}}>
         <Image source={require('../../assets/icon.png')} style={{height: 50, width: 50}} resizeMode='contain' />
-        <Subheading style={{ fontSize: 25, paddingHorizontal: 20, paddingTop: 5, color: 'white'}}>{t('drawer.appName')}</Subheading>
+        <Subheading style={{ fontSize: 25, paddingHorizontal: 20, paddingTop: 5, color: DrawerColor.headerText}}>{t('drawer.appName')}</Subheading>
       </View>
       <View style={{paddingTop: 10, paddingBottom: 10, paddingHorizontal: 20}}>
         <Subheading>{`${weekdayLabel}, ${date.day} ${monthLabel} ${date.year}`}</Subheading>

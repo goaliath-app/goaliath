@@ -3,12 +3,13 @@ import { Title, Paragraph, Subheading } from 'react-native-paper'
 import React from 'react';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { useTranslation } from 'react-i18next'
+import { OnboardingColor } from '../styles/Colors';
 
 const styles = StyleSheet.create({
     buttonCircle: {
       width: 40,
       height: 40,
-      backgroundColor: 'rgba(0, 0, 0, .2)',
+      backgroundColor: OnboardingColor.backgroundColor,
       borderRadius: 20,
       justifyContent: 'center',
       alignItems: 'center',
@@ -60,9 +61,9 @@ const NotSoSimple = ({ finishOnboarding }) => {
         renderItem={_renderItem} 
         data={slides} 
         onDone={finishOnboarding}
-        activeDotStyle={{ backgroundColor: '#555555' }}
-        renderNextButton={() => <Subheading style={{ marginRight: 12, color: 'black' }}>{t('onboarding.next')}</Subheading>}
-        renderDoneButton={() => <Subheading style={{ marginRight: 12, color: 'black' }}>{t('onboarding.begin')}</Subheading>}
+        activeDotStyle={{ backgroundColor: OnboardingColor.activeDot }}
+        renderNextButton={() => <Subheading style={{ marginRight: 12, color: OnboardingColor.buttonTextColor }}>{t('onboarding.next')}</Subheading>}
+        renderDoneButton={() => <Subheading style={{ marginRight: 12, color: OnboardingColor.buttonTextColor }}>{t('onboarding.begin')}</Subheading>}
     />
   )
 }

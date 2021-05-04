@@ -5,6 +5,7 @@ import { Subheading, Appbar, Text, TextInput, Button, List, Checkbox, Title, Par
 import { Header, HelpIcon, TimeInput } from '../../components';
 import { createActivity, updateActivity, selectActivityById } from '../../redux'
 import { useTranslation } from 'react-i18next'
+import { GeneralColor, ActivityFormColor } from '../../styles/Colors';
 
 
 
@@ -83,7 +84,7 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
   return(
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{flex: 1, backgroundColor: 'white'}}
+      style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}
     >
       <Header 
         title={activity?.name?activity.name:t('activityForm.headerTitle')} 
@@ -93,7 +94,7 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
       <ScrollView style={{flexGrow: 0}} overScrollMode='never' >
         <TextInput 
           error={nameInputError} 
-          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, height: 55, backgroundColor: '#FBFCFC'}} 
+          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, height: 55, backgroundColor: GeneralColor.textInputBackground}} 
           mode= 'outlined' 
           label={t('activityForm.nameInputLabel')}
           value={name} 
@@ -107,7 +108,7 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
         </HelperText>
         <ActivityTypeSelector repeatMode={repeatMode} setRepeatMode={setRepeatMode}/>
         <WeekdaySelector state={repeatMode} weekDays={weekDays} setWeekDays={setWeekDays} setWeekDaysError={setWeekDaysError}/>
-        <HelperText style={{textAlign: 'center', borderTopWidth: 1, borderTopColor: '#CE0A24', marginHorizontal: 25 }} type="error" visible={weekDaysError}>
+        <HelperText style={{textAlign: 'center', borderTopWidth: 1, borderTopColor: GeneralColor.helperTextBorderTopColor, marginHorizontal: 25 }} type="error" visible={weekDaysError}>
         {t('activityForm.errors.noDaysSelected')}
         </HelperText>
         <TimeGoal goal={goal} setGoal={(value) => {
@@ -126,7 +127,7 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
         {goal=='check' && repeatMode == 'weekly'?
           <NumberOfWeeklyDaysInput timesPerWeek={timesPerWeek} setTimesPerWeek={setTimesPerWeek} />
         : null }
-        <HelperText style={{textAlign: 'center', borderTopWidth: 1, borderTopColor: '#CE0A24', marginHorizontal: 35}} type="error" visible={timeInputError}>
+        <HelperText style={{textAlign: 'center', borderTopWidth: 1, borderTopColor: GeneralColor.helperTextBorderTopColor, marginHorizontal: 35}} type="error" visible={timeInputError}>
           {t('activityForm.errors.noTime')}
         </HelperText>
       </ScrollView>
@@ -172,10 +173,10 @@ const NumberOfWeeklyDaysInput = ({ timesPerWeek, setTimesPerWeek }) => {
           marginLeft: 20,
           fontSize: 40,
           textAlign: 'center',
-          backgroundColor: 'transparent'
+          backgroundColor: ActivityFormColor.weeklyDaysTextInputBackground
         }} 
         selectTextOnFocus={true}
-        selectionColor= 'transparent'
+        selectionColor= {ActivityFormColor.weeklyDaysTextInputSelectionColor}
         value={timesPerWeek} 
         selection={{start:0, end:1}}
         onChangeText={(value) => {
@@ -284,31 +285,31 @@ const WeekdaySelector = ({ state, weekDays, setWeekDays, setWeekDaysError }) => 
 }
 
 const WeekdaySelectorItem = ({ label, state, onPress }) => {
-  let squareColor = 'transparent', 
-      dashColor = 'transparent', 
-      textColor = 'black'
+  let squareColor = ActivityFormColor.squareColor, 
+      dashColor = ActivityFormColor.dashColor, 
+      textColor = ActivityFormColor.textColor
   
   switch(state){
     case 'regular': 
       break
     case 'pressed':
-      squareColor = '#7B61FF'
-      textColor = 'white'
+      squareColor = ActivityFormColor.pressedSquareColor
+      textColor = ActivityFormColor.pressedTextColor
       break
     case 'disabled':
-      textColor = 'grey'
+      textColor = ActivityFormColor.disabledTextColor
       break
     case 'pressed-disabled':
-      squareColor = '#CAC4D4'
-      textColor = 'white'
+      squareColor = ActivityFormColor.pressedDisabledSquareColor
+      textColor = ActivityFormColor.pressedDisabledTextColor
       break
     case 'dashed':
-      textColor = 'white'
-      dashColor = '#7B61FF'
+      textColor = ActivityFormColor.dashedDisabledTextColor
+      dashColor = ActivityFormColor.dashedDashColor
       break
     case 'dashed-disabled':
-      dashColor = '#CAC4D4'
-      textColor = 'white'
+      dashColor = ActivityFormColor.dashedDisabledDashColor
+      textColor = ActivityFormColor.dashedDisabledTextColor
       break
   }
   

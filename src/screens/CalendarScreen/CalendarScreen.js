@@ -10,6 +10,7 @@ import { selectLogEntities, selectActivityEntities, selectGoalEntities } from '.
 import { Header } from '../../components';
 import { getTodayTime, getPreferedExpression, getToday, dueToday } from '../../util'
 import { useTranslation } from 'react-i18next'
+import { CalendarColor, GeneralColor } from '../../styles/Colors';
 
 function overviewLog(dateTime, logs, activities, goals, dayStartHour, t){
   const today = getToday(dayStartHour)
@@ -103,7 +104,7 @@ const CalendarScreen = ({ navigation, logs, activities, goals, dayStartHour }) =
       [today]: {
         customStyles: {
           text: {
-            color: 'blue',
+            color: CalendarColor.selectedDate,
           }
         }
       },
@@ -123,21 +124,21 @@ const CalendarScreen = ({ navigation, logs, activities, goals, dayStartHour }) =
   } = overviewLog(dateTime, logs, activities, goals, dayStartHour, t)
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'space-between'}}>
+    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground, justifyContent: 'space-between'}}>
       <View>
         <Header title={t('calendar.headerTitle')} left='hamburger' navigation={navigation}/>
         <Calendar
           onDayPress={(day) => {setSelectedDate(day.dateString)}}
           // Replace default arrows with custom ones (direction can be 'left' or 'right')
           renderArrow={(direction) => (
-            <FontAwesomeIcon icon={direction=='left'?faChevronLeft:faChevronRight} color='#BBBBBB'/>
+            <FontAwesomeIcon icon={direction=='left'?faChevronLeft:faChevronRight} color={CalendarColor.iconChevron}/>
           )}
           // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday.
           firstDay={1}
           markingType={'custom'}
           markedDates={markedDates}
           theme={{
-            todayTextColor: '#2d4150'
+            todayTextColor: CalendarColor.todayTextColor
           }}
         />
       </View>
