@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { FlatList, View, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, Switch, Appbar, Divider } from 'react-native-paper';
-import { Header, InfoCard } from '../../components'
-import { selectAllGoals, toggleGoal } from '../../redux'
-import { hasSomethingToShow } from '../../util'
+import { Header, InfoCard } from '../components'
+import { selectAllGoals, toggleGoal } from '../redux'
+import { hasSomethingToShow } from '../util'
 import { useTranslation } from 'react-i18next'
-import { GeneralColor } from '../../styles/Colors';
+import { GeneralColor } from '../styles/Colors';
 
 
 const GoalListItem = ({ name, active, toggleGoal, id }) => {
@@ -19,7 +19,7 @@ const GoalListItem = ({ name, active, toggleGoal, id }) => {
         onPress={() => navigation.navigate('Goal', { goalId: id })}
         title={name}
         right={() => (
-          <Pressable style= {{justifyContent: 'center'}} onPress={() => {}}>
+          <Pressable style={{justifyContent: 'center'}} onPress={() => {}}>
             <Switch 
               onStartShouldSetResponder={()=>{true}} 
               value={active} 
@@ -33,22 +33,19 @@ const GoalListItem = ({ name, active, toggleGoal, id }) => {
   );
 }
 
-
-
 const GoalsScreen = ({ navigation, goals, toggleGoal }) => {
+  const { t, i18n } = useTranslation()
+  
   const renderItem = ({ item }) => (
     <GoalListItem
-    id={item.id}
-    name={item.name}
-    active={item.active} 
-    toggleGoal={toggleGoal}
-    motivation={item.motivation} />
-    )
-    
-  const { t, i18n } = useTranslation()
-    
-  const infoContent = t('goals.infoContent')
-  
+      id={item.id}
+      name={item.name}
+      active={item.active} 
+      toggleGoal={toggleGoal}
+      motivation={item.motivation} 
+    />
+  )
+      
   return(
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header 
@@ -59,10 +56,8 @@ const GoalsScreen = ({ navigation, goals, toggleGoal }) => {
       {hasSomethingToShow(goals)?
         <FlatList data={goals} renderItem={renderItem} />
       :
-        <InfoCard content={infoContent} />
+        <InfoCard content={t('goals.infoContent')} />
       }
-      
-      
     </View>
   )
 }
