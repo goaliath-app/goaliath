@@ -1,54 +1,39 @@
 import React from 'react';
 import { View, Share } from 'react-native'
-import { connect, useStore } from 'react-redux';
+import { connect } from 'react-redux';
 import { Text, List, Divider, Paragraph, Portal, Dialog, Button } from 'react-native-paper'
 import { DateTime } from 'luxon'
-import { setDayStartHour, importState, setLanguage } from '../../redux'
-import { Header } from '../../components'
 import DateTimePickerModal from "react-native-modal-datetime-picker"
 import email from 'react-native-email'
 import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker'
 import { useTranslation } from 'react-i18next'
-import { GeneralColor, SettingsColor } from '../../styles/Colors';
+import { setDayStartHour, importState, setLanguage } from '../redux'
+import { Header } from '../components'
+import { GeneralColor, SettingsColor } from '../styles/Colors';
 
 
 const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, state, importState }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+  const [isLanguageDialogVisible, setLanguageDialogVisible] = React.useState(false);
+  const [isImportDialogVisible, setImportDialogVisible] = React.useState(false);
+  const [importedStateText, setImportedStateText] = React.useState('');
 
   const { t, i18n } = useTranslation()
-  
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
 
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (time) => {
-    const dateTime = DateTime.fromJSDate(time)
-    hideDatePicker();
+  const changeDayStartHour = (JSDate) => {
+    const dateTime = DateTime.fromJSDate(JSDate)
+    setDatePickerVisibility(false)
     setDayStartHour(dateTime.toISO());
   };
-
-  const [languageDialogVisible, setLanguageDialogVisible] = React.useState(false);
-  const showLanguageDialog = () => setLanguageDialogVisible(true);
-  const hideLanguageDialog = () => setLanguageDialogVisible(false);
-
-  const [importDialogVisible, setImportDialogVisible] = React.useState(false);
-  const showImportDialog = () => setImportDialogVisible(true);
-  const hideImportDialog = () => setImportDialogVisible(false);
-  
-  const [text, setText] = React.useState('');
 
   const readFile = () => {
     DocumentPicker.getDocumentAsync({type: 'application/oda'})
       .then(({ type, uri }) => FileSystem.readAsStringAsync(uri)
         .then((text) => {
-          setText(text)
-          showImportDialog()
+          setImportedStateText(text)
+          setImportDialogVisible(true)
           }
         )
       )
@@ -56,7 +41,7 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
 
   function importStateFromText(text){
     // TODO: dont break if file is bad formatted
-    hideImportDialog()
+    setImportDialogVisible(false)
     const state = JSON.parse(text)
     importState(state)
   }
@@ -67,14 +52,11 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
       <List.Item 
         title={t('settings.startHour')}
         description={t('settings.startHourDescription')}
-        onPress={showDatePicker} 
-        right={() => <Text style={{marginRight: 10, marginTop: 10, color: SettingsColor.accentColor, fontSize: 17}}>{DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}</Text>} />
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="time"
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-        date={DateTime.fromISO(settings.dayStartHour).toJSDate()}
+        onPress={() => setDatePickerVisibility(true)} 
+        right={() => 
+          <Text style={{marginRight: 10, marginTop: 10, color: SettingsColor.accentColor, fontSize: 17}}>
+            {DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}
+          </Text>} 
       />
       <Divider />
       <List.Item
@@ -104,29 +86,43 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
       <List.Item
         title={t('settings.language')}
         description={t('settings.languageDescription')}
-        onPress={() => showLanguageDialog()}
-        right={() => <Text style={{marginRight: 10, marginTop: 10, color: SettingsColor.accentColor, fontSize: 17}}>{t('settings.languageLocale')}</Text>} />
+        onPress={() => setLanguageDialogVisible(true)}
+        right={() => 
+          <Text style={{
+            marginRight: 10, marginTop: 10, 
+            color: SettingsColor.accentColor, fontSize: 17
+          }}>
+            {t('settings.languageLocale')}
+          </Text>} />
       <Divider />
 
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="time"
+        onConfirm={(JSDate) => changeDayStartHour(JSDate)}
+        onCancel={() => setDatePickerVisibility(false)}
+        date={DateTime.fromISO(settings.dayStartHour).toJSDate()}
+      />
+
       <Portal>
-        <Dialog visible={importDialogVisible} onDismiss={() => {hideImportDialog()}}>
+        <Dialog visible={isImportDialogVisible} onDismiss={() => {setImportDialogVisible(false)}}>
           <Dialog.Title>{t('settings.importDialog.title')}</Dialog.Title>
           <Dialog.Content>
             <Paragraph>{t('settings.importDialog.content')}</Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => importStateFromText(text)}>{t('settings.importDialog.buttonAcept')}</Button>
-            <Button onPress={() => hideImportDialog()}>{t('settings.importDialog.buttonCancel')}</Button>
+            <Button onPress={() => importStateFromText(importedStateText)}>{t('settings.importDialog.buttonAcept')}</Button>
+            <Button onPress={() => setImportDialogVisible(false)}>{t('settings.importDialog.buttonCancel')}</Button>
           </Dialog.Actions>
         </Dialog>
 
-        <Dialog visible={languageDialogVisible} onDismiss={() => {hideLanguageDialog()}}>
+        <Dialog visible={isLanguageDialogVisible} onDismiss={() => {setLanguageDialogVisible(false)}}>
           <Dialog.Title>{t('settings.languageDialog.title')}</Dialog.Title>
             <Dialog.Content>
               <Divider />
-              <List.Item title={t('settings.languageDialog.english')} onPress={() => {i18n.changeLanguage('en'); setLanguage('en'); hideLanguageDialog(); /*onChangeLanguage()*/}} />
+              <List.Item title={t('settings.languageDialog.english')} onPress={() => {i18n.changeLanguage('en'); setLanguage('en'); setLanguageDialogVisible(false); /*onChangeLanguage()*/}} />
               <Divider />
-              <List.Item title={t('settings.languageDialog.spanish')} onPress={() => {i18n.changeLanguage('es'); setLanguage('es'); hideLanguageDialog(); /*onChangeLanguage()*/}} />
+              <List.Item title={t('settings.languageDialog.spanish')} onPress={() => {i18n.changeLanguage('es'); setLanguage('es'); setLanguageDialogVisible(false); /*onChangeLanguage()*/}} />
               <Divider />
             </Dialog.Content>
         </Dialog>
@@ -140,8 +136,11 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
 const writeFile =  (state) => {
   const date = DateTime.now().toFormat('dd-MM-yy')
   let fileUri = FileSystem.cacheDirectory + `Goaliat_Export_${date}.oda`
-  FileSystem.writeAsStringAsync(fileUri, JSON.stringify(state, null, 2), { encoding: FileSystem.EncodingType.UTF8 })
-    .then(()=>Sharing.shareAsync(fileUri))
+  FileSystem.writeAsStringAsync(
+    fileUri, 
+    JSON.stringify(state, null, 2), 
+    { encoding: FileSystem.EncodingType.UTF8 }
+  ).then(()=>Sharing.shareAsync(fileUri))
 }
 
 const mapStateToProps = (state) => {
@@ -149,11 +148,10 @@ const mapStateToProps = (state) => {
   return { settings, state }
 }
 
-
 const actionToProps = {
-    setDayStartHour,
-    importState,
-    setLanguage
+  setDayStartHour,
+  importState,
+  setLanguage
 }
 
 export default connect(mapStateToProps, actionToProps)(SettingsScreen);
