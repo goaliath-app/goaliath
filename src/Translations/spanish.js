@@ -2,7 +2,7 @@ const es= {
   translation: {
     activityListItem: {
         description: {
-          todayTimeGoal: 'Meta: {{expressionValue}} {{expressionUnit}}',
+          todayTimeGoal: 'Objetivo: {{expressionValue}} {{expressionUnit}}',
           weekCheck: 'Hecho {{totalTimes}} de {{timesPerWeek}} días',
           weekTimeGoal: 'Hecho {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}'
         }
@@ -25,7 +25,7 @@ const es= {
         helpIconText: 'Estos son los detalles de una actividad pasada. Incluso si has modificado el objetivo o la frecuencia de la actividad, aquí podrás verla exactamente como fue ese día.',
         deleteDialog: {
           title: '¿Borrar actividad?',
-          body: "Esta acción no podrá ser deshecha."
+          body: "Esta acción no puede deshacerse."
         },
     },
   
@@ -38,12 +38,12 @@ const es= {
         genericStats: {
           title: 'Estadísticas',
           hoursDedicated: ' horas totales dedicadas',
-          daysCompleted: ' días completado'
+          daysCompleted: ' días completada'
         },
         weekStats: {
           title: 'Esta semana',
           hoursDedicated: ' horas totales dedicadas',
-          daysCompleted: ' días completado'
+          daysCompleted: ' días completada'
   
         }
     },
@@ -51,7 +51,7 @@ const es= {
     todayPannel: {
       title: 'Hoy',
       stopButton: 'Parar temporizador',
-      startButton: 'Empezar temporizador',
+      startButton: 'Iniciar temporizador',
       checkboxLabel: 'Hecho',
     },
 
@@ -84,7 +84,7 @@ const es= {
       
     calendar: {
         headerTitle: 'Calendario',
-        openDayButton: 'Ir al día',
+        openDayButton: 'Abrir día',
         stats: '{{completedActivities}} tareas hechas, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicado\n{{undoneActivities}} tareas sin hacer, {{timeLeftValue}} {{timeLeftUnit}} quedan por hacer'
     },
   
@@ -101,7 +101,7 @@ const es= {
       goalNameSubheading: '¿Qué quieres conseguir?',
       nameTextInputLabel: 'Nombre de la meta',
       goalMotivationSubheading: '¿Por qué quieres llegar a esa meta?',
-      motivationTextInputLabel: 'Motivación de la meta (opcional)',
+      motivationTextInputLabel: 'Tu Motivación (opcional)',
     },
 
     goal: {
@@ -112,14 +112,14 @@ const es= {
       },
       deleteDialog: {
         title: '¿Eliminar meta?',
-        body: "Se borrará la meta y todas sus actividades. Esta acción no podrá deshacerse.",
+        body: "Se borrará la meta y todas sus actividades. No puede deshacerse.",
       },
       infoContent: "Esta meta no tiene ninguna actividad todavía.\n\nUna actividad es una tarea recurrente que puede tener o no un requisito de tiempo.\n\nPara cada meta deberías crear las actividades que vayan a ayudarte a completar la meta si las realizas con constancia.\n\nDiseñar tus actividades de esta forma te permitirán irte a la cama pensando: \"Hoy he hecho todo lo que tenía que hacer\"."
     },
 
     goals: {
         headerTitle: 'Metas',
-        infoContent: "No tienes metas todavía.\n\nLas metas son la base de Goaliath, son las cosas que quieres conseguir, dedicar tiempo o trabajar en ellas.\n\nPuedes crear una nueva meta presionando en el + que hay arriba a la derecha."
+        infoContent: "No tienes metas todavía.\n\nLas metas son la base de Goaliath, son las cosas que quieres conseguir, dedicar tiempo o trabajar en ellas.\n\nPuedes crear una nueva meta pulsando el icono +."
     },
 
     settings: {
@@ -130,7 +130,7 @@ const es= {
         feedbackDescription: 'Manda un mensaje a los desarrolladores',
         share: 'Compartir',
         shareDescription: 'Preséntanos a tus amigos',
-        shareMessage: "Goaliath es una bonita aplicación para conseguir tus metas, ¡pruébala!\n\nAún no está diponible en la play store, pero puedes descargarla aquí: (android)\nhttps://anonfiles.com/r4G5B4raue/Goaliath-1ac4cc84001d4f32980c40e9869c79d9-signed_apk \n\nEs de código abierto, puedes revisarlo aquí: \nhttps://github.com/OliverLSanz/routines-app",
+        shareMessage: "Goaliath es una aplicación para conseguir tus metas, ¡pruébala!\n\nAún no está diponible en la play store, pero puedes descargarla aquí: (android)\nhttps://anonfiles.com/r4G5B4raue/Goaliath-1ac4cc84001d4f32980c40e9869c79d9-signed_apk \n\nEs de código abierto, puedes revisarlo aquí: \nhttps://github.com/OliverLSanz/routines-app",
         export: 'Exportar',
         exportDescription: 'Guarda tus datos',
         import: 'Importar',
@@ -165,18 +165,19 @@ const es= {
     onboarding: {
       slideOne: {
         title: 'Bienvenido',
-        text: 'Placeholder slide one text spanish',
+        text: 'Goaliath es una herramienta para gestionar tu tiempo cuyo objetivo es hacerte sentir orgulloso de tus acciones de cada día.',
       },
       slideTwo: {
-        title: 'Slide 2 title spanish',
-        text: 'Placeholder slide two text spanish',
+        title: 'Decide menos, recuerda más',
+        text: 'Goaliath te recordará las acciones que debes realizar para vivir de acuerdo con tus valores. De este modo, podrás decidir una vez y después centrarte en actuar.',
       },
       slideThree: {
-        title: 'Slide 3 title spanish',
-        text: 'Placeholder slide three text spanish',
+        title: 'El método',
+        text: 'Goaliath está diseñado para apoyar un sistema concreto de gestión de tiempo. Te recomendamos echar un vistazo a la guía rápida en ',
+        linkText: 'nuestra página web.'
       },
       next: 'Siguiente',
-      begin: 'Empecemos'
+      begin: 'Vamos'
     },
 
     util: {
@@ -280,7 +281,7 @@ const es= {
     },
 
     drawer: {
-      blog: 'Blog',
+      blog: 'Sitio web',
       appName: 'Goaliath'
     }
   }

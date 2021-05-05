@@ -166,15 +166,16 @@ const en = {
     onboarding: {
       slideOne: {
         title: 'Welcome to Goaliath',
-        text: 'Managing your own time is hard. You need to define your goals, prioritize, build a plan and be consistent.\nGoaliath is here to help you.',
+        text: 'Goaliath is a time and goal management tool that seeks to make you feel proud of your daily actions.',
       },
       slideTwo: {
-        title: 'The Goaliath\'s approach',
-        text: 'If you are into time management apps you know that most of the time they require too much effort to be used effectively.\n\nWe think that tools are made to reduce effort, not to increase it. Goliath is made so that you can plan once and execute without hesitation.',
+        title: 'Decide less, remember more',
+        text: 'Goaliath remembers you of the actions you need to take in order to live according to your values. This way you can make the most out of each decision you make.',
       },
       slideThree: {
-        title: 'Be serene',
-        text: 'Have you felt that angst, knowing you are not acting according to your values?\n\nFeel it no more, knowing that each day is what you want it to be.\n\nAs Seneca once said: “Life is very short and anxious for those who forget the past, neglect the present, and fear the future”',
+        title: 'Our method',
+        text: 'Goaliath is designed to support a very specific time management method. We encourage you to learn more about it ',
+        linkText: 'in our website'
       },
       next: 'Next',
       begin: 'Begin'
@@ -281,7 +282,7 @@ const en = {
     },
     
     drawer: {
-      blog: 'Blog',
+      blog: 'Website',
       appName: 'Goaliath'
     }
   }

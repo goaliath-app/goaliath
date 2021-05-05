@@ -1,4 +1,4 @@
-import { Image, View, Text, StyleSheet } from 'react-native';
+import { Image, View, Text, StyleSheet, Linking } from 'react-native';
 import { Title, Paragraph, Subheading } from 'react-native-paper'
 import React from 'react';
 import AppIntroSlider from 'react-native-app-intro-slider';
@@ -52,7 +52,11 @@ const NotSoSimple = ({ finishOnboarding }) => {
     {
       key: 'three',
       title: t('onboarding.slideThree.title'),
-      text: t('onboarding.slideThree.text'),
+      text: (
+        <>
+          {t('onboarding.slideThree.text')}
+          <Paragraph style={{color: 'blue'}} onPress={() => Linking.openURL('https://goaliath-app.github.io/guide')}>{t('onboarding.slideThree.linkText')}</Paragraph>
+        </>),
     }
   ];
 
