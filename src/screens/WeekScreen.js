@@ -2,32 +2,29 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
-import { ActivityList } from '../../components'
-import { Header, InfoCard } from '../../components';
-import { updateLogs } from '../../redux'
-import { extractActivityLists, getToday, hasSomethingToShow } from '../../util'
+import { ActivityList } from '../components'
+import { Header, InfoCard } from '../components';
+import { updateLogs } from '../redux'
+import { extractActivityLists, getToday, hasSomethingToShow } from '../util'
 import { useTranslation } from 'react-i18next'
-import { GeneralColor } from '../../styles/Colors';
+import { GeneralColor } from '../styles/Colors';
 
-
-const WeekScreen = ({ todaysActivities, navigation, updateLogs }) => {
-  const { t, i18n } = useTranslation()
-
-  const infoContent = t('week.infoContent')
-  
+const WeekScreen = ({ weekActivities, navigation, updateLogs }) => {
   useFocusEffect(
     React.useCallback(() => {
       updateLogs()
     }, [])
   )
 
+  const { t, i18n } = useTranslation()
+
   return(
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('week.headerTitle')} left='hamburger' navigation={navigation}/>
-      {hasSomethingToShow(todaysActivities)?
-        <ActivityList data={todaysActivities} />
+      {hasSomethingToShow(weekActivities)?
+      <ActivityList data={weekActivities} />
       :
-        <InfoCard content={infoContent} />
+      <InfoCard content={t('week.infoContent')} />
       }
       
     </View>
@@ -37,7 +34,7 @@ const WeekScreen = ({ todaysActivities, navigation, updateLogs }) => {
 const mapStateToProps = (state) => {
   const { dayStartHour } = state.settings
   const { weekActivities } = extractActivityLists(state, getToday(dayStartHour))
-  return { todaysActivities: weekActivities }
+  return { weekActivities: weekActivities }
 }
 
 const actionsToProps = {
