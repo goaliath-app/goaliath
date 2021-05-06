@@ -1,7 +1,10 @@
 import { useStore } from 'react-redux'
 import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
-import { selectEntriesByDay, selectActivityById, selectAllWeekEntriesByActivityId } from './redux'
+import { 
+  selectEntriesByDay, selectActivityById, selectAllWeekEntriesByActivityId,
+  selectActivityEntities, selectGoalById,
+} from './redux'
 
 export function hasSomethingToShow(activityList){
   /* also works for lists of goals and entries */
@@ -14,7 +17,7 @@ export function hasSomethingToShow(activityList){
 }
 
 export function getTodayTime(intervals){
-  if(!intervals) {return 0}
+  if(!intervals) {return Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')}
   let todayTime = 0
   for(let interval of intervals){
     if(interval.startDate && interval.endDate){
@@ -77,35 +80,29 @@ export function newEntry(activity){
   )
 }
 
-export function extractActivityLists(state, day, predictedEntries){
+export function extractActivityLists(state, day){
   let dayActivities = [] 
   let weekActivities = []
-  var logs
-  if(predictedEntries){
-    logs = predictedEntries
+  var entries
+
+  if(day > getToday(state.settings.dayStartHour)){
+    entries = predictEntries(state, day)
   }else{
-    logs = selectEntriesByDay(state, day)
+    entries = selectEntriesByDay(state, day)
   }
-  // const logs = (
-  //   predictedEntries !== null?
-  //     predictedEntries
-  //     :
-  //     selectEntriesByDay(state, day)
-  // )
-  //const logs = selectEntriesByDay(state, day)
 
-  for(let log of logs){
-    const activity = selectActivityById(state, log.id)
-    const fullLog = {...activity, ...log, date: day}
+  for(let entry of entries){
+    const activity = selectActivityById(state, entry.id)
+    const fullEntry = {...activity, ...entry, date: day}
 
-    if(!(fullLog.repeatMode == 'weekly')){
-      dayActivities.push(fullLog)
+    if(!(fullEntry.repeatMode == 'weekly')){
+      dayActivities.push(fullEntry)
     }else{
       // we have to calculate and inyect weeklyTime and weeklyTimes (not counting today or future days)
       let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
       let weeklyTimes = 0
 
-      const weekLogs = selectAllWeekEntriesByActivityId(state, fullLog.id, day)
+      const weekLogs = selectAllWeekEntriesByActivityId(state, fullEntry.id, day)
 
       for(let thatDay in weekLogs){
         if(day.weekday-1==thatDay){
@@ -114,7 +111,7 @@ export function extractActivityLists(state, day, predictedEntries){
         weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[thatDay].intervals))
         weeklyTimes += weekLogs[thatDay].completed?1:0
       }
-      weekActivities.push({ ...fullLog, weeklyTime, weeklyTimes })
+      weekActivities.push({ ...fullEntry, weeklyTime, weeklyTimes })
     }
   }
 
@@ -223,4 +220,28 @@ export function dueToday(today, activity, activityGoal){
     }
   }
   return false
+}
+
+/**
+ * Get the entries of the activities that would be due on a specific day given
+ * the current activities and goals.
+ * @param  {object}         state The whole redux state
+ * @param  {Luxon.DateTime} day   Date to predict (dayStartHour adjustments
+ * wont be applied)
+ * @return {list of objects}      List of entries predicted for that day            
+ */
+export function predictEntries(state, day){
+  let entries = []
+
+  const activities = selectActivityEntities(state)
+  for(let activityId in activities){
+    const activity = activities[activityId]
+    const goal = selectGoalById(state, activity.goalId)
+
+    if(dueToday(day, activity, goal)){
+      entries.push(newEntry(activity))
+    }
+  }
+
+  return entries
 }
