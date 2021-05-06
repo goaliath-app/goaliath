@@ -4,7 +4,7 @@ export { default as ActivityDetailScreen} from './ActivityDetailScreen/ActivityD
 export { default as GoalsScreen } from './GoalsScreen'
 export { default as GoalScreen} from './GoalScreen'
 export { default as ActivityFormScreen } from './ActivityFormScreen/ActivityFormScreen'
-export { default as GoalFormScreen } from './GoalFormScreen/GoalFormScreen'
+export { default as GoalFormScreen } from './GoalFormScreen'
 export { default as CalendarScreen } from './CalendarScreen/CalendarScreen'
 export { default as SettingsScreen } from './SettingsScreen'
 export { default as DayInCalendarScreen } from './DayInCalendarScreen/DayInCalendarScreen'

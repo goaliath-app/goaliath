@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { View, Alert, StyleSheet, KeyboardAvoidingView, ScrollView, Platform } from 'react-native'
+import { View, StyleSheet, KeyboardAvoidingView, ScrollView, Platform } from 'react-native'
 import { Appbar, TextInput, Subheading, Paragraph, HelperText, Title } from 'react-native-paper';
-import { Header, HelpIcon } from '../../components'
-import { createGoal, updateGoal, selectGoalById } from '../../redux';
 import { useTranslation } from 'react-i18next'
-import { GeneralColor } from '../../styles/Colors';
+import { Header, HelpIcon } from '../components'
+import { createGoal, updateGoal, selectGoalById } from '../redux';
+import { GeneralColor } from '../styles/Colors';
 
 const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
   const { t, i18n } = useTranslation()
@@ -15,7 +15,7 @@ const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
 
   const [nameInputError, setNameInputError] = React.useState(false)
   
-  const validate = ( newGoal ) => {
+  function validate(newGoal){
     if(!newGoal.name){
       setNameInputError(true)
       return false
@@ -39,16 +39,21 @@ const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
         }
       } 
     />
-    
   )
 
   return(
     <KeyboardAvoidingView 
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, backgroundColor: GeneralColor.screenBackground }}>
-      <Header title={t('goalForm.headerTitle')} left='back' navigation={navigation} buttons={headerButtons} />
-      <ScrollView style={{flex: 1, marginHorizontal: 16}} overScrollMode='never' >
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+      style={{ flex: 1, backgroundColor: GeneralColor.screenBackground }}
+    >
+      <Header 
+        title={t('goalForm.headerTitle')} 
+        left='back' 
+        navigation={navigation} 
+        buttons={headerButtons} 
+      />
+      <ScrollView style={{flex: 1, marginHorizontal: 16}} overScrollMode='never'>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
           <Subheading style={styles.subheading}>{t('goalForm.goalNameSubheading')}</Subheading>
         </View>
         <TextInput 
@@ -72,7 +77,7 @@ const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
               <Title>{t('goalForm.descriptionHelpDialogTitle')}</Title>
               <Paragraph>{t('goalForm.descriptionHelpDialog')}</Paragraph>
             </ View>
-          } />
+          }/>
         </View>
         <TextInput
           style={styles.textInput}
@@ -84,7 +89,7 @@ const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
           value={motivation}
           onChangeText={setMotivation}
           />
-        </ScrollView>
+      </ScrollView>
     </KeyboardAvoidingView>
   )
 }
@@ -108,7 +113,5 @@ const styles = StyleSheet.create ({
     marginTop: 16
   }
 })
-
-
 
 export default connect(mapStateToProps, actionsToProps)(GoalFormScreen);
