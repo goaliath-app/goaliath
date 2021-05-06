@@ -8,7 +8,15 @@ const ActivityTypeSelector = ({ repeatMode, setRepeatMode }) => {
   const { t, i18n } = useTranslation()
   return(
     <>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 16, paddingBottom: 10}}>
+      <View 
+        style={{
+          flexDirection: 'row', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          marginHorizontal: 16, 
+          paddingBottom: 10
+        }}
+      >
       <Subheading>{t('activityForm.repeatSwitchBar.title')}</Subheading>
         <HelpIcon dialogContent={
           <>

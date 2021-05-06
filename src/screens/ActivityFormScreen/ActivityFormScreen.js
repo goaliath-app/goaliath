@@ -12,31 +12,35 @@ import WeekdaySelector from './WeekdaySelector'
 import TimeGoal from './TimeGoal'
 
 
-
 const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId=null, activity=null }) => {
   if(activity){
     goalId = activity.goalId
   }
 
   const { t, i18n } = useTranslation()
-  
-  const [name, setName] = React.useState(activity?.name?activity.name:'');
-  const [repeatMode, setRepeatMode] = React.useState(activity?.repeatMode?activity.repeatMode:'daily');  // 'daily', 'select' or 'weekly'
-  const [goal, setGoal] = React.useState(activity?.goal?activity.goal:'check');  // 'time' or 'check'
-
-  const [timeGoal, setTimeGoal] = React.useState(activity?.timeGoal?activity.timeGoal:0);
-
-  const [weekDays, setWeekDays] = React.useState(activity?.weekDays?activity.weekDays:{
+ 
+  const initialName = activity?.name?activity.name:''
+  const initialRepeatMode = activity?.repeatMode?activity.repeatMode:'daily'
+  const initialGoal = activity?.goal?activity.goal:'check'
+  const initialTimeGoal = activity?.timeGoal?activity.timeGoal:0
+  const initialWeekDays = activity?.weekDays?activity.weekDays:{
     '1': false, '2': false, '3': false, '4': false, '5': false, '6': false, '7': false
-  })
-  const [timesPerWeek, setTimesPerWeek] = React.useState(activity?.timesPerWeek?String(activity.timesPerWeek):'1')
+  }
+  const initialTimesPerWeek = activity?.timesPerWeek?String(activity.timesPerWeek):'1'
+
+  const [name, setName] = React.useState(initialName)
+  const [repeatMode, setRepeatMode] = React.useState(initialRepeatMode)  // 'daily', 'select' or 'weekly'
+  const [goal, setGoal] = React.useState(initialGoal)  // 'time' or 'check'
+  const [timeGoal, setTimeGoal] = React.useState(initialTimeGoal)
+  const [weekDays, setWeekDays] = React.useState(initialWeekDays)
+  const [timesPerWeek, setTimesPerWeek] = React.useState(initialTimesPerWeek)
 
   const [nameInputError, setNameInputError] = React.useState(false)
   const [weekDaysError, setWeekDaysError] = React.useState(false)
   const [timeInputError, setTimeInputError] = React.useState(false)
 
   const validate = ( newActivity ) => {
-    const { name, repeatMode, goal, goalId, timeGoal, weekDays } = newActivity
+    const { name, repeatMode, goal, timeGoal, weekDays } = newActivity
     let error = false
     if(!name){
       setNameInputError(true)
@@ -111,14 +115,28 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
           {t('activityForm.errors.noName')}
         </HelperText>
         <ActivityTypeSelector repeatMode={repeatMode} setRepeatMode={setRepeatMode}/>
-        <WeekdaySelector state={repeatMode} weekDays={weekDays} setWeekDays={setWeekDays} setWeekDaysError={setWeekDaysError}/>
-        <HelperText style={{textAlign: 'center', borderTopWidth: 1, borderTopColor: GeneralColor.helperTextBorderTopColor, marginHorizontal: 25 }} type="error" visible={weekDaysError}>
-        {t('activityForm.errors.noDaysSelected')}
+        <WeekdaySelector 
+          state={repeatMode} 
+          weekDays={weekDays} 
+          setWeekDays={setWeekDays} 
+          setWeekDaysError={setWeekDaysError}
+        />
+        <HelperText 
+          style={{
+            textAlign: 'center', 
+            borderTopWidth: 1, 
+            borderTopColor: GeneralColor.helperTextBorderTopColor, 
+            marginHorizontal: 25 
+          }} 
+          type="error" 
+          visible={weekDaysError}
+        >
+          {t('activityForm.errors.noDaysSelected')}
         </HelperText>
         <TimeGoal goal={goal} setGoal={(value) => {
           setGoal(value)
-          }} />
-        
+          }} 
+        />
         {goal=='time'?
           <TimeInput
             value={timeGoal}
@@ -131,12 +149,19 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
         {goal=='check' && repeatMode == 'weekly'?
           <NumberOfWeeklyDaysInput timesPerWeek={timesPerWeek} setTimesPerWeek={setTimesPerWeek} />
         : null }
-        <HelperText style={{textAlign: 'center', borderTopWidth: 1, borderTopColor: GeneralColor.helperTextBorderTopColor, marginHorizontal: 35}} type="error" visible={timeInputError}>
+        <HelperText 
+          style={{
+            textAlign: 'center', 
+            borderTopWidth: 1, 
+            borderTopColor: GeneralColor.helperTextBorderTopColor, 
+            marginHorizontal: 35
+          }} 
+          type="error" 
+          visible={timeInputError}
+        >
           {t('activityForm.errors.noTime')}
         </HelperText>
       </ScrollView>
-      
-   
     </KeyboardAvoidingView>
   )
 }
