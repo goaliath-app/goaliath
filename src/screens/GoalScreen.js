@@ -23,12 +23,10 @@ const Activity = ({ name, active, id, toggleActivity, activity }) => {
         onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
         title={name}
         right={() => (
-          <Pressable style= {{justifyContent: 'center'}} onPress={() => {}}>
-            <Switch
-              onValueChange={() => toggleActivity({id: id})} 
-              value={active}
-            />
-          </Pressable>
+          <Switch
+            onValueChange={() => toggleActivity({id: id})} 
+            value={active}
+          />
         )}
         description={frequency(activity, t)} 
       />
