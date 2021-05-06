@@ -1,20 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, FlatList, Pressable, StyleSheet, ScrollView } from 'react-native';
+import { View, FlatList, Pressable, ScrollView } from 'react-native';
 import { List, Switch, Appbar, Menu, Paragraph, Divider, Title } from 'react-native-paper';
-import { Header, ThreeDotsMenu, DeleteDialog, InfoCard } from '../../components';
 import { useNavigation } from '@react-navigation/native';
-import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal } from '../../redux'
-import { frequency, hasSomethingToShow } from '../../util'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
-import { GeneralColor, GoalColor, HeaderColor } from '../../styles/Colors';
+import { Header, ThreeDotsMenu, DeleteDialog, InfoCard } from '../components';
+import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal } from '../redux'
+import { frequency, hasSomethingToShow } from '../util'
+import { GeneralColor, GoalColor, HeaderColor } from '../styles/Colors';
 
-const data = [
-  {name: 'Study Anki', repeatMode: 'daily', active: true},
-  {name: 'Watch Shirokuma Cafe', repeatMode: 'weekly', active: false},
-]
 
 const Activity = ({ name, active, id, toggleActivity, activity }) => {
   const navigation = useNavigation();
@@ -23,21 +19,21 @@ const Activity = ({ name, active, id, toggleActivity, activity }) => {
   return (
     <View>
       <List.Item
-      style={{paddingTop: 5}}
-      onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
-      title={name}
-      right={() => (
-        <Pressable style= {{justifyContent: 'center'}} onPress={() => {}}>
-          <Switch
-            onValueChange={() => toggleActivity({id: id})} 
-            value={active}
-          />
-        </Pressable>
-      )}
-      description={frequency(activity, t)} 
+        style={{paddingTop: 5}}
+        onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
+        title={name}
+        right={() => (
+          <Pressable style= {{justifyContent: 'center'}} onPress={() => {}}>
+            <Switch
+              onValueChange={() => toggleActivity({id: id})} 
+              value={active}
+            />
+          </Pressable>
+        )}
+        description={frequency(activity, t)} 
       />
       <Divider />
-    </View>    
+    </View>
   );
 }
 
@@ -45,18 +41,14 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
   const [menuVisible, setMenuVisible] = React.useState(false);
   const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)
   const [motivationCollapsed, setMotivationCollapsed] = React.useState(true)
-  const openMenu = () => setMenuVisible(true);
-  const closeMenu = () => setMenuVisible(false);
 
   const { t, i18n } = useTranslation()
-
-  const infoContent = t('goal.infoContent')
 
   const menuItems = (
     <>
     <Menu.Item title={t('goal.threeDotsMenu.editGoal')} 
       onPress={() => {
-        closeMenu()
+        setMenuVisible(false)
         navigation.navigate('GoalForm', { id: goal.id } )
       }}
     />
@@ -64,6 +56,21 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
       setMenuVisible(false)
       setDeleteDialogVisible(true)
       }} title={t('goal.threeDotsMenu.deleteGoal')}  />
+    </>
+  )
+
+  const headerButtons = (
+    <>
+    <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
+        navigation.navigate('ActivityForm', { goalId: goal.id })
+      }}
+    />
+    <ThreeDotsMenu 
+      menuItems={menuItems} 
+      openMenu= {() => setMenuVisible(true)} 
+      closeMenu= {() => setMenuVisible(false)} 
+      visible={menuVisible} 
+    />
     </>
   )
 
@@ -75,20 +82,47 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
       toggleActivity={toggleActivity}
       activity={item} />
   )
-  //const { goalId, goalName, goalMotivation } = route.params
-  const headerButtons = (
-    <>
-    <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
-        navigation.navigate('ActivityForm', { goalId: goal.id })
-      }}
-    />
-    <ThreeDotsMenu menuItems={menuItems} openMenu= {openMenu} closeMenu= {closeMenu} visible={menuVisible} />
-    </>
-  )
-
 
   return (
     <>
+      <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+        <Header title={goal.name} left='back' navigation={navigation} buttons={headerButtons}/>
+        <View style={{ flex: 1 }}>
+          <View style={{flexShrink: 1}}>
+            {hasSomethingToShow(activities)?
+              <FlatList data={activities} renderItem={renderItem} />
+              :
+              <InfoCard content={t('goal.infoContent')} />
+            } 
+          </View>
+          {goal.motivation?
+          <View style={{ flexGrow: 1 }} >
+            <View style={{ flex: 1 }}></View>
+            <View style={{ flex: -1 , borderTopWidth: 1,  borderColor: GoalColor.motivationBorder }}>
+              <Pressable 
+                onPress={()=> setMotivationCollapsed(!motivationCollapsed)} 
+                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}
+              >
+                <Title style={{ padding: 7, fontSize: 18}}>{t('goal.motivation')}</Title>
+                <FontAwesomeIcon icon={motivationCollapsed? faAngleUp : faAngleDown } size={20}/> 
+              </Pressable>
+            </View>
+            {motivationCollapsed? null:
+              <View >
+                <ScrollView style={{ flexGrow: 0}}>
+                  <Paragraph 
+                    style={{color: GoalColor.motivationParagraph, padding: 15, paddingTop: 0}}
+                  >
+                    {goal.motivation}
+                  </Paragraph>
+                </ScrollView>
+              </View>}
+          </View>
+          :
+          <></>}
+        </View>
+      </View>
+
       <DeleteDialog 
         visible={deleteDialogVisible} 
         setVisible={setDeleteDialogVisible} 
@@ -100,36 +134,6 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
         title={t('goal.deleteDialog.title')}
         body={t('goal.deleteDialog.body')}
       />
-      <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
-        <Header title={goal.name} left='back' navigation={navigation} buttons={headerButtons}/>
-        <View style={{ flex: 1 }}>
-          <View style={{flexShrink: 1}}>
-            {hasSomethingToShow(activities)?
-              <FlatList data={activities} renderItem={renderItem} />
-              :
-              <InfoCard content={infoContent} />
-            } 
-          </View>
-          {goal.motivation?
-          <View style={{ flexGrow: 1 }} >
-            <View style={{ flex: 1 }}></View>
-            <View style={{ flex: -1 , borderTopWidth: 1,  borderColor: GoalColor.motivationBorder }}>
-              <Pressable onPress={()=> setMotivationCollapsed(!motivationCollapsed)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                <Title style={{ padding: 7, fontSize: 18}}>{t('goal.motivation')}</Title>
-                <FontAwesomeIcon icon={motivationCollapsed? faAngleUp : faAngleDown } size={20}/> 
-              </Pressable>
-            </View>
-            {motivationCollapsed? null:
-              <View >
-                <ScrollView style={{ flexGrow: 0}}>
-                  <Paragraph style={{color: GoalColor.motivationParagraph, padding: 15, paddingTop: 0}}>{goal.motivation}</Paragraph>
-                </ScrollView>
-              </View>}
-          </View>
-          :
-          <></>}
-        </View>
-      </View>
     </>
   )
 }

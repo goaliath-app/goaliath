@@ -121,7 +121,7 @@ const en = {
 
     goals: {
       headerTitle: 'Goals',
-      infoContent: '"You have no goals right now.\n\nGoals are the base of Goaliath. They are the meaningful things you want to achieve, work on or dedicate time to.\n\nYou can create a new goal pressing the + icon on the top right."'
+      infoContent: 'You have no goals right now.\n\nGoals are the base of Goaliath. They are the meaningful things you want to achieve, work on or dedicate time to.\n\nYou can create a new goal pressing the + icon on the top right.'
     },
 
     settings: {
