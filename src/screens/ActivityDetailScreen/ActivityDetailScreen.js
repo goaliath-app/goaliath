@@ -1,19 +1,18 @@
 import React from 'react';
 import { View, KeyboardAvoidingView, ScrollView } from 'react-native'
 import { connect } from 'react-redux';
-import { Paragraph, Menu, Subheading, Title, Divider, List } from 'react-native-paper';
+import { Paragraph, Menu, Title, Divider, List } from 'react-native-paper';
 import { DateTime } from 'luxon'
+import { useTranslation } from 'react-i18next'
 import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon } from '../../components';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTimer, 
   stopTimer, upsertEntry, archiveActivity 
 } from '../../redux'
+import { isToday } from '../../util'
+import { GeneralColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
-import { GenericStats, WeekStats } from './Stats'
-import { isToday } from '../../util'
-import { useTranslation } from 'react-i18next'
-import { GeneralColor } from '../../styles/Colors';
 
 const ActivityDetailScreen = ({ 
   activity,           // activity object to show on the screen (see ActivitySlice)
@@ -33,10 +32,6 @@ const ActivityDetailScreen = ({
 
   const [menuVisible, setMenuVisible] = React.useState(false);  // sets the visibility of the threeDotsMenu
   const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
-  const openMenu = () => setMenuVisible(true)
-  const closeMenu = () => setMenuVisible(false)
-  const openDeleteDialog = () => setDeleteDialogVisible(true)
-  const closeDeleteDialog = () => setDeleteDialogVisible(false)
 
   const { t, i18n } = useTranslation()
 
@@ -45,13 +40,13 @@ const ActivityDetailScreen = ({
     <>
     <Menu.Item title={t('activityDetail.threeDotsMenu.editActivity')} 
       onPress={() => {
-        closeMenu()
+        setMenuVisible(false)
         navigation.navigate('ActivityForm', { activityId: activity.id })
       }} 
     />
     <Menu.Item onPress={() => {
-      openDeleteDialog()
-      closeMenu()
+      setDeleteDialogVisible(true)
+      setMenuVisible(false)
     }} title={t('activityDetail.threeDotsMenu.deleteActivity')}  />
     </>
   )
@@ -61,10 +56,12 @@ const ActivityDetailScreen = ({
     null
     :
     <ThreeDotsMenu 
-      menuItems={menuItems} openMenu= {openMenu} closeMenu= {closeMenu} visible={menuVisible} 
+      menuItems={menuItems} 
+      openMenu={() => setMenuVisible(true)} 
+      closeMenu={() => setMenuVisible(false)} 
+      visible={menuVisible} 
     />
   )
-
 
   return(
     <KeyboardAvoidingView style={{flex:1}}>
@@ -88,10 +85,26 @@ const ActivityDetailScreen = ({
         }
         <BasicActivityInfo activity={activity} goal={goal} />
         {dateIsToday?
-        <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={startTimer} stopTimer={stopTimer} upsertEntry={upsertEntry} date={date} dayStartHour={dayStartHour} /> 
+        <TodayPannel 
+          entry={entry} 
+          toggleCompleted={toggleCompleted} 
+          startTimer={startTimer} 
+          stopTimer={stopTimer} 
+          upsertEntry={upsertEntry} 
+          date={date} 
+          dayStartHour={dayStartHour} 
+        /> 
         : 
           entry?
-          <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={()=>{}} stopTimer={()=>{}} upsertEntry={upsertEntry} date={date} dayStartHour={dayStartHour} />
+          <TodayPannel 
+            entry={entry} 
+            toggleCompleted={toggleCompleted} 
+            startTimer={()=>{}} 
+            stopTimer={()=>{}} 
+            upsertEntry={upsertEntry} 
+            date={date} 
+            dayStartHour={dayStartHour} 
+          />
           :
           null
         }
@@ -108,7 +121,7 @@ const ActivityDetailScreen = ({
         setVisible={setDeleteDialogVisible}
         onDelete={() => {
           archiveActivity(activity.id)
-          closeDeleteDialog()
+          setDeleteDialogVisible(false)
           navigation.goBack()
         }}
         title={t('activityDetail.deleteDialog.title')}
