@@ -1,11 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { View, StyleSheet, Alert, Pressable, FlatList, KeyboardAvoidingView, Platform, ScrollView, Keyboard } from 'react-native';
-import { Subheading, Appbar, Text, TextInput, Button, List, Checkbox, Title, Paragraph, HelperText, Caption } from 'react-native-paper';
-import { Header, HelpIcon, TimeInput } from '../../components';
-import { createActivity, updateActivity, selectActivityById } from '../../redux'
+import { KeyboardAvoidingView, Platform, ScrollView, Keyboard } from 'react-native';
+import { Appbar, TextInput, HelperText } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
-import { GeneralColor, ActivityFormColor } from '../../styles/Colors';
+import { Header, TimeInput } from '../../components';
+import { createActivity, updateActivity, selectActivityById } from '../../redux'
+import { GeneralColor } from '../../styles/Colors';
+import NumberOfWeeklyDaysInput from './NumberOfWeeklyDaysInput'
+import ActivityTypeSelector from './ActivityTypeSelector'
+import WeekdaySelector from './WeekdaySelector'
+import TimeGoal from './TimeGoal'
 
 
 
@@ -134,204 +138,6 @@ const ActivityFormScreen = ({ navigation, createActivity, updateActivity, goalId
       
    
     </KeyboardAvoidingView>
-  )
-}
-
-const ButtonSwitchBar = ({ options, state, setState }) => {
-  /* generic switch bar component */
-  const styles = StyleSheet.create({
-    buttonSwitchBarView: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingBottom: 10,
-    },
-  })
-
-  return(
-    <View style={styles.buttonSwitchBarView}>
-      {options.map((option) => (
-        <Button style={{flex:1, borderRadius: 0}}
-        mode={state==option.value? 'contained':'text'} 
-        onPress={()=>setState(option.value)}
-        labelStyle={{ fontSize: 11}}>
-            {option.label}
-        </Button>
-      ))}
-    </View>
-  )
-}
-
-const NumberOfWeeklyDaysInput = ({ timesPerWeek, setTimesPerWeek }) => {
-  const { t, i18n } = useTranslation()
-  
-  return(
-    <View style={{marginHorizontal: 16, flexDirection: 'row', justifyContent:'space-between'}}>
-      <Subheading style={{alignSelf: 'center'}}>{t('activityForm.weeklyDaysLabel')}</Subheading>
-      <TextInput 
-        style={{
-          marginLeft: 20,
-          fontSize: 40,
-          textAlign: 'center',
-          backgroundColor: ActivityFormColor.weeklyDaysTextInputBackground
-        }} 
-        selectTextOnFocus={true}
-        selectionColor= {ActivityFormColor.weeklyDaysTextInputSelectionColor}
-        value={timesPerWeek} 
-        selection={{start:0, end:1}}
-        onChangeText={(value) => {
-          value = value.substr(value.length - 1)
-          value = value<7?value:'7'
-          value = value>0?value:'1'
-          setTimesPerWeek(value)
-        }}  
-        keyboardType='numeric' 
-      />
-    </View>
-  )
-}
-
-
-
-const ActivityTypeSelector = ({ repeatMode, setRepeatMode }) => {
-  const { t, i18n } = useTranslation()
-  return(
-    <>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 16, paddingBottom: 10}}>
-      <Subheading>{t('activityForm.repeatSwitchBar.title')}</Subheading>
-        <HelpIcon dialogContent={
-          <>
-          <Title>{t('activityForm.repeatInfoDialog.mainTitle')}</Title>
-          <Subheading>{t('activityForm.repeatInfoDialog.dailyTitle')}</Subheading>
-          <Paragraph>{t('activityForm.repeatInfoDialog.dailyText')}</Paragraph>
-          <Subheading>{t('activityForm.repeatInfoDialog.selectTitle')}</Subheading>
-          <Paragraph>{t('activityForm.repeatInfoDialog.selectText')}</Paragraph>
-          <Subheading>{t('activityForm.repeatInfoDialog.weeklyTitle')}</Subheading>
-          <Paragraph>{t('activityForm.repeatInfoDialog.weeklyText')}</Paragraph>
-          </>
-        } />
-      </View>
-      <ButtonSwitchBar
-        options={[
-          {label: t('activityForm.repeatSwitchBar.daily'), value: 'daily'},
-          {label: t('activityForm.repeatSwitchBar.select'), value: 'select'},
-          {label: t('activityForm.repeatSwitchBar.weekly'), value: 'weekly'},
-        ]}
-        state={repeatMode} setState={setRepeatMode}
-      />
-    </>
-  )
-}
-
-
-const TimeGoal = ({ 
-    goal, setGoal
-  }) => {
-  const { t, i18n } = useTranslation()
-  return (
-    <>
-    <List.Item 
-      title={t('activityForm.objectiveSwitchLabel')}
-      right={()=>(
-        <View style={{marginRight: 12}}>
-          <Checkbox
-            status={goal=='time' ? 'checked' : 'unchecked'}
-            onPress={() => {setGoal(goal!=='time'?'time':'check')}}
-          />
-        </View>
-      )}
-    />
-    
-    </>
-  )
-}
-
-
-const WeekdaySelector = ({ state, weekDays, setWeekDays, setWeekDaysError }) => {
-  const { t, i18n } = useTranslation()
-  let items = [
-    {id: '1', label: t('units.dayNamesInitials.monday'), state: 'disabled', onPress: ()=>{}},
-    {id: '2', label: t('units.dayNamesInitials.tuesday'), state: 'disabled', onPress: ()=>{}},
-    {id: '3', label: t('units.dayNamesInitials.wednesday'), state: 'disabled', onPress: ()=>{}},
-    {id: '4', label: t('units.dayNamesInitials.thursday'), state: 'disabled', onPress: ()=>{}},
-    {id: '5', label: t('units.dayNamesInitials.friday'), state: 'disabled', onPress: ()=>{}},
-    {id: '6', label: t('units.dayNamesInitials.saturday'), state: 'disabled', onPress: ()=>{}},
-    {id: '7', label: t('units.dayNamesInitials.sunday'), state: 'disabled', onPress: ()=>{}},
-  ]
-
-  switch(state){
-    case 'daily':
-      items = items.map( item => ({...item, state: 'pressed-disabled'}))
-      break
-    case 'weekly':
-      items = items.map( item => ({...item, state: 'dashed-disabled'}))
-      break
-    case 'select':
-      items = items.map( item => ({
-        ...item, 
-        state: weekDays[item.id]?'pressed':'regular',
-        onPress: () => {
-          setWeekDays({...weekDays, [item.id]: !weekDays[item.id]})
-          setWeekDaysError(false)
-        }
-      }))
-  }  
-
-  return(
-    <View style={{flexDirection: 'row', justifyContent: 'space-around', marginHorizontal: 8}}>
-      { items.map( item => <WeekdaySelectorItem { ...item } />) }
-    </View>
-  )
-}
-
-const WeekdaySelectorItem = ({ label, state, onPress }) => {
-  let squareColor = ActivityFormColor.squareColor, 
-      dashColor = ActivityFormColor.dashColor, 
-      textColor = ActivityFormColor.textColor
-  
-  switch(state){
-    case 'regular': 
-      break
-    case 'pressed':
-      squareColor = ActivityFormColor.pressedSquareColor
-      textColor = ActivityFormColor.pressedTextColor
-      break
-    case 'disabled':
-      textColor = ActivityFormColor.disabledTextColor
-      break
-    case 'pressed-disabled':
-      squareColor = ActivityFormColor.pressedDisabledSquareColor
-      textColor = ActivityFormColor.pressedDisabledTextColor
-      break
-    case 'dashed':
-      textColor = ActivityFormColor.dashedDisabledTextColor
-      dashColor = ActivityFormColor.dashedDashColor
-      break
-    case 'dashed-disabled':
-      dashColor = ActivityFormColor.dashedDisabledDashColor
-      textColor = ActivityFormColor.dashedDisabledTextColor
-      break
-  }
-  
-  return(
-    <View style={{  
-      backgroundColor: dashColor,
-      flex: 1,
-      aspectRatio: 1.3,
-      alignItems: 'center',
-      justifyContent: 'center'}}>
-      <Pressable onPressIn={onPress}>
-        <View style={{
-          flex: 1,
-          aspectRatio: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: squareColor,
-        }}>
-          <Subheading style={{color: textColor}}>{label}</Subheading>
-        </View>
-      </Pressable>
-    </View>
   )
 }
 
