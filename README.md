@@ -1,14 +1,17 @@
 # Goaliath
-Goaliath is a free time and goal management app with a philosophy behind it. Goaliath seeks to make you feel proud of your daily actions.
+Goaliath is a free time and goal management app. Goaliath seeks to make you feel proud of your daily actions.
 
-We are still an early work in progress! If you want to know more, feel free to check our quick guide and download an alpha build from [our website](https://goaliath-app.github.io).
+Goaliath is opinionated and designed to support a specific time management strategy. You can learn the method in [our website](https://goaliath-app.github.io/guide).
+
+We are still an early work in progress! If you want to know more, feel free to check our quick guide and download an alpha build also available at [our website](https://goaliath-app.github.io).
 
 ## State of the project
-| Step                                     | state            |
-|------------------------------------------|------------------|
-|v0.1                                      | 99% completed    |
-|v0.2                                      | Definition phase |
-|v1.0 (first to be published in PlayStore) | Getting closer every day
+| Version | Description | State |
+|---|---|---|
+| v0.1 | First fully functional approximation | 100% (Completed) |
+| v0.2 | Improved UX to better support the time management method | 0% (Definition Phase)
+| ... |                                     
+| v1.0 | First version to be publised to the Play Store | Getting closer every day
 
 ## Our stack
 Goaliath is written in JavaScript using React Native over Expo. We also use:
