@@ -168,12 +168,12 @@ const es= {
         text: 'Goaliath es una herramienta para gestionar tu tiempo cuyo objetivo es hacerte sentir orgulloso de tus acciones de cada día.',
       },
       slideTwo: {
-        title: 'Decide menos, recuerda más',
-        text: 'Goaliath te recordará las acciones que debes realizar para vivir de acuerdo con tus valores. De este modo, podrás decidir una vez y después centrarte en actuar.',
+        title: 'Cómo funciona',
+        text: 'Introduces en Goaliath tus metas. Después añades a cada meta las acciones que quieres realizar para cumplirla. Goaliath te recordará lo que quieres hacer cada día.',
       },
       slideThree: {
-        title: 'El método',
-        text: 'Goaliath está diseñado para apoyar un sistema concreto de gestión de tiempo. Te recomendamos echar un vistazo a la guía rápida en ',
+        title: '¡Hay más!',
+        text: 'El método de Goaliath tiene más herramientas que pueden ayudarte. Te recomendamos echar un vistazo a la guía rápida en ',
         linkText: 'nuestra página web.'
       },
       next: 'Siguiente',

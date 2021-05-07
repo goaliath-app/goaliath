@@ -167,15 +167,15 @@ const en = {
       slideOne: {
         title: 'Welcome to Goaliath',
         text: 'Goaliath is a time and goal management tool that seeks to make you feel proud of your daily actions.',
-      },
+      }, 
       slideTwo: {
-        title: 'Decide less, remember more',
-        text: 'Goaliath remembers you of the actions you need to take in order to live according to your values. This way you can make the most out of each decision you make.',
+        title: 'How it works',
+        text: 'In Goaliath you describe your goals. Then you fill each of them with the actions you want to take about it. Goaliath will remember you of what you aim to do each day.',
       },
       slideThree: {
-        title: 'Our method',
-        text: 'Goaliath is designed to support a very specific time management method. We encourage you to learn more about it ',
-        linkText: 'in our website'
+        title: 'Learn More',
+        text: 'There is more to the Goaliath\'s time management method. We encourage you to learn more about it ',
+        linkText: 'in our quick guide.'
       },
       next: 'Next',
       begin: 'Begin'
