@@ -127,6 +127,15 @@ export function isToday(date, dayStartDate){
   return today.toISO() == date.toISO()
 }
 
+export function isFuture(date, dayStartDate){
+  /* accepts both ISO and DateTime as arguments */
+  if(!date) return false
+  date = DateTime.fromISO(date)
+  dayStartDate = DateTime.fromISO(dayStartDate)
+  const today = getToday(dayStartDate)
+  return today.toISO() < date.toISO()
+}
+
 export function startOfDay(date, dayStartDate){
   /* accepts both ISO and DateTime as arguments
   returns DateTime */

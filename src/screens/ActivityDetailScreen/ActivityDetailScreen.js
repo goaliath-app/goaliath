@@ -9,7 +9,7 @@ import {
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTimer, 
   stopTimer, upsertEntry, archiveActivity 
 } from '../../redux'
-import { isToday } from '../../util'
+import { isToday, isFuture } from '../../util'
 import { GeneralColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
@@ -28,6 +28,7 @@ const ActivityDetailScreen = ({
   dayStartHour,
 }) => {
   const dateIsToday = date?isToday(date, dayStartHour):false
+  const dateIsFuture = date?isFuture(date, dayStartHour):false
   const dateTitle = date?date.toFormat('d MMMM yyyy'):null
 
   const [menuVisible, setMenuVisible] = React.useState(false);  // sets the visibility of the threeDotsMenu
@@ -71,7 +72,7 @@ const ActivityDetailScreen = ({
         <>
         <List.Item 
           title={<Title>{dateTitle}</Title>} 
-          right={() => (
+          right={() => ( dateIsFuture?null:
             <View style={{alignSelf: 'center', paddingRight: 12}}>
               <HelpIcon dialogContent={
                 <Paragraph>{t('activityDetail.helpIconText')}</Paragraph>
