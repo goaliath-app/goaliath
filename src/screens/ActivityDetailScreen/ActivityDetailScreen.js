@@ -1,210 +1,162 @@
 import React from 'react';
-import { View } from 'react-native'
+import { View, KeyboardAvoidingView, ScrollView } from 'react-native'
 import { connect } from 'react-redux';
-import { Button, List, Checkbox, Divider, Appbar, Menu } from 'react-native-paper';
-import { Header, TimeInput, ThreeDotsMenu } from '../../components';
-import { selectActivityById, selectGoalById, selectTodayEntryByActivityId, toggleCompleted, startTimer, stopTimer, upsertTodaysEntry } from '../../redux'
-import { getTodayTime, isActivityRunning } from '../../util'
-import { DateTime } from 'luxon';
+import { Paragraph, Menu, Title, Divider, List } from 'react-native-paper';
+import { DateTime } from 'luxon'
+import { useTranslation } from 'react-i18next'
+import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon } from '../../components';
+import { 
+  selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTimer, 
+  stopTimer, upsertEntry, archiveActivity 
+} from '../../redux'
+import { isToday, isFuture } from '../../util'
+import { GeneralColor } from '../../styles/Colors';
+import BasicActivityInfo from './BasicActivityInfo'
+import TodayPannel from './TodayPannel'
 
+const ActivityDetailScreen = ({ 
+  activity,           // activity object to show on the screen (see ActivitySlice)
+  goal,               // the goal object to witch the activity belongs (see GoalsSlice)
+  entry,              // the entry of the daily log to show, if one. (see LogsSlice)
+  navigation,         // navigation prop 
+  toggleCompleted,    // function to call when the user changes the activity completion state
+  stopTimer,          // function to call when the user stops the activity timer
+  startTimer,         // function to call when the user starts the activity timer
+  upsertEntry,  // function to call when needed to modify the activity entry
+  archiveActivity,     // function to call when the activity is archived (deleted)
+  date,
+  dayStartHour,
+}) => {
+  const dateIsToday = date?isToday(date, dayStartHour):false
+  const dateIsFuture = date?isFuture(date, dayStartHour):false
+  const dateTitle = date?date.toFormat('d MMMM yyyy'):null
 
-const data = {
-  goal: 'Japanese', frecuency: 'Daily', weekHours: 3, weekTimes: 2, hours: 5, times: 4, previousScreen: ''
-}
+  const [menuVisible, setMenuVisible] = React.useState(false);  // sets the visibility of the threeDotsMenu
+  const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
 
-const ActivityDetailScreen = ({ activity, goal, entry, navigation, toggleCompleted, stopTimer, startTimer, upsertTodaysEntry }) => {
+  const { t, i18n } = useTranslation()
 
+  // items that appear in the three dots menu
   const menuItems = (
     <>
-    <Menu.Item title='Edit activity'
+    <Menu.Item title={t('activityDetail.threeDotsMenu.editActivity')} 
       onPress={() => {
+        setMenuVisible(false)
         navigation.navigate('ActivityForm', { activityId: activity.id })
       }} 
     />
-    <Menu.Item onPress={() => {}} title='Delete activity' />
+    <Menu.Item onPress={() => {
+      setDeleteDialogVisible(true)
+      setMenuVisible(false)
+    }} title={t('activityDetail.threeDotsMenu.deleteActivity')}  />
     </>
   )
-  const headerButtons = (previousScreen) => {
-    if(previousScreen=='Goal'){
-      return <Appbar.Action icon='pencil' color='white'/>
-    } else {return <ThreeDotsMenu menuItems={menuItems}/>}
-  }
+
+  const headerButtons =  (
+    date && !dateIsToday?
+    null
+    :
+    <ThreeDotsMenu 
+      menuItems={menuItems} 
+      openMenu={() => setMenuVisible(true)} 
+      closeMenu={() => setMenuVisible(false)} 
+      visible={menuVisible} 
+    />
+  )
 
   return(
-    <View>
-      <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons(data.previousScreen)} />
-      <BasicActivityInfo activity={activity} goal={goal}/>
- 
-    {entry?
-      <TodayPannel entry={entry} toggleCompleted={toggleCompleted} startTimer={startTimer} stopTimer={stopTimer} upsertTodaysEntry={upsertTodaysEntry} /> : null}
-      {/* delayed until we start working on daily and weekly screens 
-      <WeekStats />
-      <GenericStats /> 
-      */}
-    </View>
-  )
-}
-
-const BasicActivityInfo = ({ activity, goal }) => {
-  let frequency 
-  switch(activity.repeatMode){
-    case 'weekly':
-      if(activity.goal=='check'){
-        frequency = `${activity.timesPerWeek} times per week.`
-      }else{
-        frequency = `${activity.timeGoal} seconds per week.`
-      }
-      break
-    case 'select':
-      let days = ''
-      for (let day in activity.weekDays){
-        if (activity.weekDays[day]){
-          days = `${days} ${day.substring(0,2)}`
+    <KeyboardAvoidingView style={{flex:1}}>
+      <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
+      <ScrollView style={{ backgroundColor: GeneralColor.background, flex: 1 }}>
+        {date && !dateIsToday? 
+        <>
+        <List.Item 
+          title={<Title>{dateTitle}</Title>} 
+          right={() => ( dateIsFuture?null:
+            <View style={{alignSelf: 'center', paddingRight: 12}}>
+              <HelpIcon dialogContent={
+                <Paragraph>{t('activityDetail.helpIconText')}</Paragraph>
+              }/>
+            </View>
+          )}
+        />
+        <Divider />
+        </>
+        : null
         }
-      }
-      if(activity.goal=='check'){
-        frequency = `Do on ${days}`
-      }else{
-        frequency = `${activity.timeGoal} seconds on ${days}`
-      }
-      break
-    case 'daily':
-      if(activity.goal=='check'){
-        frequency = "Every day."
-      }else{
-        frequency = `${activity.timeGoal} seconds every day.`
-      }
-      break
-    default:
-      frequency = 'ERROR'
-  }
+        <BasicActivityInfo activity={activity} goal={goal} />
+        {dateIsToday?
+        <TodayPannel 
+          entry={entry} 
+          toggleCompleted={toggleCompleted} 
+          startTimer={startTimer} 
+          stopTimer={stopTimer} 
+          upsertEntry={upsertEntry} 
+          date={date} 
+          dayStartHour={dayStartHour} 
+        /> 
+        : 
+          entry?
+          <TodayPannel 
+            entry={entry} 
+            toggleCompleted={toggleCompleted} 
+            startTimer={()=>{}} 
+            stopTimer={()=>{}} 
+            upsertEntry={upsertEntry} 
+            date={date} 
+            dayStartHour={dayStartHour} 
+          />
+          :
+          null
+        }
 
-  return (
-    <View>
-      <List.Item
-        title={'Goal: ' + goal.name}
+        {/* future work:
+        <WeekStats />
+        <GenericStats /> 
+        */}
+
+      </ScrollView>
+
+      <DeleteDialog 
+        visible={deleteDialogVisible} 
+        setVisible={setDeleteDialogVisible}
+        onDelete={() => {
+          archiveActivity(activity.id)
+          setDeleteDialogVisible(false)
+          navigation.goBack()
+        }}
+        title={t('activityDetail.deleteDialog.title')}
+        body={t('activityDetail.deleteDialog.body')}
       />
-      <List.Item
-        title={'Frequency: ' + frequency}
-      />
-      <Divider />
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 
-const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertTodaysEntry }) => {
-  console.log(entry)
-  React.useEffect(() => {
-    if (isActivityRunning(entry.intervals)) {
-      const intervalId = setInterval(() => {
-        setTodayTime(getTodayTime(entry.intervals))    
-      }, 1000)
-      return () => clearInterval(intervalId)
-    }
-  }, [entry.intervals])
-
-  function onPressPlay(){
-    startTimer(entry.id)
-  }
-
-  function onPressPause(){
-    stopTimer(entry.id)
-  }
-
-  const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
-  
-  function updateTotalTime(seconds){
-    const newInterval = {
-      startDate: DateTime.now().minus({seconds}).toISO(), 
-      endDate: DateTime.now().toISO()
-    }
-    upsertTodaysEntry({...entry, intervals: [newInterval]})
-  }
-
-  function setHours(value){
-    setTodayTime(value*3600 + todayTime % 3600)
-    updateTotalTime(value*3600 + todayTime % 3600)
-  }
-  function setMinutes(value){
-    setTodayTime((Math.floor(todayTime/3600)*3600) + value*60 + todayTime % 60)
-    updateTotalTime((Math.floor(todayTime/3600)*3600) + value*60 + todayTime % 60)
-  }
-  function setSeconds(value){
-    setTodayTime(value + Math.floor(todayTime/60)*60)
-    updateTotalTime(value + Math.floor(todayTime/60)*60)
-  }
-
-  let seconds, minutes, hours
-  seconds = String(todayTime % 60).padStart(2, '0')
-  minutes = String(Math.floor(todayTime / 60) % 60).padStart(2, '0')
-  hours = String(Math.floor(todayTime / 3600)).padStart(2, '0')
-
-  return(
-    <View>
-      <List.Item
-        title='Today'
-        right={() => <Checkbox status={entry.completed? 'checked':'unchecked'} onPress={() => {toggleCompleted({date: DateTime.now(), id: entry.id})} }/>}
-      />
-      <TimeInput seconds={seconds} minutes={minutes} hours={hours} setHours={setHours} setMinutes={setMinutes} setSeconds={setSeconds} />
-      {isActivityRunning(entry.intervals)?
-        <Button onPress={onPressPause}>Stop Timer</Button>
-      :
-        <Button onPress={onPressPlay}>Start Timer</Button>
-      }
-      <Divider />
-    </View>
-  )
-}
-
-const GenericStats = () => (
-  <View>
-    <List.Item title='Stats' />
-    <List.Item
-      left={() => <List.Icon icon="clock-outline" />}
-      title={data.hours + ' total hours dedicated'}
-    />
-    <List.Item
-      left={() => <List.Icon icon="check-circle-outline" />}
-      title={data.times + ' times completed'}
-    />
-    <Divider />
-  </View>
-)
-
-const WeekStats = () => (
-  <View>
-    <List.Item title='This Week' />
-    <List.Item
-      left={() => <List.Icon icon="clock-outline" />}
-      title={data.weekHours + ' total hours dedicated'}
-    />
-    <List.Item
-      left={() => <List.Icon icon="check-circle-outline" />}
-      title={data.weekTimes + ' times completed'}
-    />
-    <Divider />
-  </View>
-)
 
 const mapStateToProps = (state, ownProps) => {
-  const activityId = ownProps.route.params.activityId
-  const activity = selectActivityById(state, activityId)
+  const { 
+    activityId,  // id of the activity to show
+    date         // (optional) iso string datetime of the log entry to show
+  } = ownProps.route.params
+  const dateTime = date?DateTime.fromISO(date):null
+  let activity = selectActivityById(state, activityId)
   const activityGoalId = activity.goalId
   const goal = selectGoalById(state, activityGoalId)
-  const showLog = ownProps.route.params.showLog
   let entry 
-  if(showLog){
-    entry = selectTodayEntryByActivityId(state, activityId)
+  if(dateTime){
+    entry = selectEntryByActivityIdAndDate(state, activityId, dateTime)
+    activity = { ...activity, ...entry }  // use entry data to override possible overlapping values.
   }
-      
-  return { activity, goal, entry }
+  const { dayStartHour } = state.settings
+  return { activity, goal, entry, date: dateTime, dayStartHour }
 }
 
 const actionToProps = {
   toggleCompleted,
   stopTimer,
   startTimer,
-  upsertTodaysEntry
+  upsertEntry,
+  archiveActivity
 }
 
 export default connect(mapStateToProps, actionToProps)(ActivityDetailScreen);

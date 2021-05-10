@@ -6,11 +6,13 @@ import { persistReducer } from 'redux-persist'
 import goalsReducer from './GoalsSlice'
 import activitySlice from './ActivitySlice'
 import logSlice from './LogSlice'
+import settingsSlice from './SettingsSlice'
 
 const rootReducer = combineReducers({
   goals: goalsReducer,
   activities: activitySlice,
-  logs: logSlice
+  logs: logSlice,
+  settings: settingsSlice,
 })
 
 const persistConfig = {
@@ -21,6 +23,13 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
+  // disable serializableCheck middleware
+  // non-serializable values (luxon DateTimes for example) are used in action
+  // payload (but never put into the state).
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false,
+    ImmutableStateInvariantMiddleware: { warnAfter: 500 }
+  }),
   reducer: persistedReducer
 })
 

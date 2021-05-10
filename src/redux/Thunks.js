@@ -1,18 +1,23 @@
 import { DateTime } from 'luxon'
-import { selectAllActivities,  createActivity } from './ActivitySlice'
-import { selectGoalById, createGoal } from './GoalsSlice'
+import { selectAllActivities,  createActivity, setState as setActivitiesState, selectActivityById } from './ActivitySlice'
+import { selectGoalById, createGoal, setState as setGoalsState } from './GoalsSlice'
 import { 
-  deleteOneTodaysEntry, upsertTodaysEntry, selectTodayEntryByActivityId, selectLogById, 
-  createLog, addEntry
+  deleteOneTodaysEntry, upsertEntry, sortLog, selectEntryByActivityIdAndDate, selectLogById, deleteEntry,
+  createLog, addEntry, sortTodayLog, setState as setLogsState, selectEntriesByDay, deleteLog, replaceEntry,
+  capAllTimers,
 } from './LogSlice'
+import { getToday, startOfDay, dueToday, newEntry } from './../util'
+import { setState as setSettingsState } from './SettingsSlice'
 
 
 export function generateDummyData(){
   return function(dispatch, getState){
+    const { dayStartHour } = getState().settings
+    const today = getToday(dayStartHour).plus({day: -5})
     dispatch(createGoal({name: 'dummy goal'}))
-    dispatch(createLog({date: DateTime.now()}))
-    dispatch(createLog({date: DateTime.now().plus({day: -1})}))
-    dispatch(createLog({date: DateTime.now().plus({day: -2})}))
+    dispatch(createLog({date: today}))
+    dispatch(createLog({date: today.plus({day: -1})}))
+    dispatch(createLog({date: today.plus({day: -2})}))
     // Daily activities
     dispatch(createActivity({name: 'Social Media', goalId: '0', goal: 'time', timeGoal: 10800, repeatMode: 'daily'}))
     dispatch(createActivity({name: 'Call a pal', goalId: '0', goal: 'check', repeatMode: 'daily'}))
@@ -20,81 +25,150 @@ export function generateDummyData(){
     dispatch(createActivity({name: 'Watch anime', goalId: '0', goal: 'time', timeGoal: 10800, repeatMode: 'daily'}))   
     dispatch(createActivity({name: 'Play guitar', goalId: '0', goal: 'time', timeGoal: 3600, repeatMode: 'daily'}))
     dispatch(createActivity({name: 'Anki', goalId: '0', goal: 'check', repeatMode: 'daily'}))
-    dispatch(addEntry({date: DateTime.now(), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00'}], completed: false, id: 2, archived: false }}))
-    dispatch(addEntry({date: DateTime.now(), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: false, id: 3, archived: false }}))
-    dispatch(addEntry({date: DateTime.now(), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:53:26.690+01:00'}], completed: true, id: 4, archived: false }}))
-    dispatch(addEntry({date: DateTime.now(), entry: {intervals: [], completed: true, id: 5, archived: false }}))
+    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00'}], completed: false, id: "2", archived: false }}))
+    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: false, id: "3", archived: false }}))
+    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:53:26.690+01:00'}], completed: true, id: "4", archived: false }}))
+    dispatch(addEntry({date: today, entry: {intervals: [], completed: true, id: "5", archived: false }}))
 
     // weekly activities
-    dispatch(createActivity({name: 'Call a pal', goalId: '0', goal: 'check', weeklyTimesObjective: 3, repeatMode: 'weekly'}))
-    dispatch(addEntry({date: DateTime.now().plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: 6, archived: false }}))
-    dispatch(addEntry({date: DateTime.now().plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: 6, archived: false }}))
+    dispatch(createActivity({name: 'Call a pal', goalId: '0', goal: 'check', timesPerWeek: 3, repeatMode: 'weekly'}))
+    dispatch(addEntry({date: today.plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: "6", archived: false }}))
+    dispatch(addEntry({date: today.plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: "6", archived: false }}))
     dispatch(createActivity({name: 'Social Media', goalId: '0', goal: 'time', timeGoal: 3, repeatMode: 'weekly'}))
-    dispatch(addEntry({date: DateTime.now().plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: 7, archived: false }}))
-    dispatch(addEntry({date: DateTime.now().plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: 7, archived: false }}))
+    dispatch(addEntry({date: today.plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: "7", archived: false }}))
+    dispatch(addEntry({date: today.plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: "7", archived: false }}))
   }
 }
 
+
+function getNewestDate(isoDatesList){
+  const epoch = DateTime.fromMillis(0)
+
+  const loggedDateTimes = isoDatesList.map((isoDate) => DateTime.fromISO(isoDate))
+  
+  const newestLogDate = loggedDateTimes.reduce((curr, prev) => {
+    return curr>=prev? curr : prev
+  }, epoch)
+
+  return newestLogDate
+}
+
 export function updateLogs(){
+  // TODO close open time intervals on day change.
   return function(dispatch, getState){
-    const state = getState()
-    const today = DateTime.now()
+    const { 
+      settings: { dayStartHour }, 
+      logs: { ids: loggedDatesISO } 
+    } = getState()
+    const today = getToday(dayStartHour)
+    const epoch = DateTime.fromMillis(0)
     
-    if(!selectLogById(state, today)){ 
-      dispatch(createLog({date: today}))
+    // find latest logged day
+    let newestLogDate = getNewestDate(loggedDatesISO)
+
+    // if tomorrows log already exists (due to a daystarthour change)
+    while(newestLogDate > today){
+      dispatch(deleteLog({ isoDate: newestLogDate.toISO() }))
+      const { logs: { ids: newLoggedDatesISO } } = getState()
+      newestLogDate = getNewestDate(newLoggedDatesISO)
     }
 
-    for(let activity of selectAllActivities(state)){
-      const goal = selectGoalById(state, activity.goalId)
-      const oldLog = selectTodayEntryByActivityId(state, activity.id)
+    // there are no logs
+    if(newestLogDate.toISO() == epoch.toISO()){
+      dispatch(createLog({ date: today }))
+      dispatch(updateLog({ date: today }))
 
-      if(dueToday(activity, goal)){
-        if(oldLog){
-          dispatch(upsertTodaysEntry({ ...oldLog, archived: false }))
-        }else{
-          const entry = newEntry(activity)
-          dispatch(addEntry({date: today, entry}))
-        }
-      }else{
-        if(oldLog?.intervals || oldLog?.completed){
-          dispatch(upsertTodaysEntry({ ...oldLog, archived: true }))
-        }else if(oldLog){
-          dispatch(deleteOneTodaysEntry(oldLog.id))
-        }
+    // today log has already been created
+    }else if(newestLogDate.toISO() == today.toISO()){    
+      dispatch(unembalmLog({ date: today }))
+      dispatch(updateLog({ date: today }))
+
+    // there are logs, but today log has not been created yet
+    }else{
+      dispatch(capAllTimers({ date: newestLogDate }))
+
+      // from next day of newestLogDate to today (including both), create and update logs.
+      for(let date = newestLogDate.plus({ days: 1 }); date <= today; date = date.plus({ days: 1 })){
+        dispatch(createLog({ date }))
+        dispatch(updateLog({ date }))
+      }
+    
+      // from newestLogDate to yesterday (including both), embalm their logs.
+      for(let date = newestLogDate; date < today; date = date.plus({ days: 1 })){
+        dispatch(embalmLog({ date }))
       }
     }
   }
 }
 
-function newEntry(activity){
-  return(
-    {
-      intervals: [], 
-      completed: false, 
-      id: activity.id,
-      archived: false
+function updateLog({ date }){
+  return function(dispatch, getState){
+    const state = getState() 
+    
+    for(let activity of selectAllActivities(state)){
+      const goal = selectGoalById(state, activity.goalId)
+      const oldLog = selectEntryByActivityIdAndDate(state, activity.id, date)
+
+      if(dueToday(date, activity, goal)){
+        if(oldLog){
+          dispatch(upsertEntry({ date, entry: { ...oldLog, archived: false }}))
+        }else{
+          const entry = newEntry(activity)
+          dispatch(addEntry({ date, entry }))
+        }
+      }else{
+        if(oldLog?.intervals || oldLog?.completed){
+          dispatch(upsertEntry({ date, entry: { ...oldLog, archived: true }}))
+        }else if(oldLog){
+          dispatch(deleteEntry({ date, entryId: oldLog.id }))
+        }
+      }
     }
-  )
+    dispatch(sortLog({ date }))
+  }
 }
 
-function dueToday(activity, activityGoal){
-  const today = DateTime.now()
-  if(!activity.active || !activityGoal.active){
-    return false
-  }
-  if(activity.repeatMode == 'daily'){
-    return true
-  }
-  if(activity.repeatMode == 'weekly'){
-    return true
-  }
-  if(activity.repeatMode == 'select'){
-    if(activity.weekDays[today.weekday]){
-      return true
+function embalmLog({ date }){
+  /* Puts into all entries of the specified date the current data
+  of their corresponding activities. This way, even if the activity
+  name, repeatMode or whatever gets changed, it won't change the embalmed
+  logs appearance in the calendar. */
+  return function(dispatch, getState){
+    const state = getState()
+    const logEntries = selectEntriesByDay(state, date)
+    for(let entry of logEntries){
+      const activity = selectActivityById(state, entry.id)
+      const embalmedEntry = { ...activity, ...entry, embalmed: true }
+      dispatch(upsertEntry({ date, entry: embalmedEntry }))
     }
   }
-  return false
 }
 
+function unembalmLog({ date }){
+  return function(dispatch, getState){
+    const state = getState()
+    const log = selectLogById(state, date.toISO())
+    const entries = log.entries.entities
+    for(let entryId in entries){
+      const entry = entries[entryId]
+      if(entry.embalmed){
+        const unembalmedEntry = {
+          ...newEntry({ id: entry.id }),
+          completed: entry.completed,
+          intervals: entry.intervals
+        }
 
+        dispatch(replaceEntry({ date, entry: unembalmedEntry }))
+      }
+    }
+  }
+}
 
+export function importState(newState){
+  return function(dispatch, getState){
+    dispatch(setSettingsState({ newState: newState.settings }))
+    dispatch(setActivitiesState({ newState: newState.activities }))
+    dispatch(setGoalsState({ newState: newState.goals }))
+    dispatch(setLogsState({ newState: newState.logs }))
+  }
+}

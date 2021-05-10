@@ -1,7 +1,8 @@
 import React from 'react';
 import { Appbar, IconButton } from 'react-native-paper';
+import { HeaderColor } from '../styles/Colors';
 
-const Header = ({ title, left, navigation, buttons }) => {
+const Header = ({ title, subtitle, left, navigation, buttons }) => {
     let leftComponent;
 
     if(left === 'back'){
@@ -10,16 +11,16 @@ const Header = ({ title, left, navigation, buttons }) => {
         )
     }else if(left == 'hamburger'){
         leftComponent = (
-            <IconButton icon='menu' color='white' onPress={navigation.openDrawer}/>
+            <IconButton icon='menu' color={HeaderColor.icon} onPress={navigation.openDrawer}/>
         )
     }
 
     return (
-        <Appbar.Header>
+        <Appbar>
             {leftComponent}
-            <Appbar.Content title={title} />
+            <Appbar.Content title={title} subtitle={subtitle} />
             {buttons}
-        </Appbar.Header>
+        </Appbar>
     )
 }
 

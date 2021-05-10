@@ -17,6 +17,7 @@ each activity is:
     '5': bool, '6': bool, '7': bool'}, 
   timesPerWeek: int 
   id: str
+  archived: bool, is marked true when the activity is "deleted"
 }
 */
 
@@ -25,7 +26,7 @@ const activitySlice = createSlice({
   initialState,
   reducers: {
     createActivity(state, action){
-      activityAdapter.addOne(state, {...action.payload, id: state.nextId.toString(), active: true})
+      activityAdapter.addOne(state, {...action.payload, id: state.nextId.toString(), active: true, archived: false})
       state.nextId += 1
     },
     updateActivity(state, action){
@@ -36,13 +37,21 @@ const activitySlice = createSlice({
       const newValue = !state.entities[activityId].active
       activityAdapter.updateOne(state, {id: activityId, changes: {active: newValue}})
     },
+    archiveActivity(state, action){
+      const activityId = action.payload
+      activityAdapter.updateOne(state, {id: activityId, changes: {archived: true}})
+    },
+    setState(state, action){
+      const { newState } = action.payload
+      return newState
+    }
   }
 })
 
-export const { createActivity, updateActivity, toggleActivity } = activitySlice.actions
+export const { createActivity, updateActivity, toggleActivity, archiveActivity, setState } = activitySlice.actions
 
 export const { 
-  selectAll: selectAllActivities, selectById: selectActivityById 
+  selectAll: selectAllActivities, selectById: selectActivityById, selectEntities: selectActivityEntities,
 } = activityAdapter.getSelectors(state => state.activities)
 
 export default activitySlice.reducer
