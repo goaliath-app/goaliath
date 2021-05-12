@@ -174,7 +174,8 @@ const es= {
       slideThree: {
         title: '¡Hay más!',
         text: 'El método de Goaliath tiene más herramientas que pueden ayudarte. Te recomendamos echar un vistazo a la guía rápida en ',
-        linkText: 'nuestra página web.'
+        linkText: 'nuestra página web.',
+        linkURL: 'https://goaliath-app.github.io/es/guide'
       },
       next: 'Siguiente',
       begin: 'Vamos'
@@ -282,6 +283,7 @@ const es= {
 
     drawer: {
       blog: 'Sitio web',
+      blogURL: 'https://goaliath-app.github.io/es/',
       appName: 'Goaliath'
     }
   }

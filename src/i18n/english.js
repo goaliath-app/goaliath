@@ -175,7 +175,8 @@ const en = {
       slideThree: {
         title: 'Learn More',
         text: 'There is more to the Goaliath\'s time management method. We encourage you to learn more about it ',
-        linkText: 'in our quick guide.'
+        linkText: 'in our quick guide.',
+        linkURL: 'https://goaliath-app.github.io/guide'
       },
       next: 'Next',
       begin: 'Begin'
@@ -283,6 +284,7 @@ const en = {
     
     drawer: {
       blog: 'Website',
+      blogURL: 'https://goaliath-app.github.io/',
       appName: 'Goaliath'
     }
   }

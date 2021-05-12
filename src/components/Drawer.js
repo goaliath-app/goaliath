@@ -48,7 +48,7 @@ const Drawer = (props) => {
       <DrawerItem
         label={t('drawer.blog')}
         icon={({color})=> <FontAwesomeIcon icon={faBlog} color={color} size={20} />}
-        onPress={() => Linking.openURL('https://goaliath-app.github.io')}
+        onPress={() => Linking.openURL(t('drawer.blogURL'))}
       />
     </DrawerContentScrollView>
   );
