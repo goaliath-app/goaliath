@@ -44,7 +44,7 @@ const OnboardingScreen = ({ finishOnboarding }) => {
         {t('onboarding.slideThree.text')}
         <Paragraph 
           style={{color: 'blue'}} 
-          onPress={() => Linking.openURL('https://goaliath-app.github.io/guide')}>
+          onPress={() => Linking.openURL(t('onboarding.slideThree.linkURL'))}>
             {t('onboarding.slideThree.linkText')}
         </Paragraph>
       </>),
