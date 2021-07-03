@@ -21,6 +21,7 @@ const initialState = logAdapter.getInitialState();
 /*
 each log is 
   {id: Date, 
+    weekliesSelected: defaults to false, true daily selection of weekly activities has been done
     entries: {  // the entries are managed via entryAdapter
       ids: array of ids of all entries
       entities: {
@@ -48,9 +49,15 @@ const logSlice = createSlice({
       const { date } = action.payload
       const log= {
         id: date.toISO(),
+        weekliesSelected: false,
         entries: entryAdapter.getInitialState()
       }
       logAdapter.addOne(state, log)
+    },
+    setWeekliesSelected(state, action){
+      const { date, value } = action.payload
+      const selectedDay = state.entities[date.toISO()]
+      selectedDay.weekliesSelected = value
     },
     addEntry(state, action){
       /* add a single entry to a daily log */
@@ -154,7 +161,7 @@ const logSlice = createSlice({
 export const { 
   createLog, addEntry, deleteEntry, toggleCompleted, startTimer, 
   stopTimer, sortLog, upsertEntry, setState, deleteLog, replaceEntry,
-  capAllTimers
+  capAllTimers, setWeekliesSelected,
 } = logSlice.actions
 
 export const { 

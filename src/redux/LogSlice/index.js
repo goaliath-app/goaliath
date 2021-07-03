@@ -7,7 +7,7 @@ export {
 } from './LogSlice'
 
 export { 
-    deleteOneTodaysEntry, startTimer, stopTimer, sortTodayLog, capAllTimers
+    deleteOneTodaysEntry, startTimer, stopTimer, sortTodayLog, capAllTimers, weekliesSelectedToday,
 } from './Thunks'
 
 export { default as default } from './LogSlice'
