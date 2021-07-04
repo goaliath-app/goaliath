@@ -154,7 +154,8 @@ const es= {
     today: {
       headerTitle: 'Hoy',
       infoContent: 'No hay actividades programadas para esta semana. Puedes ir a la sección "Metas" para crear nuevas actividades.',
-
+      selectWeekliesTitle: 'Elige las actividades semanales para hoy',
+      selectWeekliesDescription: 'Pulsa aquí',
     },
 
     week: {
