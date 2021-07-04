@@ -5,11 +5,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import { ActivityList } from '../components'
 import { Header, InfoCard } from '../components';
 import { updateLogs } from '../redux'
-import { extractActivityLists, getToday, hasSomethingToShow } from '../util'
+import { extractActivityList, getToday, hasSomethingToShow } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 
-const TodayScreen = ({ todaysActivities, navigation, updateLogs }) => {
+const TodayScreen = ({ activityList, navigation, updateLogs }) => {
   useFocusEffect(
     React.useCallback(() => {
       updateLogs()
@@ -21,8 +21,8 @@ const TodayScreen = ({ todaysActivities, navigation, updateLogs }) => {
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('today.headerTitle')} left='hamburger' navigation={navigation}/>
-      {hasSomethingToShow(todaysActivities)?
-      <ActivityList data={todaysActivities} />
+      {hasSomethingToShow(activityList)?
+      <ActivityList data={activityList} />
       :
       <InfoCard content={t('today.infoContent')} />
       }
@@ -32,8 +32,8 @@ const TodayScreen = ({ todaysActivities, navigation, updateLogs }) => {
 
 const mapStateToProps = (state) => {
   const { dayStartHour } = state.settings
-  const { dayActivities } = extractActivityLists(state, getToday(dayStartHour))
-  return { todaysActivities: dayActivities }
+  const activityList = extractActivityList(state, getToday(dayStartHour))
+  return { activityList }
 }
 
 const actionsToProps = {

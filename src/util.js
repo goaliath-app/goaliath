@@ -80,9 +80,8 @@ export function newEntry(activity){
   )
 }
 
-export function extractActivityLists(state, day){
-  let dayActivities = [] 
-  let weekActivities = []
+export function extractActivityList(state, day){
+  let activityList = [] 
   var entries
 
   if(day > getToday(state.settings.dayStartHour)){
@@ -93,11 +92,9 @@ export function extractActivityLists(state, day){
 
   for(let entry of entries){
     const activity = selectActivityById(state, entry.id)
-    const fullEntry = {...activity, ...entry, date: day}
+    let fullEntry = {...activity, ...entry, date: day}
 
-    if(!(fullEntry.repeatMode == 'weekly')){
-      dayActivities.push(fullEntry)
-    }else{
+    if(fullEntry.repeatMode == 'weekly'){
       // we have to calculate and inyect weeklyTime and weeklyTimes (not counting today or future days)
       let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
       let weeklyTimes = 0
@@ -111,11 +108,14 @@ export function extractActivityLists(state, day){
         weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[thatDay].intervals))
         weeklyTimes += weekLogs[thatDay].completed?1:0
       }
-      weekActivities.push({ ...fullEntry, weeklyTime, weeklyTimes })
+
+      fullEntry = {...fullEntry, weeklyTime, weeklyTimes}
     }
+
+    activityList.push(fullEntry)
   }
 
-  return { dayActivities, weekActivities }
+  return activityList
 }
 
 export function isToday(date, dayStartDate){
@@ -218,9 +218,6 @@ export function dueToday(today, activity, activityGoal){
     return false
   }
   if(activity.repeatMode == 'daily'){
-    return true
-  }
-  if(activity.repeatMode == 'weekly'){
     return true
   }
   if(activity.repeatMode == 'select'){
