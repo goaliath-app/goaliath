@@ -1,6 +1,6 @@
 import { createSlice, createEntityAdapter, current } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import { isActivityRunning, startOfWeek } from '../../util'
+import { isActivityRunning, startOfWeek, getToday } from '../../util'
 import arrayMove from 'array-move'
 
 function compareEntries(a, b){
@@ -169,19 +169,14 @@ export const {
 } = logAdapter.getSelectors(state => state.logs)
 
 export function selectEntriesByDay(state, day){
+  const thatDayLog = selectLogById(state, day.toISO())
   const entrySelectors = entryAdapter.getSelectors()
-  const { dayStartHour } = state.settings
-  const thatDayLog = state.logs.entities[day.toISO()]
   if(thatDayLog){
     const todayEntries = entrySelectors.selectAll(thatDayLog.entries)
     return todayEntries
   }else{
     return []
   }
-}
-
-export function selectTodayEntries(state){
-  selectEntriesByDay(state, DateTime.now())
 }
 
 export function selectEntryByActivityIdAndDate(state, activityId, date){
@@ -221,4 +216,15 @@ function getStartOfWeekDay(date, weekDayNumber, dayStartHour){
 function stopActivity(entry){
   const lastInterval = entry.intervals.slice(-1)[0]
   lastInterval.endDate = DateTime.now().toISO()
+}
+
+function selectTodayLog(state){
+  const { dayStartHour } = state.settings
+  const log = selectLogById(state, getToday(dayStartHour).toISO())
+  return log
+}
+
+export function areWeekliesSelectedToday(state){
+  const log = selectTodayLog(state)
+  return log.weekliesSelected
 }

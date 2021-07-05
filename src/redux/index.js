@@ -7,14 +7,14 @@ export {
 
 export { 
     createActivity, updateActivity, toggleActivity, archiveActivity, 
-    selectAllActivities, selectActivityById,selectActivityEntities
+    selectAllActivities, selectActivityById, selectActivityEntities, areThereWeeklyActivities,
 } from './ActivitySlice' 
 
 export { 
     createLog, addEntry, deleteOneTodaysEntry, toggleCompleted, deleteLog,
     startTimer, stopTimer, sortTodayLog, upsertEntry, replaceEntry,
     weekliesSelectedToday,
-    selectAllLogs, selectLogById, selectTodayEntries, 
+    selectAllLogs, selectLogById, areWeekliesSelectedToday,
     selectThisWeekEntriesByActivityId, selectLogEntities, selectEntriesByDay,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate
 } from './LogSlice'
