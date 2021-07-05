@@ -160,11 +160,6 @@ const en = {
       selectWeekliesDescription: 'Tap here to select',
     },
 
-    week: {
-      headerTitle: 'This Week',
-      infoContent: 'There are no activities scheduled for this week. You can go to the "Goals" section of the app to create new activities.',
-    },
-
     onboarding: {
       slideOne: {
         title: 'Welcome to Goaliath',

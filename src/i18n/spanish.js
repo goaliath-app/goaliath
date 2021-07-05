@@ -158,11 +158,6 @@ const es= {
       selectWeekliesDescription: 'Pulsa aquí',
     },
 
-    week: {
-      headerTitle: 'Esta semana',
-      infoContent: 'No hay actividades programadas para esta semana. Puedes ir a la sección "Metas" para crear nuevas actividades.',
-    },
-
     onboarding: {
       slideOne: {
         title: 'Bienvenido',

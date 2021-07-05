@@ -1,5 +1,4 @@
 export { default as TodayScreen } from './TodayScreen'
-export { default as WeekScreen } from './WeekScreen'
 export { default as ActivityDetailScreen} from './ActivityDetailScreen/ActivityDetailScreen'
 export { default as GoalsScreen } from './GoalsScreen'
 export { default as GoalScreen} from './GoalScreen'
