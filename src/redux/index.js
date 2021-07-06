@@ -13,7 +13,7 @@ export {
 export { 
     createLog, addEntry, deleteOneTodaysEntry, toggleCompleted, deleteLog,
     startTimer, stopTimer, sortTodayLog, upsertEntry, replaceEntry,
-    weekliesSelectedToday,
+    weekliesSelectedToday, deleteEntry,
     selectAllLogs, selectLogById, areWeekliesSelectedToday,
     selectThisWeekEntriesByActivityId, selectLogEntities, selectEntriesByDay,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate

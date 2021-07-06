@@ -5,23 +5,49 @@ import { GeneralColor } from '../styles/Colors';
 import { Header } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Appbar, Checkbox, List } from 'react-native-paper';
-import { selectAllActivities, selectAllWeekEntriesByActivityId } from '../redux';
-import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression } from '../util';
+import { selectAllActivities, selectAllWeekEntriesByActivityId, addEntry, selectActivityEntities, deleteEntry } from '../redux';
+import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry } from '../util';
 import Duration from 'luxon/src/duration.js'
 
 
-const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntries}) => {
+const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntries, today, addEntry, deleteEntry}) => {
   const { t, i18n } = useTranslation()
 
   // status of each of the checkboxes. As boxes are checked, the object will populate.
   // keys will be the id of each activity, values are 'checked' or 'unchecked'
   // if a key is not present the activity will appear as unchecked
-  const [ status, setStatus ] = React.useState({})
-  
+  let initialState = {}
+  for(let activity of weeklyActivities) {
+    initialState[activity.id] = 'unchecked'
+  }
+  const [ status, setStatus ] = React.useState(initialState)
+  console.log('weeklyentries:')
+  console.log(weeklyEntries)
   const headerButtons = (
     <Appbar.Action
       icon='check'
-      onPress={() => {}}
+      onPress={() => {
+        for(let activityId in status){
+          if(status[activityId] == 'checked'){
+            // si esa actividad no tiene entry hoy, lo creamos
+            console.log(`si la actividad ${activityId} no tiene entry hoy, lo creamos`)
+            if(weeklyEntries.filter(entry => entry.id == activityId).length == 0){
+              console.log('no tiene entry, asi que lo creamos')
+              const activity = weeklyActivities.filter(activity => activity.id == activityId)[0]
+              const entry = newEntry(activity)
+              addEntry({date: today, entry: entry})
+            }
+          }else{
+            // si esa actividad tiene entry hoy, lo borramos
+            console.log(`si la actividad ${activityId} tiene entry hoy, lo borramos`)
+            if(weeklyEntries.filter(entry => entry.id == activityId).length > 0){
+              console.log('tiene entry, asi que a borrar!')
+              deleteEntry({date: today, entryId: activityId})
+            }
+          }
+        }
+        navigation.goBack()
+      }}
     />
   )
 
@@ -95,14 +121,14 @@ const mapStateToProps = (state) => {
   // inyect weeklyTime and weeklyTimes to each activity of weeklyActivities
   weeklyActivities.forEach((activity, i) => {
     const { weeklyTime, weeklyTimes } = getWeeklyStats(state, today, activity.id)
-    console.log(`${weeklyTime}, ${weeklyTimes}`)
     weeklyActivities[i] = {...activity, weeklyTime, weeklyTimes}
   })
-  return { weeklyEntries, weeklyActivities }
+  return { weeklyEntries, weeklyActivities, today }
 }
 
 const actionsToProps = {
-
+  addEntry,
+  deleteEntry,
 }
 
 export default connect(mapStateToProps, actionsToProps)(SelectWeeklyActivitiesScreen)
