@@ -28,11 +28,11 @@ const TodayScreen = ({ activityList, navigation, updateLogs, weekliesSelector })
       <View>
         <ActivityList data={pendingActivities} />
         {weekliesSelector=='unchecked'?
-        <SelectWeekliesListItem checked={false}/>
+        <SelectWeekliesListItem checked={false} navigation={navigation}/>
         : <></> }
         <ActivityList data={completedActivities} />
         {weekliesSelector=='checked'?
-        <SelectWeekliesListItem checked={true}/>
+        <SelectWeekliesListItem checked={true} navigation={navigation}/>
         : <></> }
       </View>
       :

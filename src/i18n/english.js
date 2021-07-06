@@ -160,6 +160,12 @@ const en = {
       selectWeekliesDescription: 'Tap here to select',
     },
 
+    weeklyActivities: {
+      headerTitle: 'Select weekly activities',
+      daysLeft: '{{daysLeft}} days left',
+      timeLeft: '{{timeExprValue}} {{timeExprLocaleUnit}} left'
+    },
+
     onboarding: {
       slideOne: {
         title: 'Welcome to Goaliath',

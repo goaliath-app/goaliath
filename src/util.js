@@ -80,6 +80,26 @@ export function newEntry(activity){
   )
 }
 
+export function getWeeklyStats(state, day, activityId){
+  /* counting all entries of that week up to the day specified
+  ignores later days. */
+
+  let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
+  let weeklyTimes = 0
+
+  const weekLogs = selectAllWeekEntriesByActivityId(state, activityId, day)
+
+  for(let thatDay in weekLogs){
+    if(day.weekday-1==thatDay){
+      break
+    }
+    weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[thatDay].intervals))
+    weeklyTimes += weekLogs[thatDay].completed?1:0
+  }
+
+  return {weeklyTime, weeklyTimes}
+}
+
 export function extractActivityList(state, day){
   let activityList = [] 
   var entries
@@ -95,19 +115,7 @@ export function extractActivityList(state, day){
     let fullEntry = {...activity, ...entry, date: day}
 
     if(fullEntry.repeatMode == 'weekly'){
-      // we have to calculate and inyect weeklyTime and weeklyTimes (not counting today or future days)
-      let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
-      let weeklyTimes = 0
-
-      const weekLogs = selectAllWeekEntriesByActivityId(state, fullEntry.id, day)
-
-      for(let thatDay in weekLogs){
-        if(day.weekday-1==thatDay){
-          break
-        }
-        weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[thatDay].intervals))
-        weeklyTimes += weekLogs[thatDay].completed?1:0
-      }
+      const { weeklyTime, weeklyTimes } = getWeeklyStats(state, day, fullEntry.id)
 
       fullEntry = {...fullEntry, weeklyTime, weeklyTimes}
     }

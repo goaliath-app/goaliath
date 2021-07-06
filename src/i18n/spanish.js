@@ -157,6 +157,13 @@ const es= {
       selectWeekliesTitle: 'Elige las actividades semanales para hoy',
       selectWeekliesDescription: 'Pulsa aquí',
     },
+    
+    weeklyActivities: {
+      headerTitle: 'Selecciona las actividades semanales',
+      daysLeft: 'Quedan {{daysLeft}} días',
+      timeLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}'
+
+    },
 
     onboarding: {
       slideOne: {

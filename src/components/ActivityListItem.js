@@ -161,7 +161,7 @@ const ActivityListItem = ({
   );
 }
 
-export const SelectWeekliesListItem = ({checked}) => {
+export const SelectWeekliesListItem = ({checked, navigation}) => {
   const { t, i18n } = useTranslation()
 
   return(
@@ -179,9 +179,7 @@ export const SelectWeekliesListItem = ({checked}) => {
         )}
         title={t('today.selectWeekliesTitle')}
         // description={t('today.selectWeekliesDescription')}
-        onPress={() => {
-          return
-        }}
+        onPress={() => {navigation.navigate('SelectWeeklyActivities')}}
       />
     </View>
   )
