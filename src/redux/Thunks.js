@@ -106,6 +106,9 @@ function updateLog({ date }){
     const state = getState() 
     
     for(let activity of selectAllActivities(state)){
+      // weekly activities are managed through SelectWeeklyActivitiesScreen
+      if(activity.repeatMode == 'weekly') { continue }  
+
       const goal = selectGoalById(state, activity.goalId)
       const oldLog = selectEntryByActivityIdAndDate(state, activity.id, date)
 

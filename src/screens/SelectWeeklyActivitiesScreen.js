@@ -5,12 +5,12 @@ import { GeneralColor } from '../styles/Colors';
 import { Header } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Appbar, Checkbox, List } from 'react-native-paper';
-import { selectAllActivities, selectAllWeekEntriesByActivityId, addEntry, selectActivityEntities, deleteEntry, weekliesSelectedToday } from '../redux';
+import { selectAllActivities, selectAllWeekEntriesByActivityId, addEntry, selectActivityEntities, deleteEntry, weekliesSelectedToday, upsertEntry } from '../redux';
 import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry } from '../util';
 import Duration from 'luxon/src/duration.js'
 
 
-const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntries, today, addEntry, deleteEntry, weekliesSelectedToday}) => {
+const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntries, today, addEntry, deleteEntry, weekliesSelectedToday, upsertEntry}) => {
   const { t, i18n } = useTranslation()
 
   // status of each of the checkboxes. As boxes are checked, the object will populate.
@@ -40,6 +40,11 @@ const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntri
               const activity = weeklyActivities.filter(activity => activity.id == activityId)[0]
               const entry = newEntry(activity)
               addEntry({date: today, entry: entry})
+            }else{
+              const entry = weeklyEntries.filter(entry => entry.id == activityId)[0]
+              if (entry.archived){
+                upsertEntry({ date: today, entry: { ...entry, archived: false }})
+              }
             }
           }else{
             // si esa actividad tiene entry hoy, lo borramos
@@ -135,6 +140,7 @@ const actionsToProps = {
   addEntry,
   deleteEntry,
   weekliesSelectedToday,
+  upsertEntry,
 }
 
 export default connect(mapStateToProps, actionsToProps)(SelectWeeklyActivitiesScreen)
