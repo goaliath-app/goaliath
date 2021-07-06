@@ -5,12 +5,12 @@ import { GeneralColor } from '../styles/Colors';
 import { Header } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Appbar, Checkbox, List } from 'react-native-paper';
-import { selectAllActivities, selectAllWeekEntriesByActivityId, addEntry, selectActivityEntities, deleteEntry } from '../redux';
+import { selectAllActivities, selectAllWeekEntriesByActivityId, addEntry, selectActivityEntities, deleteEntry, weekliesSelectedToday } from '../redux';
 import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry } from '../util';
 import Duration from 'luxon/src/duration.js'
 
 
-const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntries, today, addEntry, deleteEntry}) => {
+const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntries, today, addEntry, deleteEntry, weekliesSelectedToday}) => {
   const { t, i18n } = useTranslation()
 
   // status of each of the checkboxes. As boxes are checked, the object will populate.
@@ -50,6 +50,7 @@ const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntri
             }
           }
         }
+        weekliesSelectedToday()
         navigation.goBack()
       }}
     />
@@ -133,6 +134,7 @@ const mapStateToProps = (state) => {
 const actionsToProps = {
   addEntry,
   deleteEntry,
+  weekliesSelectedToday,
 }
 
 export default connect(mapStateToProps, actionsToProps)(SelectWeeklyActivitiesScreen)
