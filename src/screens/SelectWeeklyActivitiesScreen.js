@@ -18,7 +18,11 @@ const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntri
   // if a key is not present the activity will appear as unchecked
   let initialState = {}
   for(let activity of weeklyActivities) {
-    initialState[activity.id] = 'unchecked'
+    if(weeklyEntries.filter(entry => entry.id == activity.id).length == 0){
+      initialState[activity.id] = 'unchecked'
+    }else{
+      initialState[activity.id] = 'checked'
+    }
   }
   const [ status, setStatus ] = React.useState(initialState)
   console.log('weeklyentries:')
