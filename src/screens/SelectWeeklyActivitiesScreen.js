@@ -13,13 +13,17 @@ import Duration from 'luxon/src/duration.js'
 const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntries}) => {
   const { t, i18n } = useTranslation()
 
+  // status of each of the checkboxes. As boxes are checked, the object will populate.
+  // keys will be the id of each activity, values are 'checked' or 'unchecked'
+  // if a key is not present the activity will appear as unchecked
+  const [ status, setStatus ] = React.useState({})
+  
   const headerButtons = (
     <Appbar.Action
       icon='check'
       onPress={() => {}}
     />
   )
-
 
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
@@ -29,17 +33,19 @@ const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntri
         navigation={navigation}
         buttons={headerButtons}
       />
-      <WeeklyList data={weeklyActivities}/> 
+      <WeeklyList activities={weeklyActivities} status={status} setStatus={setStatus}/> 
     </View>
   );
 }
 
-const WeeklyListItem = ({name, description}) => {
+const WeeklyListItem = ({name, description, id, status, setStatus}) => {
   
   const leftSlot = (
     <Checkbox 
-      status='unchecked'
-
+      status={status[id]?status[id]:'unchecked'}
+      onPress={() => {
+        setStatus( {...status, [id]: (status[id]=='checked'? 'unchecked' : 'checked') } )
+      }}
     />
   )
   return (
@@ -52,12 +58,12 @@ const WeeklyListItem = ({name, description}) => {
   )
 }
 
-const WeeklyList = ({data}) => {
+const WeeklyList = ({activities, status, setStatus}) => {
   const { t, i18n } = useTranslation()
 
   return (
     <FlatList 
-      data={data}
+      data={activities}
       renderItem={({item})=>{
         let description
         if(item.goal == 'check'){
@@ -71,7 +77,7 @@ const WeeklyList = ({data}) => {
           description = t('weeklyActivities.timeLeft', {timeExprValue: timeExpr.value, timeExprLocaleUnit: timeExpr.localeUnit})
         }
         return(
-          <WeeklyListItem name={item.name} description={description} />
+          <WeeklyListItem name={item.name} description={description} id={item.id} status={status} setStatus={setStatus} />
         )
       }}    
     />
@@ -92,7 +98,6 @@ const mapStateToProps = (state) => {
     console.log(`${weeklyTime}, ${weeklyTimes}`)
     weeklyActivities[i] = {...activity, weeklyTime, weeklyTimes}
   })
-  console.log(weeklyActivities)
   return { weeklyEntries, weeklyActivities }
 }
 
