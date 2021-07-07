@@ -9,22 +9,22 @@ import { extractActivityList, getToday, hasSomethingToShow } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 
-const TodayScreen = ({ activityList, navigation, updateLogs, weekliesSelector }) => {
+const TodayScreen = ({ entryList, navigation, updateLogs, weekliesSelector }) => {
   useFocusEffect(
     React.useCallback(() => {
       updateLogs()
     }, [])
   )
   
-  const completedActivities = activityList.filter(activity => activity.completed)
-  const pendingActivities   = activityList.filter(activity => !activity.completed)
+  const completedActivities = entryList.filter(activity => activity.completed)
+  const pendingActivities   = entryList.filter(activity => !activity.completed)
 
   const { t, i18n } = useTranslation()
   
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('today.headerTitle')} left='hamburger' navigation={navigation}/>
-      {hasSomethingToShow(activityList)?
+      {hasSomethingToShow(entryList)?
       <View>
         <ActivityList data={pendingActivities} />
         {weekliesSelector=='unchecked'?
@@ -44,7 +44,7 @@ const TodayScreen = ({ activityList, navigation, updateLogs, weekliesSelector })
 
 const mapStateToProps = (state) => {
   const { dayStartHour } = state.settings
-  const activityList = extractActivityList(state, getToday(dayStartHour))
+  const entryList = extractActivityList(state, getToday(dayStartHour))
   const weekliesSelector = (
     areThereWeeklyActivities(state)?  
       (areWeekliesSelectedToday(state)?
@@ -55,7 +55,7 @@ const mapStateToProps = (state) => {
       'hidden'
   )
 
-  return { activityList, weekliesSelector }
+  return { entryList, weekliesSelector }
 }
 
 const actionsToProps = {
