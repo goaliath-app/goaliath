@@ -6,7 +6,7 @@ import { Header, Checkbox } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Appbar, List } from 'react-native-paper';
 import { selectAllActivities, selectAllWeekEntriesByActivityId, addEntry, selectActivityEntities, deleteEntry, weekliesSelectedToday, upsertEntry } from '../redux';
-import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry } from '../util';
+import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry, selectAllActiveActivities } from '../util';
 import Duration from 'luxon/src/duration.js'
 
 
@@ -125,7 +125,7 @@ const mapStateToProps = (state) => {
   const today = getToday(dayStartHour)
   const todayEntries = extractActivityList(state, today)
   const weeklyEntries = todayEntries.filter(entry => entry.repeatMode=='weekly')
-  const allActivities = selectAllActivities(state)
+  const allActivities = selectAllActiveActivities(state)
   const weeklyActivities = allActivities.filter(activity => activity.repeatMode=='weekly')
   
   // inyect weeklyTime and weeklyTimes to each activity of weeklyActivities

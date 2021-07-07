@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
 import { 
   selectEntriesByDay, selectActivityById, selectAllWeekEntriesByActivityId,
-  selectActivityEntities, selectGoalById,
+  selectActivityEntities, selectGoalById, selectAllActivities, selectGoalEntities
 } from './redux'
 
 export function hasSomethingToShow(activityList){
@@ -78,6 +78,23 @@ export function newEntry(activity){
       archived: false
     }
   )
+}
+
+export function selectAllActiveActivities(state){
+  /* returns a list of all activities that:
+  - are not disabled or archived
+  - belong to goals that are not disabled or archived */
+  const allActivities = selectAllActivities(state)
+  const goalEntities = selectGoalEntities(state)
+
+  const activeActivities = allActivities.filter(activity => {
+    const goal = goalEntities[activity.goalId]
+    return(
+      activity.active && !activity.archived && goal.active && !goal.archived 
+    )
+  })
+
+  return activeActivities
 }
 
 export function getWeeklyStats(state, day, activityId){
