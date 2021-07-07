@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { View, FlatList } from 'react-native';
 import { GeneralColor } from '../styles/Colors';
-import { Header } from '../components';
+import { Header, Checkbox } from '../components';
 import { useTranslation } from 'react-i18next';
-import { Appbar, Checkbox, List } from 'react-native-paper';
+import { Appbar, List } from 'react-native-paper';
 import { selectAllActivities, selectAllWeekEntriesByActivityId, addEntry, selectActivityEntities, deleteEntry, weekliesSelectedToday, upsertEntry } from '../redux';
 import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry } from '../util';
 import Duration from 'luxon/src/duration.js'

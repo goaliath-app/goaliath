@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View, useWindowDimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Checkbox as PaperCheckbox, IconButton, Text } from 'react-native-paper'
+import { List, IconButton, Text } from 'react-native-paper'
 import * as Progress from 'react-native-progress';
 import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue } from '../util'
 import { toggleCompleted, startTimer, stopTimer } from '../redux'
@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { ActivityListItemColors } from '../styles/Colors'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import Checkbox from './Checkbox'
 
 const ActivityListItem = ({ 
   timeGoal,    // number of seconds of the time goal for this activity or null if it is not a timed activity
@@ -189,12 +190,6 @@ const DoubleProgressBar = ({firstColor, secondColor, backgroundColor, firstProgr
   <View >
     <Progress.Bar progress={secondProgress} width={null} height={height} unfilledColor={backgroundColor} borderRadius={0} borderWidth={0} color={secondColor} />
     <Progress.Bar style={{position: 'absolute'}} progress={firstProgress} height={height} color={firstColor} unfilledColor={ActivityListItemColors.progressBarUnfilledColor} borderWidth={0} width={useWindowDimensions().width} borderRadius={0} />
-  </View>
-)
-
-const Checkbox = (props) => (
-  <View style={{padding: 6}}>
-    <PaperCheckbox {...props} />
   </View>
 )
 
