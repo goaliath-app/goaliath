@@ -97,6 +97,12 @@ export function selectAllActiveActivities(state){
   return activeActivities
 }
 
+export function areThereWeeklyActivities(state){
+  const activities = selectAllActiveActivities(state)
+  const weeklyActivities = activities.filter(activity => activity.repeatMode=='weekly' && activity.active)
+  return weeklyActivities.length > 0
+}
+
 export function getWeeklyStats(state, day, activityId){
   /* counting all entries of that week up to the day specified
   ignores later days. */

@@ -7,7 +7,7 @@ export {
 
 export { 
     createActivity, updateActivity, toggleActivity, archiveActivity, 
-    selectAllActivities, selectActivityById, selectActivityEntities, areThereWeeklyActivities,
+    selectAllActivities, selectActivityById, selectActivityEntities,
 } from './ActivitySlice' 
 
 export { 

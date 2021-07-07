@@ -4,8 +4,8 @@ import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
 import { ActivityList } from '../components'
 import { Header, InfoCard, SelectWeekliesListItem } from '../components';
-import { updateLogs, areThereWeeklyActivities, areWeekliesSelectedToday } from '../redux'
-import { extractActivityList, getToday, hasSomethingToShow } from '../util'
+import { updateLogs, areWeekliesSelectedToday } from '../redux'
+import { extractActivityList, getToday, hasSomethingToShow, areThereWeeklyActivities } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 
@@ -24,7 +24,7 @@ const TodayScreen = ({ entryList, navigation, updateLogs, weekliesSelector }) =>
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('today.headerTitle')} left='hamburger' navigation={navigation}/>
-      {hasSomethingToShow(entryList)?
+      {hasSomethingToShow(entryList) || weekliesSelector != 'hidden'?
       <View>
         <ActivityList data={pendingActivities} />
         {weekliesSelector=='unchecked'?

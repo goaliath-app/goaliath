@@ -50,13 +50,6 @@ const activitySlice = createSlice({
 
 export const { createActivity, updateActivity, toggleActivity, archiveActivity, setState } = activitySlice.actions
 
-export function areThereWeeklyActivities(state){
-  const selectAllActivities = activityAdapter.getSelectors(state => state.activities).selectAll
-  const activities = selectAllActivities(state)
-  const weeklyActivities = activities.filter(activity => activity.repeatMode=='weekly' && activity.active)
-  return weeklyActivities.length > 0
-}
-
 export const { 
   selectAll: selectAllActivities, selectById: selectActivityById, selectEntities: selectActivityEntities,
 } = activityAdapter.getSelectors(state => state.activities)
