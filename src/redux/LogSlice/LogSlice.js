@@ -226,5 +226,5 @@ function selectTodayLog(state){
 
 export function areWeekliesSelectedToday(state){
   const log = selectTodayLog(state)
-  return log.weekliesSelected? log.weekliesSelected : false
+  return log?.weekliesSelected? log.weekliesSelected : false
 }
