@@ -242,10 +242,7 @@ export function frequency(activity, t){
 }
 
 export function dueToday(today, activity, activityGoal){
-  if(activity.archived || activityGoal.archived){
-    return false
-  }
-  if(!activity.active || !activityGoal.active){
+  if( !isActive(activity, activityGoal) ){
     return false
   }
   if(activity.repeatMode == 'daily'){
@@ -257,6 +254,16 @@ export function dueToday(today, activity, activityGoal){
     }
   }
   return false
+}
+
+export function isActive(activity, activityGoal){
+  if(activity.archived || activityGoal.archived){
+    return false
+  }
+  if(!activity.active || !activityGoal.active){
+    return false
+  }
+  return true
 }
 
 /**

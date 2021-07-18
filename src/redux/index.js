@@ -20,7 +20,7 @@ export {
 } from './LogSlice'
 
 export { 
-    generateDummyData, updateLogs, importState,
+    generateDummyData, updateLogs, importState, archiveOrDeleteEntry, createOrUnarchiveEntry
 } from './Thunks'
 
 export { setDayStartHour, finishOnboarding, setLanguage } from './SettingsSlice'
