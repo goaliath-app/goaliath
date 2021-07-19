@@ -163,7 +163,9 @@ const en = {
     weeklyActivities: {
       headerTitle: 'Select weekly activities',
       daysLeft: '{{daysLeft}} days left',
-      timeLeft: '{{timeExprValue}} {{timeExprLocaleUnit}} left'
+      timeLeft: '{{timeExprValue}} {{timeExprLocaleUnit}} left',
+      checkCompleted: 'Completed: {{weeklyTimes}} days done',
+      timedCompleted: 'Completed: {{unit}} {{expression}} dedicated',
     },
 
     onboarding: {

@@ -161,8 +161,9 @@ const es= {
     weeklyActivities: {
       headerTitle: 'Selecciona las actividades semanales',
       daysLeft: 'Quedan {{daysLeft}} días',
-      timeLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}'
-
+      timeLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}',
+      checkCompleted: 'Hecho: {{weeklyTimes}} días completado',
+      timedCompleted: 'Hecho: {{unit}} {{expression}} dedicada/os',
     },
 
     onboarding: {
