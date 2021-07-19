@@ -119,8 +119,6 @@ const ActivityListItem = ({
   if((repeatMode == 'daily' || repeatMode == 'select') && timeGoal){
     const expression = getPreferedExpression(timeGoal, t)
     description = t('activityListItem.description.todayTimeGoal', { expressionValue: expression.value, expressionUnit: expression.localeUnit })
-  }else if(repeatMode=='weekly' && !timeGoal){
-    description = t('activityListItem.description.weekCheck', { totalTimes, timesPerWeek })
   }else if(repeatMode=='weekly' && timeGoal){
     const expression = getPreferedExpression(timeGoal, t)
     const weeklyTimeNumber = roundValue(totalTime.as(expression.unit))

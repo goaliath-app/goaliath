@@ -3,8 +3,7 @@ const es= {
     activityListItem: {
         description: {
           todayTimeGoal: 'Objetivo: {{expressionValue}} {{expressionUnit}}',
-          weekCheck: 'Hecho {{totalTimes}} de {{timesPerWeek}} días',
-          weekTimeGoal: 'Hecho {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}'
+          weekTimeGoal: 'Esta semana: dedicado {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
         }
     },
   
