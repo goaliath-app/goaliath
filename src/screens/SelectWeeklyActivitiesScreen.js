@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { View, FlatList } from 'react-native';
-import { GeneralColor } from '../styles/Colors';
+import { GeneralColor, SelectWeekliesColor } from '../styles/Colors';
 import { Header, Checkbox } from '../components';
 import { useTranslation } from 'react-i18next';
-import { Appbar, List } from 'react-native-paper';
+import { Appbar, List, Text } from 'react-native-paper';
 import { selectAllActivities, selectAllWeekEntriesByActivityId, addEntry, selectActivityEntities, deleteEntry, weekliesSelectedToday, upsertEntry, archiveOrDeleteEntry, createOrUnarchiveEntry } from '../redux';
 import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry, selectAllActiveActivities } from '../util';
 import Duration from 'luxon/src/duration.js'
@@ -86,7 +86,15 @@ const WeeklyList = ({activities, status, setStatus}) => {
 
     if(item.goal == 'check'){
       const daysLeft = item.timesPerWeek - item.weeklyTimes
-      description = t('weeklyActivities.daysLeft', {daysLeft})
+      if(status[item.id] == 'checked'){
+        description = (
+          <Text style={{color: SelectWeekliesColor.selectedActivityDescription}}>
+            {t('weeklyActivities.daysLeft', {daysLeft: daysLeft-1})}
+          </Text>
+        )
+      }else{
+        description = t('weeklyActivities.daysLeft', {daysLeft})
+      }
     } else {
       const timeGoal = Duration.fromObject({seconds: item.timeGoal}).shiftTo('hours', 'minutes', 'seconds')
       let timeLeft = timeGoal.minus(item.weeklyTime)

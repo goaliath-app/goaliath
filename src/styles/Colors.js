@@ -98,3 +98,7 @@ export const AssetsColor = {
     fill: "#000",
     stroke: "#000"
 }
+
+export const SelectWeekliesColor = {
+    selectedActivityDescription: "#7B61FF",
+}
