@@ -122,7 +122,7 @@ export function createOrUnarchiveEntry(date, activityId){
   return function(dispatch, getState){
     const state = getState()
     const entry = selectEntryByActivityIdAndDate(state, activityId, date)
-
+    
     if(entry?.archived){
       dispatch(upsertEntry({ date, entry: { ...entry, archived: false }}))
     }else if(!entry){
@@ -148,7 +148,7 @@ function updateLog({ date }){
       } else if(activity.repeatMode != 'weekly') {
         // create its entry if the activity is due today
         if(dueToday(date, activity, goal)){
-          createOrUnarchiveEntry(date, activity.id)
+          dispatch(createOrUnarchiveEntry(date, activity.id))
         // or remove its possible entry if it is not due today
         }else{
           dispatch( archiveOrDeleteEntry(date, activity.id) )
