@@ -13,6 +13,7 @@ import { WeekView } from '../components';
 
 const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntries, today, addEntry, deleteEntry, weekliesSelectedToday, upsertEntry, archiveOrDeleteEntry, createOrUnarchiveEntry}) => {
   const { t, i18n } = useTranslation()
+  const [selectedActivity, setSelectedActivity] = React.useState()
 
   // status of each of the checkboxes. As boxes are checked, the object will populate.
   // keys will be the id of each activity, values are 'checked' or 'unchecked'
@@ -56,12 +57,13 @@ const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntri
         buttons={headerButtons}
       />
       <WeekView dayOfWeek={today.weekday} daysDone={[1, 3]} daysLeft={[5]} />
-      <WeeklyList activities={weeklyActivities} status={status} setStatus={setStatus}/> 
+      <WeeklyList activities={weeklyActivities} status={status} setStatus={setStatus} 
+      selectedActivity={selectedActivity} onActivityPress={id => setSelectedActivity(id)}/> 
     </View>
   );
 }
 
-const WeeklyListItem = ({name, description, id, status, onCheckboxPress, checkboxColor}) => {
+const WeeklyListItem = ({name, description, id, status, onCheckboxPress, checkboxColor, selected, onPress}) => {
   const leftSlot = (
     <Checkbox 
       color={checkboxColor}
@@ -76,11 +78,15 @@ const WeeklyListItem = ({name, description, id, status, onCheckboxPress, checkbo
       title={name}
       description={description}
       onPress={()=>{}}
+      style={{
+        backgroundColor: selected?GeneralColor.selectedSurface:'white'
+      }}
+      onPress={onPress}
     />
   )
 }
 
-const WeeklyList = ({activities, status, setStatus}) => {
+const WeeklyList = ({activities, status, setStatus, selectedActivity, onActivityPress}) => {
   const { t, i18n } = useTranslation()
 
   function renderDue({item}){
@@ -110,7 +116,12 @@ const WeeklyList = ({activities, status, setStatus}) => {
     }
 
     return(
-      <WeeklyListItem name={item.name} description={description} id={item.id} status={status[item.id]} onCheckboxPress={toggleStatus}/>      
+      <WeeklyListItem name={item.name} description={description} id={item.id} 
+        status={status[item.id]} onCheckboxPress={() => {
+          toggleStatus()
+          onActivityPress(item.id)
+        }} selected={selectedActivity==item.id} 
+        onPress={() => onActivityPress(item.id)}/> 
     )
   }
 
@@ -125,7 +136,8 @@ const WeeklyList = ({activities, status, setStatus}) => {
     }
 
     return (
-      <WeeklyListItem name={item.name} description={description} id={item.id} status='checked' checkboxColor='black'/>  
+      <WeeklyListItem name={item.name} description={description} id={item.id} status='checked' 
+      checkboxColor='black' onPress={() => onActivityPress(item.id)} selected={selectedActivity==item.id}/>  
     )
   }
 

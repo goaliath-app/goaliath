@@ -42,6 +42,7 @@ export const GeneralColor = {
     screenBackground: 'white',
     textInputBackground: '#FBFCFC',
     helperTextBorderTopColor: '#CE0A24',
+    selectedSurface: '#E6FBF9'
 }
 
 export const TodayPannelColor = {
