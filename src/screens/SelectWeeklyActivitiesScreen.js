@@ -11,9 +11,10 @@ import Duration from 'luxon/src/duration.js'
 import { WeekView } from '../components';
 
 
-const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntries, today, addEntry, deleteEntry, weekliesSelectedToday, upsertEntry, archiveOrDeleteEntry, createOrUnarchiveEntry}) => {
+const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntries, today, addEntry, 
+  deleteEntry, weekliesSelectedToday, upsertEntry, archiveOrDeleteEntry, createOrUnarchiveEntry}) => {
   const { t, i18n } = useTranslation()
-  const [selectedActivity, setSelectedActivity] = React.useState()
+  const [selectedActivity, setSelectedActivity] = React.useState(null)
 
   // status of each of the checkboxes. As boxes are checked, the object will populate.
   // keys will be the id of each activity, values are 'checked' or 'unchecked'
@@ -48,6 +49,29 @@ const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntri
     />
   )
 
+  let daysDone = []
+  let daysLeft = []
+  if(selectedActivity !== null){
+    let activity = weeklyActivities[selectedActivity]
+    daysDone = [...activity.daysDone]
+ 
+    if(status[selectedActivity]=='checked'){
+      daysDone.push(today.weekday)
+    }
+
+    if(activity.goal == 'check'){
+      let numberOfDaysLeft = activity.timesPerWeek - activity.weeklyTimes
+      if(status[selectedActivity]=='checked' && numberOfDaysLeft > 0){
+        numberOfDaysLeft -= 1
+      }
+      for(let i = today.weekday+1; i < today.weekday+1+numberOfDaysLeft && i < 8; i++){
+        daysLeft.push(i)
+      }
+    }
+  }
+
+
+
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header 
@@ -56,7 +80,7 @@ const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntri
         navigation={navigation}
         buttons={headerButtons}
       />
-      <WeekView dayOfWeek={today.weekday} daysDone={[1, 3]} daysLeft={[5]} />
+      <WeekView dayOfWeek={today.weekday} daysDone={daysDone} daysLeft={daysLeft} />
       <WeeklyList activities={weeklyActivities} status={status} setStatus={setStatus} 
       selectedActivity={selectedActivity} onActivityPress={id => setSelectedActivity(id)}/> 
     </View>
@@ -180,8 +204,9 @@ const mapStateToProps = (state) => {
   
   // inyect weeklyTime and weeklyTimes to each activity of weeklyActivities
   weeklyActivities.forEach((activity, i) => {
-    const { weeklyTime, weeklyTimes } = getWeeklyStats(state, today, activity.id)
-    weeklyActivities[i] = {...activity, weeklyTime, weeklyTimes}
+    const { weeklyTime, weeklyTimes, daysDone } = getWeeklyStats(state, today, activity.id)
+
+    weeklyActivities[i] = {...activity, weeklyTime, weeklyTimes, daysDone}
   })
   return { weeklyEntries, weeklyActivities, today }
 }

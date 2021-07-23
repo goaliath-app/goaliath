@@ -109,6 +109,7 @@ export function getWeeklyStats(state, day, activityId){
 
   let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
   let weeklyTimes = 0
+  let daysDone = []
 
   const weekLogs = selectAllWeekEntriesByActivityId(state, activityId, day)
 
@@ -117,10 +118,13 @@ export function getWeeklyStats(state, day, activityId){
       break
     }
     weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[thatDay].intervals))
-    weeklyTimes += weekLogs[thatDay].completed?1:0
+    if(weekLogs[thatDay].completed){
+      weeklyTimes += 1
+      daysDone.push(parseInt(thatDay)+1)
+    }
   }
 
-  return {weeklyTime, weeklyTimes}
+  return {weeklyTime, weeklyTimes, daysDone}
 }
 
 export function extractActivityList(state, day){
