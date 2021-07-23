@@ -106,7 +106,7 @@ export const SelectWeekliesColor = {
 export const WeekViewColor = {
     squareColor: 'transparent',
     textColor: 'black',
-    todayBackground: 'blue',
+    todayBackground: '#7B61FF',
     todayText: 'white',
     pastDaysBackground: '#CAC4D4',
     pastDaysText: 'black',
@@ -114,4 +114,6 @@ export const WeekViewColor = {
     nextDaysText: 'black',
     activityDaysBackground: '#7B61FF',
     activityDaysText: 'black',
+    bottomBarDone: 'dodgerblue',
+    bottomBarLeft: 'lightskyblue'
 }

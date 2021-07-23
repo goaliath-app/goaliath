@@ -55,7 +55,7 @@ const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntri
         navigation={navigation}
         buttons={headerButtons}
       />
-      <WeekView dayOfWeek={today.weekday} />
+      <WeekView dayOfWeek={today.weekday} daysDone={[1, 3]} daysLeft={[5]} />
       <WeeklyList activities={weeklyActivities} status={status} setStatus={setStatus}/> 
     </View>
   );
