@@ -102,3 +102,16 @@ export const AssetsColor = {
 export const SelectWeekliesColor = {
     selectedActivityDescription: "#7B61FF",
 }
+
+export const WeekViewColor = {
+    squareColor: 'transparent',
+    textColor: 'black',
+    todayBackground: 'blue',
+    todayText: 'white',
+    pastDaysBackground: '#CAC4D4',
+    pastDaysText: 'black',
+    nextDaysBackground: 'white',
+    nextDaysText: 'black',
+    activityDaysBackground: '#7B61FF',
+    activityDaysText: 'black',
+}

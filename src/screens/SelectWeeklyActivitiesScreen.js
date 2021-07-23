@@ -8,6 +8,7 @@ import { Appbar, List, Text } from 'react-native-paper';
 import { selectAllActivities, selectAllWeekEntriesByActivityId, addEntry, selectActivityEntities, deleteEntry, weekliesSelectedToday, upsertEntry, archiveOrDeleteEntry, createOrUnarchiveEntry } from '../redux';
 import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry, selectAllActiveActivities } from '../util';
 import Duration from 'luxon/src/duration.js'
+import { WeekView } from '../components';
 
 
 const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntries, today, addEntry, deleteEntry, weekliesSelectedToday, upsertEntry, archiveOrDeleteEntry, createOrUnarchiveEntry}) => {
@@ -54,6 +55,7 @@ const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntri
         navigation={navigation}
         buttons={headerButtons}
       />
+      <WeekView dayOfWeek={today.weekday} />
       <WeeklyList activities={weeklyActivities} status={status} setStatus={setStatus}/> 
     </View>
   );
