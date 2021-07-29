@@ -52,7 +52,7 @@ const SelectWeeklyActivitiesScreen = ({navigation, weeklyActivities, weeklyEntri
   let daysDone = []
   let daysLeft = []
   if(selectedActivity !== null){
-    let activity = weeklyActivities[selectedActivity]
+    let activity = weeklyActivities.filter(activity => activity.id == selectedActivity)[0]
     daysDone = [...activity.daysDone]
  
     if(status[selectedActivity]=='checked'){
