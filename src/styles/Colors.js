@@ -109,12 +109,11 @@ export const WeekViewColor = {
     textColor: 'black',
     todayBackground: '#7B61FF',
     todayText: 'white',
-    pastDaysBackground: '#CAC4D4',
+    pastDaysBackground: '#EBEBEB',
     pastDaysText: 'black',
     nextDaysBackground: 'white',
     nextDaysText: 'black',
-    activityDaysBackground: '#7B61FF',
-    activityDaysText: 'black',
-    bottomBarDone: 'dodgerblue',
-    bottomBarLeft: 'lightskyblue'
+    bottomBarDone: 'darkturquoise',
+    bottomBarLeft: 'paleturquoise',
+    borderColor: '#888888'
 }
