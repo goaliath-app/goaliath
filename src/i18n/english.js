@@ -157,6 +157,8 @@ const en = {
       infoContent: 'There are no activities scheduled for today. You can go to the "Goals" section of the app to create new activities.',
       selectWeekliesTitle: 'Choose weekly activities for today',
       selectWeekliesDescription: 'Tap here to select',
+      selectTasksTitle: 'Add one time tasks for today',
+      selectTasksDescription: 'Tap here to add',
     },
 
     weeklyActivities: {

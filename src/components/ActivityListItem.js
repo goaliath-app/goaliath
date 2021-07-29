@@ -184,6 +184,30 @@ export const SelectWeekliesListItem = ({checked, navigation}) => {
   )
 }
 
+export const SelectTasksListItem = ({checked, onPress}) => {
+  const { t, i18n } = useTranslation()
+
+  return(
+    <View style={{ backgroundColor: ActivityListItemColors.listItemBackground }}>
+      <List.Item
+        left={() => (
+          <View>
+            <Checkbox 
+              color='black'
+              uncheckedColor='black'
+              status={checked? 'checked' : 'unchecked'}
+            />
+            {checked?<></>:<FontAwesomeIcon style={{position: 'absolute', alignSelf: 'center', marginTop: 17}} icon={faPlus} size={14} />}
+          </View>
+        )}
+        title={t('today.selectTasksTitle')}
+        // description={t('today.selectTasksDescription')}
+        onPress={onPress}
+      />
+    </View>
+  )
+}
+
 const DoubleProgressBar = ({firstColor, secondColor, backgroundColor, firstProgress, secondProgress, height}) => (
   <View >
     <Progress.Bar progress={secondProgress} width={null} height={height} unfilledColor={backgroundColor} borderRadius={0} borderWidth={0} color={secondColor} />

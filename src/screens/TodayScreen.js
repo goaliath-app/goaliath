@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
 import { ActivityList } from '../components'
-import { Header, InfoCard, SelectWeekliesListItem } from '../components';
+import { Header, InfoCard, SelectWeekliesListItem, SelectTasksListItem } from '../components';
 import { updateLogs, areWeekliesSelectedToday } from '../redux'
 import { extractActivityList, getToday, hasSomethingToShow, areThereWeeklyActivities } from '../util'
 import { useTranslation } from 'react-i18next'
@@ -26,15 +26,11 @@ const TodayScreen = ({ entryList, navigation, updateLogs, weekliesSelector }) =>
   
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
-      <Header 
-        title={t('today.headerTitle')} left='hamburger' navigation={navigation}
-        buttons={
-          <Appbar.Action icon='plus' onPress={() => setAddTaskDialogVisible(true)} />
-        }
-      />
+      <Header title={t('today.headerTitle')} left='hamburger' navigation={navigation} />
       {hasSomethingToShow(entryList) || weekliesSelector != 'hidden'?
       <View>
         <ActivityList data={pendingActivities} />
+        <SelectTasksListItem checked={false} onPress={() => setAddTaskDialogVisible(true)}/>
         {weekliesSelector=='unchecked'?
         <SelectWeekliesListItem checked={false} navigation={navigation}/>
         : <></> }
