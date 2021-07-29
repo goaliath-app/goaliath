@@ -36,7 +36,7 @@ const PureTaskListItem = ({ task, today, toggleTask }) => {
             </View>
           )}
           title={task.name}
-          description={t('today.oneTimeTaskDescription')}
+          // description={t('today.oneTimeTaskDescription')}
           // onPress={onPress}
         />
       </View>
