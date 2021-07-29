@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
 import { ActivityList } from '../components'
-import { Header, InfoCard, SelectWeekliesListItem, SelectTasksListItem } from '../components';
+import { Header, InfoCard, SelectWeekliesListItem, SelectTasksListItem, TaskList } from '../components';
 import { updateLogs, areWeekliesSelectedToday, addTodayTask, getTodayTasks, areTasksAddedToday, tasksAddedToday } from '../redux'
 import { extractActivityList, getToday, hasSomethingToShow, areThereWeeklyActivities } from '../util'
 import { useTranslation } from 'react-i18next'
@@ -24,6 +24,9 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
   const completedActivities = entryList.filter(activity => activity.completed)
   const pendingActivities   = entryList.filter(activity => !activity.completed)
 
+  const completedTasks = taskList.filter(task => task.completed)
+  const pendingTasks = taskList.filter(task => !task.completed)
+
   const { t, i18n } = useTranslation()
   const [ addTaskDialogVisible, setAddTaskDialogVisible ] = React.useState(false)
   
@@ -33,6 +36,7 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
       {hasSomethingToShow(entryList) || weekliesSelector != 'hidden'?
       <View>
         <ActivityList data={pendingActivities} />
+        <TaskList tasks={ pendingTasks } />
         {weekliesSelector=='unchecked'?
         <SelectWeekliesListItem checked={false} navigation={navigation}/>
         : <></> }
@@ -41,6 +45,7 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
           : <SelectTasksListItem checked={false} onPress={() => setAddTaskDialogVisible(true)}/>
         }
         <ActivityList data={completedActivities} />
+        <TaskList tasks={ completedTasks } />
         {weekliesSelector=='checked'?
         <SelectWeekliesListItem checked={true} navigation={navigation}/>
         : <></> }

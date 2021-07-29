@@ -259,8 +259,14 @@ function selectTodayLog(state){
 
 export function getTodayTasks(state){
   const log = selectTodayLog(state)
-  const tasks = log?.tasks?.entities
-  return tasks? tasks : {}
+  const tasks = log?.tasks
+  if(!tasks) return []
+
+  const { selectAll: selectAllTasks } = entryAdapter.getSelectors()
+  const taskList = selectAllTasks(tasks)
+  if(!taskList) return []
+
+  return taskList
 }
 
 export function selectTasks(state, date){

@@ -157,6 +157,7 @@ const es= {
       selectWeekliesDescription: 'Pulsa aquí',
       selectTasksTitle: 'Añade las tareas puntuales de hoy',
       selectTasksDescription: 'Pulsa para añadir',
+      oneTimeTaskDescription: 'Tarea puntual',
     },
     
     weeklyActivities: {

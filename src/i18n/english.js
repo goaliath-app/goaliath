@@ -159,6 +159,7 @@ const en = {
       selectWeekliesDescription: 'Tap here to select',
       selectTasksTitle: 'Add one time tasks for today',
       selectTasksDescription: 'Tap here to add',
+      oneTimeTaskDescription: 'One Time Task',
     },
 
     weeklyActivities: {
