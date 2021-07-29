@@ -4,20 +4,23 @@ import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
 import { ActivityList } from '../components'
 import { Header, InfoCard, SelectWeekliesListItem, SelectTasksListItem } from '../components';
-import { updateLogs, areWeekliesSelectedToday } from '../redux'
+import { updateLogs, areWeekliesSelectedToday, addTodayTask, getTodayTasks, areTasksAddedToday, tasksAddedToday } from '../redux'
 import { extractActivityList, getToday, hasSomethingToShow, areThereWeeklyActivities } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 import { Paragraph, Portal, Dialog, Button, TextInput, Appbar } from 'react-native-paper';
 
 
-const TodayScreen = ({ entryList, navigation, updateLogs, weekliesSelector }) => {
+const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSelector, tasksAdded, addTodayTask, tasksAddedToday }) => {
   useFocusEffect(
     React.useCallback(() => {
       updateLogs()
     }, [])
   )
   
+  console.log('tasksAdded:', tasksAdded)
+  console.log('taskList', taskList)
+
   const completedActivities = entryList.filter(activity => activity.completed)
   const pendingActivities   = entryList.filter(activity => !activity.completed)
 
@@ -30,24 +33,30 @@ const TodayScreen = ({ entryList, navigation, updateLogs, weekliesSelector }) =>
       {hasSomethingToShow(entryList) || weekliesSelector != 'hidden'?
       <View>
         <ActivityList data={pendingActivities} />
-        <SelectTasksListItem checked={false} onPress={() => setAddTaskDialogVisible(true)}/>
         {weekliesSelector=='unchecked'?
         <SelectWeekliesListItem checked={false} navigation={navigation}/>
         : <></> }
+        {tasksAdded?
+          <></> 
+          : <SelectTasksListItem checked={false} onPress={() => setAddTaskDialogVisible(true)}/>
+        }
         <ActivityList data={completedActivities} />
         {weekliesSelector=='checked'?
         <SelectWeekliesListItem checked={true} navigation={navigation}/>
         : <></> }
+        {tasksAdded?
+          <SelectTasksListItem checked={true} onPress={() => setAddTaskDialogVisible(true)}/>
+          : <></> }
       </View>
       :
       <InfoCard content={t('today.infoContent')} />
       }
-      <AddTaskDialog visible={addTaskDialogVisible} setVisible={setAddTaskDialogVisible} addTask={()=>{}} />
+      <AddTaskDialog visible={addTaskDialogVisible} setVisible={setAddTaskDialogVisible} addTodayTask={addTodayTask} tasksAddedToday={tasksAddedToday} />
     </View>
   );
 }
 
-const AddTaskDialog = ({visible, setVisible, addTask}) => {
+const AddTaskDialog = ({visible, setVisible, addTodayTask, tasksAddedToday }) => {
   const { t, i18n } = useTranslation()
 
   const [taskName, setTaskName] = React.useState('')
@@ -79,7 +88,11 @@ const AddTaskDialog = ({visible, setVisible, addTask}) => {
         </Dialog.Content>
         <Dialog.Actions>
           <Button onPress={() => {close()}}>Cancel</Button>
-          <Button onPress={() => {close()}}>Done</Button>
+          <Button onPress={() => {
+            tasksAddedToday()
+            addTodayTask(taskName)
+            close()
+          }}>Done</Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>
@@ -98,12 +111,16 @@ const mapStateToProps = (state) => {
       :
       'hidden'
   )
-
-  return { entryList, weekliesSelector }
+  const tasksAdded = areTasksAddedToday(state)
+  const taskList = getTodayTasks(state)
+  
+  return { entryList, weekliesSelector, tasksAdded, taskList }
 }
 
 const actionsToProps = {
-  updateLogs
+  updateLogs,
+  addTodayTask,
+  tasksAddedToday,
 }
 
 export default connect(mapStateToProps, actionsToProps)(TodayScreen)
