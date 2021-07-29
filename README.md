@@ -8,10 +8,12 @@ We are still an early work in progress! If you want to know more, feel free to c
 ## State of the project
 | Version | Description | State |
 |---|---|---|
-| v0.1 | First fully functional approximation | 100% (Completed) |
-| v0.2 | Improved UX to better support the time management method | 0% (Definition Phase)
-| ... |                                     
-| v1.0 | First version to be publised to the Play Store | Getting closer every day
+| v0.1 | First fully functional approximation | 100% |
+| v0.2 | Improve the underlying time management method | 15% (Prototyping UX) |
+| v0.3 | Add not essential features (stats, notes, etc.) | 0% |
+| v0.4 | Quality of Life improvements | 0% |
+| v0.5 | Visual and styling improvements | 0% |
+| v1.0 | First version to be publised to the Play Store | Getting closer every day |
 
 ## Our stack
 Goaliath is written in JavaScript using React Native over Expo. We also use:
@@ -25,7 +27,7 @@ Goaliath is written in JavaScript using React Native over Expo. We also use:
 You'll need npn and expo-client installed. After that, just clone this repository, and run:
 
 ```
-npm install
+npm clean-install
 npm start
 ```
 

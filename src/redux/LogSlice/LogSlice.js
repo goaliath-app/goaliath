@@ -1,6 +1,6 @@
 import { createSlice, createEntityAdapter, current } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import { isActivityRunning, startOfWeek } from '../../util'
+import { isActivityRunning, startOfWeek, getToday } from '../../util'
 import arrayMove from 'array-move'
 
 function compareEntries(a, b){
@@ -21,6 +21,7 @@ const initialState = logAdapter.getInitialState();
 /*
 each log is 
   {id: Date, 
+    weekliesSelected: defaults to false, true daily selection of weekly activities has been done
     entries: {  // the entries are managed via entryAdapter
       ids: array of ids of all entries
       entities: {
@@ -48,9 +49,15 @@ const logSlice = createSlice({
       const { date } = action.payload
       const log= {
         id: date.toISO(),
+        weekliesSelected: false,
         entries: entryAdapter.getInitialState()
       }
       logAdapter.addOne(state, log)
+    },
+    setWeekliesSelected(state, action){
+      const { date, value } = action.payload
+      const selectedDay = state.entities[date.toISO()]
+      selectedDay.weekliesSelected = value
     },
     addEntry(state, action){
       /* add a single entry to a daily log */
@@ -154,7 +161,7 @@ const logSlice = createSlice({
 export const { 
   createLog, addEntry, deleteEntry, toggleCompleted, startTimer, 
   stopTimer, sortLog, upsertEntry, setState, deleteLog, replaceEntry,
-  capAllTimers
+  capAllTimers, setWeekliesSelected,
 } = logSlice.actions
 
 export const { 
@@ -162,19 +169,14 @@ export const {
 } = logAdapter.getSelectors(state => state.logs)
 
 export function selectEntriesByDay(state, day){
+  const thatDayLog = selectLogById(state, day.toISO())
   const entrySelectors = entryAdapter.getSelectors()
-  const { dayStartHour } = state.settings
-  const thatDayLog = state.logs.entities[day.toISO()]
   if(thatDayLog){
     const todayEntries = entrySelectors.selectAll(thatDayLog.entries)
     return todayEntries
   }else{
     return []
   }
-}
-
-export function selectTodayEntries(state){
-  selectEntriesByDay(state, DateTime.now())
 }
 
 export function selectEntryByActivityIdAndDate(state, activityId, date){
@@ -214,4 +216,15 @@ function getStartOfWeekDay(date, weekDayNumber, dayStartHour){
 function stopActivity(entry){
   const lastInterval = entry.intervals.slice(-1)[0]
   lastInterval.endDate = DateTime.now().toISO()
+}
+
+function selectTodayLog(state){
+  const { dayStartHour } = state.settings
+  const log = selectLogById(state, getToday(dayStartHour).toISO())
+  return log
+}
+
+export function areWeekliesSelectedToday(state){
+  const log = selectTodayLog(state)
+  return log?.weekliesSelected? log.weekliesSelected : false
 }

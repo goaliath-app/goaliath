@@ -40,8 +40,7 @@ const Drawer = (props) => {
         <Subheading>{`${weekdayLabel}, ${date.day} ${monthLabel} ${date.year}`}</Subheading>
       </View>
       <CustomDrawerItem label={t('today.headerTitle')} icon={faCalendarDay} route={'Today'} index={0} />
-      <CustomDrawerItem label={t('week.headerTitle')} icon={faCalendarWeek} route='Week' index={1} />
-      <Divider style={{marginHorizontal: 10}} />
+      {/* <Divider style={{marginHorizontal: 10}} /> */}
       <CustomDrawerItem label={t('goals.headerTitle')} icon={faTrophy} route='Goals' index={2} />
       <CustomDrawerItem label={t('calendar.headerTitle')} icon={faCalendarAlt} route='Calendar' index={3} />
       <CustomDrawerItem label={t('settings.headerTitle')} icon={faCog} route='Settings' index={4} />

@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
 import { 
   selectEntriesByDay, selectActivityById, selectAllWeekEntriesByActivityId,
-  selectActivityEntities, selectGoalById,
+  selectActivityEntities, selectGoalById, selectAllActivities, selectGoalEntities
 } from './redux'
 
 export function hasSomethingToShow(activityList){
@@ -80,9 +80,55 @@ export function newEntry(activity){
   )
 }
 
-export function extractActivityLists(state, day){
-  let dayActivities = [] 
-  let weekActivities = []
+export function selectAllActiveActivities(state){
+  /* returns a list of all activities that:
+  - are not disabled or archived
+  - belong to goals that are not disabled or archived */
+  const allActivities = selectAllActivities(state)
+  const goalEntities = selectGoalEntities(state)
+
+  const activeActivities = allActivities.filter(activity => {
+    const goal = goalEntities[activity.goalId]
+    return(
+      activity.active && !activity.archived && goal.active && !goal.archived 
+    )
+  })
+
+  return activeActivities
+}
+
+export function areThereWeeklyActivities(state){
+  const activities = selectAllActiveActivities(state)
+  const weeklyActivities = activities.filter(activity => activity.repeatMode=='weekly' && activity.active)
+  return weeklyActivities.length > 0
+}
+
+export function getWeeklyStats(state, day, activityId){
+  /* counting all entries of that week up to the day specified
+  ignores later days. */
+
+  let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
+  let weeklyTimes = 0
+  let daysDone = []
+
+  const weekLogs = selectAllWeekEntriesByActivityId(state, activityId, day)
+
+  for(let thatDay in weekLogs){
+    if(day.weekday-1==thatDay){
+      break
+    }
+    weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[thatDay].intervals))
+    if(weekLogs[thatDay].completed){
+      weeklyTimes += 1
+      daysDone.push(parseInt(thatDay)+1)
+    }
+  }
+
+  return {weeklyTime, weeklyTimes, daysDone}
+}
+
+export function extractActivityList(state, day){
+  let activityList = [] 
   var entries
 
   if(day > getToday(state.settings.dayStartHour)){
@@ -93,29 +139,18 @@ export function extractActivityLists(state, day){
 
   for(let entry of entries){
     const activity = selectActivityById(state, entry.id)
-    const fullEntry = {...activity, ...entry, date: day}
+    let fullEntry = {...activity, ...entry, date: day}
 
-    if(!(fullEntry.repeatMode == 'weekly')){
-      dayActivities.push(fullEntry)
-    }else{
-      // we have to calculate and inyect weeklyTime and weeklyTimes (not counting today or future days)
-      let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
-      let weeklyTimes = 0
+    if(fullEntry.repeatMode == 'weekly'){
+      const { weeklyTime, weeklyTimes } = getWeeklyStats(state, day, fullEntry.id)
 
-      const weekLogs = selectAllWeekEntriesByActivityId(state, fullEntry.id, day)
-
-      for(let thatDay in weekLogs){
-        if(day.weekday-1==thatDay){
-          break
-        }
-        weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[thatDay].intervals))
-        weeklyTimes += weekLogs[thatDay].completed?1:0
-      }
-      weekActivities.push({ ...fullEntry, weeklyTime, weeklyTimes })
+      fullEntry = {...fullEntry, weeklyTime, weeklyTimes}
     }
+
+    activityList.push(fullEntry)
   }
 
-  return { dayActivities, weekActivities }
+  return activityList
 }
 
 export function isToday(date, dayStartDate){
@@ -211,16 +246,10 @@ export function frequency(activity, t){
 }
 
 export function dueToday(today, activity, activityGoal){
-  if(activity.archived || activityGoal.archived){
-    return false
-  }
-  if(!activity.active || !activityGoal.active){
+  if( !isActive(activity, activityGoal) ){
     return false
   }
   if(activity.repeatMode == 'daily'){
-    return true
-  }
-  if(activity.repeatMode == 'weekly'){
     return true
   }
   if(activity.repeatMode == 'select'){
@@ -229,6 +258,16 @@ export function dueToday(today, activity, activityGoal){
     }
   }
   return false
+}
+
+export function isActive(activity, activityGoal){
+  if(activity.archived || activityGoal.archived){
+    return false
+  }
+  if(!activity.active || !activityGoal.active){
+    return false
+  }
+  return true
 }
 
 /**
