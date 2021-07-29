@@ -8,16 +8,16 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { Header } from '../components';
-import { getTodayTime, getPreferedExpression, getToday, extractActivityLists } from '../util'
+import { getTodayTime, getPreferedExpression, getToday, extractActivityList } from '../util'
 import { CalendarColor, GeneralColor } from '../styles/Colors';
 
 function overviewLog(state, day, t){
-  const { dayActivities } = extractActivityLists(state, day)
+  const activityList = extractActivityList(state, day)
   let completedActivities = 0
   let undoneActivities = 0
   let secondsDedicated = 0
   let secondsLeft = 0
-  for(let entry of dayActivities){
+  for(let entry of activityList){
     if(entry.archived){
       continue
     }

@@ -3,8 +3,7 @@ const es= {
     activityListItem: {
         description: {
           todayTimeGoal: 'Objetivo: {{expressionValue}} {{expressionUnit}}',
-          weekCheck: 'Hecho {{totalTimes}} de {{timesPerWeek}} días',
-          weekTimeGoal: 'Hecho {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}'
+          weekTimeGoal: 'Esta semana: dedicado {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
         }
     },
   
@@ -154,12 +153,16 @@ const es= {
     today: {
       headerTitle: 'Hoy',
       infoContent: 'No hay actividades programadas para esta semana. Puedes ir a la sección "Metas" para crear nuevas actividades.',
-
+      selectWeekliesTitle: 'Elige las actividades semanales para hoy',
+      selectWeekliesDescription: 'Pulsa aquí',
     },
-
-    week: {
-      headerTitle: 'Esta semana',
-      infoContent: 'No hay actividades programadas para esta semana. Puedes ir a la sección "Metas" para crear nuevas actividades.',
+    
+    weeklyActivities: {
+      headerTitle: 'Selecciona las actividades semanales',
+      daysLeft: 'Quedan {{daysLeft}} días',
+      timeLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}',
+      checkCompleted: 'Hecho: {{weeklyTimes}} días completado',
+      timedCompleted: 'Hecho: {{unit}} {{expression}} dedicada/os',
     },
 
     onboarding: {

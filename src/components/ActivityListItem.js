@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View, useWindowDimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Checkbox, IconButton, Text, ProgressBar } from 'react-native-paper'
+import { List, IconButton, Text } from 'react-native-paper'
 import * as Progress from 'react-native-progress';
 import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue } from '../util'
 import { toggleCompleted, startTimer, stopTimer } from '../redux'
@@ -12,6 +12,9 @@ import PauseFilledIcon from '../../assets/pause-filled'
 import PauseOutlinedIcon from '../../assets/pause-outlined'
 import { useTranslation } from 'react-i18next'
 import { ActivityListItemColors } from '../styles/Colors'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import Checkbox from './Checkbox'
 
 const ActivityListItem = ({ 
   timeGoal,    // number of seconds of the time goal for this activity or null if it is not a timed activity
@@ -71,39 +74,33 @@ const ActivityListItem = ({
 
   if((!timeGoal && completed)){
     leftSlot = (
-      <View style={styles.checkboxView}>
-        <Checkbox 
-          color='black'
-          status='checked'
-          onPress={() => {
-            if(disabled) return
-            toggleCompleted({date: date, id: id})
-        }}/>
-      </View>
+      <Checkbox 
+        color='black'
+        status='checked'
+        onPress={() => {
+          if(disabled) return
+          toggleCompleted({date: date, id: id})
+      }}/>
     )
   }else if(weeklyTimes?(totalTimes >= timesPerWeek):false){
     leftSlot = (
-      <View style={styles.checkboxView}>
-        <Checkbox 
-          color='gray'
-          status='checked'
-          onPress={() => {
-            return
-        }}/>
-      </View>
+      <Checkbox 
+        color='gray'
+        status='checked'
+        onPress={() => {
+          return
+      }}/>
     )
   }else if(!timeGoal && !completed){
     leftSlot = (
-      <View style={styles.checkboxView}>
-        <Checkbox 
-          color='black'
-          uncheckedColor='black'
-          status='unchecked' 
-          onPress={() => {
-            if(disabled) return
-            toggleCompleted({date: date, id: id})
-        }}  />
-      </View>
+      <Checkbox 
+        color='black'
+        uncheckedColor='black'
+        status='unchecked' 
+        onPress={() => {
+          if(disabled) return
+          toggleCompleted({date: date, id: id})
+      }}  />
     )
   }else if(timeGoal && current && !completed){
     leftSlot = <IconButton icon={() => <PauseOutlinedIcon />} onPress={onPressPause} />
@@ -122,8 +119,6 @@ const ActivityListItem = ({
   if((repeatMode == 'daily' || repeatMode == 'select') && timeGoal){
     const expression = getPreferedExpression(timeGoal, t)
     description = t('activityListItem.description.todayTimeGoal', { expressionValue: expression.value, expressionUnit: expression.localeUnit })
-  }else if(repeatMode=='weekly' && !timeGoal){
-    description = t('activityListItem.description.weekCheck', { totalTimes, timesPerWeek })
   }else if(repeatMode=='weekly' && timeGoal){
     const expression = getPreferedExpression(timeGoal, t)
     const weeklyTimeNumber = roundValue(totalTime.as(expression.unit))
@@ -165,6 +160,30 @@ const ActivityListItem = ({
   );
 }
 
+export const SelectWeekliesListItem = ({checked, navigation}) => {
+  const { t, i18n } = useTranslation()
+
+  return(
+    <View style={{ backgroundColor: ActivityListItemColors.listItemBackground }}>
+      <List.Item
+        left={() => (
+          <View>
+            <Checkbox 
+              color='black'
+              uncheckedColor='black'
+              status={checked? 'checked' : 'unchecked'}
+            />
+            {checked?<></>:<FontAwesomeIcon style={{position: 'absolute', alignSelf: 'center', marginTop: 17}} icon={faPlus} size={14} />}
+          </View>
+        )}
+        title={t('today.selectWeekliesTitle')}
+        // description={t('today.selectWeekliesDescription')}
+        onPress={() => {navigation.navigate('SelectWeeklyActivities')}}
+      />
+    </View>
+  )
+}
+
 const DoubleProgressBar = ({firstColor, secondColor, backgroundColor, firstProgress, secondProgress, height}) => (
   <View >
     <Progress.Bar progress={secondProgress} width={null} height={height} unfilledColor={backgroundColor} borderRadius={0} borderWidth={0} color={secondColor} />
@@ -173,9 +192,6 @@ const DoubleProgressBar = ({firstColor, secondColor, backgroundColor, firstProgr
 )
 
 const styles = StyleSheet.create({
-  checkboxView: {
-    padding: 6
-  },
   iconButton: {
     margin: 0,
   },

@@ -7,19 +7,20 @@ export {
 
 export { 
     createActivity, updateActivity, toggleActivity, archiveActivity, 
-    selectAllActivities, selectActivityById,selectActivityEntities
+    selectAllActivities, selectActivityById, selectActivityEntities,
 } from './ActivitySlice' 
 
 export { 
     createLog, addEntry, deleteOneTodaysEntry, toggleCompleted, deleteLog,
     startTimer, stopTimer, sortTodayLog, upsertEntry, replaceEntry,
-    selectAllLogs, selectLogById, selectTodayEntries, 
+    weekliesSelectedToday, deleteEntry,
+    selectAllLogs, selectLogById, areWeekliesSelectedToday,
     selectThisWeekEntriesByActivityId, selectLogEntities, selectEntriesByDay,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate
 } from './LogSlice'
 
 export { 
-    generateDummyData, updateLogs, importState,
+    generateDummyData, updateLogs, importState, archiveOrDeleteEntry, createOrUnarchiveEntry
 } from './Thunks'
 
 export { setDayStartHour, finishOnboarding, setLanguage } from './SettingsSlice'

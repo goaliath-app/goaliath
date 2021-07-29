@@ -3,8 +3,7 @@ const en = {
     activityListItem: {
       description: {
         todayTimeGoal: 'Goal: {{expressionValue}} {{expressionUnit}}',
-        weekCheck: 'Done {{totalTimes}} of {{timesPerWeek}} days',
-        weekTimeGoal: 'Done {{weeklyTimeNumber}} of {{expressionValue}} {{expressionUnit}}'
+        weekTimeGoal: 'This week: Done {{weeklyTimeNumber}} of {{expressionValue}} {{expressionUnit}}'
       }
     },
 
@@ -156,11 +155,16 @@ const en = {
     today: {
       headerTitle: 'Today',
       infoContent: 'There are no activities scheduled for today. You can go to the "Goals" section of the app to create new activities.',
+      selectWeekliesTitle: 'Choose weekly activities for today',
+      selectWeekliesDescription: 'Tap here to select',
     },
 
-    week: {
-      headerTitle: 'This Week',
-      infoContent: 'There are no activities scheduled for this week. You can go to the "Goals" section of the app to create new activities.',
+    weeklyActivities: {
+      headerTitle: 'Select weekly activities',
+      daysLeft: '{{daysLeft}} days left',
+      timeLeft: '{{timeExprValue}} {{timeExprLocaleUnit}} left',
+      checkCompleted: 'Completed: {{weeklyTimes}} days done',
+      timedCompleted: 'Completed: {{unit}} {{expression}} dedicated',
     },
 
     onboarding: {
