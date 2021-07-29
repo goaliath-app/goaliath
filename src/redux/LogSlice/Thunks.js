@@ -5,6 +5,7 @@ import {
   stopTimer as pureStopTimer,
   sortLog,
   capAllTimers as pureCapAllTimers,
+  setWeekliesSelected,
 } from './LogSlice'
 import { getToday } from './../../util'
 
@@ -48,6 +49,19 @@ export function capAllTimers({ date }){
     dispatch(pureCapAllTimers({ 
       isoDate: date.toISO(), 
       capIsoDate: capDate.toISO() 
+    }))
+  }
+}
+
+export function weekliesSelectedToday(){
+  /* sets weekliesSelected of today to true */
+  return function(dispatch, getState){
+    const state = getState()
+    const dayStartHour = state.settings.dayStartHour
+    const today = getToday(dayStartHour)
+    dispatch(setWeekliesSelected({ 
+      date: today, 
+      value: true
     }))
   }
 }

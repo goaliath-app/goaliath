@@ -6,7 +6,7 @@ import {
   createLog, addEntry, sortTodayLog, setState as setLogsState, selectEntriesByDay, deleteLog, replaceEntry,
   capAllTimers,
 } from './LogSlice'
-import { getToday, startOfDay, dueToday, newEntry } from './../util'
+import { getToday, startOfDay, dueToday, newEntry, isActive } from './../util'
 import { setState as setSettingsState } from './SettingsSlice'
 
 
@@ -101,26 +101,57 @@ export function updateLogs(){
   }
 }
 
+export function archiveOrDeleteEntry(date, entryId){
+  /* Archives an entry if it has been completed or has any interval recorded.
+  Otherwise it just deletes it */
+  return function(dispatch, getState){
+    const state = getState()
+    const entry = selectEntryByActivityIdAndDate(state, entryId, date)
+
+    if(entry?.intervals || entry?.completed){
+      dispatch(upsertEntry({ date, entry: { ...entry, archived: true }}))
+    }else if(entry){
+      dispatch(deleteEntry({ date, entryId: entry.id }))
+    }
+  }
+}
+
+export function createOrUnarchiveEntry(date, activityId){
+  /* creates an entry in specified day for the chosen activity if it does not exist.
+  If it exists and is archived, unarchives it. */
+  return function(dispatch, getState){
+    const state = getState()
+    const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+    
+    if(entry?.archived){
+      dispatch(upsertEntry({ date, entry: { ...entry, archived: false }}))
+    }else if(!entry){
+      const activity = selectActivityById(state, activityId)
+      const entry = newEntry(activity)
+      dispatch(addEntry({ date, entry }))
+    }
+  }
+}
+
 function updateLog({ date }){
   return function(dispatch, getState){
     const state = getState() 
     
     for(let activity of selectAllActivities(state)){
       const goal = selectGoalById(state, activity.goalId)
-      const oldLog = selectEntryByActivityIdAndDate(state, activity.id, date)
-
-      if(dueToday(date, activity, goal)){
-        if(oldLog){
-          dispatch(upsertEntry({ date, entry: { ...oldLog, archived: false }}))
+      const oldEntry = selectEntryByActivityIdAndDate(state, activity.id, date)
+      
+      // if activity is inactive, remove its entry if it has one
+      if( !isActive(activity, goal) && oldEntry && !oldEntry.archived ){
+        dispatch( archiveOrDeleteEntry(date, activity.id) )
+      // else, if the activity is not weekly
+      } else if(activity.repeatMode != 'weekly') {
+        // create its entry if the activity is due today
+        if(dueToday(date, activity, goal)){
+          dispatch(createOrUnarchiveEntry(date, activity.id))
+        // or remove its possible entry if it is not due today
         }else{
-          const entry = newEntry(activity)
-          dispatch(addEntry({ date, entry }))
-        }
-      }else{
-        if(oldLog?.intervals || oldLog?.completed){
-          dispatch(upsertEntry({ date, entry: { ...oldLog, archived: true }}))
-        }else if(oldLog){
-          dispatch(deleteEntry({ date, entryId: oldLog.id }))
+          dispatch( archiveOrDeleteEntry(date, activity.id) )
         }
       }
     }

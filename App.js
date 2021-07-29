@@ -12,9 +12,9 @@ import i18n from './src/i18n'
 import { useTranslation } from 'react-i18next'
 import { store, finishOnboarding as finishOnboardingAction } from './src/redux'
 import { 
-  TodayScreen, WeekScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, 
+  TodayScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, 
   ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen, 
-  DayInCalendarScreen, OnboardingScreen
+  DayInCalendarScreen, OnboardingScreen, SelectWeeklyActivitiesScreen
 } from './src/screens'
 import { Drawer as CustomDrawer } from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
@@ -29,14 +29,7 @@ const TodayStack = () => (
     <Stack.Screen name='Today' component={TodayScreen} />
     <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
     <Stack.Screen name='ActivityForm' component={ActivityFormScreen} />
-  </Stack.Navigator>
-)
-
-const WeekStack = () => (
-  <Stack.Navigator initialRouteName='Week' headerMode='none'>
-    <Stack.Screen name='Week' component={WeekScreen} />
-    <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
-    <Stack.Screen name='ActivityForm' component={ActivityFormScreen} />
+    <Stack.Screen name='SelectWeeklyActivities' component={SelectWeeklyActivitiesScreen} />
   </Stack.Navigator>
 )
 
@@ -100,8 +93,6 @@ export default function App() {
             >
               <Drawer.Screen name='Today' component={TodayStack} 
                 options={{ title: t('app.drawer.today') }} />
-              <Drawer.Screen name='Week' component={WeekStack} 
-                options={{ title: t('app.drawer.week') }} />
               <Drawer.Screen name='Goals' component={GoalsStack} 
                 options={{ title: t('app.drawer.goals') }} />
               <Drawer.Screen name='Calendar' component={CalendarStack} 

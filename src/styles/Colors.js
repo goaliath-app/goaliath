@@ -42,6 +42,7 @@ export const GeneralColor = {
     screenBackground: 'white',
     textInputBackground: '#FBFCFC',
     helperTextBorderTopColor: '#CE0A24',
+    selectedSurface: '#E6FBF9'
 }
 
 export const TodayPannelColor = {
@@ -97,4 +98,23 @@ export const StatusBarColor = {
 export const AssetsColor = {
     fill: "#000",
     stroke: "#000"
+}
+
+export const SelectWeekliesColor = {
+    selectedActivityDescription: "#7B61FF",
+}
+
+export const WeekViewColor = {
+    squareColor: 'transparent',
+    textColor: 'black',
+    todayBackground: '#7B61FF',
+    todayText: 'white',
+    pastDaysBackground: '#CAC4D4',
+    pastDaysText: 'black',
+    nextDaysBackground: 'white',
+    nextDaysText: 'black',
+    activityDaysBackground: '#7B61FF',
+    activityDaysText: 'black',
+    bottomBarDone: 'dodgerblue',
+    bottomBarLeft: 'lightskyblue'
 }
