@@ -15,6 +15,7 @@ function compareEntries(a, b){
 
 const logAdapter = createEntityAdapter();
 const entryAdapter = createEntityAdapter();
+const tasksAdapter = createEntityAdapter();
 
 const initialState = logAdapter.getInitialState();
 
@@ -22,16 +23,28 @@ const initialState = logAdapter.getInitialState();
 each log is 
   {id: Date, 
     weekliesSelected: defaults to false, true daily selection of weekly activities has been done
+    tasksAdded: defaults to false, true once the user adds (or chooses to don't add) a one time task
     entries: {  // the entries are managed via entryAdapter
       ids: array of ids of all entries
       entities: {
-        eachEntryId: {
+        [eachEntryId]: {
           id: id matching with the activity this log comes from,
           intervals: [{startDate: Date, endDate: Date}],
           completed: bool,
           archived: bool, (a log is archived if it contains information that may be useful in the future but should not be shown i.e. if the activity has been disabled after logging some time on it)
           ...data redundant to its Activity for logs of past days that
              should remain the same even if the orifinal activity changes
+        }
+      }
+    }
+    tasks: {  // special entries just for one time tasks. Also managed via entryAdapter
+      nextId: next id to be used for a new task (autoincremented)
+      ids: array of ids of all entries
+      entities: {
+        [eachEntryId]: {
+          id: id for this entry,
+          name: name of the task
+          completed: bool,
         }
       }
     }
@@ -50,7 +63,9 @@ const logSlice = createSlice({
       const log= {
         id: date.toISO(),
         weekliesSelected: false,
-        entries: entryAdapter.getInitialState()
+        tasksAdded: false,
+        entries: entryAdapter.getInitialState(),
+        tasks: tasksAdapter.getInitialState({nextId: 0}),
       }
       logAdapter.addOne(state, log)
     },
@@ -58,6 +73,11 @@ const logSlice = createSlice({
       const { date, value } = action.payload
       const selectedDay = state.entities[date.toISO()]
       selectedDay.weekliesSelected = value
+    },
+    setTasksAdded(state, action){
+      const { date, value } = action.payload
+      const selectedDay = state.entities[date.toISO()]
+      selectedDay.tasksAdded = value
     },
     addEntry(state, action){
       /* add a single entry to a daily log */
@@ -154,14 +174,27 @@ const logSlice = createSlice({
             {...interval, endDate: capIsoDate}
         ))
       }
-    }
+    },
+    addTask(state, action){
+      console.log('state', state)
+      const { date, task } = action.payload
+      const selectedDay = state.entities[date.toISO()]
+      tasksAdapter.addOne(selectedDay.tasks, {...task, id: selectedDay.tasks.nextId})
+      selectedDay.tasks.nextId += 1
+    },
+    toggleTask(state, action){
+      const { date, id } = action.payload
+      const selectedDay = state.entities[date.toISO()]
+      const task = selectedDay.tasks.entities[id]
+      tasksAdapter.updateOne(selectedDay.tasks, {id: task.id, changes: {completed: !task.completed}})
+    },
   }
 })
 
 export const { 
   createLog, addEntry, deleteEntry, toggleCompleted, startTimer, 
   stopTimer, sortLog, upsertEntry, setState, deleteLog, replaceEntry,
-  capAllTimers, setWeekliesSelected,
+  capAllTimers, setWeekliesSelected, addTask, toggleTask, setTasksAdded, 
 } = logSlice.actions
 
 export const { 
@@ -224,7 +257,24 @@ function selectTodayLog(state){
   return log
 }
 
+export function getTodayTasks(state){
+  const log = selectTodayLog(state)
+  const tasks = log?.tasks?.entities
+  return tasks? tasks : {}
+}
+
+export function selectTasks(state, date){
+  const log = selectLogById(state, date.toISO())
+  const tasks = log?.tasks?.entities
+  return tasks? tasks : {}
+}
+
 export function areWeekliesSelectedToday(state){
   const log = selectTodayLog(state)
   return log?.weekliesSelected? log.weekliesSelected : false
+}
+
+export function areTasksAddedToday(state){
+  const log = selectTodayLog(state)
+  return log?.tasksAdded? log.tasksAdded : false
 }
