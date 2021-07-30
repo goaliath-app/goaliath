@@ -162,6 +162,11 @@ const en = {
       oneTimeTaskDescription: 'One Time Task',
     },
 
+    addTasks: {
+      title: 'Add One Time Tasks',
+      description: 'The tasks will be added to this day as "do once" activities.',
+    },
+
     weeklyActivities: {
       headerTitle: 'Select weekly activities',
       daysLeft: '{{daysLeft}} days left',

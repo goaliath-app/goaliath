@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
 import { ActivityList } from '../components'
-import { Header, InfoCard, SelectWeekliesListItem, SelectTasksListItem, TaskList, AddTaskDialog } from '../components';
+import { Header, InfoCard, SelectWeekliesListItem, SelectTasksListItem, TaskList } from '../components';
 import { updateLogs, areWeekliesSelectedToday, getTodayTasks, areTasksAddedToday } from '../redux'
 import { extractActivityList, getToday, hasSomethingToShow, areThereWeeklyActivities } from '../util'
 import { useTranslation } from 'react-i18next'
@@ -27,7 +27,6 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
   const pendingTasks = taskList.filter(task => !task.completed)
 
   const { t, i18n } = useTranslation()
-  const [ addTaskDialogVisible, setAddTaskDialogVisible ] = React.useState(false)
   
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
@@ -41,7 +40,7 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
         : <></> }
         {tasksAdded?
           <></> 
-          : <SelectTasksListItem checked={false} onPress={() => setAddTaskDialogVisible(true)}/>
+          : <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
         }
         <ActivityList data={completedActivities} />
         <TaskList tasks={ completedTasks } />
@@ -49,13 +48,12 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
         <SelectWeekliesListItem checked={true} navigation={navigation}/>
         : <></> }
         {tasksAdded?
-          <SelectTasksListItem checked={true} onPress={() => setAddTaskDialogVisible(true)}/>
+          <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
           : <></> }
       </View>
       :
       <InfoCard content={t('today.infoContent')} />
       }
-      <AddTaskDialog visible={addTaskDialogVisible} setVisible={setAddTaskDialogVisible} />
     </View>
   );
 }

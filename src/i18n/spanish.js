@@ -159,6 +159,11 @@ const es= {
       selectTasksDescription: 'Pulsa para añadir',
       oneTimeTaskDescription: 'Tarea puntual',
     },
+
+    addTasks: {
+      title: 'Añade Tareas Puntuales',
+      description: 'Las tareas aparencerán en este día como actividades que hacer solo una vez.',
+    },
     
     weeklyActivities: {
       headerTitle: 'Selecciona las actividades semanales',
