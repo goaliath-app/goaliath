@@ -18,7 +18,7 @@ export {
     selectThisWeekEntriesByActivityId, selectLogEntities, selectEntriesByDay,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate,
     areTasksAddedToday, addTask, toggleTask, selectTasks, getTodayTasks,
-    addTodayTask, tasksAddedToday,
+    addTodayTask, tasksAddedToday, deleteTodayTask
 } from './LogSlice'
 
 export { 

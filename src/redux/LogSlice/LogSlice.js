@@ -188,6 +188,12 @@ const logSlice = createSlice({
       const task = selectedDay.tasks.entities[id]
       tasksAdapter.updateOne(selectedDay.tasks, {id: task.id, changes: {completed: !task.completed}})
     },
+    deleteTask(state, action){
+      const { date, id } = action.payload
+      const selectedDay = state.entities[date.toISO()]
+      console.log('REMOVING TASK WITH ID', id)
+      tasksAdapter.removeOne(selectedDay.tasks, id)
+    }
   }
 })
 
@@ -195,6 +201,7 @@ export const {
   createLog, addEntry, deleteEntry, toggleCompleted, startTimer, 
   stopTimer, sortLog, upsertEntry, setState, deleteLog, replaceEntry,
   capAllTimers, setWeekliesSelected, addTask, toggleTask, setTasksAdded, 
+  deleteTask,
 } = logSlice.actions
 
 export const { 

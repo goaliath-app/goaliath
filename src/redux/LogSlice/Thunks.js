@@ -8,6 +8,7 @@ import {
   setWeekliesSelected,
   addTask,
   setTasksAdded,
+  deleteTask,
 } from './LogSlice'
 import { getToday } from './../../util'
 
@@ -88,5 +89,14 @@ export function addTodayTask(name){
     const today = getToday(dayStartHour)
     const task = { name, completed: false }
     dispatch(addTask({ date: today, task }))
+  }
+}
+
+export function deleteTodayTask(id){
+  return function(dispatch, getState){
+    const state = getState()
+    const dayStartHour = state.settings.dayStartHour
+    const today = getToday(dayStartHour)
+    dispatch(deleteTask({ date: today, id }))
   }
 }

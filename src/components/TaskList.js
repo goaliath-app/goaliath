@@ -9,16 +9,16 @@ import { ActivityListItemColors } from '../styles/Colors'
 import Checkbox from './Checkbox'
 import { FlatList } from 'react-native';
 
-const TaskList = ({ tasks }) => (
+const TaskList = ({ tasks, onTaskPress }) => (
     <FlatList
       data={tasks}
-      renderItem={({ item }) => <TaskListItem task={item} />}
+      renderItem={({ item }) => <TaskListItem task={item} onPress={onTaskPress} />}
     />
   )
 
 export default TaskList
 
-const PureTaskListItem = ({ task, today, toggleTask }) => {
+const PureTaskListItem = ({ task, today, toggleTask, onPress }) => {
     const { t, i18n } = useTranslation()
     console.log('task:', task)
   
@@ -37,7 +37,7 @@ const PureTaskListItem = ({ task, today, toggleTask }) => {
           )}
           title={task.name}
           // description={t('today.oneTimeTaskDescription')}
-          // onPress={onPress}
+          onPress={() => onPress(task)}
         />
       </View>
     )
