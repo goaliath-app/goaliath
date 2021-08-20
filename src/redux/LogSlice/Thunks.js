@@ -6,6 +6,9 @@ import {
   sortLog,
   capAllTimers as pureCapAllTimers,
   setWeekliesSelected,
+  addTask,
+  setTasksAdded,
+  deleteTask,
 } from './LogSlice'
 import { getToday } from './../../util'
 
@@ -63,5 +66,37 @@ export function weekliesSelectedToday(){
       date: today, 
       value: true
     }))
+  }
+}
+
+export function tasksAddedToday(){
+  /* sets tasksAdded of today to true */
+  return function(dispatch, getState){
+    const state = getState()
+    const dayStartHour = state.settings.dayStartHour
+    const today = getToday(dayStartHour)
+    dispatch(setTasksAdded({ 
+      date: today, 
+      value: true
+    }))
+  }
+}
+
+export function addTodayTask(name){
+  return function(dispatch, getState){
+    const state = getState()
+    const dayStartHour = state.settings.dayStartHour
+    const today = getToday(dayStartHour)
+    const task = { name, completed: false }
+    dispatch(addTask({ date: today, task }))
+  }
+}
+
+export function deleteTodayTask(id){
+  return function(dispatch, getState){
+    const state = getState()
+    const dayStartHour = state.settings.dayStartHour
+    const today = getToday(dayStartHour)
+    dispatch(deleteTask({ date: today, id }))
   }
 }

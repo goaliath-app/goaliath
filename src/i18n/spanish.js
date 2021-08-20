@@ -155,6 +155,14 @@ const es= {
       infoContent: 'No hay actividades programadas para esta semana. Puedes ir a la sección "Metas" para crear nuevas actividades.',
       selectWeekliesTitle: 'Elige las actividades semanales para hoy',
       selectWeekliesDescription: 'Pulsa aquí',
+      selectTasksTitle: 'Añade las tareas puntuales de hoy',
+      selectTasksDescription: 'Pulsa para añadir',
+      oneTimeTaskDescription: 'Tarea puntual',
+    },
+
+    addTasks: {
+      title: 'Añade Tareas Puntuales',
+      description: 'Las tareas aparencerán en este día como actividades que hacer solo una vez.',
     },
     
     weeklyActivities: {
