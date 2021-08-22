@@ -9,34 +9,34 @@ import {
 import { getToday, startOfDay, dueToday, newEntry, isActive } from './../util'
 import { setState as setSettingsState } from './SettingsSlice'
 
+import { default as ActivityHandler } from '../activityHandler/activityHandler'
+
 
 export function generateDummyData(){
   return function(dispatch, getState){
     const { dayStartHour } = getState().settings
     const today = getToday(dayStartHour).plus({day: -5})
+    
+    // goals
     dispatch(createGoal({name: 'dummy goal'}))
-    dispatch(createLog({date: today}))
-    dispatch(createLog({date: today.plus({day: -1})}))
-    dispatch(createLog({date: today.plus({day: -2})}))
-    // Daily activities
-    dispatch(createActivity({name: 'Social Media', goalId: '0', goal: 'time', timeGoal: 10800, repeatMode: 'daily'}))
-    dispatch(createActivity({name: 'Call a pal', goalId: '0', goal: 'check', repeatMode: 'daily'}))
-    dispatch(createActivity({name: 'App work', goalId: '0', goal: 'time', timeGoal: 10800, repeatMode: 'daily'}))
-    dispatch(createActivity({name: 'Watch anime', goalId: '0', goal: 'time', timeGoal: 10800, repeatMode: 'daily'}))   
-    dispatch(createActivity({name: 'Play guitar', goalId: '0', goal: 'time', timeGoal: 3600, repeatMode: 'daily'}))
-    dispatch(createActivity({name: 'Anki', goalId: '0', goal: 'check', repeatMode: 'daily'}))
-    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00'}], completed: false, id: "2", archived: false }}))
-    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: false, id: "3", archived: false }}))
-    dispatch(addEntry({date: today, entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:53:26.690+01:00'}], completed: true, id: "4", archived: false }}))
-    dispatch(addEntry({date: today, entry: {intervals: [], completed: true, id: "5", archived: false }}))
 
-    // weekly activities
-    dispatch(createActivity({name: 'Call a pal', goalId: '0', goal: 'check', timesPerWeek: 3, repeatMode: 'weekly'}))
-    dispatch(addEntry({date: today.plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: "6", archived: false }}))
-    dispatch(addEntry({date: today.plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T11:03:14.938+01:00'}], completed: true, id: "6", archived: false }}))
-    dispatch(createActivity({name: 'Social Media', goalId: '0', goal: 'time', timeGoal: 3, repeatMode: 'weekly'}))
-    dispatch(addEntry({date: today.plus({day: -1}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: "7", archived: false }}))
-    dispatch(addEntry({date: today.plus({day: -2}), entry: {intervals: [{startDate: '2021-03-20T10:53:26.690+01:00', endDate: '2021-03-20T10:53:27.690+01:00'}], completed: true, id: "7", archived: false }}))
+    // activities
+    dispatch(createActivity({
+      name: 'Dummy Activity', 
+      goalId: '0', 
+      weeklyTarget: { 
+        type: 'doFixedDays', 
+        params: { 
+          daysOfWeek: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true }
+        }
+      },
+      dailyTarget: {
+        type: 'doNSeconds', 
+        params: {
+          repetitions: 1
+        }
+      }
+    }))
   }
 }
 
@@ -139,21 +139,8 @@ function updateLog({ date }){
     
     for(let activity of selectAllActivities(state)){
       const goal = selectGoalById(state, activity.goalId)
-      const oldEntry = selectEntryByActivityIdAndDate(state, activity.id, date)
-      
-      // if activity is inactive, remove its entry if it has one
-      if( !isActive(activity, goal) && oldEntry && !oldEntry.archived ){
-        dispatch( archiveOrDeleteEntry(date, activity.id) )
-      // else, if the activity is not weekly
-      } else if(activity.repeatMode != 'weekly') {
-        // create its entry if the activity is due today
-        if(dueToday(date, activity, goal)){
-          dispatch(createOrUnarchiveEntry(date, activity.id))
-        // or remove its possible entry if it is not due today
-        }else{
-          dispatch( archiveOrDeleteEntry(date, activity.id) )
-        }
-      }
+      const activityHandler = new ActivityHandler({ goal, activity })
+      dispatch( activityHandler.updateEntryThunk(date) )
     }
     dispatch(sortLog({ date }))
   }

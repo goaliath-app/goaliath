@@ -7,16 +7,18 @@ const initialState = activityAdapter.getInitialState({nextId: 0});
 /*
 each activity is:
 { 
-  goalId: id of its goal
-  name: str
-  active: bool
-  repeatMode: "daily" / "weekly" / "select",
-  goal: "check" / "time"
-  timeGoal: seconds, 
-  weekDays: {'1': bool, '2': bool, '3': bool, '4': bool', 
-    '5': bool, '6': bool, '7': bool'}, 
-  timesPerWeek: int 
   id: str
+  name: str
+  goalId: id of its goal
+  dailyTarget: {
+    type: str,
+    params: { ... }
+  },
+  weeklyTarget: {
+    type: str,
+    params: { ... }
+  }
+  active: bool
   archived: bool, is marked true when the activity is "deleted"
 }
 */

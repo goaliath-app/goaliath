@@ -8,8 +8,8 @@ import {
 
 export function hasSomethingToShow(activityList){
   /* also works for lists of goals and entries */
-  for(let activity of activityList){
-    if(!activity.archived){
+  for(let fullLog of activityList){
+    if(!fullLog.entry.archived){
       return true
     }
   }
@@ -139,7 +139,7 @@ export function extractActivityList(state, day){
 
   for(let entry of entries){
     const activity = selectActivityById(state, entry.id)
-    let fullEntry = {...activity, ...entry, date: day}
+    let fullEntry = {entry, activity, date: day}
 
     if(fullEntry.repeatMode == 'weekly'){
       const { weeklyTime, weeklyTimes } = getWeeklyStats(state, day, fullEntry.id)

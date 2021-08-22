@@ -19,11 +19,13 @@ import {
 } from './src/screens'
 import { Drawer as CustomDrawer } from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
+import { generateDummyData } from './src/redux/Thunks'
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
 const persistor = persistStore(store)
+persistor.purge()
 
 const TodayStack = () => (
   <Stack.Navigator initialRouteName='Today' headerMode='none'>
@@ -54,9 +56,9 @@ const CalendarStack = () => (
 )
 
 export default function App() {
-  // useEffect(() => {
-  //   store.dispatch(generateDummyData())
-  // }, [])
+  React.useEffect(() => {
+    store.dispatch(generateDummyData())
+  }, [])
 
   const [newUser, setNewUser] = React.useState()
 

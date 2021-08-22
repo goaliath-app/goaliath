@@ -20,11 +20,9 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
   const { t, i18n } = useTranslation()
   const [ selectedTask, setSelectedTask] = React.useState()
   
-  console.log('tasksAdded:', tasksAdded)
-  console.log('taskList', taskList)
 
-  const completedActivities = entryList.filter(activity => activity.completed)
-  const pendingActivities   = entryList.filter(activity => !activity.completed)
+  const completedActivities = entryList.filter(fullEntry => fullEntry.entry.completed)
+  const pendingActivities   = entryList.filter(fullEntry => !fullEntry.entry.completed)
 
   const completedTasks = taskList.filter(task => task.completed)
   const pendingTasks = taskList.filter(task => !task.completed)
