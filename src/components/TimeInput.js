@@ -45,7 +45,6 @@ const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularCo
       setSelection(null)
     },
     onChangeText: (value) => {
-      console.log(value)
       value = value?parseInt(value):0
 
       if(String(value).length < 2){
@@ -56,7 +55,6 @@ const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularCo
       
       value = value<maxValue?value:maxValue
       const newDuration = duration.set({ [unit]: value })
-      console.log(newDuration.as('seconds'))
       onValueChange(newDuration.as('seconds'))
     },
   })

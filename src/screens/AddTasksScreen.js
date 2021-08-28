@@ -15,8 +15,6 @@ const AddTasksScreen = ({ navigation, addTodayTask, tasksAddedToday }) => {
   const [taskNames, setTaskNames] = React.useState({0: ''})
   const [scrollViewRef, setScrollViewRef] = React.useState()
 
-  console.log('tasknames', taskNames)
-
   const headerButtons = (
     <Appbar.Action
       icon='check'

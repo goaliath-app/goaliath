@@ -58,7 +58,6 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
         visible={selectedTask} 
         setVisible={(value) => setSelectedTask(null)}
         onDelete={() => {
-          console.log('deleting task id', selectedTask.id)
           deleteTodayTask(selectedTask.id)
           setSelectedTask(null)
         }}

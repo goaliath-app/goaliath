@@ -176,7 +176,6 @@ const logSlice = createSlice({
       }
     },
     addTask(state, action){
-      console.log('state', state)
       const { date, task } = action.payload
       const selectedDay = state.entities[date.toISO()]
       tasksAdapter.addOne(selectedDay.tasks, {...task, id: selectedDay.tasks.nextId})
@@ -191,7 +190,6 @@ const logSlice = createSlice({
     deleteTask(state, action){
       const { date, id } = action.payload
       const selectedDay = state.entities[date.toISO()]
-      console.log('REMOVING TASK WITH ID', id)
       tasksAdapter.removeOne(selectedDay.tasks, id)
     }
   }

@@ -17,20 +17,16 @@ class DoFixedDays extends WeeklyTarget {
   }
 
   updateEntryThunk( date ){
-    console.log('en el body del updateentrythunk del target')
     const self = this
 
     return function(dispatch, getState){
-      console.log('se esta ejecutando el updateentrythunk del target')
       const state = getState()
       const oldEntry = selectEntryByActivityIdAndDate(state, self.activity.id, date)
         
       // if activity is active and this day is one of the selected days of the week
       if(isActive(self.activity, self.goal) && self.daysOfWeek[date.weekday] ){
-        console.log('createorunarchive!')
         dispatch( createOrUnarchiveEntry(date, self.activity.id) )
       }else{
-        console.log('archiveordelete!')
         dispatch( archiveOrDeleteEntry(date, self.activity.id) )
       }
     }

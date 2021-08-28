@@ -20,7 +20,6 @@ export default TaskList
 
 const PureTaskListItem = ({ task, today, toggleTask, onPress }) => {
     const { t, i18n } = useTranslation()
-    console.log('task:', task)
   
     return(
       <View style={{ backgroundColor: ActivityListItemColors.listItemBackground }}>
