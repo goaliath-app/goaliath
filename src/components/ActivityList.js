@@ -1,11 +1,9 @@
 import React from 'react';
 import { FlatList } from 'react-native';
-import ActivityListItem from './ActivityListItem'
-import ActivityHandler from '../activityHandler/activityHandler'
+import { renderTodayScreenItem } from '../activityHandler'
 
 const renderItem = ({ item }) => {
-  const handler = new ActivityHandler( { activity: item.activity, entry: item.entry, date: item.date } )
-  return handler.getActivityListItem()
+  return renderTodayScreenItem( item.activity, item.date )
 }
 
 const ActivityList = ({ data, disabled=false }) => (

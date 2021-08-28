@@ -10,16 +10,28 @@ each activity is:
   id: str
   name: str
   goalId: id of its goal
-  dailyTarget: {
-    type: str,
-    params: { ... }
-  },
-  weeklyTarget: {
-    type: str,
-    params: { ... }
-  }
+  type: str
+  params: { ... }
   active: bool
   archived: bool, is marked true when the activity is "deleted"
+}
+
+example:
+{
+  name: 'Dummy Activity', 
+  goalId: '0', 
+  type: 'doFixedDays', 
+  params: { 
+    daysOfWeek: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true },
+    dailyGoal: {
+      type: 'doNSeconds',
+      params: { 
+        repetitions: 1
+      }
+    }
+  }
+  active: true,
+  archived: false
 }
 */
 

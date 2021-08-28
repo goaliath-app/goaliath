@@ -9,7 +9,7 @@ import {
 import { getToday, startOfDay, dueToday, newEntry, isActive } from './../util'
 import { setState as setSettingsState } from './SettingsSlice'
 
-import { default as ActivityHandler } from '../activityHandler/activityHandler'
+import { updateEntryThunk } from '../activityHandler'
 
 
 export function generateDummyData(){
@@ -24,16 +24,14 @@ export function generateDummyData(){
     dispatch(createActivity({
       name: 'Dummy Activity', 
       goalId: '0', 
-      weeklyTarget: { 
-        type: 'doFixedDays', 
-        params: { 
-          daysOfWeek: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true }
-        }
-      },
-      dailyTarget: {
-        type: 'doNSeconds', 
-        params: {
-          repetitions: 1
+      type: 'doFixedDays', 
+      params: { 
+        daysOfWeek: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true },
+        dailyGoal: {
+          type: 'doNSeconds',
+          params: { 
+            repetitions: 1
+          }
         }
       }
     }))
@@ -138,9 +136,7 @@ function updateLog({ date }){
     const state = getState() 
     
     for(let activity of selectAllActivities(state)){
-      const goal = selectGoalById(state, activity.goalId)
-      const activityHandler = new ActivityHandler({ goal, activity })
-      dispatch( activityHandler.updateEntryThunk(date) )
+      dispatch( updateEntryThunk( activity.id, date ) )
     }
     dispatch(sortLog({ date }))
   }
