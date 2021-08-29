@@ -3,6 +3,7 @@ import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate,
     createOrUnarchiveEntry, archiveOrDeleteEntry } from '../../redux'
 import { isActive } from '../../util'
 import { List } from 'react-native-paper'
+import dailyGoals from './dailyGoals'
 
 export function updateEntryThunk( activityId, date ){
   return function(dispatch, getState){
@@ -22,5 +23,5 @@ export function updateEntryThunk( activityId, date ){
 
 
 export function renderTodayScreenItem( activity, date ){
-  return <List.Item title='HOLAAAAA' />
+  return dailyGoals.renderTodayScreenItemIndex[activity.params.dailyGoal.type]( activity, date )
 }
