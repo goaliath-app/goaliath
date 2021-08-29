@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
 import { 
   deleteEntry,
-  startTimer as pureStartTimer,
-  stopTimer as pureStopTimer,
+  startTimer,
+  stopTimer,
   sortLog,
   capAllTimers as pureCapAllTimers,
   setWeekliesSelected,
@@ -20,19 +20,19 @@ export function deleteOneTodaysEntry(entryId){
   }
 }
 
-export function startTimer(entryId){
+export function startTodayTimer(entryId){
   return function(dispatch, getState){
     const { dayStartHour } = getState().settings
     const today = getToday(dayStartHour)
-    dispatch(pureStartTimer({ date: today, id: entryId }))
+    dispatch(startTimer({ date: today, id: entryId }))
   }
 }
 
-export function stopTimer(entryId){
+export function stopTodayTimer(entryId){
   return function(dispatch, getState){
     const { dayStartHour } = getState().settings
     const today = getToday(dayStartHour)
-    dispatch(pureStopTimer({ date: today, id: entryId }))
+    dispatch(stopTimer({ date: today, id: entryId }))
   }
 }
 

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { List, IconButton, Text } from 'react-native-paper'
 import * as Progress from 'react-native-progress';
 import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue } from '../util'
-import { toggleCompleted, startTimer, stopTimer } from '../redux'
+import { toggleCompleted, startTodayTimer, stopTodayTimer } from '../redux'
 import PlayFilledIcon from '../../assets/play-filled'
 import PlayOutlinedIcon from '../../assets/play-outlined'
 import PauseFilledIcon from '../../assets/pause-filled'
@@ -28,8 +28,8 @@ const ActivityListItem = ({
   archived,
   id,
   toggleCompleted,
-  startTimer,
-  stopTimer,
+  startTodayTimer,
+  stopTodayTimer,
   disabled,
   date
 }) => {
@@ -56,12 +56,12 @@ const ActivityListItem = ({
 
   function onPressPlay(){
     if(disabled) return
-    startTimer(id)
+    startTodayTimer(id)
   }
 
   function onPressPause(){
     if(disabled) return
-    stopTimer(id)
+    stopTodayTimer(id)
   }
 
   const current = isActivityRunning(intervals)
@@ -228,8 +228,8 @@ const styles = StyleSheet.create({
 
 const actionsToProps = {
   toggleCompleted,
-  startTimer,
-  stopTimer
+  startTodayTimer,
+  stopTodayTimer
 }
 
 export default connect(null, actionsToProps)(ActivityListItem);

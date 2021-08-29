@@ -7,7 +7,7 @@ import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
 import { TodayPannelColor } from '../../styles/Colors';
 
-const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntry, date, dayStartHour }) => {
+const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour }) => {
     React.useEffect(() => {
       if (isActivityRunning(entry.intervals)) {
         const intervalId = setInterval(() => {
@@ -20,11 +20,11 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
     const { t, i18n } = useTranslation()
   
     function onPressPlay(){
-      startTimer(entry.id)
+      startTodayTimer(entry.id)
     }
   
     function onPressPause(){
-      stopTimer(entry.id)
+      stopTodayTimer(entry.id)
     }
   
     const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))

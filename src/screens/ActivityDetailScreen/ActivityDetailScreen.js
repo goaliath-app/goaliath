@@ -6,8 +6,8 @@ import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon } from '../../components';
 import { 
-  selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTimer, 
-  stopTimer, upsertEntry, archiveActivity 
+  selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTodayTimer, 
+  stopTodayTimer, upsertEntry, archiveActivity 
 } from '../../redux'
 import { isToday, isFuture } from '../../util'
 import { GeneralColor } from '../../styles/Colors';
@@ -20,8 +20,8 @@ const ActivityDetailScreen = ({
   entry,              // the entry of the daily log to show, if one. (see LogsSlice)
   navigation,         // navigation prop 
   toggleCompleted,    // function to call when the user changes the activity completion state
-  stopTimer,          // function to call when the user stops the activity timer
-  startTimer,         // function to call when the user starts the activity timer
+  stopTodayTimer,          // function to call when the user stops the activity timer
+  startTodayTimer,         // function to call when the user starts the activity timer
   upsertEntry,  // function to call when needed to modify the activity entry
   archiveActivity,     // function to call when the activity is archived (deleted)
   date,
@@ -89,8 +89,8 @@ const ActivityDetailScreen = ({
         <TodayPannel 
           entry={entry} 
           toggleCompleted={toggleCompleted} 
-          startTimer={startTimer} 
-          stopTimer={stopTimer} 
+          startTodayTimer={startTodayTimer} 
+          stopTodayTimer={stopTodayTimer} 
           upsertEntry={upsertEntry} 
           date={date} 
           dayStartHour={dayStartHour} 
@@ -100,8 +100,8 @@ const ActivityDetailScreen = ({
           <TodayPannel 
             entry={entry} 
             toggleCompleted={toggleCompleted} 
-            startTimer={()=>{}} 
-            stopTimer={()=>{}} 
+            startTodayTimer={()=>{}} 
+            stopTodayTimer={()=>{}} 
             upsertEntry={upsertEntry} 
             date={date} 
             dayStartHour={dayStartHour} 
@@ -153,8 +153,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const actionToProps = {
   toggleCompleted,
-  stopTimer,
-  startTimer,
+  stopTodayTimer,
+  startTodayTimer,
   upsertEntry,
   archiveActivity
 }
