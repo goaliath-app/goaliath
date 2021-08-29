@@ -22,7 +22,7 @@ export function generateDummyData(){
 
     // activities
     dispatch(createActivity({
-      name: 'Dummy Activity', 
+      name: 'Daily do10Seconds', 
       goalId: '0', 
       type: 'doFixedDays', 
       params: { 
@@ -30,11 +30,27 @@ export function generateDummyData(){
         dailyGoal: {
           type: 'doNSeconds',
           params: { 
+            seconds: 10
+          }
+        }
+      }
+    }))
+
+    dispatch(createActivity({
+      name: 'Daily do1Times', 
+      goalId: '0', 
+      type: 'doFixedDays', 
+      params: { 
+        daysOfWeek: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true },
+        dailyGoal: {
+          type: 'doNTimes',
+          params: { 
             repetitions: 1
           }
         }
       }
     }))
+
   }
 }
 
