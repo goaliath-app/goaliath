@@ -16,7 +16,47 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import Checkbox from './Checkbox'
 
-const ActivityListItem = ({ 
+
+export const ActivityListItem = ({ activity, entry, date, left, description }) => {
+
+  function update(){
+    const currentTime = getTodayTime(entry.intervals)
+    setTodayTime(currentTime)
+  }
+
+  React.useEffect(() => {
+    update()
+    if (isActivityRunning(entry.intervals)) {
+      const intervalId = setInterval(() => {
+        update()
+      }, 1000)
+      return () => clearInterval(intervalId)
+    }
+  }, [entry.intervals])
+
+  const navigation = useNavigation()
+  const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
+
+  return(
+    <View style={{ backgroundColor: isActivityRunning(entry.intervals)? ActivityListItemColors.currentActivityBackground : ActivityListItemColors.listItemBackground }}>
+      <List.Item
+        left={left}
+        right={() => ( 
+          todayTime.as('seconds') > 0?
+           <Text style={styles.timeLabel}>{todayTime.toFormat('hh:mm:ss')}</Text> 
+           : null
+        )}
+        title={activity.name}
+        description={description}
+        onPress={() => {
+          navigation.navigate('ActivityDetail', {activityId: activity.id, date: date.toISO()})
+        }}
+      />
+    </View>
+  )
+}
+
+const legacy_ActivityListItem = ({ 
   timeGoal,    // number of seconds of the time goal for this activity or null if it is not a timed activity
   name,        // name of the activity
   repeatMode,      // 'daily' or 'weekly'

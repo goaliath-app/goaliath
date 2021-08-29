@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { List } from 'react-native-paper'
 import { toggleCompleted, selectEntryByActivityIdAndDate, selectActivityById } from '../../../redux'
 import { ActivityListItemColors } from '../../../styles/Colors'
-import { Checkbox } from '../../../components'
+import { Checkbox, ActivityListItem } from '../../../components'
 
 
 const DoNTimesTodayListItem = ({ activityId, date }) => {
@@ -16,24 +16,21 @@ const DoNTimesTodayListItem = ({ activityId, date }) => {
   const entry = useSelector((state) => selectEntryByActivityIdAndDate(state, activityId, date))
 
   return(
-    <View style={{ backgroundColor: ActivityListItemColors.listItemBackground }}>
-      <List.Item
-        left={() => (
-          <Checkbox 
-            color='black'
-            uncheckedColor='black'
-            status={entry.completed?'checked':'unchecked'}
-            onPress={() => {
-              dispatch(toggleCompleted({date: date, id: activityId}))
-            }}
-          />
-        )}
-        title={activity.name}
-        onPress={() => {
-          navigation.navigate('ActivityDetail', {activityId, date: date.toISO()})
-        }}
-      />
-    </View>
+    <ActivityListItem
+      activity={activity}
+      entry={entry}
+      date={date}
+      left={() => (
+        <Checkbox 
+          color='black'
+          uncheckedColor='black'
+          status={entry.completed?'checked':'unchecked'}
+          onPress={() => {
+            dispatch(toggleCompleted({date: date, id: activityId}))
+          }}
+        />
+      )}
+    />
   )
 }
 
