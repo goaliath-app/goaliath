@@ -14,17 +14,27 @@ import { useTranslation } from 'react-i18next'
 import { ActivityListItemColors } from '../../../styles/Colors'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { ActivityListItem } from '../../../components'
+import { ActivityListItem, DoubleProgressBar } from '../../../components'
 
 
 
 const DoNSecondsTodayListItem = ({ activityId, date }) => {
   const dispatch = useDispatch()
-  const navigation = useNavigation()
+
+  // selector hooks
   const activity = useSelector((state) => selectActivityById(state, activityId))
   const entry = useSelector((state) => selectEntryByActivityIdAndDate(state, activityId, date))
   const todayDate = useSelector(getTodaySelector)
 
+  // state
+  const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
+
+  // compute values
+  const secondsGoal = activity.params.dailyGoal.params.seconds
+  const progress = Math.min(todayTime.as('seconds') / secondsGoal, 1)
+  const timerIsRunning = isActivityRunning(entry.intervals)
+
+  // function definitions
   function onPressPause(){
     if(date.toISO() == todayDate.toISO()){
       dispatch(stopTodayTimer( activityId ))
@@ -37,9 +47,30 @@ const DoNSecondsTodayListItem = ({ activityId, date }) => {
     }
   }
 
+  function update(){
+    const currentTime = getTodayTime(entry.intervals)
+    setTodayTime(currentTime)
+    if(currentTime.as('seconds') >= secondsGoal && !entry.completed){
+      dispatch(toggleCompleted({date: date, id: activityId}))
+    }
+  }
+
+  // effect to update progress bar and mark as completed
+  React.useEffect(() => {
+    update()
+    if (timerIsRunning) {
+      const intervalId = setInterval(() => {
+        update()
+      }, 1000)
+      return () => clearInterval(intervalId)
+    }
+  }, [entry.intervals, entry.completed, secondsGoal])
+
+
+  // get the correct left component
   let leftSlot
 
-  if(isActivityRunning(entry.intervals)){
+  if(timerIsRunning){
     if(entry.completed){
       leftSlot = <IconButton icon={() => <PauseFilledIcon />} onPress={onPressPause} />
     }else{
@@ -54,12 +85,22 @@ const DoNSecondsTodayListItem = ({ activityId, date }) => {
   }
 
   return(
-    <ActivityListItem
-      activity={activity}
-      entry={entry}
-      date={date}
-      left={()=>leftSlot}
-    />
+    <View>
+      <ActivityListItem
+        activity={activity}
+        entry={entry}
+        date={date}
+        left={()=>leftSlot}
+      />
+      { timerIsRunning? 
+        <DoubleProgressBar 
+          height={4}
+          firstColor={ActivityListItemColors.progressBarSecondColor} 
+          backgroundColor={ActivityListItemColors.progressBarBackground} 
+          firstProgress={progress} 
+        />
+        : null }
+    </View>
   )
 }
 
