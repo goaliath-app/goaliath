@@ -1,10 +1,10 @@
 import React from 'react';
+import { List } from 'react-native-paper'
 import { useSelector } from 'react-redux'
 import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
     createOrUnarchiveEntry, archiveOrDeleteEntry } from '../../redux'
 import { getWeeklyStats, isActive } from '../../util'
-import { WeeklyListItem } from '../../components'
-import { List } from 'react-native-paper'
+import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import dailyGoals from './dailyGoals'
 import { useTranslation } from 'react-i18next';
 
@@ -38,7 +38,33 @@ function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, is
   )
 }
 
+const WeekView = ({ activityId, date, todayChecked }) => {
+  // selectors
+  const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, date, activityId))
+  const activity = useSelector( state => selectActivityById(state, activityId) )
+
+  // calculations
+  const daysLeft = activity.params.days - daysDoneCount - (todayChecked=='checked'?1:0)
+  
+  let daysLeftList = []
+  for(let i = date.weekday+1; i < date.weekday+1 + daysLeft && i < 8; i++){
+    daysLeftList.push(i)
+  }
+  
+  const daysDone = (
+    todayChecked=='checked'?
+      [ ...daysDoneList, date.weekday ]
+    : 
+      daysDoneList
+  )
+
+  return (
+    <BaseWeekView dayOfWeek={date.weekday} daysDone={daysDone} daysLeft={daysLeftList} />
+  )
+}
+
 export default { 
   SelectWeekliesItemDue,
   TodayScreenItem,
+  WeekView,
 }
