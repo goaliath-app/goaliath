@@ -5,11 +5,11 @@ import { GeneralColor, SelectWeekliesColor } from '../styles/Colors';
 import { Header, Checkbox } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Appbar, List, Text } from 'react-native-paper';
-import { selectAllActivities, selectAllWeekEntriesByActivityId, addEntry, selectActivityEntities, deleteEntry, weekliesSelectedToday, upsertEntry, archiveOrDeleteEntry, createOrUnarchiveEntry } from '../redux';
+import { selectAllActivities, selectEntriesByDay, addEntry, selectActivityEntities, deleteEntry, weekliesSelectedToday, upsertEntry, archiveOrDeleteEntry, createOrUnarchiveEntry } from '../redux';
 import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry, selectAllActiveActivities, getTodaySelector } from '../util';
 import Duration from 'luxon/src/duration.js'
 import { WeekView } from '../components';
-import { SelectWeekliesItemDue, addEntryThunk, removeEntryThunk } from './../activityHandler'
+import { SelectWeekliesItemDue, addEntryThunk, removeEntryThunk, WeekView as ActivityHandlerWeekView } from './../activityHandler'
 
 
 const SelectWeeklyActivitiesScreen = ({ navigation }) => {
@@ -21,18 +21,25 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
   // selectors
   const today = useSelector(getTodaySelector)
   const activities = useSelector(selectAllActivities)
-
+  const entries = useSelector((state) => selectEntriesByDay(state, today))
 
   // state
 
   // checkboxesState: governs wether the checkboxes should be checked or not
   // {
-  //   [activityId]: boolean,
+  //   [activityId]: 'checked' or 'unchecked',
   //   ...
   // }
-  // if the key is not present the activity will appear checked iif an entry
-  // is present for that activity and day
-  const [ checkboxesState, setCheckboxesState ] = React.useState({})
+  let initialCheckboxState = {}
+  for( let activity of activities ){
+    if(entries.filter(e => e.id == activity.id && !e.archived).length > 0){
+      initialCheckboxState[activity.id] = 'checked'
+    }else{
+      initialCheckboxState[activity.id] = 'unchecked'
+    }
+  }
+
+  const [ checkboxesState, setCheckboxesState ] = React.useState(initialCheckboxState)
   const [ selectedActivity, setSelectedActivity ] = React.useState(null)
   
 
@@ -54,13 +61,16 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
   )
 
   // computations for the selected activity
-  let weekWiew = <WeekView dayOfWeek={today.weekday} daysDone={[]} daysLeft={[]} />
+  let weekView
   if(selectedActivity !== null){
-    // TODO: call the function of the corresponding activity to get is WeekWiew
+    weekView = <ActivityHandlerWeekView activityId={selectedActivity} date={today} todayChecked={checkboxesState[selectedActivity]} />
+  }else{
+    weekView = <WeekView dayOfWeek={today.weekday} daysDone={[]} daysLeft={[]} />
   }
 
   function onCheckboxPress(activityId, status){
     setCheckboxesState({...checkboxesState, [activityId]: status})
+    onActivityPress(activityId)
   }
 
   function onActivityPress(activityId){
@@ -75,7 +85,7 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
         navigation={navigation}
         buttons={headerButtons}
       />
-      { weekWiew }
+      { weekView }
       { activities.map( (activity) => (
           <SelectWeekliesItemDue 
             activity={activity} today={today} isChecked={checkboxesState[activity.id]} 

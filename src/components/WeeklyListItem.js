@@ -12,22 +12,13 @@ import { WeekView } from '../components';
 
 const WeeklyListItem = ({name, description, id, checkboxStatus, onCheckboxPress, checkboxColor, selected, onPress, date}) => {
   // if checkboxStatus is null, check if there is already a log for this activity and day
-  let status = checkboxStatus
-  if( !status ){
-    const entry = useSelector((state) => selectEntryByActivityIdAndDate(state, id, date))
-    if( entry && !entry.archived ){
-      status = 'checked'
-    }else{
-      status = 'unchecked'
-    }
-  }
 
   const leftSlot = (
     <Checkbox 
       color={checkboxColor}
       uncheckedColor={checkboxColor}
-      status={status}
-      onPress={() => onCheckboxPress(status=='checked'?'unchecked':'checked')}
+      status={checkboxStatus}
+      onPress={() => onCheckboxPress(checkboxStatus=='checked'?'unchecked':'checked')}
     />
   )
 

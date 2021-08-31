@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux'
 import { selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry } from "../redux"
 import activityTypes from './activityTypes'
+import { WeekView as BaseWeekView } from '../components'
 
 import { List } from 'react-native-paper'
 
@@ -45,6 +46,21 @@ export function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPr
       null
   )
 }
+
+export const WeekView = ({ activityId, date, todayChecked }) => {
+  const activity = useSelector( state => selectActivityById( state, activityId ) )
+
+  const activityType = activityTypes[activity.type]
+  const ActivityTypeWeekView = activityType.WeekView
+
+  return(
+    ActivityTypeWeekView?
+      <ActivityTypeWeekView activityId={activityId} date={date} todayChecked={todayChecked} />
+      : 
+      <BaseWeekView dayOfWeek={date.weekday} daysDone={todayChecked=='checked'?[date.weekday]:[]} daysLeft={[]} />
+  )
+}
+
 
 /* ATM solely for creating entry of weekly activities when they are selected in the SelectWeekliesScreen */
 export function addEntryThunk( activityId, date ){
