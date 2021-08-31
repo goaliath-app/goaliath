@@ -9,7 +9,7 @@ import { selectAllActivities, selectAllWeekEntriesByActivityId, addEntry, select
 import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry, selectAllActiveActivities, getTodaySelector } from '../util';
 import Duration from 'luxon/src/duration.js'
 import { WeekView } from '../components';
-import { renderSelectWeekliesItemDue, renderSelectWeekliesItemCompleted, addEntryThunk, removeEntryThunk } from './../activityHandler'
+import { SelectWeekliesItemDue, addEntryThunk, removeEntryThunk } from './../activityHandler'
 
 
 const SelectWeeklyActivitiesScreen = ({ navigation }) => {
@@ -77,8 +77,17 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
       />
       { weekWiew }
       {/* TODO: add onCheckboxPress, isSelected and onPress real values */}
-      { activities.map( (activity) => renderSelectWeekliesItemDue(activity, today, checkboxesState[activity.id], ()=>onCheckboxPress(activity.id), false, ()=>{}) )}
-      { activities.map( (activity) => renderSelectWeekliesItemCompleted(activity, today, checkboxesState[activity.id], ()=>onCheckboxPress(activity.id), false, ()=>{}) )}
+      { activities.map( (activity) => (
+          <SelectWeekliesItemDue 
+            activity={activity} today={today} isChecked={checkboxesState[activity.id]} 
+            onCheckboxPress={()=>onCheckboxPress(activity.id)} isSelected={false} onPress={()=>{}} 
+          />
+        ))
+      }
+      {/* 
+      TODO: don't show completed activities in SelectWeekliesItemDue and show them in SelectWeekliesItemCompleted
+      or maybe add the completed/due in a prop instead of creating two components?
+      { activities.map( (activity) => renderSelectWeekliesItemCompleted(activity, today, checkboxesState[activity.id], ()=>onCheckboxPress(activity.id), false, ()=>{}) )} */}
     </View>
   );
 }

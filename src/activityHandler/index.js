@@ -34,20 +34,16 @@ export const TodayScreenItem = ({ activityId, date }) => {
   )
 }
 
-export function renderSelectWeekliesItemDue( activity, today, isChecked, onCheckboxPress, isSelected, onPress ){
+export function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){
   const activityType = activityTypes[activity.type]
-  const render = activityType.renderSelectWeekliesItemDue
+  const ActivityTypeSelectWeekliesItemDue = activityType.SelectWeekliesItemDue
 
-  if ( render ){
-    return render( activity, today, isChecked, onCheckboxPress, isSelected, onPress )
-  }else{
-    return <></>
-  }
-}
-
-export function renderSelectWeekliesItemCompleted( activity, today, isChecked, onCheckboxPress, isSelected, onPress ){
-  // TODO
-  return <></>
+  return (
+    ActivityTypeSelectWeekliesItemDue?
+      <ActivityTypeSelectWeekliesItemDue activity={activity} today={today} isChecked={isChecked} onCheckboxPress={onCheckboxPress} isSelected={isSelected} onPress={onPress} />
+      :
+      null
+  )
 }
 
 /* ATM solely for creating entry of weekly activities when they are selected in the SelectWeekliesScreen */

@@ -17,7 +17,7 @@ const TodayScreenItem = ({ activityId, date }) => {
   return <DailyGoalTodayScreenItem activityId={activityId} date={date} />
 }
 
-function renderSelectWeekliesItemDue( activity, today, isChecked, onCheckboxPress, isSelected, onPress ){
+function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){
   const { t, i18n } = useTranslation()
   
   const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, today, activity.id))
@@ -39,6 +39,6 @@ function renderSelectWeekliesItemDue( activity, today, isChecked, onCheckboxPres
 }
 
 export default { 
-  renderSelectWeekliesItemDue,
+  SelectWeekliesItemDue,
   TodayScreenItem,
 }
