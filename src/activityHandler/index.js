@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
 import { selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry } from "../redux"
-import { updateEntryThunkIndex, renderSelectWeekliesItemDueIndex, todayScreenItemIndex } from './activityTypes'
+import activityTypes from './activityTypes'
 
 import { List } from 'react-native-paper'
 
@@ -9,8 +9,10 @@ export function updateEntryThunk( activityId, date ){
   return (dispatch, getState) => {
     const state = getState()
     const activity = selectActivityById( state, activityId )
+
+    const activityType = activityTypes[ activity.type ]
   
-    const thunk = updateEntryThunkIndex[ activity.type ]
+    const thunk = activityType.updateEntryThunk
   
     if( thunk ){
       dispatch(thunk(activityId, date))
@@ -20,7 +22,9 @@ export function updateEntryThunk( activityId, date ){
 
 export const TodayScreenItem = ({ activityId, date }) => {
   const activity = useSelector( state => selectActivityById( state, activityId ) )
-  const ActivityTypeTodayScreenItem = todayScreenItemIndex[ activity.type ]
+
+  const activityType = activityTypes[activity.type]
+  const ActivityTypeTodayScreenItem = activityType.TodayScreenItem
 
   return (
     ActivityTypeTodayScreenItem?
@@ -31,7 +35,8 @@ export const TodayScreenItem = ({ activityId, date }) => {
 }
 
 export function renderSelectWeekliesItemDue( activity, today, isChecked, onCheckboxPress, isSelected, onPress ){
-  const render = renderSelectWeekliesItemDueIndex[ activity.type ]
+  const activityType = activityTypes[activity.type]
+  const render = activityType.renderSelectWeekliesItemDue
 
   if ( render ){
     return render( activity, today, isChecked, onCheckboxPress, isSelected, onPress )

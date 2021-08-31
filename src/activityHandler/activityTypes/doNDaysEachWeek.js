@@ -10,7 +10,9 @@ import { useTranslation } from 'react-i18next';
 
 const TodayScreenItem = ({ activityId, date }) => {
   const activity = useSelector( state => selectActivityById(state, activityId) )
-  const DailyGoalTodayScreenItem = dailyGoals.todayScreenItemIndex[activity.params.dailyGoal.type]
+
+  const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
+  const DailyGoalTodayScreenItem = dailyGoal.TodayScreenItem
 
   return <DailyGoalTodayScreenItem activityId={activityId} date={date} />
 }
