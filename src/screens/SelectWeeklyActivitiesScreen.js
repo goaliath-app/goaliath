@@ -67,6 +67,10 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
     }
   }
 
+  function onActivityPress(activityId){
+    setSelectedActivity(activityId)
+  }
+
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header 
@@ -76,11 +80,10 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
         buttons={headerButtons}
       />
       { weekWiew }
-      {/* TODO: add onCheckboxPress, isSelected and onPress real values */}
       { activities.map( (activity) => (
           <SelectWeekliesItemDue 
             activity={activity} today={today} isChecked={checkboxesState[activity.id]} 
-            onCheckboxPress={()=>onCheckboxPress(activity.id)} isSelected={false} onPress={()=>{}} 
+            onCheckboxPress={()=>onCheckboxPress(activity.id)} isSelected={selectedActivity==activity.id} onPress={()=>onActivityPress(activity.id)} 
           />
         ))
       }
