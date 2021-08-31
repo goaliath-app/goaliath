@@ -59,12 +59,8 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
     // TODO: call the function of the corresponding activity to get is WeekWiew
   }
 
-  function onCheckboxPress(activityId){
-    if(checkboxesState[activityId] != 'checked'){
-      setCheckboxesState({...checkboxesState, [activityId]: 'checked'})
-    }else{
-      setCheckboxesState({...checkboxesState, [activityId]: 'unchecked'})
-    }
+  function onCheckboxPress(activityId, status){
+    setCheckboxesState({...checkboxesState, [activityId]: status})
   }
 
   function onActivityPress(activityId){
@@ -83,7 +79,7 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
       { activities.map( (activity) => (
           <SelectWeekliesItemDue 
             activity={activity} today={today} isChecked={checkboxesState[activity.id]} 
-            onCheckboxPress={()=>onCheckboxPress(activity.id)} isSelected={selectedActivity==activity.id} onPress={()=>onActivityPress(activity.id)} 
+            onCheckboxPress={(status)=>onCheckboxPress(activity.id, status)} isSelected={selectedActivity==activity.id} onPress={()=>onActivityPress(activity.id)} 
           />
         ))
       }
