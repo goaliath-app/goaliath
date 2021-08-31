@@ -51,6 +51,21 @@ export function generateDummyData(){
       }
     }))
 
+    dispatch(createActivity({
+      name: 'do2TimesEachWeek do1Times', 
+      goalId: '0', 
+      type: 'doNDaysEachWeek', 
+      params: { 
+        days: 2,
+        dailyGoal: {
+          type: 'doNTimes',
+          params: { 
+            repetitions: 1
+          }
+        }
+      }
+    }))
+
   }
 }
 
@@ -121,7 +136,6 @@ export function archiveOrDeleteEntry(date, entryId){
   return function(dispatch, getState){
     const state = getState()
     const entry = selectEntryByActivityIdAndDate(state, entryId, date)
-
     if(entry?.intervals || entry?.completed){
       dispatch(upsertEntry({ date, entry: { ...entry, archived: true }}))
     }else if(entry){

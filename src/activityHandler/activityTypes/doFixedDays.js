@@ -1,11 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
     createOrUnarchiveEntry, archiveOrDeleteEntry } from '../../redux'
 import { isActive } from '../../util'
 import { List } from 'react-native-paper'
 import dailyGoals from './dailyGoals'
 
-export function updateEntryThunk( activityId, date ){
+function updateEntryThunk( activityId, date ){
   return function(dispatch, getState){
     const state = getState()
     const activity = selectActivityById( state, activityId )
@@ -21,7 +22,14 @@ export function updateEntryThunk( activityId, date ){
   }
 }
 
+const TodayScreenItem = ({ activityId, date }) => {
+  const activity = useSelector( state => selectActivityById(state, activityId) )
+  const DailyGoalTodayScreenItem = dailyGoals.todayScreenItemIndex[activity.params.dailyGoal.type]
 
-export function renderTodayScreenItem( activity, date ){
-  return dailyGoals.renderTodayScreenItemIndex[activity.params.dailyGoal.type]( activity, date )
+  return <DailyGoalTodayScreenItem activityId={activityId} date={date} />
+}
+
+export default {
+  updateEntryThunk,
+  TodayScreenItem
 }

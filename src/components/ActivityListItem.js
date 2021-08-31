@@ -37,7 +37,11 @@ export const ActivityListItem = ({ activity, entry, date, left, description }) =
   const navigation = useNavigation()
   const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
 
+
+
   return(
+    entry.archived?
+    null :
     <View style={{ backgroundColor: isActivityRunning(entry.intervals)? ActivityListItemColors.currentActivityBackground : ActivityListItemColors.listItemBackground }}>
       <List.Item
         left={left}

@@ -25,7 +25,7 @@ const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
 const persistor = persistStore(store)
-persistor.purge()
+// persistor.purge()
 
 const TodayStack = () => (
   <Stack.Navigator initialRouteName='Today' headerMode='none'>
@@ -56,9 +56,9 @@ const CalendarStack = () => (
 )
 
 export default function App() {
-  React.useEffect(() => {
-    store.dispatch(generateDummyData())
-  }, [])
+  // React.useEffect(() => {
+  //   store.dispatch(generateDummyData())
+  // }, [])
 
   const [newUser, setNewUser] = React.useState()
 

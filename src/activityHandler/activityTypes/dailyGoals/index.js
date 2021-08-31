@@ -1,9 +1,10 @@
 import doNTimes from './doNTimes'
 import doNSeconds from './doNSeconds'
 
-const renderTodayScreenItemIndex = {
-  'doNTimes': doNTimes.renderTodayScreenItem,
-  'doNSeconds': doNSeconds.renderTodayScreenItem,
+const todayScreenItemIndex = {
+  'doNTimes': doNTimes.TodayScreenItem,
+  'doNSeconds': doNSeconds.TodayScreenItem,
 }
 
-export default { renderTodayScreenItemIndex }
+
+export default { todayScreenItemIndex }

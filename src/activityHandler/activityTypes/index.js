@@ -1,12 +1,16 @@
-import { 
-    updateEntryThunk as DFDUpdateEntryThunk,
-    renderTodayScreenItem as DFDRenderTodayScreenItem
-} from './doFixedDays'
+import doFixedDays from './doFixedDays'
+import doNDaysEachWeek from './doNDaysEachWeek'
+
 
 export const updateEntryThunkIndex = {
-    'doFixedDays': DFDUpdateEntryThunk 
+  'doFixedDays': doFixedDays.updateEntryThunk 
 }
 
-export const renderTodayScreenItemIndex = {
-    'doFixedDays': DFDRenderTodayScreenItem
+export const todayScreenItemIndex = {
+  'doFixedDays': doFixedDays.TodayScreenItem,
+  'doNDaysEachWeek': doNDaysEachWeek.TodayScreenItem
+}
+
+export const renderSelectWeekliesItemDueIndex = {
+  'doNDaysEachWeek': doNDaysEachWeek.renderSelectWeekliesItemDue,
 }

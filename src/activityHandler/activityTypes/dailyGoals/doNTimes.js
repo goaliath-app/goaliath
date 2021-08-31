@@ -9,7 +9,7 @@ import { ActivityListItemColors } from '../../../styles/Colors'
 import { Checkbox, ActivityListItem } from '../../../components'
 
 
-const DoNTimesTodayListItem = ({ activityId, date }) => {
+const TodayScreenItem = ({ activityId, date }) => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const activity = useSelector((state) => selectActivityById(state, activityId))
@@ -34,8 +34,4 @@ const DoNTimesTodayListItem = ({ activityId, date }) => {
   )
 }
 
-function renderTodayScreenItem( activity, date ){
-  return <DoNTimesTodayListItem activityId={activity.id} date={date} />
-}
-
-export default { renderTodayScreenItem }
+export default { TodayScreenItem }

@@ -18,7 +18,7 @@ import { ActivityListItem, DoubleProgressBar } from '../../../components'
 
 
 
-const DoNSecondsTodayListItem = ({ activityId, date }) => {
+const TodayScreenItem = ({ activityId, date }) => {
   const dispatch = useDispatch()
 
   // selector hooks
@@ -104,8 +104,4 @@ const DoNSecondsTodayListItem = ({ activityId, date }) => {
   )
 }
 
-function renderTodayScreenItem( activity, date ){
-  return <DoNSecondsTodayListItem activityId={activity.id} date={date} />
-}
-
-export default { renderTodayScreenItem }
+export default { TodayScreenItem }
