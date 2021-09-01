@@ -66,6 +66,15 @@ export function generateDummyData(){
       }
     }))
 
+    dispatch(createActivity({
+      name: 'do10MinutesEachWeek', 
+      goalId: '0', 
+      type: 'doNSecondsEachWeek', 
+      params: { 
+        seconds: 600,
+      }
+    }))
+
   }
 }
 
