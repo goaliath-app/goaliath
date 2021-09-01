@@ -9,7 +9,7 @@ import { selectAllActivities, selectEntriesByDay, addEntry, selectActivityEntiti
 import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry, selectAllActiveActivities, getTodaySelector } from '../util';
 import Duration from 'luxon/src/duration.js'
 import { WeekView } from '../components';
-import { SelectWeekliesItemDue, addEntryThunk, removeEntryThunk, WeekView as ActivityHandlerWeekView } from './../activityHandler'
+import { SelectWeekliesItemDue, addEntryThunk, removeEntryThunk, WeekView as ActivityHandlerWeekView, SelectWeekliesItemCompleted } from './../activityHandler'
 
 
 const SelectWeeklyActivitiesScreen = ({ navigation }) => {
@@ -93,10 +93,14 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
           />
         ))
       }
-      {/* 
-      TODO: don't show completed activities in SelectWeekliesItemDue and show them in SelectWeekliesItemCompleted
-      or maybe add the completed/due in a prop instead of creating two components?
-      { activities.map( (activity) => renderSelectWeekliesItemCompleted(activity, today, checkboxesState[activity.id], ()=>onCheckboxPress(activity.id), false, ()=>{}) )} */}
+      { activities.map( (activity) => ( 
+          <SelectWeekliesItemCompleted 
+            activity={activity} today={today} 
+            isSelected={selectedActivity==activity.id} 
+            onPress={()=>onActivityPress(activity.id)} 
+          /> 
+        ))
+      } 
     </View>
   );
 }
@@ -111,18 +115,7 @@ export default SelectWeeklyActivitiesScreen;
 //   function renderDue({item}){
 //     let description
 
-//     if(item.goal == 'check'){
-//       const daysLeft = item.timesPerWeek - item.weeklyTimes
-//       if(status[item.id] == 'checked'){
-//         description = (
-//           <Text style={{color: SelectWeekliesColor.selectedActivityDescription}}>
-//             {t('weeklyActivities.daysLeft', {daysLeft: daysLeft-1})}
-//           </Text>
-//         )
-//       }else{
-//         description = t('weeklyActivities.daysLeft', {daysLeft})
-//       }
-//     } else {
+//     } else { RENDER DUE FOR WEEKLY TIME ACTIVITIES
 //       const timeGoal = Duration.fromObject({seconds: item.timeGoal}).shiftTo('hours', 'minutes', 'seconds')
 //       let timeLeft = timeGoal.minus(item.weeklyTime)
 //       timeLeft = timeLeft.as('seconds') >= 0? timeLeft : Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')

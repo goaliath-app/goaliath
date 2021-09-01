@@ -1,8 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
-import { selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry } from "../redux"
+import { selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry, selectGoalById } from "../redux"
 import activityTypes from './activityTypes'
 import { WeekView as BaseWeekView } from '../components'
+import { isActive, selectAllActiveActivities } from '../util'
 
 import { List } from 'react-native-paper'
 
@@ -47,6 +48,31 @@ export function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPr
   )
 }
 
+export function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
+  const activityType = activityTypes[activity.type]
+  const ActivityTypeSelectWeekliesItemCompleted = activityType.SelectWeekliesItemCompleted
+
+  return (
+    ActivityTypeSelectWeekliesItemCompleted?
+      <ActivityTypeSelectWeekliesItemCompleted activity={activity} today={today} isSelected={isSelected} onPress={onPress} />
+      :
+      null
+  )
+}
+
+export function usesSelectWeekliesScreen(state, activityId){
+  const activity = selectActivityById( state, activityId )
+  const goal = selectGoalById( state, activity.goalId )
+
+  const activityType = activityTypes[activity.type]
+
+  return (
+    isActive( activity, goal ) &&
+    ( activityType.SelectWeekliesItemCompleted !== undefined
+      || activityType.SelectWeekliesItemDue !== undefined )
+  )
+}
+
 export const WeekView = ({ activityId, date, todayChecked }) => {
   const activity = useSelector( state => selectActivityById( state, activityId ) )
 
@@ -74,4 +100,16 @@ export function removeEntryThunk( activityId, date ){
   return (dispatch, getState) => {
     dispatch(archiveOrDeleteEntry(date, activityId))
   }
+}
+
+export function areThereWeeklyActivities(state){
+  const activities = selectAllActiveActivities(state)
+
+  for( let activity of activities ){
+    if(usesSelectWeekliesScreen(state, activity.id)){
+      return true
+    }
+  }
+
+  return false
 }

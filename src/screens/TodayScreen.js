@@ -5,7 +5,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { ActivityList } from '../components'
 import { Header, InfoCard, SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog } from '../components';
 import { updateLogs, areWeekliesSelectedToday, getTodayTasks, areTasksAddedToday, deleteTodayTask } from '../redux'
-import { extractActivityList, getToday, hasSomethingToShow, areThereWeeklyActivities } from '../util'
+import { extractActivityList, getToday, hasSomethingToShow } from '../util'
+import { areThereWeeklyActivities } from '../activityHandler'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 
@@ -71,13 +72,20 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
 const mapStateToProps = (state) => {
   const { dayStartHour } = state.settings
   const entryList = extractActivityList(state, getToday(dayStartHour))
+
   const weekliesSelector = (
-    // TODO: set weekliesSelector to "hidden" when there are no weekly activities to show
-    areWeekliesSelectedToday(state)?
-      'checked'
-      :
-      'unchecked'
+    // TODO: change appearance of "Select weekly activities" when there are
+    // activities but all have been completed this week
+    areThereWeeklyActivities(state)?
+      (areWeekliesSelectedToday(state)?
+        'checked'
+        :
+        'unchecked'
+      )
+    :
+      'hidden'
   )
+  
   const tasksAdded = areTasksAddedToday(state)
   const taskList = getTodayTasks(state)
   
