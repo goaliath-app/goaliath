@@ -75,6 +75,15 @@ export function generateDummyData(){
       }
     }))
 
+    dispatch(createActivity({
+      name: 'do10TimesEachWeek', 
+      goalId: '0', 
+      type: 'doNTimesEachWeek', 
+      params: { 
+        repetitions: 10,
+      }
+    }))
+
   }
 }
 
@@ -153,7 +162,7 @@ export function archiveOrDeleteEntry(date, entryId){
   }
 }
 
-export function createOrUnarchiveEntry(date, activityId){
+export function createOrUnarchiveEntry(date, activityId, extraData = {}){
   /* creates an entry in specified day for the chosen activity if it does not exist.
   If it exists and is archived, unarchives it. */
   return function(dispatch, getState){
@@ -164,7 +173,7 @@ export function createOrUnarchiveEntry(date, activityId){
       dispatch(upsertEntry({ date, entry: { ...entry, archived: false }}))
     }else if(!entry){
       const activity = selectActivityById(state, activityId)
-      const entry = newEntry(activity)
+      const entry = { ...newEntry(activity), ...extraData, date }
       dispatch(addEntry({ date, entry }))
     }
   }

@@ -105,6 +105,7 @@ export function getWeeklyStats(state, day, activityId){
   let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
   let daysDoneCount = 0
   let daysDoneList = []
+  let repetitionsCount = 0
 
   const weekLogs = selectAllWeekEntriesByActivityId(state, activityId, day)
 
@@ -117,9 +118,10 @@ export function getWeeklyStats(state, day, activityId){
       daysDoneCount += 1
       daysDoneList.push(parseInt(thatDay)+1)
     }
+    repetitionsCount += weekLogs[thatDay].repetitions? weekLogs[thatDay].repetitions : 0
   }
 
-  return {weeklyTime, daysDoneCount, daysDoneList}
+  return {weeklyTime, daysDoneCount, daysDoneList, repetitionsCount}
 }
 
 export function extractActivityList(state, day){

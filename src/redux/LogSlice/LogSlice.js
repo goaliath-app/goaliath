@@ -32,6 +32,7 @@ each log is
           intervals: [{startDate: Date, endDate: Date}],
           completed: bool,
           archived: bool, (a log is archived if it contains information that may be useful in the future but should not be shown i.e. if the activity has been disabled after logging some time on it)
+          ...other data specific to the activity type, like repetitions for doNTimes and doNTimesEachWeek
           ...data redundant to its Activity for logs of past days that
              should remain the same even if the orifinal activity changes
         }

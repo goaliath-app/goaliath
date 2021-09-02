@@ -91,7 +91,16 @@ export const WeekView = ({ activityId, date, todayChecked }) => {
 /* ATM solely for creating entry of weekly activities when they are selected in the SelectWeekliesScreen */
 export function addEntryThunk( activityId, date ){
   return (dispatch, getState) => {
-    dispatch(createOrUnarchiveEntry(date, activityId))
+    const state = getState()
+    const activity = selectActivityById( state, activityId )
+    const activityType = activityTypes[activity.type]
+    const activityTypeAddEntryThunk = activityType.addEntryThunk
+
+    if(activityTypeAddEntryThunk){
+      dispatch(activityTypeAddEntryThunk(activityId, date))
+    }else{
+      dispatch(createOrUnarchiveEntry(date, activityId))
+    }
   }
 }
 
