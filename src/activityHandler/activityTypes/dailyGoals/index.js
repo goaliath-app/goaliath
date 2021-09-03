@@ -1,4 +1,5 @@
-import doNTimes from './doNTimes'
+import doOneTime from './doOneTime'
 import doNSeconds from './doNSeconds'
+import doNTimes from './doNTimes'
 
-export default { doNTimes, doNSeconds }
+export default { doOneTime, doNSeconds, doNTimes }

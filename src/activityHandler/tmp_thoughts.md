@@ -67,6 +67,16 @@ it any certain day, the daily goal has to be completed.
 ```
 
 # Daily Goals
+
+## doOneTime
+```
+{
+  type: "doOneTime"
+  params: { }
+}
+```
+Just a simple check activity
+
 ## doNTimes
 ```
 {

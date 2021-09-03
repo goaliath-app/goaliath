@@ -43,10 +43,8 @@ export function generateDummyData(){
       params: { 
         daysOfWeek: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true },
         dailyGoal: {
-          type: 'doNTimes',
-          params: { 
-            repetitions: 1
-          }
+          type: 'doOneTime',
+          params: { }
         }
       }
     }))
@@ -58,10 +56,8 @@ export function generateDummyData(){
       params: { 
         days: 2,
         dailyGoal: {
-          type: 'doNTimes',
-          params: { 
-            repetitions: 1
-          }
+          type: 'doOneTime',
+          params: { }
         }
       }
     }))
@@ -81,6 +77,21 @@ export function generateDummyData(){
       type: 'doNTimesEachWeek', 
       params: { 
         repetitions: 10,
+      }
+    }))
+
+    dispatch(createActivity({
+      name: 'Daily do3Times', 
+      goalId: '0', 
+      type: 'doFixedDays', 
+      params: { 
+        daysOfWeek: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true },
+        dailyGoal: {
+          type: 'doNTimes',
+          params: {
+            repetitions: 3
+          }
+        }
       }
     }))
 
