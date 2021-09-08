@@ -57,28 +57,30 @@ const es= {
     activityForm: {
         headerTitle: 'Nueva actividad',
         nameInputLabel: 'Nombre de la actividad',
-        repeatSwitchBar: {
-          title: 'Periodicidad',
-          daily: 'diaria',
-          select: 'seleccionar',
-          weekly: 'semanal'
-        },
-        repeatInfoDialog: {
-          mainTitle: 'Periodicidad',
-          dailyTitle: 'Diaria',
-          dailyText: 'Tu meta es hacer la actividad todos los días.',
-          selectTitle: 'Seleccionar',
-          selectText: 'Como la diaria, pero solo ciertos días de la semana.',
-          weeklyTitle: 'Semanal',
-          weeklyText: 'Puedes hacer la actividad cualquier día de la semana. Aparecerá en la sección "Esta semana".',
-        },
-        objectiveSwitchLabel: 'Objetivo de tiempo',
         weeklyDaysLabel: 'Días a la semana',
         errors: {
           noName: 'Es necesario un nombre para tu actividad',
           noDaysSelected: 'Selecciona al menos un día',
           noTime: 'Por favor introduce el tiempo a dedicar'
         },
+        frequencyTitle: 'Frecuencia',
+        frequencyLabel: 'Selecciona el tipo de actividad',
+        switch: {
+          multipleTimes: 'Varias veces',
+          repetitionsGoal: 'Objetivo de repeticiones',
+          timeGoal: 'Objetivo de tiempo'
+        },
+        dailyRepetitions: 'Repeticiones diarias',
+        weeklyRepetitions: 'Repeticiones semanales',
+        dialog: {
+          title: 'Selecciona la frecuencia',
+          dailyTitle: 'Actividades diarias',
+          dailyDescription: 'Se hacen en días concretos de la semana',
+          freeTitle: 'Actividades libres',
+          freeDescription: 'Elige cuando hacerlas sobre la marcha.',
+          weeklyTitle: 'Total semanal',
+          weeklyDescription: 'Cumple con un objetivo cada semana.'
+        }
       },
       
     calendar: {
