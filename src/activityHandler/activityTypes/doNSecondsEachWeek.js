@@ -201,6 +201,7 @@ export default {
   SelectWeekliesItemCompleted,
   TodayScreenItem,
   WeekView,
+  isWeekCompleted,
 }
 
 function isWeekCompleted( state, activityId, date ){

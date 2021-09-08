@@ -204,7 +204,7 @@ const legacy_ActivityListItem = ({
   );
 }
 
-export const SelectWeekliesListItem = ({checked, navigation}) => {
+export const SelectWeekliesListItem = ({checked, color='black', navigation}) => {
   const { t, i18n } = useTranslation()
 
   return(
@@ -213,11 +213,11 @@ export const SelectWeekliesListItem = ({checked, navigation}) => {
         left={() => (
           <View>
             <Checkbox 
-              color='black'
-              uncheckedColor='black'
+              color={color}
+              uncheckedColor={color}
               status={checked? 'checked' : 'unchecked'}
             />
-            {checked?<></>:<FontAwesomeIcon style={{position: 'absolute', alignSelf: 'center', marginTop: 17}} icon={faPlus} size={14} />}
+            {checked?<></>:<FontAwesomeIcon style={{color: color, position: 'absolute', alignSelf: 'center', marginTop: 17}} icon={faPlus} size={14} />}
           </View>
         )}
         title={t('today.selectWeekliesTitle')}

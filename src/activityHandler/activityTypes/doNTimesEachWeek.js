@@ -164,6 +164,7 @@ export default {
   SelectWeekliesItemCompleted,
   TodayScreenItem,
   addEntryThunk,
+  isWeekCompleted,
   // WeekView,
 }
 

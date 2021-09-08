@@ -6,7 +6,7 @@ import { ActivityList } from '../components'
 import { Header, InfoCard, SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog } from '../components';
 import { updateLogs, areWeekliesSelectedToday, getTodayTasks, areTasksAddedToday, deleteTodayTask } from '../redux'
 import { extractActivityList, getToday, hasSomethingToShow } from '../util'
-import { areThereWeeklyActivities } from '../activityHandler'
+import { areThereWeeklyActivities, areTherePendingWeeklyActivities } from '../activityHandler'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 
@@ -48,6 +48,9 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
         {weekliesSelector=='checked'?
         <SelectWeekliesListItem checked={true} navigation={navigation}/>
         : <></> }
+        {weekliesSelector=='allcompleted'?
+        <SelectWeekliesListItem checked={true} navigation={navigation} color='grey'/>
+        : <></> }
         {tasksAdded?
           <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
           : <></> }
@@ -74,16 +77,10 @@ const mapStateToProps = (state) => {
   const entryList = extractActivityList(state, getToday(dayStartHour))
 
   const weekliesSelector = (
-    // TODO: change appearance of "Select weekly activities" when there are
-    // activities but all have been completed this week
-    areThereWeeklyActivities(state)?
-      (areWeekliesSelectedToday(state)?
-        'checked'
-        :
-        'unchecked'
-      )
-    :
-      'hidden'
+    areWeekliesSelectedToday(state)? 'checked' :
+    areTherePendingWeeklyActivities(state, getToday(dayStartHour))? 'unchecked' :
+    areThereWeeklyActivities(state)? 'allcompleted' :
+    'hidden'
   )
   
   const tasksAdded = areTasksAddedToday(state)

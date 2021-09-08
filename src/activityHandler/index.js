@@ -122,3 +122,18 @@ export function areThereWeeklyActivities(state){
 
   return false
 }
+
+export function areTherePendingWeeklyActivities(state, date){
+  const activities = selectAllActiveActivities(state)
+
+  for( let activity of activities ){
+    if(usesSelectWeekliesScreen(state, activity.id)){
+      const activityType = activityTypes[activity.type]
+      if(!activityType.isWeekCompleted( state, activity.id, date )){
+        return true
+      }
+    }
+  }
+
+  return false
+}
