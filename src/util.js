@@ -6,10 +6,12 @@ import {
   selectActivityEntities, selectGoalById, selectAllActivities, selectGoalEntities
 } from './redux'
 
-export function hasSomethingToShow(activityList){
-  /* also works for lists of goals and entries */
-  for(let fullLog of activityList){
-    if(!fullLog.entry.archived){
+export function hasSomethingToShow(list){
+  /* list can be a list of goals, activities, entries and fullLogs */
+  for(let item of list){
+    if(item.entry?.archived !== undefined && !item.entry.archived){
+      return true
+    }else if(item.archived !== undefined && !item.archived){
       return true
     }
   }
