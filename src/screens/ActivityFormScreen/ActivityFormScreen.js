@@ -32,13 +32,37 @@ const ActivityFormScreen = ({ route, navigation }) => {
  
   // state default values
   const initialName = activity?.name?activity.name:''
-  const initialfrequencySelector = activity?.frequencySelector?activity.frequencySelector: null
-  const initialSeconds = activity?.seconds?activity.seconds:0
-  const initialRepetitions = activity?.repetitions?activity.repetitions:'1'
-  const initialDaysOfWeek = activity?.weekDays?activity.weekDays:{
-    '1': true, '2': true, '3': true, '4': true, '5': true, '6': true, '7': true
-  }
-  const initialDays = activity?.timesPerWeek?String(activity.timesPerWeek):'1'
+  const initialfrequencySelector = (
+    activity?.type == 'doFixedDays'? 'daily' :
+    activity?.type == 'doNDaysEachWeek'? 'free' :
+    activity?.type == 'doNSecondsEachWeek'? 'weekly' :
+    activity?.type == 'doNTimesEachWeek'? 'weekly' :
+    null
+  )
+  const initialSeconds = (
+    activity?.params.seconds? activity.params.seconds :
+    activity?.params.dailyGoal?.params.seconds? activity.params.dailyGoal.params.seconds :
+    0
+  )
+  const initialTimeGoalSwitch = initialSeconds? true : false
+  const initialRepetitions = (
+    activity?.params.repetitions? activity.params.repetitions :
+    activity?.params.dailyGoal?.params.repetitions? activity.params.dailyGoal.params.repetitions :
+    '1'
+  )
+  const initialMultipleTimesSwitch = (
+    activity?.params.dailyGoal?.type == 'doNTimes'
+  )
+  const initialDaysOfWeek = (
+    activity?.params.daysOfWeek? activity.params.daysOfWeek :
+    { '1': true, '2': true, '3': true, '4': true, '5': true, '6': true, '7': true }
+  )
+  const initialDays = (
+    activity?.params.days? String(activity.params.days) : '1'
+  )
+  const initialRepetitionsGoalSwitch = (
+    activity?.type == 'doNTimesEachWeek'
+  )
 
   const [name, setName] = React.useState(initialName)
   const [frequencySelector, setFrequencySelector] = React.useState(initialfrequencySelector)  // 'daily', 'free' or 'weekly'
@@ -47,11 +71,11 @@ const ActivityFormScreen = ({ route, navigation }) => {
   const [daysOfWeek, setDaysOfWeek] = React.useState(initialDaysOfWeek) // '1', '2', '3', '4', '5', '6', '7'
   const [days, setDays] = React.useState(initialDays) // int
  
-  const [timeGoalSwitch, setTimeGoalSwitch] = React.useState(false)
+  const [timeGoalSwitch, setTimeGoalSwitch] = React.useState(initialTimeGoalSwitch)
   // switch to do multiple times each day
-  const [multipleTimesSwitch, setMultipleTimesSwitch] = React.useState(false)
+  const [multipleTimesSwitch, setMultipleTimesSwitch] = React.useState(initialMultipleTimesSwitch)
   // switch to do multiple times each week
-  const [repetitionsGoalSwitch, setRepetitionsGoalSwitch] = React.useState(false)
+  const [repetitionsGoalSwitch, setRepetitionsGoalSwitch] = React.useState(initialRepetitionsGoalSwitch)
 
   const [nameInputError, setNameInputError] = React.useState(false)
   const [daysOfWeekError, setDaysOfWeekError] = React.useState(false)
