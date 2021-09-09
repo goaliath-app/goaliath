@@ -61,7 +61,8 @@ const es= {
         errors: {
           noName: 'Es necesario un nombre para tu actividad',
           noDaysSelected: 'Selecciona al menos un día',
-          noTime: 'Por favor introduce el tiempo a dedicar'
+          noTime: 'Por favor introduce el tiempo a dedicar',
+          noFrequency: 'Por favor selecciona una frecuencia'
         },
         frequencyTitle: 'Frecuencia',
         frequencyLabel: 'Selecciona el tipo de actividad',

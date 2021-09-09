@@ -61,7 +61,8 @@ const en = {
       errors: {
         noName: 'A name is required',
         noDaysSelected: 'At least select one day',
-        noTime: 'Please enter a time'
+        noTime: 'Please enter a time',
+        noFrequency: 'Please select a frequency'
       },
       frequencyTitle: 'Frequency',
       frequencyLabel: 'Select activity type',

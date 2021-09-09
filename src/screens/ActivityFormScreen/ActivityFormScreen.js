@@ -34,9 +34,9 @@ const ActivityFormScreen = ({ route, navigation }) => {
   const initialName = activity?.name?activity.name:''
   const initialfrequencySelector = activity?.frequencySelector?activity.frequencySelector: null
   const initialSeconds = activity?.seconds?activity.seconds:0
-  const initialRepetitions = activity?.repetitions?activity.repetitions:0
+  const initialRepetitions = activity?.repetitions?activity.repetitions:'1'
   const initialDaysOfWeek = activity?.weekDays?activity.weekDays:{
-    '1': false, '2': false, '3': false, '4': false, '5': false, '6': false, '7': false
+    '1': true, '2': true, '3': true, '4': true, '5': true, '6': true, '7': true
   }
   const initialDays = activity?.timesPerWeek?String(activity.timesPerWeek):'1'
 
@@ -47,44 +47,57 @@ const ActivityFormScreen = ({ route, navigation }) => {
   const [daysOfWeek, setDaysOfWeek] = React.useState(initialDaysOfWeek) // '1', '2', '3', '4', '5', '6', '7'
   const [days, setDays] = React.useState(initialDays) // int
  
-  const [multipleTimesSwitch, setMultipleTimesSwitch] = React.useState(false)
   const [timeGoalSwitch, setTimeGoalSwitch] = React.useState(false)
+  // switch to do multiple times each day
+  const [multipleTimesSwitch, setMultipleTimesSwitch] = React.useState(false)
+  // switch to do multiple times each week
   const [repetitionsGoalSwitch, setRepetitionsGoalSwitch] = React.useState(false)
 
   const [nameInputError, setNameInputError] = React.useState(false)
   const [daysOfWeekError, setDaysOfWeekError] = React.useState(false)
   const [timeInputError, setTimeInputError] = React.useState(false)
+  const [noFrequencyError, setNoFrequencyError] = React.useState(false)
 
   const [isFrecuencyVisible, setFrequencyVisible] = React.useState(false)
 
-//TODO: modificar las cosas
-  const validate = ( newActivity ) => {
-    const { name, frequencySelector, goal, seconds, weekDays } = newActivity
+  //TODO: actualizar la función validate
+  const validate = () => {
     let error = false
+
     if(!name){
       setNameInputError(true)
       error = true
     }
-    if(goal == 'time' && !seconds){
+
+    if(frequencySelector === null){
+      setNoFrequencyError(true)
+      error = true
+    }
+    
+    if(timeGoalSwitch && !seconds){
       setTimeInputError(true)
       error = true
     }
+    
+    // if daily activity but all weekdays are false
     if(frequencySelector == 'daily'){
       let aDayIsSelected = false
       for(let day in daysOfWeek){
         if (daysOfWeek[day] == true){ aDayIsSelected = true }
       }
       if(!aDayIsSelected){
-        setWeekDaysError(true)
+        setDaysOfWeekError(true)
         error = true
       }
     }
+
     if(error){
       return false
     }else{
       setTimeInputError(false)
       setNameInputError(false)
-      setWeekDaysError(false)
+      setDaysOfWeekError(false)
+      setNoFrequencyError(false)
       return true
     }
   }
@@ -92,29 +105,72 @@ const ActivityFormScreen = ({ route, navigation }) => {
   const headerButtons = (
     <Appbar.Action icon='check' onPress={() => {
         Keyboard.dismiss()
-        
-        const newActivity = { 
-          name, goalId, 
-          type: frequencySelector=='daily'? 'doFixedDays'
+
+        const type = (
+          frequencySelector=='daily'? 'doFixedDays'
             : frequencySelector=='free'? 'doNDaysEachWeek'
             : frequencySelector=='weekly' && repetitionsGoalSwitch? 'doNTimesEachWeek'
             : frequencySelector=='weekly' && timeGoalSwitch? 'doNSecondsEachWeek'
-            : null, 
-          params: type=='doFixedDays'? 
-            {daysOfWeek, 
-              dailyGoal: {type: timeGoalSwitch? 'doNSeconds' : 'doNTimes', params: timeGoalSwitch? seconds : repetitions}}
-            : type=='doNDaysEachWeek'? {days: Number.parseInt(days), dailyGoal: {type: 'doNSeconds', params: seconds }}
-            : type=='doNTimesEachWeek'? {params: repetitions}
-            : type=='doNSecondsEachWeek'? {params: seconds}
-            : null}
+            : null
+        )
 
-        if(validate(newActivity)){
-          if(activity){
-            dispatch(updateActivity({...newActivity, id: activity.id}))
+        let params
+
+        if(type == 'doFixedDays'){
+          let dailyGoal
+
+          if(timeGoalSwitch){
+            dailyGoal = {
+              type: 'doNSeconds',
+              params: { seconds }
+            }
+          }else if(multipleTimesSwitch){
+            dailyGoal = {
+              type: 'doNTimes',
+              params: { repetitions }
+            }
           }else{
-            console.log('hola', newActivity)
-            dispatch(createActivity(newActivity))
+            dailyGoal = {
+              type: 'doOneTime',
+              params: {}
+            }
           }
+
+          params = {
+            daysOfWeek, 
+            dailyGoal
+          }
+
+        }else if(type == 'doNDaysEachWeek'){
+          params = {
+            days: Number.parseInt(days), 
+            dailyGoal: (
+              timeGoalSwitch? {type: 'doNSeconds', params: { seconds } } :
+                {type: 'doOneTime', params:  {}}
+            )
+          }
+        }else if(type == 'doNTimesEachWeek'){
+          params = { repetitions }
+        }else if(type == 'doNSecondsEachWeek'){
+          params = { seconds }
+        }
+
+        const newActivity = { 
+          name, 
+          goalId, 
+          type, 
+          params, 
+        }
+
+        console.log('newActivity', newActivity)
+
+        // OLD CODE SHOWING HOW ITS DONE
+        if(validate()){
+          // if(activity){
+            //   dispatch(updateActivity({...newActivity, id: activity.id}))
+            // }else{
+            dispatch(createActivity(newActivity))
+          // }
           navigation.goBack()
         }
       }} 
@@ -148,7 +204,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
         </HelperText>
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
-        <Pressable style={{borderWidth: 1, margin: 20, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => setFrequencyVisible(true)}>
+        <Pressable style={{borderWidth: 1, margin: 20, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {setFrequencyVisible(true), setNoFrequencyError(false)}}>
           <Text style={{ fontSize: 16 }}>{!frequencySelector? t('activityForm.frequencyLabel')
             :frequencySelector=='daily'? t('activityForm.dialog.dailyTitle')
             :frequencySelector=='free'? t('activityForm.dialog.freeTitle')
@@ -156,6 +212,9 @@ const ActivityFormScreen = ({ route, navigation }) => {
             : null
           }</Text>
         </Pressable>
+        <HelperText style={{paddingLeft:25}} type="error" visible={noFrequencyError}>
+          {t('activityForm.errors.noFrequency')}
+        </HelperText>
 
         {frequencySelector=='daily'?
           <View> 
@@ -182,7 +241,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
               title={t('activityForm.switch.multipleTimes')}
               right={() => (
                 <View style={{ marginRight: 12 }}>
-                  <Switch value={multipleTimesSwitch} onValueChange={() => setMultipleTimesSwitch(!multipleTimesSwitch)}/>
+                  <Switch value={multipleTimesSwitch} onValueChange={() => {setTimeGoalSwitch(false), setMultipleTimesSwitch(!multipleTimesSwitch)}} />
                 </View>
               )}
             />
@@ -201,7 +260,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
                   value={repetitions}
                   onChangeText={(value) => {
                     value = value<1000?value:'999'
-                    value = value>0?value:''
+                    value = value>0?value:'1'
                     setRepetitions(value)
                   }}  
                   keyboardType='numeric' 
@@ -224,7 +283,14 @@ const ActivityFormScreen = ({ route, navigation }) => {
               title={t('activityForm.switch.repetitionsGoal')}
               right={() => (
                 <View style={{ marginRight: 12 }}>
-                  <Switch value={repetitionsGoalSwitch} onValueChange={() => {setTimeGoalSwitch(false), setRepetitionsGoalSwitch(!repetitionsGoalSwitch)}} />
+                  <Switch value={repetitionsGoalSwitch} onValueChange={() => {
+                    if(!timeGoalSwitch){
+                      setTimeGoalSwitch(true)
+                    } else{
+                      setTimeGoalSwitch(false)
+                    }
+                    setRepetitionsGoalSwitch(!repetitionsGoalSwitch)
+                  }} />
                 </View>
               )}
             />
@@ -243,7 +309,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
                   value={repetitions}
                   onChangeText={(value) => {
                     value = value<1000?value:'999'
-                    value = value>0?value:''
+                    value = value>0?value:'1'
                     setRepetitions(value)
                   }}  
                   keyboardType='numeric' 
@@ -260,7 +326,15 @@ const ActivityFormScreen = ({ route, navigation }) => {
               title={t('activityForm.switch.timeGoal')}
               right={() => (
                 <View style={{ marginRight: 12 }}>
-                  <Switch value={timeGoalSwitch} onValueChange={() => {setRepetitionsGoalSwitch(false), setTimeGoalSwitch(!timeGoalSwitch)}} />
+                  <Switch value={timeGoalSwitch} onValueChange={( newValue ) => {
+                    if (!repetitionsGoalSwitch && !newValue) {
+                      setRepetitionsGoalSwitch(true)
+                    } else {
+                      setRepetitionsGoalSwitch(false)
+                    }
+                    setMultipleTimesSwitch(false)
+                    setTimeGoalSwitch(newValue)
+                  }} />
                 </View>
               )}
             />
@@ -300,7 +374,13 @@ const ActivityFormScreen = ({ route, navigation }) => {
                 <Divider />
                 <List.Item title={t('activityForm.dialog.freeTitle')} description={t('activityForm.dialog.freeDescription')} onPress={() => {setFrequencySelector('free'), setFrequencyVisible(false)}} />
                 <Divider />
-                <List.Item title={t('activityForm.dialog.weeklyTitle')} description={t('activityForm.dialog.weeklyDescription')} onPress={() => {setFrequencySelector('weekly'), setFrequencyVisible(false)}} />
+                <List.Item title={t('activityForm.dialog.weeklyTitle')} description={t('activityForm.dialog.weeklyDescription')} onPress={() => {
+                  setFrequencySelector('weekly')
+                  setFrequencyVisible(false)
+                  if (!repetitionsGoalSwitch && !timeGoalSwitch) {
+                    setRepetitionsGoalSwitch(true)
+                  }
+                }} />
                 <Divider />
               </Dialog.Content>
           </Dialog>
