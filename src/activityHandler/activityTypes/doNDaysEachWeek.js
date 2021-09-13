@@ -1,13 +1,12 @@
 import React from 'react';
-import { List, Text } from 'react-native-paper'
+import { Text } from 'react-native-paper'
 import { useSelector } from 'react-redux'
-import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
-    createOrUnarchiveEntry, archiveOrDeleteEntry } from '../../redux'
-import { getWeeklyStats, isActive, selectActivityByIdAndDate } from '../../util'
+import { selectActivityById } from '../../redux'
+import { getWeeklyStats, selectActivityByIdAndDate } from '../../util'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import dailyGoals from './dailyGoals'
 import { useTranslation } from 'react-i18next';
-import { GeneralColor, SelectWeekliesColor } from '../../styles/Colors';
+import { SelectWeekliesColor } from '../../styles/Colors';
 
 const TodayScreenItem = ({ activityId, date }) => {
   const activity = useSelector( state => selectActivityByIdAndDate(state, activityId, date) )

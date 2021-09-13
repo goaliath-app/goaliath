@@ -1,19 +1,14 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { StyleSheet, View, useWindowDimensions } from 'react-native'
-import { useNavigation } from '@react-navigation/native';
-import { List, IconButton, Text } from 'react-native-paper'
-import * as Progress from 'react-native-progress';
-import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue, getTodaySelector, selectActivityByIdAndDate } from '../../../util'
-import { toggleCompleted, stopTodayTimer, startTodayTimer, selectActivityById, selectEntryByActivityIdAndDate } from '../../../redux'
+import { View } from 'react-native'
+import { IconButton } from 'react-native-paper'
+import { getTodayTime, isActivityRunning, getPreferedExpression, getTodaySelector, selectActivityByIdAndDate } from '../../../util'
+import { toggleCompleted, stopTodayTimer, startTodayTimer, selectEntryByActivityIdAndDate } from '../../../redux'
 import PlayFilledIcon from '../../../../assets/play-filled'
 import PlayOutlinedIcon from '../../../../assets/play-outlined'
 import PauseFilledIcon from '../../../../assets/pause-filled'
 import PauseOutlinedIcon from '../../../../assets/pause-outlined'
-import { useTranslation } from 'react-i18next'
 import { ActivityListItemColors } from '../../../styles/Colors'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { ActivityListItem, DoubleProgressBar } from '../../../components'
 
 // addEntryThunk to add the repetitions field to entries of this activity type

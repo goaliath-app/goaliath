@@ -1,16 +1,12 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
-    createOrUnarchiveEntry, archiveOrDeleteEntry, toggleCompleted, stopTodayTimer, startTodayTimer } from '../../redux'
+import { selectActivityById, selectEntryByActivityIdAndDate, toggleCompleted, stopTodayTimer, startTodayTimer } from '../../redux'
 import { getWeeklyStats, isActivityRunning, getPreferedExpression, getTodaySelector, getTodayTime, roundValue, selectActivityByIdAndDate } from '../../util'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
-import dailyGoals from './dailyGoals'
 import { useTranslation } from 'react-i18next';
-import { GeneralColor, SelectWeekliesColor } from '../../styles/Colors';
 import Duration from 'luxon/src/duration.js'
-import { StyleSheet, View, useWindowDimensions } from 'react-native'
-import { List, IconButton, Text } from 'react-native-paper'
-import * as Progress from 'react-native-progress';
+import { View } from 'react-native'
+import { IconButton } from 'react-native-paper'
 import PlayFilledIcon from '../../../assets/play-filled'
 import PlayOutlinedIcon from '../../../assets/play-outlined'
 import PauseFilledIcon from '../../../assets/pause-filled'
