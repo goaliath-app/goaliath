@@ -188,13 +188,13 @@ const ActivityFormScreen = ({ route, navigation }) => {
 
         console.log('newActivity', newActivity)
 
-        // OLD CODE SHOWING HOW ITS DONE
         if(validate()){
-          // if(activity){
-            //   dispatch(updateActivity({...newActivity, id: activity.id}))
-            // }else{
+          if(activityId !== undefined){
+            console.log('editada')
+            dispatch(updateActivity({...newActivity, id: activity.id}))
+          }else{
             dispatch(createActivity(newActivity))
-          // }
+          }
           navigation.goBack()
         }
       }} 
