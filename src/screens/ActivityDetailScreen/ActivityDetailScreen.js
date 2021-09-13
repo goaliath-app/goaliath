@@ -14,6 +14,7 @@ import { GeneralColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
 
+// TODO: use selectActivityByIdAndDate instead of selectActivityById
 const ActivityDetailScreen = ({ 
   activity,           // activity object to show on the screen (see ActivitySlice)
   goal,               // the goal object to witch the activity belongs (see GoalsSlice)

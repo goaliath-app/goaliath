@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
     createOrUnarchiveEntry, archiveOrDeleteEntry, toggleCompleted, stopTodayTimer, upsertEntry } from '../../redux'
-import { getWeeklyStats, isActivityRunning, getPreferedExpression, getTodaySelector, getTodayTime } from '../../util'
+import { getWeeklyStats, isActivityRunning, getPreferedExpression, getTodaySelector, getTodayTime,selectActivityByIdAndDate } from '../../util'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import dailyGoals from './dailyGoals'
 import { useTranslation } from 'react-i18next';
@@ -25,7 +25,7 @@ const TodayScreenItem = ({ activityId, date }) => {
 
   
   // selector hooks
-  const activity = useSelector((state) => selectActivityById(state, activityId))
+  const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   const entry = useSelector((state) => selectEntryByActivityIdAndDate(state, activityId, date))
   const todayDate = useSelector(getTodaySelector)
   const { repetitionsCount } = useSelector((state) => getWeeklyStats(state, date, activityId))
@@ -159,8 +159,8 @@ function addEntryThunk( activityId, date ){
   }
 }
 
-function getFrequencyString(state, activityId, t){
-  const activity = selectActivityById(state, activityId)
+function getFrequencyString(state, activityId, t, date=null){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
   const repetitions = activity.params.repetitions
 
   return(
@@ -183,7 +183,7 @@ function isWeekCompleted( state, activityId, date ){
   it does not take into account the work put that day */
   const { repetitionsCount } = getWeeklyStats(state, date, activityId)
 
-  const activity = selectActivityById(state, activityId)
+  const activity = selectActivityByIdAndDate(state, activityId, date)
   const repsTarget = activity.params.repetitions
 
   return repetitionsCount >= repsTarget

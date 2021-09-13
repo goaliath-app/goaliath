@@ -4,7 +4,7 @@ import { StyleSheet, View, useWindowDimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, IconButton, Text } from 'react-native-paper'
 import * as Progress from 'react-native-progress';
-import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue, getTodaySelector } from '../../../util'
+import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue, getTodaySelector, selectActivityByIdAndDate } from '../../../util'
 import { toggleCompleted, stopTodayTimer, startTodayTimer, selectActivityById, selectEntryByActivityIdAndDate } from '../../../redux'
 import PlayFilledIcon from '../../../../assets/play-filled'
 import PlayOutlinedIcon from '../../../../assets/play-outlined'
@@ -27,7 +27,7 @@ const TodayScreenItem = ({ activityId, date }) => {
   const dispatch = useDispatch()
 
   // selector hooks
-  const activity = useSelector((state) => selectActivityById(state, activityId))
+  const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   const entry = useSelector((state) => selectEntryByActivityIdAndDate(state, activityId, date))
   const todayDate = useSelector(getTodaySelector)
 
@@ -109,8 +109,8 @@ const TodayScreenItem = ({ activityId, date }) => {
   )
 }
 
-function getFrequencyString(state, activityId, t){
-  const activity = selectActivityById(state, activityId)
+function getFrequencyString(state, activityId, t, date=null){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
   const seconds = activity.params.dailyGoal.params.seconds
   const { value, unit } = getPreferedExpression(seconds, t)
   return t('activityHandler.dailyGoals.doNSeconds.frequencyString', { value, unit })

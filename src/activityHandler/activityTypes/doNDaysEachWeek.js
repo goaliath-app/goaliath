@@ -3,14 +3,14 @@ import { List, Text } from 'react-native-paper'
 import { useSelector } from 'react-redux'
 import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
     createOrUnarchiveEntry, archiveOrDeleteEntry } from '../../redux'
-import { getWeeklyStats, isActive } from '../../util'
+import { getWeeklyStats, isActive, selectActivityByIdAndDate } from '../../util'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import dailyGoals from './dailyGoals'
 import { useTranslation } from 'react-i18next';
 import { GeneralColor, SelectWeekliesColor } from '../../styles/Colors';
 
 const TodayScreenItem = ({ activityId, date }) => {
-  const activity = useSelector( state => selectActivityById(state, activityId) )
+  const activity = useSelector( state => selectActivityByIdAndDate(state, activityId, date) )
 
   const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
   const DailyGoalTodayScreenItem = dailyGoal.TodayScreenItem
@@ -102,8 +102,9 @@ const WeekView = ({ activityId, date, todayChecked }) => {
   )
 }
 
-function getFrequencyString(state, activityId, t){
-  const activity = selectActivityById(state, activityId)
+function getFrequencyString(state, activityId, t, date=null){
+    const activity = selectActivityByIdAndDate(state, activityId, date)
+
   const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
   
   const dailyGoalString = (
@@ -133,7 +134,7 @@ function isWeekCompleted( state, activityId, date ){
   it does not take into account the work put that day */
   const { daysDoneCount } = getWeeklyStats(state, date, activityId)
 
-  const activity = selectActivityById(state, activityId)
+  const activity = selectActivityByIdAndDate(state, activityId, date)
   const daysTarget = activity.params.days
 
   return daysDoneCount >= daysTarget

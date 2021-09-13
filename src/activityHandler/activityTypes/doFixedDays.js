@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
     createOrUnarchiveEntry, archiveOrDeleteEntry } from '../../redux'
-import { isActive } from '../../util'
+import { isActive, selectActivityByIdAndDate } from '../../util'
 import { List } from 'react-native-paper'
 import dailyGoals from './dailyGoals'
 
@@ -23,7 +23,7 @@ function updateEntryThunk( activityId, date ){
 }
 
 const TodayScreenItem = ({ activityId, date }) => {
-  const activity = useSelector( state => selectActivityById(state, activityId) )
+  const activity = useSelector( state => selectActivityByIdAndDate(state, activityId, date) )
 
   const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
   const DailyGoalTodayScreenItem = dailyGoal.TodayScreenItem
@@ -31,8 +31,9 @@ const TodayScreenItem = ({ activityId, date }) => {
   return <DailyGoalTodayScreenItem activityId={activityId} date={date} />
 }
 
-function getFrequencyString(state, activityId, t){
-  const activity = selectActivityById(state, activityId)
+function getFrequencyString(state, activityId, t, date=null){
+    const activity = selectActivityByIdAndDate(state, activityId, date)
+
   const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
   
   const dailyGoalString = (

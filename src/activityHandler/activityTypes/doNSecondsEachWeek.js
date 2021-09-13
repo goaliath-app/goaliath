@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
     createOrUnarchiveEntry, archiveOrDeleteEntry, toggleCompleted, stopTodayTimer, startTodayTimer } from '../../redux'
-import { getWeeklyStats, isActivityRunning, getPreferedExpression, getTodaySelector, getTodayTime, roundValue } from '../../util'
+import { getWeeklyStats, isActivityRunning, getPreferedExpression, getTodaySelector, getTodayTime, roundValue, selectActivityByIdAndDate } from '../../util'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import dailyGoals from './dailyGoals'
 import { useTranslation } from 'react-i18next';
@@ -23,7 +23,7 @@ const TodayScreenItem = ({ activityId, date }) => {
   const { t, i18n } = useTranslation()
 
   // selector hooks
-  const activity = useSelector((state) => selectActivityById(state, activityId))
+  const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   const entry = useSelector((state) => selectEntryByActivityIdAndDate(state, activityId, date))
   const todayDate = useSelector(getTodaySelector)
   const { weeklyTime } = useSelector((state) => getWeeklyStats(state, date, activityId))
@@ -196,8 +196,8 @@ const WeekView = ({ activityId, date, todayChecked }) => {
   )
 }
 
-function getFrequencyString(state, activityId, t){
-  const activity = selectActivityById(state, activityId)
+function getFrequencyString(state, activityId, t, date=null){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
   const seconds = activity.params.seconds
   const { value, unit } = getPreferedExpression(seconds, t)
   return t('activityHandler.activityTypes.doNSecondsEachWeek.frequencyString', {expressionValue: value, expressionUnit: unit})
@@ -217,7 +217,7 @@ function isWeekCompleted( state, activityId, date ){
   it does not take into account the work put that day */
   const { weeklyTime } = getWeeklyStats(state, date, activityId)
 
-  const activity = selectActivityById(state, activityId)
+  const activity = selectActivityByIdAndDate(state, activityId, date)
   const secondsTarget = activity.params.seconds
 
   return weeklyTime.as('seconds') >= secondsTarget

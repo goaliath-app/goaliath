@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
     createOrUnarchiveEntry, archiveOrDeleteEntry, toggleCompleted, stopTodayTimer, upsertEntry } from '../../../redux'
-import { getWeeklyStats, isActivityRunning, getPreferedExpression, getTodaySelector, getTodayTime } from '../../../util'
+import { getWeeklyStats, isActivityRunning, getPreferedExpression, getTodaySelector, getTodayTime, selectActivityByIdAndDate } from '../../../util'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../../components'
 import { useTranslation } from 'react-i18next';
 import { GeneralColor, SelectWeekliesColor } from '../../../styles/Colors';
@@ -24,7 +24,7 @@ const TodayScreenItem = ({ activityId, date }) => {
 
   
   // selector hooks
-  const activity = useSelector((state) => selectActivityById(state, activityId))
+  const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   const entry = useSelector((state) => selectEntryByActivityIdAndDate(state, activityId, date))
   
   // alias values
@@ -72,8 +72,8 @@ const TodayScreenItem = ({ activityId, date }) => {
   )
 }
 
-function getFrequencyString(state, activityId, t){
-  const activity = selectActivityById(state, activityId)
+function getFrequencyString(state, activityId, t, date=null){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
   const repetitions = activity.params.dailyGoal.params.repetitions
   return t('activityHandler.dailyGoals.doNTimes.frequencyString', { repetitions })
 }

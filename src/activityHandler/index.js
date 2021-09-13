@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry, selectGoalById } from "../redux"
 import activityTypes from './activityTypes'
 import { WeekView as BaseWeekView } from '../components'
-import { isActive, selectAllActiveActivities } from '../util'
+import { isActive, selectAllActiveActivities, selectActivityByIdAndDate } from '../util'
 
 import { List } from 'react-native-paper'
 
@@ -23,7 +23,7 @@ export function updateEntryThunk( activityId, date ){
 }
 
 export const TodayScreenItem = ({ activityId, date }) => {
-  const activity = useSelector( state => selectActivityById( state, activityId ) )
+  const activity = useSelector( state => selectActivityByIdAndDate( state, activityId, date ) )
 
   const activityType = activityTypes[activity.type]
   const ActivityTypeTodayScreenItem = activityType.TodayScreenItem
@@ -138,8 +138,8 @@ export function areTherePendingWeeklyActivities(state, date){
   return false
 }
 
-export function getFrequencyString(state, activityId, t){
-  const activity = selectActivityById( state, activityId )
+export function getFrequencyString(state, activityId, t, date=null){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
 
   const activityType = activityTypes[activity.type]
 
