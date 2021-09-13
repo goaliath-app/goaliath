@@ -1,10 +1,10 @@
 export {
     createLog, addEntry, upsertEntry, toggleCompleted, setState, sortLog, deleteEntry, deleteLog,
-    replaceEntry, addTask, toggleTask,
+    replaceEntry, addTask, toggleTask, addActivityRecord,
     selectAllLogs, selectLogById, areWeekliesSelectedToday,
     selectThisWeekEntriesByActivityId, selectLogEntities, selectEntriesByDay,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate,
-    selectTasks, areTasksAddedToday, getTodayTasks, 
+    selectTasks, areTasksAddedToday, getTodayTasks, findActivityRecord
 } from './LogSlice'
 
 export { 

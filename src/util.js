@@ -3,7 +3,8 @@ import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
 import { 
   selectEntriesByDay, selectActivityById, selectAllWeekEntriesByActivityId,
-  selectActivityEntities, selectGoalById, selectAllActivities, selectGoalEntities
+  selectActivityEntities, selectGoalById, selectAllActivities, selectGoalEntities,
+  findActivityRecord,
 } from './redux'
 
 export function hasSomethingToShow(list){
@@ -97,6 +98,16 @@ export function selectAllActiveActivities(state){
   })
 
   return activeActivities
+}
+
+export function selectActivityByIdAndDate(state, activityId, date){
+  const activityRecord = findActivityRecord(state, activityId, date)
+  
+  if(activityRecord) {
+    return activityRecord
+  }else{
+    return selectActivityById(state, activityId)
+  }
 }
 
 

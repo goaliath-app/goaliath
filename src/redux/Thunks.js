@@ -217,6 +217,7 @@ function embalmLog({ date }){
   }
 }
 
+// TODO: adapt to new embamment. take repetitions into account.
 function unembalmLog({ date }){
   return function(dispatch, getState){
     const state = getState()
