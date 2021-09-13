@@ -72,4 +72,10 @@ const TodayScreenItem = ({ activityId, date }) => {
   )
 }
 
-  export default { TodayScreenItem }
+function getFrequencyString(state, activityId, t){
+  const activity = selectActivityById(state, activityId)
+  const repetitions = activity.params.dailyGoal.params.repetitions
+  return t('activityHandler.dailyGoals.doNTimes.frequencyString', { repetitions })
+}
+
+export default { TodayScreenItem, getFrequencyString }

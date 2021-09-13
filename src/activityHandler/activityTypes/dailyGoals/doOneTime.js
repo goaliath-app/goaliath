@@ -34,4 +34,8 @@ const TodayScreenItem = ({ activityId, date }) => {
   )
 }
 
-export default { TodayScreenItem }
+function getFrequencyString(state, activityId, t){
+  return t('activityHandler.dailyGoals.doOneTime.frequencyString')
+}
+
+export default { TodayScreenItem, getFrequencyString }

@@ -31,7 +31,50 @@ const TodayScreenItem = ({ activityId, date }) => {
   return <DailyGoalTodayScreenItem activityId={activityId} date={date} />
 }
 
+function getFrequencyString(state, activityId, t){
+  const activity = selectActivityById(state, activityId)
+  const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
+  
+  const dailyGoalString = (
+    dailyGoal.getFrequencyString? 
+    dailyGoal.getFrequencyString(state, activityId, t) : '<NO DAILYGOAL STRING>'
+  )
+
+  let isEveryDay = true
+  for(let day in activity.params.daysOfWeek){
+    if(!activity.params.daysOfWeek[day]){
+      isEveryDay = false
+      break
+    }
+  }
+
+  if( isEveryDay ){
+    return dailyGoalString + ' ' + t('activityHandler.activityTypes.doFixedDays.everyDayFrequencyString')
+  }
+  
+  let daysOfWeek = ''
+  const labels = {
+    1: t('units.dayNamesShort2.monday'), 
+    2: t('units.dayNamesShort2.tuesday'), 
+    3: t('units.dayNamesShort2.wednesday'), 
+    4: t('units.dayNamesShort2.thursday'), 
+    5: t('units.dayNamesShort2.friday'), 
+    6: t('units.dayNamesShort2.saturday'), 
+    7: t('units.dayNamesShort2.sunday')
+  }
+  for (let day in activity.params.daysOfWeek){
+    if (activity.params.daysOfWeek[day]){
+      daysOfWeek = `${daysOfWeek} ${labels[day]}`
+    }
+  }
+
+  return(
+    dailyGoalString + ' ' + t('activityHandler.activityTypes.doFixedDays.frequencyString', { daysOfWeek })
+  )
+}
+
 export default {
   updateEntryThunk,
-  TodayScreenItem
+  TodayScreenItem,
+  getFrequencyString,
 }

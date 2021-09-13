@@ -196,12 +196,20 @@ const WeekView = ({ activityId, date, todayChecked }) => {
   )
 }
 
+function getFrequencyString(state, activityId, t){
+  const activity = selectActivityById(state, activityId)
+  const seconds = activity.params.seconds
+  const { value, unit } = getPreferedExpression(seconds, t)
+  return t('activityHandler.activityTypes.doNSecondsEachWeek.frequencyString', {expressionValue: value, expressionUnit: unit})
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
   TodayScreenItem,
   WeekView,
   isWeekCompleted,
+  getFrequencyString,
 }
 
 function isWeekCompleted( state, activityId, date ){

@@ -159,12 +159,22 @@ function addEntryThunk( activityId, date ){
   }
 }
 
+function getFrequencyString(state, activityId, t){
+  const activity = selectActivityById(state, activityId)
+  const repetitions = activity.params.repetitions
+
+  return(
+    t('activityHandler.activityTypes.doNTimesEachWeek.frequencyString', { repetitions })
+  )
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
   TodayScreenItem,
   addEntryThunk,
   isWeekCompleted,
+  getFrequencyString,
   // WeekView,
 }
 

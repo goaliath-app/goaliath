@@ -102,12 +102,30 @@ const WeekView = ({ activityId, date, todayChecked }) => {
   )
 }
 
+function getFrequencyString(state, activityId, t){
+  const activity = selectActivityById(state, activityId)
+  const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
+  
+  const dailyGoalString = (
+    dailyGoal.getFrequencyString? 
+    dailyGoal.getFrequencyString(state, activityId, t) : '<NO DAILYGOAL STRING>'
+  )
+
+  const days = 2
+
+  return(
+    dailyGoalString + ' ' +
+    t('activityHandler.activityTypes.doNDaysEachWeek.frequencyString', { days })
+  )
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
   TodayScreenItem,
   WeekView,
   isWeekCompleted,
+  getFrequencyString,
 }
 
 function isWeekCompleted( state, activityId, date ){

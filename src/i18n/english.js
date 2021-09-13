@@ -197,22 +197,35 @@ const en = {
       begin: 'Begin'
     },
 
-    util: {
-      frequency: {
-        weekly: {
-          check: '{{activityTimesPerWeek}} days per week.',
-          time: '{{expressionValue}} {{expressionUnit}} per week'
+    activityHandler: {
+      activityTypes: {
+        doNSecondsEachWeek: {
+          frequencyString: '{{expressionValue}} {{expressionUnit}} per week'
         },
-        select: {
-          check: 'Do on {{days}}',
-          time: '{{expressionValue}} {{expressionUnit}} on {{days}}'
+        doNTimesEachWeek: {
+          frequencyString: '{{repetitions}} repetitions each week'
         },
-        daily: {
-          check: 'Every day',
-          time: '{{expressionValue}} {{expressionUnit}} every day'
+        doFixedDays: {
+          everyDayFrequencyString: 'every day',
+          frequencyString: 'on {{daysOfWeek}}',
         },
-        error: 'ERROR'
+        doNDaysEachWeek: {
+          frequencyString: '{{days}} days each week'
+        }
       },
+      dailyGoals: {
+        // frequencyStrings of dailygoals get prepended to the 
+        // frequencyStrings of their corresponding activityType
+        doNSeconds: {
+          frequencyString: '{{value}} {{unit}}'
+        },
+        doNTimes: {
+          frequencyString: '{{repetitions}} times',
+        },
+        doOneTime: {
+          frequencyString: 'Do',
+        },
+      }
     },
 
     app: {
