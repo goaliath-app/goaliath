@@ -14,6 +14,8 @@ import { GeneralColor } from '../styles/Colors';
 const TodayScreen = ({ navigation }) => {
   const dispatch = useDispatch()
 
+  useSelector((state) => console.log('state', state))
+
   useFocusEffect(
     React.useCallback(() => {
       dispatch(updateLogs())

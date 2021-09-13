@@ -219,6 +219,11 @@ const logSlice = createSlice({
       const { date, activityRecord } = action.payload
       const selectedDay = state.entities[date.toISO()]
       activityRecordsAdapter.addOne(selectedDay.activityRecords, activityRecord)
+    },
+    deleteAllActivityRecords(state, action){
+      const { date } = action.payload
+      const selectedDay = state.entities[date.toISO()]
+      activityRecordsAdapter.removeAll(selectedDay.activityRecords)
     }
   }
 })
@@ -227,7 +232,7 @@ export const {
   createLog, addEntry, deleteEntry, toggleCompleted, startTimer, 
   stopTimer, sortLog, upsertEntry, setState, deleteLog, replaceEntry,
   capAllTimers, setWeekliesSelected, addTask, toggleTask, setTasksAdded, 
-  deleteTask, addActivityRecord,
+  deleteTask, addActivityRecord, deleteAllActivityRecords,
 } = logSlice.actions
 
 export const { 

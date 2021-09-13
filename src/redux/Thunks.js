@@ -4,7 +4,7 @@ import { selectGoalById, createGoal, setState as setGoalsState } from './GoalsSl
 import { 
   deleteOneTodaysEntry, upsertEntry, sortLog, selectEntryByActivityIdAndDate, selectLogById, deleteEntry,
   createLog, addEntry, sortTodayLog, setState as setLogsState, selectEntriesByDay, deleteLog, replaceEntry,
-  capAllTimers,
+  capAllTimers, addActivityRecord, deleteAllActivityRecords
 } from './LogSlice'
 import { getToday, startOfDay, dueToday, newEntry, isActive } from './../util'
 import { setState as setSettingsState } from './SettingsSlice'
@@ -138,7 +138,7 @@ export function updateLogs(){
 
     // today log has already been created
     }else if(newestLogDate.toISO() == today.toISO()){    
-      dispatch(unembalmLog({ date: today }))
+      dispatch(deleteAllActivityRecords({ date: today }))
       dispatch(updateLog({ date: today }))
 
     // there are logs, but today log has not been created yet
@@ -153,7 +153,7 @@ export function updateLogs(){
     
       // from newestLogDate to yesterday (including both), embalm their logs.
       for(let date = newestLogDate; date < today; date = date.plus({ days: 1 })){
-        dispatch(embalmLog({ date }))
+        dispatch(createActivityRecords({ date }))
       }
     }
   }
@@ -201,7 +201,9 @@ function updateLog({ date }){
   }
 }
 
-function embalmLog({ date }){
+// TODO: not all activities should be recorded every day.
+// weekly activities should reflect changes back to the last monday.
+function createActivityRecords({ date }){
   /* Puts into all entries of the specified date the current data
   of their corresponding activities. This way, even if the activity
   name, repeatMode or whatever gets changed, it won't change the embalmed
@@ -211,29 +213,7 @@ function embalmLog({ date }){
     const logEntries = selectEntriesByDay(state, date)
     for(let entry of logEntries){
       const activity = selectActivityById(state, entry.id)
-      const embalmedEntry = { ...activity, ...entry, embalmed: true }
-      dispatch(upsertEntry({ date, entry: embalmedEntry }))
-    }
-  }
-}
-
-// TODO: adapt to new embamment. take repetitions into account.
-function unembalmLog({ date }){
-  return function(dispatch, getState){
-    const state = getState()
-    const log = selectLogById(state, date.toISO())
-    const entries = log.entries.entities
-    for(let entryId in entries){
-      const entry = entries[entryId]
-      if(entry.embalmed){
-        const unembalmedEntry = {
-          ...newEntry({ id: entry.id }),
-          completed: entry.completed,
-          intervals: entry.intervals
-        }
-
-        dispatch(replaceEntry({ date, entry: unembalmedEntry }))
-      }
+      dispatch(addActivityRecord({ date, activityRecord: activity }))
     }
   }
 }
