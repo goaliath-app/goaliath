@@ -137,3 +137,14 @@ export function areTherePendingWeeklyActivities(state, date){
 
   return false
 }
+
+export function getFrequencyString(state, activityId, t){
+  const activity = selectActivityById( state, activityId )
+
+  const activityType = activityTypes[activity.type]
+
+  return activityType.getFrequencyString?
+  activityType.getFrequencyString(state, activityId, t)
+    :
+    'ERROR: no frequency string'
+}

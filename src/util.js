@@ -202,53 +202,6 @@ export function getToday(dayStartHour){
   returns DateTime */
   return startOfDay(DateTime.now(), dayStartHour)
 }
-export function frequency(activity, t){
-  let frequency 
-    switch(activity.repeatMode){
-      case 'weekly':
-        if(activity.goal=='check'){
-          frequency = t('util.frequency.weekly.check', { activityTimesPerWeek: activity.timesPerWeek })
-        }else{
-          const expression = getPreferedExpression(activity.timeGoal, t)
-          frequency = t('util.frequency.weekly.time', { expressionValue: expression.value, expressionUnit: expression.localeUnit })
-        }
-        break
-      case 'select':
-        let days = ''
-        const labels = {
-          1: t('units.dayNamesShort2.monday'), 
-          2: t('units.dayNamesShort2.tuesday'), 
-          3: t('units.dayNamesShort2.wednesday'), 
-          4: t('units.dayNamesShort2.thursday'), 
-          5: t('units.dayNamesShort2.friday'), 
-          6: t('units.dayNamesShort2.saturday'), 
-          7: t('units.dayNamesShort2.sunday')
-        }
-        for (let day in activity.weekDays){
-          if (activity.weekDays[day]){
-            days = `${days} ${labels[day]}`
-          }
-        }
-        if(activity.goal=='check'){
-          frequency = t('util.frequency.select.check', { days })
-        }else{
-          const expression = getPreferedExpression(activity.timeGoal, t)
-          frequency = t('util.frequency.select.time', { expressionValue: expression.value, expressionUnit: expression.localeUnit, days })
-        }
-        break
-      case 'daily':
-        if(activity.goal=='check'){
-          frequency = t('util.frequency.daily.check')
-        }else{
-          const expression = getPreferedExpression(activity.timeGoal, t)
-          frequency = t('util.frequency.daily.time', { expressionValue: expression.value, expressionUnit: expression.localeUnit })
-        }
-        break
-      default:
-        frequency = t('util.frequency.error')
-    }
-  return (frequency)
-}
 
 export function dueToday(today, activity, activityGoal){
   if( !isActive(activity, activityGoal) ){
