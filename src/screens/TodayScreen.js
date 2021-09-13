@@ -1,29 +1,49 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import { View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
 import { ActivityList } from '../components'
 import { Header, InfoCard, SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog } from '../components';
-import { updateLogs, areWeekliesSelectedToday, getTodayTasks, areTasksAddedToday, deleteTodayTask } from '../redux'
-import { extractActivityList, getToday, hasSomethingToShow } from '../util'
+import { updateLogs, areWeekliesSelectedToday, getTodayTasks, areTasksAddedToday, deleteTodayTask, selectEntriesByDay } from '../redux'
+import { extractActivityList, getToday, hasSomethingToShow, getTodaySelector } from '../util'
 import { areThereWeeklyActivities, areTherePendingWeeklyActivities } from '../activityHandler'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 
 
-const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSelector, tasksAdded, deleteTodayTask }) => {
+const TodayScreen = ({ navigation }) => {
+  const dispatch = useDispatch()
+
   useFocusEffect(
     React.useCallback(() => {
-      updateLogs()
+      dispatch(updateLogs())
     }, [])
   )
+
+  // selectors
+  const today      = useSelector(getTodaySelector)
+  const entryList  = useSelector((state) => selectEntriesByDay(state, today))
+  const tasksAdded = useSelector(areTasksAddedToday)
+  const taskList   = useSelector(getTodayTasks)
+  const areWeekliesSelectedTodayResult = useSelector(areWeekliesSelectedToday)
+  const areTherePendingWeeklyActivitiesResult = useSelector((state) => areTherePendingWeeklyActivities(state, today))
+  const areThereWeeklyActivitiesResult = useSelector(areThereWeeklyActivities) 
+
+  // compute values
+  const weekliesSelector = (
+    areWeekliesSelectedTodayResult? 'checked' :
+    areTherePendingWeeklyActivitiesResult? 'unchecked' :
+    areThereWeeklyActivitiesResult? 'allcompleted' :
+    'hidden'
+  )
+  
 
   const { t, i18n } = useTranslation()
   const [ selectedTask, setSelectedTask] = React.useState()
   
 
-  const completedActivities = entryList.filter(fullEntry => fullEntry.entry.completed)
-  const pendingActivities   = entryList.filter(fullEntry => !fullEntry.entry.completed)
+  const completedActivities = entryList.filter(entry => entry.completed)
+  const pendingActivities   = entryList.filter(entry => !entry.completed)
 
   const completedTasks = taskList.filter(task => task.completed)
   const pendingTasks = taskList.filter(task => !task.completed)
@@ -34,7 +54,7 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
       <Header title={t('today.headerTitle')} left='hamburger' navigation={navigation} />
       {hasSomethingToShow(entryList) || weekliesSelector != 'hidden'?
       <View>
-        <ActivityList data={pendingActivities} />
+        <ActivityList data={pendingActivities} date={today} />
         <TaskList tasks={ pendingTasks } onTaskPress={task => {setSelectedTask(task)}} />
         {weekliesSelector=='unchecked'?
         <SelectWeekliesListItem checked={false} navigation={navigation}/>
@@ -43,7 +63,7 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
           <></> 
           : <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
         }
-        <ActivityList data={completedActivities} />
+        <ActivityList data={completedActivities} date={today} />
         <TaskList tasks={ completedTasks } onTaskPress={task => {setSelectedTask(task)}} />
         {weekliesSelector=='checked'?
         <SelectWeekliesListItem checked={true} navigation={navigation}/>
@@ -62,7 +82,7 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
         visible={selectedTask} 
         setVisible={(value) => setSelectedTask(null)}
         onDelete={() => {
-          deleteTodayTask(selectedTask.id)
+          dispatch(deleteTodayTask(selectedTask.id))
           setSelectedTask(null)
         }}
         title={'Delete "'+selectedTask?.name+'"'}
@@ -72,26 +92,4 @@ const TodayScreen = ({ entryList, taskList, navigation, updateLogs, weekliesSele
   );
 }
 
-const mapStateToProps = (state) => {
-  const { dayStartHour } = state.settings
-  const entryList = extractActivityList(state, getToday(dayStartHour))
-
-  const weekliesSelector = (
-    areWeekliesSelectedToday(state)? 'checked' :
-    areTherePendingWeeklyActivities(state, getToday(dayStartHour))? 'unchecked' :
-    areThereWeeklyActivities(state)? 'allcompleted' :
-    'hidden'
-  )
-  
-  const tasksAdded = areTasksAddedToday(state)
-  const taskList = getTodayTasks(state)
-  
-  return { entryList, weekliesSelector, tasksAdded, taskList }
-}
-
-const actionsToProps = {
-  updateLogs,
-  deleteTodayTask,
-}
-
-export default connect(mapStateToProps, actionsToProps)(TodayScreen)
+export default TodayScreen

@@ -137,6 +137,17 @@ export function getWeeklyStats(state, day, activityId){
   return {weeklyTime, daysDoneCount, daysDoneList, repetitionsCount}
 }
 
+// DEPRECATED
+// this function
+//   returns a "fullLog" list for the given day
+//   decides wether it needs to be predicted or looked up in redux state
+// 
+// a fullLog is an entry and its activity data, merged. This concept is
+// deprecated and won't be used anymore, since we have the activityRecords
+// in the redux log slice.
+//
+// TODO: delete this function when its not in use anymore
+// its used at the moment in CalendarScreen and DayInCalendarScreen
 export function extractActivityList(state, day){
   let activityList = [] 
   var entries

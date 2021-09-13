@@ -10,7 +10,7 @@ const DayInCalendarScreen = ({ navigation, activityList, day }) => {
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={day.toFormat("d MMMM yyyy")} left='back' navigation={navigation}/>
-      <ActivityList data={activityList} disabled={true} />
+      <ActivityList data={activityList} date={day} disabled={true} />
     </View>
   )
 }
