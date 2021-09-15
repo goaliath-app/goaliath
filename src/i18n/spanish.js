@@ -49,6 +49,8 @@ const es= {
     
     todayPannel: {
       title: 'Hoy',
+      repetitions: 'Repeticiones',
+      time: 'Tiempo',
       stopButton: 'Parar temporizador',
       startButton: 'Iniciar temporizador',
       checkboxLabel: 'Hecho',

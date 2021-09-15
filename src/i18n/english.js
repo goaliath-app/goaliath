@@ -49,6 +49,8 @@ const en = {
 
     todayPannel: {
       title: 'Today',
+      repetitions: 'Repetitions',
+      time: 'Time',
       stopButton: 'Stop Timer',
       startButton: 'Start Timer',
       checkboxLabel: 'Done',

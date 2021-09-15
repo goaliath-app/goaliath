@@ -48,6 +48,7 @@ export const GeneralColor = {
 export const TodayPannelColor = {
     activityRunning: '#6200C5',
     regularColor: 'black',
+    textInputBackground: 'transparent'
 }
 
 export const ActivityFormColor = {
