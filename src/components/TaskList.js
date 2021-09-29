@@ -30,7 +30,7 @@ const PureTaskListItem = ({ task, today, toggleTask, onPress }) => {
                 color='black'
                 uncheckedColor='black'
                 status={task.completed? 'checked' : 'unchecked'}
-                onPress={() => {toggleTask({date: today, id: task.id})}}
+                onPress={() => {toggleTask(today, task.id)}}
               />
             </View>
           )}

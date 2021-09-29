@@ -15,7 +15,6 @@ function compareEntries(a, b){
 
 const logAdapter = createEntityAdapter();
 const entryAdapter = createEntityAdapter();
-const tasksAdapter = createEntityAdapter();
 const activityRecordsAdapter = createEntityAdapter();
 
 const initialState = logAdapter.getInitialState();
@@ -32,7 +31,6 @@ Each log is:
   {
     id: Date,
     weekliesSelected: defaults to false, true daily selection of weekly activities has been done
-    tasksAdded: defaults to false, true once the user adds (or chooses to don't add) a one time task
     entries: { 
       ids: array of all entry ids, 
       entities: { [entryId]: entry } 
@@ -40,11 +38,6 @@ Each log is:
     activityRecords: {
       ids: array of all activity records ids,
       entities: { [activityRecordId]: activityRecord }
-    }
-    tasks: { 
-      nextId: next id to be used for a new task (autoincremented)
-      ids: array of all task ids,
-      entities: { [taskId]: task }
     }
   }
 
@@ -64,13 +57,6 @@ an activityRecord is:
   }
 activityRecord store how an activity was UNTIL and INCLUDING the day of this log.
 
-A task is:
-  {
-    id: id for this entry,
-    name: name of the task,
-    completed: bool,
-  }
-
 */
 
 const logSlice = createSlice({
@@ -85,10 +71,8 @@ const logSlice = createSlice({
       const log= {
         id: date.toISO(),
         weekliesSelected: false,
-        tasksAdded: false,
         entries: entryAdapter.getInitialState(),
         activityRecords: activityRecordsAdapter.getInitialState(),
-        tasks: tasksAdapter.getInitialState({nextId: 0}),
       }
       logAdapter.addOne(state, log)
     },
@@ -96,11 +80,6 @@ const logSlice = createSlice({
       const { date, value } = action.payload
       const selectedDay = state.entities[date.toISO()]
       selectedDay.weekliesSelected = value
-    },
-    setTasksAdded(state, action){
-      const { date, value } = action.payload
-      const selectedDay = state.entities[date.toISO()]
-      selectedDay.tasksAdded = value
     },
     addEntry(state, action){
       /* add a single entry to a daily log */
@@ -198,23 +177,6 @@ const logSlice = createSlice({
         ))
       }
     },
-    addTask(state, action){
-      const { date, task } = action.payload
-      const selectedDay = state.entities[date.toISO()]
-      tasksAdapter.addOne(selectedDay.tasks, {...task, id: selectedDay.tasks.nextId})
-      selectedDay.tasks.nextId += 1
-    },
-    toggleTask(state, action){
-      const { date, id } = action.payload
-      const selectedDay = state.entities[date.toISO()]
-      const task = selectedDay.tasks.entities[id]
-      tasksAdapter.updateOne(selectedDay.tasks, {id: task.id, changes: {completed: !task.completed}})
-    },
-    deleteTask(state, action){
-      const { date, id } = action.payload
-      const selectedDay = state.entities[date.toISO()]
-      tasksAdapter.removeOne(selectedDay.tasks, id)
-    },
     addActivityRecord(state, action){
       const { date, activityRecord } = action.payload
       const selectedDay = state.entities[date.toISO()]
@@ -231,8 +193,8 @@ const logSlice = createSlice({
 export const { 
   createLog, addEntry, deleteEntry, toggleCompleted, startTimer, 
   stopTimer, sortLog, upsertEntry, setState, deleteLog, replaceEntry,
-  capAllTimers, setWeekliesSelected, addTask, toggleTask, setTasksAdded, 
-  deleteTask, addActivityRecord, deleteAllActivityRecords,
+  capAllTimers, setWeekliesSelected, 
+  addActivityRecord, deleteAllActivityRecords,
 } = logSlice.actions
 
 export const { 
@@ -317,30 +279,8 @@ function selectTodayLog(state){
   return log
 }
 
-export function getTodayTasks(state){
-  const log = selectTodayLog(state)
-  const tasks = log?.tasks
-  if(!tasks) return []
-
-  const { selectAll: selectAllTasks } = entryAdapter.getSelectors()
-  const taskList = selectAllTasks(tasks)
-  if(!taskList) return []
-
-  return taskList
-}
-
-export function selectTasks(state, date){
-  const log = selectLogById(state, date.toISO())
-  const tasks = log?.tasks?.entities
-  return tasks? tasks : {}
-}
-
 export function areWeekliesSelectedToday(state){
   const log = selectTodayLog(state)
   return log?.weekliesSelected? log.weekliesSelected : false
 }
 
-export function areTasksAddedToday(state){
-  const log = selectTodayLog(state)
-  return log?.tasksAdded? log.tasksAdded : false
-}

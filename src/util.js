@@ -244,6 +244,12 @@ export function dueToday(today, activity, activityGoal){
   return false
 }
 
+export function toDateTime(date){
+  /* accepts ISO and DateTime as arguments
+  returns DateTime */
+  return DateTime.fromISO(date)
+}
+
 export function isActive(activity, activityGoal){
   if(activity.archived || activityGoal.archived){
     return false

@@ -17,11 +17,13 @@ export {
     selectAllLogs, selectLogById, areWeekliesSelectedToday,
     selectThisWeekEntriesByActivityId, selectLogEntities, selectEntriesByDay,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate,
-    areTasksAddedToday, addTask, toggleTask, selectTasks, getTodayTasks,
-    addTodayTask, tasksAddedToday, addActivityRecord, findActivityRecord,
+    addActivityRecord, findActivityRecord,
     deleteAllActivityRecords,
-    deleteTodayTask,
 } from './LogSlice'
+
+export { 
+    addTodayTask, toggleTask, areTasksAddedToday, deleteTodayTask, getTodayTasks, tasksAddedToday 
+} from './TasksSlice'
 
 export { 
     generateDummyData, updateLogs, importState, archiveOrDeleteEntry, createOrUnarchiveEntry
