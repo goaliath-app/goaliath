@@ -6,6 +6,7 @@ import {
   createLog, addEntry, sortTodayLog, setState as setLogsState, selectEntriesByDay, deleteLog, replaceEntry,
   capAllTimers, addActivityRecord, deleteAllActivityRecords
 } from './LogSlice'
+import { initDate as initTasksDate } from './TasksSlice'
 import { getToday, startOfDay, dueToday, newEntry, isActive } from './../util'
 import { setState as setSettingsState } from './SettingsSlice'
 
@@ -112,7 +113,6 @@ function getNewestDate(isoDatesList){
 }
 
 export function updateLogs(){
-  // TODO close open time intervals on day change.
   return function(dispatch, getState){
     const { 
       settings: { dayStartHour }, 
@@ -126,6 +126,7 @@ export function updateLogs(){
 
     // if tomorrows log already exists (due to a daystarthour change)
     while(newestLogDate > today){
+      // hard delete it and repeat
       dispatch(deleteLog({ isoDate: newestLogDate.toISO() }))
       const { logs: { ids: newLoggedDatesISO } } = getState()
       newestLogDate = getNewestDate(newLoggedDatesISO)
@@ -133,29 +134,41 @@ export function updateLogs(){
 
     // there are no logs
     if(newestLogDate.toISO() == epoch.toISO()){
-      dispatch(createLog({ date: today }))
+      // create the today log as the first one
+      dispatch(initDate(today))
       dispatch(updateLog({ date: today }))
 
     // today log has already been created
-    }else if(newestLogDate.toISO() == today.toISO()){    
+    }else if(newestLogDate.toISO() == today.toISO()){ 
+      // delete activity records that may exist for today, they are not needed   
       dispatch(deleteAllActivityRecords({ date: today }))
+      // update today's log
       dispatch(updateLog({ date: today }))
 
     // there are logs, but today log has not been created yet
     }else{
+      // cap all open timers of the previous day
       dispatch(capAllTimers({ date: newestLogDate }))
 
       // from next day of newestLogDate to today (including both), create and update logs.
       for(let date = newestLogDate.plus({ days: 1 }); date <= today; date = date.plus({ days: 1 })){
-        dispatch(createLog({ date }))
+        dispatch(initDate(date))
         dispatch(updateLog({ date }))
       }
     
-      // from newestLogDate to yesterday (including both), embalm their logs.
+      // from newestLogDate to yesterday (including both), create their activity records,
+      // so that we know how the activity were in that day.
       for(let date = newestLogDate; date < today; date = date.plus({ days: 1 })){
         dispatch(createActivityRecords({ date }))
       }
     }
+  }
+}
+
+export function initDate(date){
+  return function(dispatch, getState){
+    dispatch(createLog({ date }))  // init date for logSlice
+    dispatch(initTasksDate({ date }))  // init date for tasks slice
   }
 }
 

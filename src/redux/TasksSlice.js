@@ -78,13 +78,13 @@ const tasksSlice = createSlice({
   }
 })
 
-export const { setState } = tasksSlice.actions
+export const { setState, initDate } = tasksSlice.actions
 
 export default tasksSlice.reducer
 
 
 const { 
-  addTask, setTasksAdded, toggleTask: toggleTaskAction, deleteTask, initDate 
+  addTask, setTasksAdded, toggleTask: toggleTaskAction, deleteTask 
 } = tasksSlice.actions
 
 const { 
@@ -122,7 +122,6 @@ export function addTodayTask(name){
   return function(dispatch, getState){
     const state = getState()
     const today = getTodaySelector(state)
-    dispatch(initDate({ date: today }))
     const task = { name, completed: false }
     dispatch(addTask({ date: today, task }))
   }
@@ -132,7 +131,6 @@ export function deleteTodayTask(id){
   return function(dispatch, getState){
     const state = getState()
     const today = getTodaySelector(state)
-    dispatch(initDate({ date: today }))
     dispatch(deleteTask({ date: today, id }))
   }
 }
@@ -142,7 +140,6 @@ export function tasksAddedToday(){
   return function(dispatch, getState){
     const state = getState()
     const today = getTodaySelector(state)
-    dispatch(initDate({ date: today }))
     dispatch(setTasksAdded({ 
       date: today, 
       value: true
@@ -153,7 +150,6 @@ export function tasksAddedToday(){
 export function toggleTask(date, id){
   return function(dispatch, getState){
     const state = getState()
-    dispatch(initDate({ date }))
     dispatch(toggleTaskAction({ date, id }))
   }
 }
