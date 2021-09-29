@@ -128,7 +128,12 @@ const CalendarScreen = ({ navigation, state }) => {
           mode="contained" 
           style={{marginBottom: 20, marginTop: 14}} 
           onPress={
-            () => navigation.navigate('DayInCalendar', {day: selectedDate})
+            () => { 
+              const dateTime = DateTime.fromFormat(selectedDate, 'yyyy-M-d')
+              console.log('date to todayscreen', dateTime.toISO())
+              navigation.navigate('DayInCalendar', { isoDate: dateTime.toISO()})
+            }
+            //oldfunction ====> navigation.navigate('DayInCalendar', {day: selectedDate})
           }
         >
           {t('calendar.openDayButton')}

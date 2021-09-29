@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { List, IconButton, Text } from 'react-native-paper'
 import * as Progress from 'react-native-progress';
 import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue } from '../util'
-import { toggleCompleted, startTimer, stopTimer } from '../redux'
+import { toggleCompleted, startTodayTimer, stopTodayTimer } from '../redux'
 import PlayFilledIcon from '../../assets/play-filled'
 import PlayOutlinedIcon from '../../assets/play-outlined'
 import PauseFilledIcon from '../../assets/pause-filled'
@@ -16,7 +16,51 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import Checkbox from './Checkbox'
 
-const ActivityListItem = ({ 
+
+export const ActivityListItem = ({ activity, entry, date, left, description }) => {
+
+  function update(){
+    const currentTime = getTodayTime(entry.intervals)
+    setTodayTime(currentTime)
+  }
+
+  React.useEffect(() => {
+    update()
+    if (isActivityRunning(entry.intervals)) {
+      const intervalId = setInterval(() => {
+        update()
+      }, 1000)
+      return () => clearInterval(intervalId)
+    }
+  }, [entry.intervals])
+
+  const navigation = useNavigation()
+  const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
+
+
+
+  return(
+    entry.archived?
+    null :
+    <View style={{ backgroundColor: isActivityRunning(entry.intervals)? ActivityListItemColors.currentActivityBackground : ActivityListItemColors.listItemBackground }}>
+      <List.Item
+        left={left}
+        right={() => ( 
+          todayTime.as('seconds') > 0?
+           <Text style={styles.timeLabel}>{todayTime.toFormat('hh:mm:ss')}</Text> 
+           : null
+        )}
+        title={activity.name}
+        description={description}
+        onPress={() => {
+          navigation.navigate('ActivityDetail', {activityId: activity.id, date: date.toISO()})
+        }}
+      />
+    </View>
+  )
+}
+
+const legacy_ActivityListItem = ({ 
   timeGoal,    // number of seconds of the time goal for this activity or null if it is not a timed activity
   name,        // name of the activity
   repeatMode,      // 'daily' or 'weekly'
@@ -28,8 +72,8 @@ const ActivityListItem = ({
   archived,
   id,
   toggleCompleted,
-  startTimer,
-  stopTimer,
+  startTodayTimer,
+  stopTodayTimer,
   disabled,
   date
 }) => {
@@ -56,12 +100,12 @@ const ActivityListItem = ({
 
   function onPressPlay(){
     if(disabled) return
-    startTimer(id)
+    startTodayTimer(id)
   }
 
   function onPressPause(){
     if(disabled) return
-    stopTimer(id)
+    stopTodayTimer(id)
   }
 
   const current = isActivityRunning(intervals)
@@ -160,7 +204,7 @@ const ActivityListItem = ({
   );
 }
 
-export const SelectWeekliesListItem = ({checked, navigation}) => {
+export const SelectWeekliesListItem = ({checked, color='black', navigation}) => {
   const { t, i18n } = useTranslation()
 
   return(
@@ -169,11 +213,11 @@ export const SelectWeekliesListItem = ({checked, navigation}) => {
         left={() => (
           <View>
             <Checkbox 
-              color='black'
-              uncheckedColor='black'
+              color={color}
+              uncheckedColor={color}
               status={checked? 'checked' : 'unchecked'}
             />
-            {checked?<></>:<FontAwesomeIcon style={{position: 'absolute', alignSelf: 'center', marginTop: 17}} icon={faPlus} size={14} />}
+            {checked?<></>:<FontAwesomeIcon style={{color: color, position: 'absolute', alignSelf: 'center', marginTop: 17}} icon={faPlus} size={14} />}
           </View>
         )}
         title={t('today.selectWeekliesTitle')}
@@ -208,7 +252,7 @@ export const SelectTasksListItem = ({checked, onPress}) => {
   )
 }
 
-const DoubleProgressBar = ({firstColor, secondColor, backgroundColor, firstProgress, secondProgress, height}) => (
+export const DoubleProgressBar = ({firstColor, secondColor, backgroundColor, firstProgress, secondProgress, height}) => (
   <View >
     <Progress.Bar progress={secondProgress} width={null} height={height} unfilledColor={backgroundColor} borderRadius={0} borderWidth={0} color={secondColor} />
     <Progress.Bar style={{position: 'absolute'}} progress={firstProgress} height={height} color={firstColor} unfilledColor={ActivityListItemColors.progressBarUnfilledColor} borderWidth={0} width={useWindowDimensions().width} borderRadius={0} />
@@ -228,8 +272,8 @@ const styles = StyleSheet.create({
 
 const actionsToProps = {
   toggleCompleted,
-  startTimer,
-  stopTimer
+  startTodayTimer,
+  stopTodayTimer
 }
 
 export default connect(null, actionsToProps)(ActivityListItem);

@@ -1,17 +1,15 @@
 import React from 'react';
 import { FlatList } from 'react-native';
-import ActivityListItem from './ActivityListItem'
+import { TodayScreenItem } from '../activityHandler'
 
-const renderItem = ({ item }) => (
-    <ActivityListItem 
-      {...item}
-    />
-)
+const renderItem = (date, { item }) => {
+  return <TodayScreenItem activityId={item.id} date={date} />
+}
 
-const ActivityList = ({ data, disabled=false }) => (
+const ActivityList = ({ data, date, disabled=false }) => (
       <FlatList
         data={data}
-        renderItem={({ item }) => renderItem({item: {...item, disabled}})}
+        renderItem={({ item }) => renderItem(date, {item: {...item, disabled}})}
       />
 )
 

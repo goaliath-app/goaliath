@@ -4,7 +4,7 @@ import { Subheading, TextInput } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { ActivityFormColor } from '../../styles/Colors';
 
-const NumberOfWeeklyDaysInput = ({ timesPerWeek, setTimesPerWeek }) => {
+const NumberOfWeeklyDaysInput = ({ daysPerWeek, setDaysPerWeek }) => {
   const { t, i18n } = useTranslation()
   
   return(
@@ -19,13 +19,13 @@ const NumberOfWeeklyDaysInput = ({ timesPerWeek, setTimesPerWeek }) => {
         }} 
         selectTextOnFocus={true}
         selectionColor= {ActivityFormColor.weeklyDaysTextInputSelectionColor}
-        value={timesPerWeek} 
+        value={daysPerWeek} 
         selection={{start:0, end:1}}
         onChangeText={(value) => {
-          value = value.substr(value.length - 1)
           value = value<7?value:'7'
+          value = value.substr(value.length - 1)
           value = value>0?value:'1'
-          setTimesPerWeek(value)
+          setDaysPerWeek(value)
         }}  
         keyboardType='numeric' 
       />

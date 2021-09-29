@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { View, FlatList, Pressable, ScrollView } from 'react-native';
 import { List, Switch, Appbar, Menu, Paragraph, Divider, Title } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -8,13 +8,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { Header, ThreeDotsMenu, DeleteDialog, InfoCard } from '../components';
 import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal } from '../redux'
-import { frequency, hasSomethingToShow } from '../util'
+import { hasSomethingToShow } from '../util'
 import { GeneralColor, GoalColor, HeaderColor } from '../styles/Colors';
-
+import { getFrequencyString } from '../activityHandler'
 
 const Activity = ({ name, active, id, toggleActivity, activity }) => {
   const navigation = useNavigation();
   const { t, i18 } = useTranslation()
+
+  const frequencyString = useSelector((state) => getFrequencyString(state, activity.id, t))
 
   return (
     <View>
@@ -28,7 +30,7 @@ const Activity = ({ name, active, id, toggleActivity, activity }) => {
             value={active}
           />
         )}
-        description={frequency(activity, t)} 
+        description={frequencyString} 
       />
       <Divider />
     </View>
