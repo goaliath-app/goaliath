@@ -3,13 +3,16 @@ import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
 import { 
   selectEntriesByDay, selectActivityById, selectAllWeekEntriesByActivityId,
-  selectActivityEntities, selectGoalById, selectAllActivities, selectGoalEntities
+  selectActivityEntities, selectGoalById, selectAllActivities, selectGoalEntities,
+  findActivityRecord,
 } from './redux'
 
-export function hasSomethingToShow(activityList){
-  /* also works for lists of goals and entries */
-  for(let activity of activityList){
-    if(!activity.archived){
+export function hasSomethingToShow(list){
+  /* list can be a list of goals, activities, entries and fullLogs */
+  for(let item of list){
+    if(item.entry?.archived !== undefined && !item.entry.archived){
+      return true
+    }else if(item.archived !== undefined && !item.archived){
       return true
     }
   }
@@ -97,19 +100,29 @@ export function selectAllActiveActivities(state){
   return activeActivities
 }
 
-export function areThereWeeklyActivities(state){
-  const activities = selectAllActiveActivities(state)
-  const weeklyActivities = activities.filter(activity => activity.repeatMode=='weekly' && activity.active)
-  return weeklyActivities.length > 0
+export function selectActivityByIdAndDate(state, activityId, date){
+  let activityRecord
+
+  if(date){
+    const activityRecord = findActivityRecord(state, activityId, date)
+  } 
+
+  if(activityRecord) {
+    return activityRecord
+  }else{
+    return selectActivityById(state, activityId)
+  }
 }
+
 
 export function getWeeklyStats(state, day, activityId){
   /* counting all entries of that week up to the day specified
-  ignores later days. */
+  ignores given and later days. */
 
   let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
-  let weeklyTimes = 0
-  let daysDone = []
+  let daysDoneCount = 0
+  let daysDoneList = []
+  let repetitionsCount = 0
 
   const weekLogs = selectAllWeekEntriesByActivityId(state, activityId, day)
 
@@ -119,14 +132,26 @@ export function getWeeklyStats(state, day, activityId){
     }
     weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[thatDay].intervals))
     if(weekLogs[thatDay].completed){
-      weeklyTimes += 1
-      daysDone.push(parseInt(thatDay)+1)
+      daysDoneCount += 1
+      daysDoneList.push(parseInt(thatDay)+1)
     }
+    repetitionsCount += weekLogs[thatDay].repetitions? weekLogs[thatDay].repetitions : 0
   }
 
-  return {weeklyTime, weeklyTimes, daysDone}
+  return {weeklyTime, daysDoneCount, daysDoneList, repetitionsCount}
 }
 
+// DEPRECATED
+// this function
+//   returns a "fullLog" list for the given day
+//   decides wether it needs to be predicted or looked up in redux state
+// 
+// a fullLog is an entry and its activity data, merged. This concept is
+// deprecated and won't be used anymore, since we have the activityRecords
+// in the redux log slice.
+//
+// TODO: delete this function when its not in use anymore
+// its used at the moment in CalendarScreen and DayInCalendarScreen
 export function extractActivityList(state, day){
   let activityList = [] 
   var entries
@@ -139,12 +164,12 @@ export function extractActivityList(state, day){
 
   for(let entry of entries){
     const activity = selectActivityById(state, entry.id)
-    let fullEntry = {...activity, ...entry, date: day}
+    let fullEntry = {entry, activity, date: day}
 
     if(fullEntry.repeatMode == 'weekly'){
-      const { weeklyTime, weeklyTimes } = getWeeklyStats(state, day, fullEntry.id)
+      const { weeklyTime, daysDoneCount } = getWeeklyStats(state, day, fullEntry.id)
 
-      fullEntry = {...fullEntry, weeklyTime, weeklyTimes}
+      fullEntry = {...fullEntry, weeklyTime, weeklyTimes: daysDoneCount}
     }
 
     activityList.push(fullEntry)
@@ -192,57 +217,16 @@ export function startOfWeek(date, dayStartDate){
   return day.startOf('week')
 }
 
+export function getTodaySelector(state){
+  /* returns DateTime */
+  const dayStartHour = state.settings.dayStartHour
+  return startOfDay(DateTime.now(), dayStartHour)
+}
+
 export function getToday(dayStartHour){
   /* accepts both ISO and DateTime as arguments
   returns DateTime */
   return startOfDay(DateTime.now(), dayStartHour)
-}
-export function frequency(activity, t){
-  let frequency 
-    switch(activity.repeatMode){
-      case 'weekly':
-        if(activity.goal=='check'){
-          frequency = t('util.frequency.weekly.check', { activityTimesPerWeek: activity.timesPerWeek })
-        }else{
-          const expression = getPreferedExpression(activity.timeGoal, t)
-          frequency = t('util.frequency.weekly.time', { expressionValue: expression.value, expressionUnit: expression.localeUnit })
-        }
-        break
-      case 'select':
-        let days = ''
-        const labels = {
-          1: t('units.dayNamesShort2.monday'), 
-          2: t('units.dayNamesShort2.tuesday'), 
-          3: t('units.dayNamesShort2.wednesday'), 
-          4: t('units.dayNamesShort2.thursday'), 
-          5: t('units.dayNamesShort2.friday'), 
-          6: t('units.dayNamesShort2.saturday'), 
-          7: t('units.dayNamesShort2.sunday')
-        }
-        for (let day in activity.weekDays){
-          if (activity.weekDays[day]){
-            days = `${days} ${labels[day]}`
-          }
-        }
-        if(activity.goal=='check'){
-          frequency = t('util.frequency.select.check', { days })
-        }else{
-          const expression = getPreferedExpression(activity.timeGoal, t)
-          frequency = t('util.frequency.select.time', { expressionValue: expression.value, expressionUnit: expression.localeUnit, days })
-        }
-        break
-      case 'daily':
-        if(activity.goal=='check'){
-          frequency = t('util.frequency.daily.check')
-        }else{
-          const expression = getPreferedExpression(activity.timeGoal, t)
-          frequency = t('util.frequency.daily.time', { expressionValue: expression.value, expressionUnit: expression.localeUnit })
-        }
-        break
-      default:
-        frequency = t('util.frequency.error')
-    }
-  return (frequency)
 }
 
 export function dueToday(today, activity, activityGoal){

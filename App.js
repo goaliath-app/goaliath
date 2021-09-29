@@ -14,19 +14,23 @@ import { store, finishOnboarding as finishOnboardingAction } from './src/redux'
 import { 
   TodayScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, 
   ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen, 
-  DayInCalendarScreen, OnboardingScreen, SelectWeeklyActivitiesScreen
+  DayInCalendarScreen, OnboardingScreen, SelectWeeklyActivitiesScreen,
+  AddTasksScreen
 } from './src/screens'
 import { Drawer as CustomDrawer } from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
+import { generateDummyData } from './src/redux/Thunks'
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
 const persistor = persistStore(store)
+// persistor.purge()
 
 const TodayStack = () => (
   <Stack.Navigator initialRouteName='Today' headerMode='none'>
     <Stack.Screen name='Today' component={TodayScreen} />
+    <Stack.Screen name='AddTasks' component={AddTasksScreen} />
     <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
     <Stack.Screen name='ActivityForm' component={ActivityFormScreen} />
     <Stack.Screen name='SelectWeeklyActivities' component={SelectWeeklyActivitiesScreen} />
@@ -52,7 +56,7 @@ const CalendarStack = () => (
 )
 
 export default function App() {
-  // useEffect(() => {
+  // React.useEffect(() => {
   //   store.dispatch(generateDummyData())
   // }, [])
 

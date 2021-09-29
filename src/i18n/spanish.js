@@ -49,6 +49,8 @@ const es= {
     
     todayPannel: {
       title: 'Hoy',
+      repetitions: 'Repeticiones',
+      time: 'Tiempo',
       stopButton: 'Parar temporizador',
       startButton: 'Iniciar temporizador',
       checkboxLabel: 'Hecho',
@@ -57,28 +59,31 @@ const es= {
     activityForm: {
         headerTitle: 'Nueva actividad',
         nameInputLabel: 'Nombre de la actividad',
-        repeatSwitchBar: {
-          title: 'Periodicidad',
-          daily: 'diaria',
-          select: 'seleccionar',
-          weekly: 'semanal'
-        },
-        repeatInfoDialog: {
-          mainTitle: 'Periodicidad',
-          dailyTitle: 'Diaria',
-          dailyText: 'Tu meta es hacer la actividad todos los días.',
-          selectTitle: 'Seleccionar',
-          selectText: 'Como la diaria, pero solo ciertos días de la semana.',
-          weeklyTitle: 'Semanal',
-          weeklyText: 'Puedes hacer la actividad cualquier día de la semana. Aparecerá en la sección "Esta semana".',
-        },
-        objectiveSwitchLabel: 'Objetivo de tiempo',
         weeklyDaysLabel: 'Días a la semana',
         errors: {
           noName: 'Es necesario un nombre para tu actividad',
           noDaysSelected: 'Selecciona al menos un día',
-          noTime: 'Por favor introduce el tiempo a dedicar'
+          noTime: 'Por favor introduce el tiempo a dedicar',
+          noFrequency: 'Por favor selecciona una frecuencia'
         },
+        frequencyTitle: 'Frecuencia',
+        frequencyLabel: 'Selecciona el tipo de actividad',
+        switch: {
+          multipleTimes: 'Varias veces',
+          repetitionsGoal: 'Objetivo de repeticiones',
+          timeGoal: 'Objetivo de tiempo'
+        },
+        dailyRepetitions: 'Repeticiones diarias',
+        weeklyRepetitions: 'Repeticiones semanales',
+        dialog: {
+          title: 'Selecciona la frecuencia',
+          dailyTitle: 'Actividades diarias',
+          dailyDescription: 'Se hacen en días concretos de la semana',
+          freeTitle: 'Actividades libres',
+          freeDescription: 'Elige cuando hacerlas sobre la marcha.',
+          weeklyTitle: 'Total semanal',
+          weeklyDescription: 'Cumple con un objetivo cada semana.'
+        }
       },
       
     calendar: {
@@ -155,6 +160,14 @@ const es= {
       infoContent: 'No hay actividades programadas para esta semana. Puedes ir a la sección "Metas" para crear nuevas actividades.',
       selectWeekliesTitle: 'Elige las actividades semanales para hoy',
       selectWeekliesDescription: 'Pulsa aquí',
+      selectTasksTitle: 'Añade las tareas puntuales de hoy',
+      selectTasksDescription: 'Pulsa para añadir',
+      oneTimeTaskDescription: 'Tarea puntual',
+    },
+
+    addTasks: {
+      title: 'Añade Tareas Puntuales',
+      description: 'Las tareas aparencerán en este día como actividades que hacer solo una vez.',
     },
     
     weeklyActivities: {
@@ -184,22 +197,35 @@ const es= {
       begin: 'Vamos'
     },
 
-    util: {
-      frequency: {
-        weekly: {
-          check: '{{activityTimesPerWeek}} días por semana.',
-          time: '{{expressionValue}} {{expressionUnit}} por semana'
+    activityHandler: {
+      activityTypes: {
+        doNSecondsEachWeek: {
+          frequencyString: '{{expressionValue}} {{expressionUnit}} a la semana'
         },
-        select: {
-          check: 'Hacer los {{days}}',
-          time: '{{expressionValue}} {{expressionUnit}} los {{days}}'
+        doNTimesEachWeek: {
+          frequencyString: '{{repetitions}} repeticiones a la semana'
         },
-        daily: {
-          check: 'Todos los días',
-          time: '{{expressionValue}} {{expressionUnit}} todos los días'
+        doFixedDays: {
+          everyDayFrequencyString: 'cada día',
+          frequencyString: 'los {{daysOfWeek}}',
         },
-        error: 'ERROR'
+        doNDaysEachWeek: {
+          frequencyString: '{{days}} días a la semana'
+        }
       },
+      dailyGoals: {
+        // frequencyStrings of dailygoals get prepended to the 
+        // frequencyStrings of their corresponding activityType
+        doNSeconds: {
+          frequencyString: '{{value}} {{unit}}'
+        },
+        doNTimes: {
+          frequencyString: '{{repetitions}} veces',
+        },
+        doOneTime: {
+          frequencyString: 'Hacer',
+        },
+      }
     },
   
     app: {

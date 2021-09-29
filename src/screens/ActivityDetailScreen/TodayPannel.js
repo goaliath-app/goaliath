@@ -1,13 +1,14 @@
 import React from 'react';
+import { useDispatch } from 'react-redux'
 import { View } from 'react-native'
-import { Button, List, Checkbox, Divider, Paragraph } from 'react-native-paper';
+import { Button, List, Checkbox, Divider, Paragraph, TextInput } from 'react-native-paper';
 import { TimeInput } from '../../components';
 import { getTodayTime, isActivityRunning, isToday, startOfDay } from '../../util'
 import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
 import { TodayPannelColor } from '../../styles/Colors';
 
-const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntry, date, dayStartHour }) => {
+const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour }) => {
     React.useEffect(() => {
       if (isActivityRunning(entry.intervals)) {
         const intervalId = setInterval(() => {
@@ -20,14 +21,16 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
     const { t, i18n } = useTranslation()
   
     function onPressPlay(){
-      startTimer(entry.id)
+      startTodayTimer(entry.id)
     }
   
     function onPressPause(){
-      stopTimer(entry.id)
+      stopTodayTimer(entry.id)
     }
   
     const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
+
+    const dispatch = useDispatch()
     
     function updateTotalTime(seconds){
       const newInterval = dateIsToday?{
@@ -47,7 +50,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
     seconds = String(todayTime.seconds).padStart(2, '0')
     minutes = String(todayTime.minutes).padStart(2, '0')
     hours = String(todayTime.hours).padStart(2, '0')
-  
+    
     return(
       <View>
         <List.Item
@@ -62,28 +65,47 @@ const TodayPannel = ({ entry, toggleCompleted, startTimer, stopTimer, upsertEntr
             </View>
           )}
         />
-          <TimeInput 
-            regularColor={activityRunning? TodayPannelColor.activityRunning : TodayPannelColor.regularColor}
-            value={todayTime.as('seconds')} 
-            onValueChange={(value) => { 
-              setTodayTime(
-                Duration
-                  .fromObject({ seconds: value })
-                  .shiftTo('hours', 'minutes', 'seconds')
-              ) 
-              updateTotalTime(value)
-            }} 
-            />
-          {dateIsToday?
-            (activityRunning?
-              <Button onPress={onPressPause}>{t('todayPannel.stopButton')}</Button>
-              :
-              <Button 
-                onPress={onPressPlay}
-                >
-                  {t('todayPannel.startButton')}</Button>)
-              : null
-            }
+        {entry.repetitions !== undefined ?
+          <View>
+            <List.Item title={t('todayPannel.repetitions')} />
+            <View style={{ alignItems:'center' }}>
+              <TextInput
+              style={{fontSize: 50, textAlign: 'center', margin: 10, width: '30%', backgroundColor: TodayPannelColor.textInputBackground}} 
+              value={String(entry.repetitions)} 
+              onChangeText={(value) => {
+                parseInt(value)
+                value = value<1000?value:999
+                value = value>0?value:0
+                dispatch(upsertEntry({ date, entry: { ...entry, repetitions: value } }))
+              }}
+              selectTextOnFocus={true}
+              keyboardType='numeric' />
+            </View>
+            <List.Item title={t('todayPannel.time')} />
+          </View>
+        : null }
+        <TimeInput 
+          regularColor={activityRunning? TodayPannelColor.activityRunning : TodayPannelColor.regularColor}
+          value={todayTime.as('seconds')} 
+          onValueChange={(value) => { 
+            setTodayTime(
+              Duration
+                .fromObject({ seconds: value })
+                .shiftTo('hours', 'minutes', 'seconds')
+            ) 
+            updateTotalTime(value)
+          }} 
+          />
+        {dateIsToday?
+          (activityRunning?
+            <Button onPress={onPressPause}>{t('todayPannel.stopButton')}</Button>
+            :
+            <Button 
+              onPress={onPressPlay}
+              >
+                {t('todayPannel.startButton')}</Button>)
+            : null
+          }
         <Divider />
       </View>
     )

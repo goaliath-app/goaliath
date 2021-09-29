@@ -49,6 +49,8 @@ const en = {
 
     todayPannel: {
       title: 'Today',
+      repetitions: 'Repetitions',
+      time: 'Time',
       stopButton: 'Stop Timer',
       startButton: 'Start Timer',
       checkboxLabel: 'Done',
@@ -57,28 +59,31 @@ const en = {
     activityForm: {
       headerTitle: 'New activity',
       nameInputLabel: 'Activity\'s name',
-      repeatSwitchBar: {
-        title: 'Repeat',
-        daily: 'daily',
-        select: 'select days',
-        weekly: 'weekly'
-      },
-      repeatInfoDialog: {
-        mainTitle: 'Repeat modes',
-        dailyTitle: 'Daily',
-        dailyText: 'You aim to do the activity every day.',
-        selectTitle: 'Select',
-        selectText: 'Like daily, but at specific week days.',
-        weeklyTitle: 'Weekly',
-        weeklyText: 'You can do it any day of the week. It will appear in the "Week" tab.',
-      },
-      objectiveSwitchLabel: 'Time objective',
       weeklyDaysLabel: 'Days each week',
       errors: {
         noName: 'A name is required',
         noDaysSelected: 'At least select one day',
-        noTime: 'Please enter a time'
+        noTime: 'Please enter a time',
+        noFrequency: 'Please select a frequency'
       },
+      frequencyTitle: 'Frequency',
+      frequencyLabel: 'Select activity type',
+      switch: {
+        multipleTimes: 'Multiple Times',
+        repetitionsGoal: 'Repetitions Goal',
+        timeGoal: 'Time Goal'
+      },
+      dailyRepetitions: 'Daily Repetitions',
+      weeklyRepetitions: 'Weekly Repetitions',
+      dialog: {
+        title: 'Select your frequency',
+        dailyTitle: 'Daily Activities',
+        dailyDescription: 'Do on fixed days of the week',
+        freeTitle: 'Free Activities',
+        freeDescription: 'Choose when to do it on the fly',
+        weeklyTitle: 'Weekly Total',
+        weeklyDescription: 'Reach a certain goal each week'
+      }
     },
     
     calendar: {
@@ -157,6 +162,14 @@ const en = {
       infoContent: 'There are no activities scheduled for today. You can go to the "Goals" section of the app to create new activities.',
       selectWeekliesTitle: 'Choose weekly activities for today',
       selectWeekliesDescription: 'Tap here to select',
+      selectTasksTitle: 'Add one time tasks for today',
+      selectTasksDescription: 'Tap here to add',
+      oneTimeTaskDescription: 'One Time Task',
+    },
+
+    addTasks: {
+      title: 'Add One Time Tasks',
+      description: 'The tasks will be added to this day as "do once" activities.',
     },
 
     weeklyActivities: {
@@ -186,22 +199,35 @@ const en = {
       begin: 'Begin'
     },
 
-    util: {
-      frequency: {
-        weekly: {
-          check: '{{activityTimesPerWeek}} days per week.',
-          time: '{{expressionValue}} {{expressionUnit}} per week'
+    activityHandler: {
+      activityTypes: {
+        doNSecondsEachWeek: {
+          frequencyString: '{{expressionValue}} {{expressionUnit}} per week'
         },
-        select: {
-          check: 'Do on {{days}}',
-          time: '{{expressionValue}} {{expressionUnit}} on {{days}}'
+        doNTimesEachWeek: {
+          frequencyString: '{{repetitions}} repetitions each week'
         },
-        daily: {
-          check: 'Every day',
-          time: '{{expressionValue}} {{expressionUnit}} every day'
+        doFixedDays: {
+          everyDayFrequencyString: 'every day',
+          frequencyString: 'on {{daysOfWeek}}',
         },
-        error: 'ERROR'
+        doNDaysEachWeek: {
+          frequencyString: '{{days}} days each week'
+        }
       },
+      dailyGoals: {
+        // frequencyStrings of dailygoals get prepended to the 
+        // frequencyStrings of their corresponding activityType
+        doNSeconds: {
+          frequencyString: '{{value}} {{unit}}'
+        },
+        doNTimes: {
+          frequencyString: '{{repetitions}} times',
+        },
+        doOneTime: {
+          frequencyString: 'Do',
+        },
+      }
     },
 
     app: {
