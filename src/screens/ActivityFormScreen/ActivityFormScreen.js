@@ -186,11 +186,8 @@ const ActivityFormScreen = ({ route, navigation }) => {
           params, 
         }
 
-        console.log('newActivity', newActivity)
-
         if(validate()){
           if(activityId !== undefined){
-            console.log('editada')
             dispatch(updateActivity({...newActivity, id: activity.id}))
           }else{
             dispatch(createActivity(newActivity))

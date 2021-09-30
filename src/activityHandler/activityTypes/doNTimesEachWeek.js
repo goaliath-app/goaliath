@@ -50,7 +50,6 @@ const TodayScreenItem = ({ activityId, date }) => {
   
   React.useEffect(() => {
     if( totalReps >= weeklyRepsGoal && !entry.completed ){
-      console.log('entry.completed', entry.completed)
       dispatch(toggleCompleted({date: date, id: activityId}))
     }
   }, [totalReps, weeklyRepsGoal])

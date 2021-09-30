@@ -130,7 +130,6 @@ const CalendarScreen = ({ navigation, state }) => {
           onPress={
             () => { 
               const dateTime = DateTime.fromFormat(selectedDate, 'yyyy-M-d')
-              console.log('date to todayscreen', dateTime.toISO())
               navigation.navigate('DayInCalendar', { isoDate: dateTime.toISO()})
             }
             //oldfunction ====> navigation.navigate('DayInCalendar', {day: selectedDate})
