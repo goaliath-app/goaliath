@@ -10,12 +10,20 @@ export {
     selectAllActivities, selectActivityById, selectActivityEntities,
 } from './ActivitySlice' 
 
+// TODO: refactor
 export { 
-    addEntry, toggleCompleted, upsertEntry, deleteEntry,
-    startTodayTimer, stopTodayTimer, weekliesSelectedToday,
-    selectEntriesByDay, areWeekliesSelectedToday,
-    selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate,
-} from './LogSlice'
+    addEntry, // rename to addActivityInstance
+    toggleCompleted,
+    upsertEntry, // rename to updateActivityInstance
+    deleteEntry, // rename to deleteActivityInstance
+    startTodayTimer, 
+    stopTodayTimer, 
+    weekliesSelectedToday,
+    selectEntriesByDay, // rename to selectActivityInstancesByDay
+    areWeekliesSelectedToday, 
+    selectAllWeekEntriesByActivityId, // rename to selectAllWeekInstancesByActivityId 
+    selectEntryByActivityIdAndDate, // rename to selectInstanceByActivityIdAndDate
+} from './LogSlice'  // rename to activityInstancesSlice
 
 export { 
     addTodayTask, toggleTask, areTasksAddedToday, deleteTodayTask, getTodayTasks, tasksAddedToday 
