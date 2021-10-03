@@ -83,23 +83,6 @@ export function newEntry(activity){
   )
 }
 
-export function selectAllActiveActivities(state){
-  /* returns a list of all activities that:
-  - are not disabled or archived
-  - belong to goals that are not disabled or archived */
-  const allActivities = selectAllActivities(state)
-  const goalEntities = selectGoalEntities(state)
-
-  const activeActivities = allActivities.filter(activity => {
-    const goal = goalEntities[activity.goalId]
-    return(
-      activity.active && !activity.archived && goal.active && !goal.archived 
-    )
-  })
-
-  return activeActivities
-}
-
 export function getWeeklyStats(state, day, activityId){
   /* counting all entries of that week up to the day specified
   ignores given and later days. */
