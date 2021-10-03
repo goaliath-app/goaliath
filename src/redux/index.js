@@ -2,7 +2,7 @@ export { default as store } from './store'
 
 export { 
     createGoal, toggleGoal, updateGoal, archiveGoal,
-    selectAllGoals, selectGoalById, selectGoalEntities 
+    selectAllGoals, selectGoalById, 
 } from './GoalsSlice'
 
 export { 
@@ -18,10 +18,6 @@ export {
 } from './LogSlice'
 
 export { 
-    findActivityRecord, 
-} from './ActivityRecordsSlice'
-
-export { 
     addTodayTask, toggleTask, areTasksAddedToday, deleteTodayTask, getTodayTasks, tasksAddedToday 
 } from './TasksSlice'
 
@@ -33,5 +29,5 @@ export { setDayStartHour, finishOnboarding, setLanguage } from './SettingsSlice'
 
 export { 
     selectActivityByIdAndDate, selectAllActiveActivities, getWeeklyStats,
-    getTodaySelector, predictEntries, extractActivityList,
+    getTodaySelector, extractActivityList,
 } from './selectors'
