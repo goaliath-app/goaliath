@@ -1,7 +1,9 @@
 import { createSlice, createEntityAdapter, current } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import arrayMove from 'array-move'
-import { toDateTime, getTodaySelector } from '../util'
+import { toDateTime } from '../util'
+
+import { getTodaySelector } from './selectors'
 
 /* SLICE DESCRIPTION
 

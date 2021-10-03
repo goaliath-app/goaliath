@@ -157,12 +157,6 @@ export function startOfWeek(date, dayStartDate){
   return day.startOf('week')
 }
 
-export function getTodaySelector(state){
-  /* returns DateTime */
-  const dayStartHour = state.settings.dayStartHour
-  return startOfDay(DateTime.now(), dayStartHour)
-}
-
 export function getToday(dayStartHour){
   /* accepts both ISO and DateTime as arguments
   returns DateTime */

@@ -7,11 +7,12 @@ import {
   capAllTimers,
 } from './LogSlice'
 import { initDate as initTasksDate } from './TasksSlice'
-import { getTodaySelector, startOfDay, dueToday, newEntry, isActive } from './../util'
+import { startOfDay, dueToday, newEntry, isActive } from './../util'
 import { setState as setSettingsState } from './SettingsSlice'
 import { addActivityRecord, deleteActivityRecordsByDate } from './ActivityRecordsSlice'
 
 import { updateEntryThunk } from '../activityHandler'
+import { getTodaySelector } from './selectors'
 
 
 export function generateDummyData(){

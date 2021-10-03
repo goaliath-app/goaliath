@@ -7,9 +7,12 @@ import { selectGoalEntities } from './GoalsSlice'
 import { findActivityRecord } from './ActivityRecordsSlice'
 import { selectAllWeekEntriesByActivityId } from './LogSlice'
 
-import { getTodayTime } from './../redux'
+import { getTodayTime, startOfDay } from './../util'
 
-/* This file defines selectors that use data from more than one slice */
+/* 
+  This file defines selectors that use data from more than one slice 
+  and/or is out of the slice responsibilities
+*/
 
 export function selectActivityByIdAndDate(state, activityId, date){
   let activityRecord
@@ -66,4 +69,10 @@ export function getWeeklyStats(state, day, activityId){
   }
 
   return {weeklyTime, daysDoneCount, daysDoneList, repetitionsCount}
+}
+
+export function getTodaySelector(state){
+  /* returns DateTime */
+  const dayStartHour = state.settings.dayStartHour
+  return startOfDay(DateTime.now(), dayStartHour)
 }

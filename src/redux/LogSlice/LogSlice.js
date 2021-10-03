@@ -1,7 +1,9 @@
 import { createSlice, createEntityAdapter, current } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import { isActivityRunning, startOfWeek, getTodaySelector } from '../../util'
+import { isActivityRunning, startOfWeek } from '../../util'
 import arrayMove from 'array-move'
+
+import { getTodaySelector } from '../selectors'
 
 function compareEntries(a, b){
   if( a.completed == b.completed ){

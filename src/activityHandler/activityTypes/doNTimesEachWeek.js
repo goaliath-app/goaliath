@@ -1,8 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { selectEntryByActivityIdAndDate, 
-    createOrUnarchiveEntry, toggleCompleted, upsertEntry, selectActivityByIdAndDate, getWeeklyStats } from '../../redux'
-import { getTodaySelector } from '../../util'
+    createOrUnarchiveEntry, toggleCompleted, upsertEntry, selectActivityByIdAndDate, getWeeklyStats, getTodaySelector } from '../../redux'
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import { View, } from 'react-native'
