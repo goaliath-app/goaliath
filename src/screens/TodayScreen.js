@@ -14,7 +14,7 @@ const TodayScreen = ({ navigation }) => {
 
   // selectors
   const today = useSelector(getTodaySelector)
-  
+
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('today.headerTitle')} left='hamburger' navigation={navigation} />

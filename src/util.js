@@ -104,7 +104,7 @@ export function selectActivityByIdAndDate(state, activityId, date){
   let activityRecord
 
   if(date){
-    const activityRecord = findActivityRecord(state, activityId, date)
+    activityRecord = findActivityRecord(state, activityId, date)
   } 
 
   if(activityRecord) {

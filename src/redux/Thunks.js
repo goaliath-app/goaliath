@@ -4,19 +4,20 @@ import { selectGoalById, createGoal, setState as setGoalsState } from './GoalsSl
 import { 
   deleteOneTodaysEntry, upsertEntry, sortLog, selectEntryByActivityIdAndDate, selectLogById, deleteEntry,
   createLog, addEntry, sortTodayLog, setState as setLogsState, selectEntriesByDay, deleteLog, replaceEntry,
-  capAllTimers, addActivityRecord, deleteAllActivityRecords
+  capAllTimers,
 } from './LogSlice'
 import { initDate as initTasksDate } from './TasksSlice'
-import { getToday, startOfDay, dueToday, newEntry, isActive } from './../util'
+import { getTodaySelector, startOfDay, dueToday, newEntry, isActive } from './../util'
 import { setState as setSettingsState } from './SettingsSlice'
+import { addActivityRecord, deleteActivityRecordsByDate } from './ActivityRecordsSlice'
 
 import { updateEntryThunk } from '../activityHandler'
 
 
 export function generateDummyData(){
   return function(dispatch, getState){
-    const { dayStartHour } = getState().settings
-    const today = getToday(dayStartHour).plus({day: -5})
+    const state = getState()
+    const today = getTodaySelector(state).plus({day: -5})
     
     // goals
     dispatch(createGoal({name: 'dummy goal'}))
@@ -114,11 +115,9 @@ function getNewestDate(isoDatesList){
 
 export function updateLogs(){
   return function(dispatch, getState){
-    const { 
-      settings: { dayStartHour }, 
-      logs: { ids: loggedDatesISO } 
-    } = getState()
-    const today = getToday(dayStartHour)
+    const state = getState()
+    const { logs: { ids: loggedDatesISO } } = state
+    const today = getTodaySelector(state)
     const epoch = DateTime.fromMillis(0)
     
     // find latest logged day
@@ -139,9 +138,9 @@ export function updateLogs(){
       dispatch(updateLog({ date: today }))
 
     // today log has already been created
-    }else if(newestLogDate.toISO() == today.toISO()){ 
+    }else if(newestLogDate.toISO() == today.toISO()){
       // delete activity records that may exist for today, they are not needed   
-      dispatch(deleteAllActivityRecords({ date: today }))
+      dispatch(deleteActivityRecordsByDate({ date: today }))
       // update today's log
       dispatch(updateLog({ date: today }))
 
