@@ -11,16 +11,14 @@ export {
 } from './ActivitySlice' 
 
 export { 
-    createLog, addEntry, deleteOneTodaysEntry, toggleCompleted, deleteLog,
-    startTodayTimer, stopTodayTimer, sortTodayLog, upsertEntry, replaceEntry,
-    weekliesSelectedToday, deleteEntry,
-    selectAllLogs, selectLogById, areWeekliesSelectedToday,
-    selectThisWeekEntriesByActivityId, selectLogEntities, selectEntriesByDay,
+    addEntry, toggleCompleted, upsertEntry, deleteEntry,
+    startTodayTimer, stopTodayTimer, weekliesSelectedToday,
+    selectEntriesByDay, areWeekliesSelectedToday,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate,
 } from './LogSlice'
 
 export { 
-    addActivityRecord, deleteActivityRecordsByDate, findActivityRecord, 
+    findActivityRecord, 
 } from './ActivityRecordsSlice'
 
 export { 

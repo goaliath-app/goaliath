@@ -174,7 +174,7 @@ export const {
 } = logSlice.actions
 
 export const { 
-  selectAll: selectAllLogs, selectById: selectLogById, selectEntities: selectLogEntities
+  selectById: selectLogById
 } = logAdapter.getSelectors(state => state.logs)
 
 export function selectEntriesByDay(state, day){
