@@ -31,4 +31,4 @@ export {
 
 export { setDayStartHour, finishOnboarding, setLanguage } from './SettingsSlice'
 
-export { selectActivityByIdAndDate, selectAllActiveActivities } from './selectors'
+export { selectActivityByIdAndDate, selectAllActiveActivities, getWeeklyStats } from './selectors'

@@ -2,9 +2,7 @@ import { useStore } from 'react-redux'
 import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
 import { 
-  selectEntriesByDay, selectActivityById, selectAllWeekEntriesByActivityId,
-  selectActivityEntities, selectGoalById, selectAllActivities, selectGoalEntities,
-  findActivityRecord,
+  selectEntriesByDay, selectActivityById, selectActivityEntities, selectGoalById, 
 } from './redux'
 
 export function hasSomethingToShow(list){
@@ -81,32 +79,6 @@ export function newEntry(activity){
       archived: false
     }
   )
-}
-
-export function getWeeklyStats(state, day, activityId){
-  /* counting all entries of that week up to the day specified
-  ignores given and later days. */
-
-  let weeklyTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
-  let daysDoneCount = 0
-  let daysDoneList = []
-  let repetitionsCount = 0
-
-  const weekLogs = selectAllWeekEntriesByActivityId(state, activityId, day)
-
-  for(let thatDay in weekLogs){
-    if(day.weekday-1==thatDay){
-      break
-    }
-    weeklyTime = weeklyTime.plus(getTodayTime(weekLogs[thatDay].intervals))
-    if(weekLogs[thatDay].completed){
-      daysDoneCount += 1
-      daysDoneList.push(parseInt(thatDay)+1)
-    }
-    repetitionsCount += weekLogs[thatDay].repetitions? weekLogs[thatDay].repetitions : 0
-  }
-
-  return {weeklyTime, daysDoneCount, daysDoneList, repetitionsCount}
 }
 
 // DEPRECATED

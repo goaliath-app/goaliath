@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { selectActivityById, selectEntryByActivityIdAndDate, toggleCompleted, stopTodayTimer, startTodayTimer, selectActivityByIdAndDate } from '../../redux'
-import { getWeeklyStats, isActivityRunning, getPreferedExpression, getTodaySelector, getTodayTime, roundValue } from '../../util'
+import { selectActivityById, selectEntryByActivityIdAndDate, toggleCompleted, stopTodayTimer, startTodayTimer, selectActivityByIdAndDate, getWeeklyStats } from '../../redux'
+import { isActivityRunning, getPreferedExpression, getTodaySelector, getTodayTime, roundValue } from '../../util'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import { useTranslation } from 'react-i18next';
 import Duration from 'luxon/src/duration.js'
