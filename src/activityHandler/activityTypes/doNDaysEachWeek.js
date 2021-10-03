@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text } from 'react-native-paper'
 import { useSelector } from 'react-redux'
-import { selectActivityById } from '../../redux'
-import { getWeeklyStats, selectActivityByIdAndDate } from '../../util'
+import { selectActivityById, selectActivityByIdAndDate } from '../../redux'
+import { getWeeklyStats } from '../../util'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import dailyGoals from './dailyGoals'
 import { useTranslation } from 'react-i18next';

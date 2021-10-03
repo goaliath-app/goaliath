@@ -30,3 +30,5 @@ export {
 } from './Thunks'
 
 export { setDayStartHour, finishOnboarding, setLanguage } from './SettingsSlice'
+
+export { selectActivityByIdAndDate } from './selectors'

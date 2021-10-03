@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
-import { selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry, selectGoalById } from "../redux"
+import { selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry, selectGoalById, selectActivityByIdAndDate } from "../redux"
 import activityTypes from './activityTypes'
 import { WeekView as BaseWeekView } from '../components'
-import { isActive, selectAllActiveActivities, selectActivityByIdAndDate } from '../util'
+import { isActive, selectAllActiveActivities } from '../util'
 
 import { List } from 'react-native-paper'
 

@@ -2,8 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { View } from 'react-native'
 import { IconButton } from 'react-native-paper'
-import { getTodayTime, isActivityRunning, getPreferedExpression, getTodaySelector, selectActivityByIdAndDate } from '../../../util'
-import { toggleCompleted, stopTodayTimer, startTodayTimer, selectEntryByActivityIdAndDate } from '../../../redux'
+import { getTodayTime, isActivityRunning, getPreferedExpression, getTodaySelector } from '../../../util'
+import { toggleCompleted, stopTodayTimer, startTodayTimer, selectEntryByActivityIdAndDate, selectActivityByIdAndDate } from '../../../redux'
 import PlayFilledIcon from '../../../../assets/play-filled'
 import PlayOutlinedIcon from '../../../../assets/play-outlined'
 import PauseFilledIcon from '../../../../assets/pause-filled'

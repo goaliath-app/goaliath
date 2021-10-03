@@ -100,21 +100,6 @@ export function selectAllActiveActivities(state){
   return activeActivities
 }
 
-export function selectActivityByIdAndDate(state, activityId, date){
-  let activityRecord
-
-  if(date){
-    activityRecord = findActivityRecord(state, activityId, date)
-  } 
-
-  if(activityRecord) {
-    return activityRecord
-  }else{
-    return selectActivityById(state, activityId)
-  }
-}
-
-
 export function getWeeklyStats(state, day, activityId){
   /* counting all entries of that week up to the day specified
   ignores given and later days. */

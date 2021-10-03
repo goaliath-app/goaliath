@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { selectEntryByActivityIdAndDate, 
-    createOrUnarchiveEntry, toggleCompleted, upsertEntry } from '../../redux'
-import { getWeeklyStats, getTodaySelector, selectActivityByIdAndDate } from '../../util'
+    createOrUnarchiveEntry, toggleCompleted, upsertEntry, selectActivityByIdAndDate } from '../../redux'
+import { getWeeklyStats, getTodaySelector } from '../../util'
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import { View, } from 'react-native'

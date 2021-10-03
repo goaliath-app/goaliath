@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { selectEntryByActivityIdAndDate, toggleCompleted, upsertEntry } from '../../../redux'
-import { selectActivityByIdAndDate } from '../../../util'
+import { selectEntryByActivityIdAndDate, toggleCompleted, upsertEntry, selectActivityByIdAndDate } from '../../../redux'
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native'
 import { IconButton } from 'react-native-paper'

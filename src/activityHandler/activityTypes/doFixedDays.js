@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
-    createOrUnarchiveEntry, archiveOrDeleteEntry } from '../../redux'
-import { isActive, selectActivityByIdAndDate } from '../../util'
+    createOrUnarchiveEntry, archiveOrDeleteEntry, selectActivityByIdAndDate } from '../../redux'
+import { isActive } from '../../util'
 import dailyGoals from './dailyGoals'
 
 function updateEntryThunk( activityId, date ){
