@@ -1,9 +1,5 @@
-import { useStore } from 'react-redux'
 import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
-import { 
-  selectEntriesByDay, selectActivityById, selectActivityEntities, selectGoalById, 
-} from './redux'
 
 export function hasSomethingToShow(list){
   /* list can be a list of goals, activities, entries and fullLogs */
@@ -81,43 +77,6 @@ export function newEntry(activity){
   )
 }
 
-// DEPRECATED
-// this function
-//   returns a "fullLog" list for the given day
-//   decides wether it needs to be predicted or looked up in redux state
-// 
-// a fullLog is an entry and its activity data, merged. This concept is
-// deprecated and won't be used anymore, since we have the activityRecords
-// in the redux log slice.
-//
-// TODO: delete this function when its not in use anymore
-// its used at the moment in CalendarScreen and DayInCalendarScreen
-export function extractActivityList(state, day){
-  let activityList = [] 
-  var entries
-
-  if(day > getToday(state.settings.dayStartHour)){
-    entries = predictEntries(state, day)
-  }else{
-    entries = selectEntriesByDay(state, day)
-  }
-
-  for(let entry of entries){
-    const activity = selectActivityById(state, entry.id)
-    let fullEntry = {entry, activity, date: day}
-
-    if(fullEntry.repeatMode == 'weekly'){
-      const { weeklyTime, daysDoneCount } = getWeeklyStats(state, day, fullEntry.id)
-
-      fullEntry = {...fullEntry, weeklyTime, weeklyTimes: daysDoneCount}
-    }
-
-    activityList.push(fullEntry)
-  }
-
-  return activityList
-}
-
 export function isToday(date, dayStartDate){
   /* accepts both ISO and DateTime as arguments */
   if(!date) return false
@@ -192,28 +151,4 @@ export function isActive(activity, activityGoal){
     return false
   }
   return true
-}
-
-/**
- * Get the entries of the activities that would be due on a specific day given
- * the current activities and goals.
- * @param  {object}         state The whole redux state
- * @param  {Luxon.DateTime} day   Date to predict (dayStartHour adjustments
- * wont be applied)
- * @return {list of objects}      List of entries predicted for that day            
- */
-export function predictEntries(state, day){
-  let entries = []
-
-  const activities = selectActivityEntities(state)
-  for(let activityId in activities){
-    const activity = activities[activityId]
-    const goal = selectGoalById(state, activity.goalId)
-
-    if(dueToday(day, activity, goal)){
-      entries.push(newEntry(activity))
-    }
-  }
-
-  return entries
 }

@@ -8,8 +8,9 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { Header } from '../components';
-import { getTodayTime, getPreferedExpression, getToday, extractActivityList } from '../util'
+import { getTodayTime, getPreferedExpression, getToday } from '../util'
 import { CalendarColor, GeneralColor } from '../styles/Colors';
+import { extractActivityList } from '../redux'
 
 function overviewLog(state, day, t){
   const activityList = extractActivityList(state, day)
