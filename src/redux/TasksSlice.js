@@ -1,4 +1,5 @@
 import { createSlice, createEntityAdapter} from '@reduxjs/toolkit'
+import { DateTime } from 'luxon';
 import { toDateTime } from '../util'
 import { getTodaySelector } from './selectors'
 
@@ -65,7 +66,8 @@ const tasksSlice = createSlice({
       const { date, id } = action.payload
       const selectedDay = state.entities[toDateTime(date).toISO()]
       const task = selectedDay.tasks.entities[id]
-      entityAdapter.updateOne(selectedDay.tasks, {id: task.id, changes: {completed: !task.completed}})
+      const completed = task.completed? null : DateTime.now().toISO()
+      entityAdapter.updateOne(selectedDay.tasks, {id: task.id, changes: { completed }})
     },
     deleteTask(state, action){
       const { date, id } = action.payload
@@ -123,7 +125,7 @@ export function addTodayTask(name){
   return function(dispatch, getState){
     const state = getState()
     const today = getTodaySelector(state)
-    const task = { name, completed: false }
+    const task = { name, completed: null }
     dispatch(addTask({ date: today, task }))
   }
 }

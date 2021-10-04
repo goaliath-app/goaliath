@@ -6,7 +6,7 @@ import arrayMove from 'array-move'
 import { getTodaySelector } from '../selectors'
 
 function compareEntries(a, b){
-  if( a.completed == b.completed ){
+  if( (a.completed != null) == (b.completed != null) ){
     return 0
   }
   if( a.completed ){
@@ -42,9 +42,9 @@ An entry is:
   {
     id: id matching with the activity this log comes from
     intervals: [{startDate: Date, endDate: Date}],
-    completed: bool,
+    completed: ISODate of completion, or null if not completed,
     archived: bool, (a log is archived if it contains information that may be useful in the future but should not be shown i.e. if the activity has been disabled after logging some time on it)
-    ...other data specific to the activity type, like repetitions for doNTimes and doNTimesEachWeek
+    (optional) repetitions: list of ISODates of each repetition, 
   }
 
 */
@@ -95,8 +95,14 @@ const logSlice = createSlice({
       entryAdapter.removeOne(todaysLog, entryId)
     },
     toggleCompleted(state, action){
+      // TODO: remove the entry ordering, it is not needed anymore
+
+      // select data
       const { date, id } = action.payload
       const log = state.entities[date.toISO()].entries
+      const entry = log.entities[id]
+      
+      // get index of the first completed entry in that date
       let firstCompletedIndex = 0
       for(let i = 0; i < log.ids.length; i++){
         if(log.entities[log.ids[i]].completed){
@@ -104,10 +110,16 @@ const logSlice = createSlice({
           break
         }
       }
-      const entry = log.entities[id]
-      const newCompleted = !entry.completed
-      entryAdapter.upsertOne(log, {...entry, completed: newCompleted})
-      const newPosition = newCompleted? -1 : firstCompletedIndex
+      
+      // toggle the completed status of the entry
+      if(entry.completed){
+        entry.completed = null
+      }else{
+        entry.completed = DateTime.now().toISO()
+      }
+      
+      // move the entry to its new position
+      const newPosition = entry.completed? -1 : firstCompletedIndex
       log.ids = arrayMove(log.ids, log.ids.indexOf(id), newPosition)
     },
     startTimer(state, action){
@@ -165,14 +177,29 @@ const logSlice = createSlice({
             {...interval, endDate: capIsoDate}
         ))
       }
-    }
+    },
+    setRepetitions(state, action){
+      const { date, id, repetitions } = action.payload
+      const log = state.entities[date.toISO()].entries
+      const entry = log.entities[id]
+
+      if(entry.repetitions == undefined) return
+
+      if( entry.repetitions.length < repetitions ){
+        for(let i = entry.repetitions.length; i < repetitions; i++){
+          entry.repetitions.push(DateTime.now().toISO())
+        }
+      }else if( entry.repetitions.length > repetitions ){
+        entry.repetitions = entry.repetitions.slice(0, repetitions)
+      }
+    },
   }
 })
 
 export const { 
   createLog, addEntry, deleteEntry, toggleCompleted, startTimer, 
   stopTimer, sortLog, upsertEntry, setState, deleteLog, replaceEntry,
-  capAllTimers, setWeekliesSelected, 
+  capAllTimers, setWeekliesSelected, setRepetitions,
 } = logSlice.actions
 
 export const { 

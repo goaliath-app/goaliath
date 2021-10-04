@@ -7,6 +7,7 @@ import { getTodayTime, isActivityRunning, isToday, startOfDay } from '../../util
 import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
 import { TodayPannelColor } from '../../styles/Colors';
+import { setRepetitions } from './../../redux'
 
 const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour }) => {
     React.useEffect(() => {
@@ -71,12 +72,12 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
             <View style={{ alignItems:'center' }}>
               <TextInput
               style={{fontSize: 50, textAlign: 'center', margin: 10, width: '30%', backgroundColor: TodayPannelColor.textInputBackground}} 
-              value={String(entry.repetitions)} 
+              value={String(entry.repetitions.length)} 
               onChangeText={(value) => {
                 parseInt(value)
                 value = value<1000?value:999
                 value = value>0?value:0
-                dispatch(upsertEntry({ date, entry: { ...entry, repetitions: value } }))
+                dispatch(setRepetitions({ date, id: entry.id, repetitions: value }))
               }}
               selectTextOnFocus={true}
               keyboardType='numeric' />

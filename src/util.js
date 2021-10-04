@@ -70,7 +70,7 @@ export function newEntry(activity){
   return(
     {
       intervals: [], 
-      completed: false, 
+      completed: null, 
       id: activity.id,
       archived: false
     }

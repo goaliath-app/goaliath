@@ -1,7 +1,9 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { selectEntryByActivityIdAndDate, 
-    createOrUnarchiveEntry, toggleCompleted, upsertEntry, selectActivityByIdAndDate, getWeeklyStats, getTodaySelector } from '../../redux'
+import { 
+  selectEntryByActivityIdAndDate, createOrUnarchiveEntry, toggleCompleted, 
+  selectActivityByIdAndDate, getWeeklyStats, getTodaySelector, setRepetitions,
+} from '../../redux'
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import { View, } from 'react-native'
@@ -25,7 +27,7 @@ const TodayScreenItem = ({ activityId, date }) => {
   // alias values
   const weeklyReps = repetitionsCount
   const weeklyRepsGoal = activity.params.repetitions
-  const todayReps = entry.repetitions
+  const todayReps = entry.repetitions.length
   
   // compute values
   const totalReps = weeklyReps + todayReps
@@ -33,7 +35,7 @@ const TodayScreenItem = ({ activityId, date }) => {
   
   // functions
   function addOne(){
-    dispatch(upsertEntry({ date, entry: { ...entry, repetitions: todayReps + 1 } }))
+    dispatch(setRepetitions({date, id: activityId, repetitions: todayReps + 1}))
   }
   
   // get the correct left component
@@ -146,7 +148,7 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
 // addEntryThunk to add the repetitions field to entries of this activity type
 function addEntryThunk( activityId, date ){
   return (dispatch, getState) => {
-    dispatch(createOrUnarchiveEntry(date, activityId, { repetitions: 0 }))
+    dispatch(createOrUnarchiveEntry(date, activityId, { repetitions: [] }))
   }
 }
 

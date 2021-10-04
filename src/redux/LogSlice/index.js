@@ -1,6 +1,6 @@
 export {
     createLog, addEntry, upsertEntry, toggleCompleted, setState, sortLog, deleteEntry, deleteLog,
-    replaceEntry,
+    replaceEntry, setRepetitions,
     selectLogById, areWeekliesSelectedToday,
     selectThisWeekEntriesByActivityId, selectEntriesByDay,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate,

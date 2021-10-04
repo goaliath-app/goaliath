@@ -23,6 +23,7 @@ export {
     areWeekliesSelectedToday, 
     selectAllWeekEntriesByActivityId, // rename to selectAllWeekInstancesByActivityId 
     selectEntryByActivityIdAndDate, // rename to selectInstanceByActivityIdAndDate
+    setRepetitions,
 } from './LogSlice'  // rename to activityInstancesSlice
 
 export { 

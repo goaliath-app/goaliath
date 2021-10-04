@@ -65,7 +65,7 @@ export function getWeeklyStats(state, day, activityId){
       daysDoneCount += 1
       daysDoneList.push(parseInt(thatDay)+1)
     }
-    repetitionsCount += weekLogs[thatDay].repetitions? weekLogs[thatDay].repetitions : 0
+    repetitionsCount += weekLogs[thatDay].repetitions? weekLogs[thatDay].repetitions.length : 0
   }
 
   return {weeklyTime, daysDoneCount, daysDoneList, repetitionsCount}
