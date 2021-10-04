@@ -95,8 +95,6 @@ const logSlice = createSlice({
       entryAdapter.removeOne(todaysLog, entryId)
     },
     toggleCompleted(state, action){
-      // TODO: remove the entry ordering, it is not needed anymore
-
       // select data
       const { date, id } = action.payload
       const log = state.entities[date.toISO()].entries
