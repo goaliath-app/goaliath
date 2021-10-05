@@ -2,7 +2,7 @@ export { default as store } from './store'
 
 export { 
     createGoal, toggleGoal, updateGoal, archiveGoal,
-    selectAllGoals, selectGoalById, selectGoalEntities 
+    selectAllGoals, selectGoalById, 
 } from './GoalsSlice'
 
 export { 
@@ -10,21 +10,33 @@ export {
     selectAllActivities, selectActivityById, selectActivityEntities,
 } from './ActivitySlice' 
 
+// TODO: refactor
 export { 
-    createLog, addEntry, deleteOneTodaysEntry, toggleCompleted, deleteLog,
-    startTodayTimer, stopTodayTimer, sortTodayLog, upsertEntry, replaceEntry,
-    weekliesSelectedToday, deleteEntry,
-    selectAllLogs, selectLogById, areWeekliesSelectedToday,
-    selectThisWeekEntriesByActivityId, selectLogEntities, selectEntriesByDay,
-    selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate,
-    areTasksAddedToday, addTask, toggleTask, selectTasks, getTodayTasks,
-    addTodayTask, tasksAddedToday, addActivityRecord, findActivityRecord,
-    deleteAllActivityRecords,
-    deleteTodayTask,
-} from './LogSlice'
+    addEntry, // rename to addActivityInstance
+    toggleCompleted,
+    upsertEntry, // rename to updateActivityInstance
+    deleteEntry, // rename to deleteActivityInstance
+    startTodayTimer, 
+    stopTodayTimer, 
+    weekliesSelectedToday,
+    selectEntriesByDay, // rename to selectActivityInstancesByDay
+    areWeekliesSelectedToday, 
+    selectAllWeekEntriesByActivityId, // rename to selectAllWeekInstancesByActivityId 
+    selectEntryByActivityIdAndDate, // rename to selectInstanceByActivityIdAndDate
+    setRepetitions,
+} from './LogSlice'  // rename to activityInstancesSlice
+
+export { 
+    addTodayTask, toggleTask, areTasksAddedToday, deleteTodayTask, getTodayTasks, tasksAddedToday 
+} from './TasksSlice'
 
 export { 
     generateDummyData, updateLogs, importState, archiveOrDeleteEntry, createOrUnarchiveEntry
 } from './Thunks'
 
 export { setDayStartHour, finishOnboarding, setLanguage } from './SettingsSlice'
+
+export { 
+    selectActivityByIdAndDate, selectAllActiveActivities, getWeeklyStats,
+    getTodaySelector, extractActivityList,
+} from './selectors'

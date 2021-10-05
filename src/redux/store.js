@@ -7,12 +7,16 @@ import goalsReducer from './GoalsSlice'
 import activitySlice from './ActivitySlice'
 import logSlice from './LogSlice'
 import settingsSlice from './SettingsSlice'
+import tasksSlice from './TasksSlice'
+import activityRecordsSlice from './ActivityRecordsSlice'
 
 const rootReducer = combineReducers({
   goals: goalsReducer,
   activities: activitySlice,
   logs: logSlice,
   settings: settingsSlice,
+  tasks: tasksSlice,
+  activityRecords: activityRecordsSlice
 })
 
 const persistConfig = {

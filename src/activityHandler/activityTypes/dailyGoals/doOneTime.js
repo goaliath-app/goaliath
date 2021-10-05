@@ -2,8 +2,7 @@ import React from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { toggleCompleted, selectEntryByActivityIdAndDate } from '../../../redux'
-import { selectActivityByIdAndDate } from '../../../util'
+import { toggleCompleted, selectEntryByActivityIdAndDate, selectActivityByIdAndDate } from '../../../redux'
 import { Checkbox, ActivityListItem } from '../../../components'
 
 

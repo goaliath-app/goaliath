@@ -4,8 +4,10 @@ import { View, ScrollView } from 'react-native'
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { ActivityList } from '../components'
 import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog } from '../components';
-import { updateLogs, areWeekliesSelectedToday, getTodayTasks, areTasksAddedToday, deleteTodayTask, selectEntriesByDay } from '../redux'
-import { getTodaySelector } from '../util'
+import { 
+  updateLogs, areWeekliesSelectedToday, getTodayTasks, areTasksAddedToday, 
+  deleteTodayTask, selectEntriesByDay, getTodaySelector 
+} from '../redux'
 import { areThereWeeklyActivities, areTherePendingWeeklyActivities } from '../activityHandler'
 import { useTranslation } from 'react-i18next'
 

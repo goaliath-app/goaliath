@@ -5,9 +5,10 @@ import { GeneralColor, SelectWeekliesColor } from '../styles/Colors';
 import { Header, Checkbox } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Appbar, List, Text } from 'react-native-paper';
-import { selectAllActivities, selectEntriesByDay, addEntry, selectActivityEntities, deleteEntry, weekliesSelectedToday, upsertEntry, archiveOrDeleteEntry, createOrUnarchiveEntry } from '../redux';
-import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry, selectAllActiveActivities, getTodaySelector } from '../util';
-import Duration from 'luxon/src/duration.js'
+import { 
+  selectAllActivities, selectEntriesByDay, weekliesSelectedToday, 
+  getTodaySelector 
+} from '../redux';
 import { WeekView } from '../components';
 import { SelectWeekliesItemDue, addEntryThunk, removeEntryThunk, WeekView as ActivityHandlerWeekView, SelectWeekliesItemCompleted } from './../activityHandler'
 

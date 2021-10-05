@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { View } from 'react-native'
 import { DayContent } from '../components'
 import { Header } from '../components';
-import { getTodaySelector } from '../util'
+import { getTodaySelector } from '../redux'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 
@@ -14,7 +14,7 @@ const TodayScreen = ({ navigation }) => {
 
   // selectors
   const today = useSelector(getTodaySelector)
-  
+
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('today.headerTitle')} left='hamburger' navigation={navigation} />
