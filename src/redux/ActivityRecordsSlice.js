@@ -50,7 +50,11 @@ const activityRecordsSlice = createSlice({
         })
       }
 
-      entityAdapter.upsertOne(state.entities[activityRecord.id].entries, {...activityRecord, id: toDateTime(date).toISO()})
+      // using custom function because activityAdapter's one wont work
+      // with a newly created state
+      setOne(state.entities[activityRecord.id].entries, {...activityRecord, id: toDateTime(date).toISO()})
+
+      return state
     },
 
     deleteActivityRecordsByDate(state, action){
@@ -113,4 +117,20 @@ export function findActivityRecord(state, id, date){
   }
 
   return null
+}
+
+/* UTILITY FUNCTIONS */
+
+/* 
+Adds one entity to a normalized state if it does noot exist, replaces it
+otherwise. This function is needed instead of the entityAdapter CRUD operations
+if you want to create a new state and perform an operation to it in the same 
+redux action. entityAdapter operations do no take any effect in this case.
+*/ 
+function setOne(state, entity){
+  if(!state.entities[entity.id]){
+    state.ids.push(entity.id)
+  }
+  
+  state.entities[entity.id] = entity
 }
