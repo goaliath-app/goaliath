@@ -1,17 +1,27 @@
 import { DateTime } from 'luxon'
-import { selectAllActivities,  createActivity, setState as setActivitiesState, selectActivityById } from './ActivitySlice'
-import { selectGoalById, createGoal, setState as setGoalsState } from './GoalsSlice'
+
+import { startOfDay, dueToday, newEntry, isActive } from './../util'
+import { updateEntryThunk } from '../activityHandler'
+
+import { 
+  selectAllActivities,  createActivity, setState as setActivitiesState, 
+  selectActivityById 
+} from './ActivitySlice'
+
+import { 
+  selectGoalById, createGoal, setState as setGoalsState 
+} from './GoalsSlice'
+
 import { 
   deleteOneTodaysEntry, upsertEntry, sortLog, selectEntryByActivityIdAndDate, selectLogById, deleteEntry,
   createLog, addEntry, sortTodayLog, setState as setLogsState, selectEntriesByDay, deleteLog, replaceEntry,
   capAllTimers,
 } from './LogSlice'
-import { initDate as initTasksDate } from './TasksSlice'
-import { startOfDay, dueToday, newEntry, isActive } from './../util'
-import { setState as setSettingsState } from './SettingsSlice'
-import { addActivityRecord, deleteActivityRecordsByDate } from './ActivityRecordsSlice'
 
-import { updateEntryThunk } from '../activityHandler'
+import { setState as setTasksState, initDate as initTasksDate } from './TasksSlice'
+import { setState as setSettingsState } from './SettingsSlice'
+import { setState as setRecordsState, addActivityRecord, deleteActivityRecordsByDate } from './ActivityRecordsSlice'
+
 import { getTodaySelector } from './selectors'
 
 
@@ -237,5 +247,7 @@ export function importState(newState){
     dispatch(setActivitiesState({ newState: newState.activities }))
     dispatch(setGoalsState({ newState: newState.goals }))
     dispatch(setLogsState({ newState: newState.logs }))
+    dispatch(setTasksState({ newState: newState.tasks }))
+    dispatch(setRecordsState({ newState: newState.activityRecords }))
   }
 }

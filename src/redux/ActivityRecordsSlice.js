@@ -74,7 +74,7 @@ const activityRecordsSlice = createSlice({
 export default activityRecordsSlice.reducer
 
 export const { 
-  addActivityRecord, deleteActivityRecordsByDate
+  addActivityRecord, deleteActivityRecordsByDate, setState,
 } = activityRecordsSlice.actions
 
 
