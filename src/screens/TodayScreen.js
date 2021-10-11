@@ -7,6 +7,7 @@ import { getTodaySelector } from '../redux'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 
+import { CalendarHeatmap } from './../components/CalendarHeatmap'
 import { VictoryBarChart } from './../screens/ActivityDetailScreen/Stats'
 
 
@@ -21,6 +22,7 @@ const TodayScreen = ({ navigation }) => {
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('today.headerTitle')} left='hamburger' navigation={navigation} />
       <DayContent date={today} />
+      <CalendarHeatmap />
       <VictoryBarChart />
     </View>
   );
