@@ -35,14 +35,69 @@ export const CalendarHeatmap = ({
     0 is sunday, 1 is monday, etc.
   */
   weekStart,
+  /* 
+    colors: a list of text representations of colors. Data points will be
+    categorized in as many categories as colors based on its value, and each 
+    category will be represented by a color. 
+  */
+  colors = ['#9BE9A8', '#40C463', '#30A14E', '#216E39'],
+  /*
+    emptyColor: the color to be used for days without a value or with a
+    value of 0.
+  */
+  emptyColor = '#EBEDF0',
 }) => {
   // sample data:
   data = [
-    {date: '2021-10-04', color: 'red'},
-    {date: '2021-11-04', color: 'red'},
+    {date: '2021-10-07', color: 'red'},
+    {date: '2021-10-08', strength: 0.2},
+    {date: '2021-10-09', strength: 0.25},
+    {date: '2021-10-10', strength: 0.5},
+    {date: '2021-10-11', strength: 0.75},
+    {date: '2021-10-12', strength: 1},
+    {date: '2021-10-13', value: 10},
+    {date: '2021-10-14', value: 7},
+    {date: '2021-10-15', value: 3},
+    {date: '2021-10-16', value: 1},
+    {date: '2021-11-04'},
   ]
   weekStart = 1
   domain = { start: '2021-10-07', end: '2021-11-04' }
+
+  // find max value in data
+  let maxValue = 0
+  data.forEach(point => {
+    if(point.value && point.value > maxValue) {
+      maxValue = point.value
+    }
+  })
+
+  // normalize data point' values
+  data.forEach(point => {
+    if(point.value) {
+      point.value = point.value / maxValue
+    }
+  })
+
+  function getColor(value) {
+    // find the color that corresponds to the value
+    const numberOfColors = colors.length
+    const colorIndex = value==1? numberOfColors-1 : Math.floor(value * numberOfColors)
+    return colors[colorIndex]
+  }
+  
+  // set point colors based on value and strength
+  data.forEach(point => {
+    if(!point.color){
+      if(point.strength && point.strength > 0) {
+        point.color = getColor(point.strength)
+      }else if(point.value && point.value > 0) {
+        point.color = getColor(point.value)
+      }else{
+        point.color = emptyColor
+      }
+    }
+  })
 
   // transform data list into a dictionary with dates as keys
   const dataDict = {}
@@ -88,18 +143,14 @@ export const CalendarHeatmap = ({
     <View 
       style={{
         alignItems: 'center', 
-        justifyContent: 'center'
-      }
-    }>
+        justifyContent: 'center',
+      }}
+    >
       <FlatList 
         horizontal={true}
         
         data = {weekData}
-        // data = {[
-        //   {startDate: '2021-10-05', endDate: '2021-10-09'},
-        // ]}
-        
-        renderItem={({item}) =><WeekColumn data={dataDict} startDate={item.startDate} endDate={item.endDate} weekStart={weekStart} />}
+        renderItem={({item}) =><WeekColumn data={dataDict} startDate={item.startDate} endDate={item.endDate} weekStart={weekStart} emptyColor={emptyColor} />}
         />
     </View>
   )
@@ -123,7 +174,8 @@ const WeekColumn = ({
     the data points are objects with keys: { date, color } where date is the same
     as the key, and color is the string representation of a color 
   */
-  data 
+  data,
+  emptyColor
 }) => {
   const millisInADay = 1000 * 60 * 60 * 24;
   const daysToShow = (new Date(endDate) - new Date (startDate)) / millisInADay + 1
@@ -138,7 +190,7 @@ const WeekColumn = ({
   // fill days at the beggining of the week
   for (let i = 0; i < firstDaySlot; i++) {
     daysData.push({
-      color: 'pink',
+      color: 'transparent',
     })
   }
 
@@ -146,14 +198,14 @@ const WeekColumn = ({
     const dayDate = new Date(new Date(startDate).getTime() + i * millisInADay)
     const dayDateString = dayDate.toISOString().slice(0,10)
     const dayData = data[dayDateString]
-    const color = (dayData?.color) ? dayData.color : 'grey'
+    const color = (dayData?.color) ? dayData.color : emptyColor
     daysData.push({color: color})
   }
 
   // fill days at the end of the week
   for ( let i = firstDaySlot + daysToShow; i < 7; i++) {
     daysData.push({
-      color: 'pink',
+      color: 'transparent',
     })
   }
 
