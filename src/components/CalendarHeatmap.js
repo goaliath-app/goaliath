@@ -109,33 +109,32 @@ export const CalendarHeatmap = ({
   // calculate the number of weeks in domain
   const millisInADay = 1000 * 60 * 60 * 24;
   const millisInAWeek = millisInADay * 7;
-  const millisInDomain = new Date(domain.end) - new Date(domain.start);
-  const weeksInDomain = millisInDomain / millisInAWeek;
 
-  let daysToFirstWeekStart = new Date(domain.start).getDay() - weekStart;
+  const domainStartDateTime = DateTime.fromFormat(domain.start, 'yyyy-MM-dd')
+  const startDateWeekday = domainStartDateTime.weekday == 7 ? 0 : domainStartDateTime.weekday  // luxon dayOfWeek is 1-7, weekStart is 0-6
+  let daysToFirstWeekStart = startDateWeekday - weekStart  
   daysToFirstWeekStart += daysToFirstWeekStart < 0 ? 7 : 0;
-  const fistWeekStartDate  = new Date(new Date(domain.start).getTime() - daysToFirstWeekStart * millisInADay);
+
+  const firstWeekStartDateTime = domainStartDateTime.minus({days: daysToFirstWeekStart})
+
+  const domainEndDateTime = DateTime.fromFormat(domain.end, 'yyyy-MM-dd')
 
   const weekData = []
 
   for ( 
     // from the start of the first week
-    let weekStart = new Date(fistWeekStartDate); 
+    let weekStart = firstWeekStartDateTime;
     // until it surpasses the end of the domain    
-    weekStart <= new Date(domain.end); 
+    weekStart <= domainEndDateTime; 
     // add a week to the weekStart
-    weekStart.setTime(weekStart.getTime() + millisInAWeek) 
+    weekStart = weekStart.plus({days: 7})
   ) {
-    const weekEnd = new Date(weekStart.getTime() + millisInAWeek - millisInADay);
-    const endOfDomain = new Date(domain.end);
-    const startOfDomain = new Date(domain.start);
-    const endDate = weekEnd > endOfDomain ? endOfDomain : weekEnd;
-
-    const startDate = weekStart > startOfDomain ? weekStart : startOfDomain;
-
+    const weekEnd = weekStart.plus({days: 6})
+    const endDate = weekEnd > domainEndDateTime ? domainEndDateTime : weekEnd;
+    const startDate = weekStart > domainStartDateTime ? weekStart : domainStartDateTime;
     weekData.push({
-      startDate: startDate.toISOString().slice(0,10),
-      endDate: endDate.toISOString().slice(0,10),
+      startDate: startDate.toFormat('yyyy-MM-dd'),
+      endDate: endDate.toFormat('yyyy-MM-dd'),
     })
   }
 
@@ -178,9 +177,12 @@ const WeekColumn = ({
   emptyColor
 }) => {
   const millisInADay = 1000 * 60 * 60 * 24;
-  const daysToShow = (new Date(endDate) - new Date (startDate)) / millisInADay + 1
+  const daysToShow = DateTime.fromFormat(endDate, 'yyyy-MM-dd').diff(DateTime.fromFormat(startDate, 'yyyy-MM-dd'), ['days']).days + 1
   
-  let firstDaySlot = new Date(startDate).getDay() - weekStart
+  const startDateTime = DateTime.fromFormat(startDate, 'yyyy-MM-dd')
+  let weekday = startDateTime.weekday == 7? 0 : startDateTime.weekday  // luxon dayOfWeek is 1-7, weekStart is 0-6
+  let firstDaySlot = weekday - weekStart
+
   if (firstDaySlot < 0) {
     firstDaySlot += 7
   }
@@ -195,8 +197,8 @@ const WeekColumn = ({
   }
 
   for (let i = 0; i < daysToShow; i++) {
-    const dayDate = new Date(new Date(startDate).getTime() + i * millisInADay)
-    const dayDateString = dayDate.toISOString().slice(0,10)
+    const dayDateTime = DateTime.fromFormat(startDate, 'yyyy-MM-dd').plus({days: i})
+    const dayDateString = dayDateTime.toFormat('yyyy-MM-dd')
     const dayData = data[dayDateString]
     const color = (dayData?.color) ? dayData.color : emptyColor
     daysData.push({color: color})
