@@ -1,7 +1,20 @@
+/* 
+
+TODO: 
+  - make weekdays label dependent on weekStart prop
+  - allow month labels to overflow without adding space between the box collumns
+  - allow label internationalization
+  - adjust month label font size
+
+*/
+
 import React from 'react';
 import { View, Text, Dimensions, FlatList } from 'react-native'
 import { List, Divider } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
+
+import { DateTime } from 'luxon'
+
 
 // CUSTOM CALENDAR HEATMAP
 
@@ -46,6 +59,7 @@ export const CalendarHeatmap = ({
     value of 0.
   */
   emptyColor = '#EBEDF0',
+  boxSize = 15,
 }) => {
   // sample data:
   data = [
@@ -138,19 +152,40 @@ export const CalendarHeatmap = ({
     })
   }
 
+  function getWeekLabel(week){
+    if(isInTheFirstWeekOfTheMonth(week.startDate)){
+      return DateTime.fromFormat(week.startDate, 'yyyy-MM-dd').toFormat('MMM d')
+    }
+    return ''
+  }
+
+  function isInTheFirstWeekOfTheMonth(date, weekStart){
+    date = DateTime.fromFormat(date, 'yyyy-MM-dd')
+
+    return date.diff(date.startOf('month'), 'days') < 7
+  }
+
   return (
     <View 
       style={{
         alignItems: 'center', 
         justifyContent: 'center',
+        flexDirection: 'row',
       }}
     >
-      <FlatList 
-        horizontal={true}
-        
-        data = {weekData}
-        renderItem={({item}) =><WeekColumn data={dataDict} startDate={item.startDate} endDate={item.endDate} weekStart={weekStart} emptyColor={emptyColor} />}
-        />
+      <LabelColumn size={boxSize} labels={['','Mon','','Wed','','Fri','']} />
+      {
+      weekData.map(item => {
+        const label = getWeekLabel(item)
+        return (
+          <WeekColumn 
+            data={dataDict} startDate={item.startDate} endDate={item.endDate} 
+            weekStart={weekStart} emptyColor={emptyColor} boxSize={boxSize}
+            label={label}
+          />
+        )
+      })
+      }
     </View>
   )
 }
@@ -174,7 +209,9 @@ const WeekColumn = ({
     as the key, and color is the string representation of a color 
   */
   data,
-  emptyColor
+  emptyColor,
+  boxSize,
+  label = '',
 }) => {
   const millisInADay = 1000 * 60 * 60 * 24;
   const daysToShow = DateTime.fromFormat(endDate, 'yyyy-MM-dd').diff(DateTime.fromFormat(startDate, 'yyyy-MM-dd'), ['days']).days + 1
@@ -199,7 +236,7 @@ const WeekColumn = ({
   for (let i = 0; i < daysToShow; i++) {
     const dayDateTime = DateTime.fromFormat(startDate, 'yyyy-MM-dd').plus({days: i})
     const dayDateString = dayDateTime.toFormat('yyyy-MM-dd')
-    const dayData = data[dayDateString]
+     const dayData = data[dayDateString]
     const color = (dayData?.color) ? dayData.color : emptyColor
     daysData.push({color: color})
   }
@@ -212,16 +249,17 @@ const WeekColumn = ({
   }
 
   return (
-    <FlatList 
-        
-      data = {daysData}
-      
-      renderItem={({item}) =><DayBox color={item.color} />}
-    />
+    <View>
+      <HorizontalLabel size={boxSize} label={label} />
+      <FlatList 
+        data = {daysData}
+        renderItem={({item}) =><DayBox color={item.color} size={boxSize} />}
+      />
+    </View>
   )
 }
 
-const DayBox = ({ color }) => {
+const DayBox = ({ color, size }) => {
   if(!color) {
     color = 'grey'
   }
@@ -230,10 +268,54 @@ const DayBox = ({ color }) => {
     <View 
       style={{
         backgroundColor: color, 
-        height: 10,
-        width: 10,
+        height: size,
+        width: size,
         margin: 1,
       }}
     />
+  )
+}
+
+const VerticalLabel = ({ size, label }) => {
+  return (
+    <View 
+      style={{
+        height: size,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        marginVertical: 1,
+        marginRight: 5,
+      }}
+    >
+      <Text style={{fontSize: size*0.65}}>{label}</Text>
+    </View>
+  )
+}
+
+const LabelColumn = ({ size, labels }) => {
+  return (
+    <View 
+      style={{
+        alignItems: 'flex-start'
+      }}
+    >
+      {
+        labels.map(label => <VerticalLabel size={size} label={label} />)
+      }
+    </View>
+  )
+}
+
+const HorizontalLabel = ({ size, label }) => {
+  return (
+    <View 
+      style={{
+        height: size,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+      }}
+    >
+      <Text ellipsizeMode='clip' numberOfLines={1} style={{fontSize: size/2}}>{label}</Text>
+    </View>
   )
 }
