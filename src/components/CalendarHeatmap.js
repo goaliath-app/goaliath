@@ -1,8 +1,69 @@
+/* TODO: future work
+  
+  ---- MORE BOX STATES ----
+  ATM there are 4 possible states for each day box:
+    * If there is no log for that day: grey border
+    * If there is log but it has not been "touched": grey fill
+    * The activity is not completed but something has been done: light green fill
+    * The activity is completed: dark green fill
+  It would be nice to have different shades of green if the activity is closer
+  from completion, based on its dedicated time or reps.  
+
+  ---- Generalize the CalendarHeatmap component ----
+  So it can be published as a standalone component.
+  * Remove the hardcoded "if there is no data for that day, add a border" logic.
+  * Remove the calls to useTranslation and add another way to add localization.
+  * Review the entire component and sub-components to see if there is something
+     more to be generalized or improved.
+  * Bonus: add more customization props:
+      - Use user defined week column, day box or label components instead of the
+       default ones.
+      - Let users pass a function to calculate the day box props based on the
+       data point for that day.
+      - Add a style prop to the daybox that overrides its inner view style.
+
+  */
 
 import React from 'react';
+import { useSelector } from 'react-redux'
+import { selectAllActivityEntries, selectActivityByIdAndDate, getTodaySelector } from './../redux'
 import { View, Text, Dimensions, FlatList } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
+
+export const ActivityCalendarHeatmap = ({ activityId }) => {
+  const entries = useSelector((state) => selectAllActivityEntries(state, activityId))
+  const today = useSelector(getTodaySelector)
+  const state = useSelector((state) => state)
+  const heatmapData = []
+  Object.keys(entries).forEach((entryDate) => {
+    const thatDayActivity = selectActivityByIdAndDate(state, activityId, entryDate)
+    const entry = entries[entryDate]
+    let strength, color
+    if(entry.completed){
+      strength = 1
+    }else if(entry.intervals?.length > 0 || entry.repetitions?.length > 0){
+      strength = 0.1
+    }else{
+      color = '#EBEDF0'
+    }
+    heatmapData.push({ date: DateTime.fromISO(entryDate).toFormat('yyyy-MM-dd'), strength, color })
+  })
+
+  const domainStart = today.minus({months: 3})
+  const domain = {
+    start: domainStart.toFormat('yyyy-MM-dd'),
+    end: today.toFormat('yyyy-MM-dd')
+  }
+  return (
+    <CalendarHeatmap
+      data={heatmapData}
+      weekStart={1}
+      domain={domain}
+      emptyColor={'transparent'}
+    />
+  )
+}
 
 export const CalendarHeatmap = ({
   /* data: array containing the data points 
@@ -248,7 +309,8 @@ const WeekColumn = ({
     const dayDateString = dayDateTime.toFormat('yyyy-MM-dd')
      const dayData = data[dayDateString]
     const color = (dayData?.color) ? dayData.color : emptyColor
-    daysData.push({color: color})
+    const border = dayData? false : true
+    daysData.push({ color, border })
   }
 
   // fill days at the end of the week
@@ -263,13 +325,13 @@ const WeekColumn = ({
       <HorizontalLabel size={boxSize} label={label} />
       <FlatList 
         data = {daysData}
-        renderItem={({item}) =><DayBox color={item.color} size={boxSize} />}
+        renderItem={({item}) =><DayBox color={item.color} size={boxSize} border={item.border} />}
       />
     </View>
   )
 }
 
-const DayBox = ({ color, size }) => {
+const DayBox = ({ color, size, border=false }) => {
   if(!color) {
     color = 'grey'
   }
@@ -281,6 +343,8 @@ const DayBox = ({ color, size }) => {
         height: size,
         width: size,
         margin: 1,
+        borderWidth: border?1:0,
+        borderColor: '#EBEDF0',
       }}
     />
   )

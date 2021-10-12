@@ -239,6 +239,18 @@ export function selectThisWeekEntriesByActivityId(state, activityId){
   selectAllWeekEntriesByActivityId(state, activityId, DateTime.now())
 }
 
+export function selectAllActivityEntries(state, activityId){
+  // console.log(JSON.stringify(state))
+  let allEntries = {}
+  state.logs.ids.forEach((logDate) => {
+    const thatDayEntry = state.logs.entities[logDate].entries.entities[activityId]
+    if(thatDayEntry){
+      allEntries[logDate] = thatDayEntry
+    }
+  })
+  return allEntries
+}
+
 export default logSlice.reducer
 
 function getStartOfWeekDay(date, weekDayNumber, dayStartHour){

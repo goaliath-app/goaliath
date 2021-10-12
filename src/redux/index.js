@@ -24,6 +24,7 @@ export {
     selectAllWeekEntriesByActivityId, // rename to selectAllWeekInstancesByActivityId 
     selectEntryByActivityIdAndDate, // rename to selectInstanceByActivityIdAndDate
     setRepetitions,
+    selectAllActivityEntries,
 } from './LogSlice'  // rename to activityInstancesSlice
 
 export { 
