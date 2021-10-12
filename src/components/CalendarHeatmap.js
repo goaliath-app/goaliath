@@ -1,22 +1,8 @@
-/* 
-
-TODO: 
-  - make weekdays label dependent on weekStart prop
-  - allow month labels to overflow without adding space between the box collumns
-  - allow label internationalization
-  - adjust month label font size
-
-*/
 
 import React from 'react';
 import { View, Text, Dimensions, FlatList } from 'react-native'
-import { List, Divider } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
-
 import { DateTime } from 'luxon'
-
-
-// CUSTOM CALENDAR HEATMAP
 
 export const CalendarHeatmap = ({
   /* data: array containing the data points 
@@ -61,22 +47,7 @@ export const CalendarHeatmap = ({
   emptyColor = '#EBEDF0',
   boxSize = 15,
 }) => {
-  // sample data:
-  data = [
-    {date: '2021-10-07', color: 'red'},
-    {date: '2021-10-08', strength: 0.2},
-    {date: '2021-10-09', strength: 0.25},
-    {date: '2021-10-10', strength: 0.5},
-    {date: '2021-10-11', strength: 0.75},
-    {date: '2021-10-12', strength: 1},
-    {date: '2021-10-13', value: 10},
-    {date: '2021-10-14', value: 7},
-    {date: '2021-10-15', value: 3},
-    {date: '2021-10-16', value: 1},
-    {date: '2021-11-04'},
-  ]
-  weekStart = 1
-  domain = { start: '2021-10-07', end: '2021-11-04' }
+  const { t, i18 } = useTranslation()
 
   // find max value in data
   let maxValue = 0
@@ -152,9 +123,13 @@ export const CalendarHeatmap = ({
     })
   }
 
-  function getWeekLabel(week){
+  function getWeekLabel(week, monthNames){
+
     if(isInTheFirstWeekOfTheMonth(week.startDate)){
-      return DateTime.fromFormat(week.startDate, 'yyyy-MM-dd').toFormat('MMM d')
+      const weekStartDateTime = DateTime.fromFormat(week.startDate, 'yyyy-MM-dd')
+      const monthString = monthNames[weekStartDateTime.month]
+      const dayString = weekStartDateTime.toFormat('d')
+      return `${monthString} ${dayString}`
     }
     return ''
   }
@@ -162,8 +137,43 @@ export const CalendarHeatmap = ({
   function isInTheFirstWeekOfTheMonth(date, weekStart){
     date = DateTime.fromFormat(date, 'yyyy-MM-dd')
 
-    return date.diff(date.startOf('month'), 'days') < 7
+    return date.diff(date.startOf('month'), 'days').days < 7
   }
+
+  const dayNames = {
+    0: t('units.dayNamesShort3.sunday'),
+    1: t('units.dayNamesShort3.monday'),
+    2: t('units.dayNamesShort3.tuesday'),
+    3: t('units.dayNamesShort3.wednesday'),
+    4: t('units.dayNamesShort3.thursday'),
+    5: t('units.dayNamesShort3.friday'),
+    6: t('units.dayNamesShort3.saturday'),
+  }
+
+  const monthNames = {
+    1:  t('units.monthNamesShort.january'),
+    2:  t('units.monthNamesShort.february'),
+    3:  t('units.monthNamesShort.march'),
+    4:  t('units.monthNamesShort.april'),
+    5:  t('units.monthNamesShort.may'),
+    6:  t('units.monthNamesShort.june'),
+    7:  t('units.monthNamesShort.july'),
+    8:  t('units.monthNamesShort.august'),
+    9:  t('units.monthNamesShort.september'),
+    10: t('units.monthNamesShort.october'),
+    11: t('units.monthNamesShort.november'),
+    12: t('units.monthNamesShort.december'),
+  }
+
+  const labelColumnLabels = [
+    '',
+    dayNames[(1 + weekStart) % 7],
+    '',
+    dayNames[(3 + weekStart) % 7],
+    '',
+    dayNames[(5 + weekStart) % 7],
+    '',
+  ] 
 
   return (
     <View 
@@ -173,10 +183,10 @@ export const CalendarHeatmap = ({
         flexDirection: 'row',
       }}
     >
-      <LabelColumn size={boxSize} labels={['','Mon','','Wed','','Fri','']} />
+      <LabelColumn size={boxSize} labels={labelColumnLabels} />
       {
       weekData.map(item => {
-        const label = getWeekLabel(item)
+        const label = getWeekLabel(item, monthNames)
         return (
           <WeekColumn 
             data={dataDict} startDate={item.startDate} endDate={item.endDate} 
@@ -281,7 +291,7 @@ const VerticalLabel = ({ size, label }) => {
     <View 
       style={{
         height: size,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'flex-start',
         marginVertical: 1,
         marginRight: 5,
@@ -299,6 +309,8 @@ const LabelColumn = ({ size, labels }) => {
         alignItems: 'flex-start'
       }}
     >
+      {/* one empy vertical label to properly align the labels to the days */}
+      <VerticalLabel size={size} label={''} />  
       {
         labels.map(label => <VerticalLabel size={size} label={label} />)
       }
@@ -311,11 +323,14 @@ const HorizontalLabel = ({ size, label }) => {
     <View 
       style={{
         height: size,
+        width: size,
         justifyContent: 'center',
         alignItems: 'flex-start',
       }}
     >
-      <Text ellipsizeMode='clip' numberOfLines={1} style={{fontSize: size/2}}>{label}</Text>
+      <View style={{ position: 'absolute', height: size, width: 200, left: 2 }}>
+        <Text ellipsizeMode='clip' numberOfLines={1} style={{fontSize: size*0.65}}>{label}</Text>
+      </View>
     </View>
   )
 }
