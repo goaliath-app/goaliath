@@ -14,7 +14,7 @@ import { store, finishOnboarding as finishOnboardingAction } from './src/redux'
 import { 
   TodayScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, 
   ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen, 
-  DayInCalendarScreen, OnboardingScreen, SelectWeeklyActivitiesScreen,
+  OnboardingScreen, SelectWeeklyActivitiesScreen,
   AddTasksScreen
 } from './src/screens'
 import { Drawer as CustomDrawer } from './src/components'
@@ -50,7 +50,6 @@ const GoalsStack = () => (
 const CalendarStack = () => (
   <Stack.Navigator initialRouteName='Calendar' headerMode='none' >
     <Stack.Screen name='Calendar' component={CalendarScreen} />
-    <Stack.Screen name='DayInCalendar' component={DayInCalendarScreen} />
     <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
   </Stack.Navigator>
 )
