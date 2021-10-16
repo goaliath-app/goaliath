@@ -25,6 +25,8 @@ export {
     selectEntryByActivityIdAndDate, // rename to selectInstanceByActivityIdAndDate
     setRepetitions,
     selectAllActivityEntries,
+    selectDailyDurationById,
+    getPeriodStats,
 } from './LogSlice'  // rename to activityInstancesSlice
 
 export { 

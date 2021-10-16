@@ -9,6 +9,7 @@ import { GeneralColor } from '../styles/Colors';
 
 import { CalendarHeatmap, ActivityCalendarHeatmap } from './../components/CalendarHeatmap'
 import { VictoryBarChart } from './../screens/ActivityDetailScreen/Stats'
+import { ActivityBarChart, ActivityBarChartPicker } from './../components/BarCharts'
 
 
 const TodayScreen = ({ navigation }) => {
@@ -21,6 +22,7 @@ const TodayScreen = ({ navigation }) => {
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('today.headerTitle')} left='hamburger' navigation={navigation} />
+      <ActivityBarChartPicker activityId={0} />
       <DayContent date={today} />
 
       <ActivityCalendarHeatmap activityId={0}/>

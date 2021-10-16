@@ -1,7 +1,9 @@
 import { createSlice, createEntityAdapter, current } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import { isActivityRunning, startOfWeek } from '../../util'
+import { isActivityRunning, startOfWeek, getTodayTime } from '../../util'
 import arrayMove from 'array-move'
+import Duration from 'luxon/src/duration.js'
+
 
 import { getTodaySelector } from '../selectors'
 
@@ -276,3 +278,33 @@ export function areWeekliesSelectedToday(state){
   return log?.weekliesSelected? log.weekliesSelected : false
 }
 
+export function selectDailyDurationById(state, activityId, date){
+  const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+  console.log('id', activityId, 'date', date)
+  console.log('ENTRY', entry)
+  return entry? getTodayTime(entry.intervals) : Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
+}
+
+export function getPeriodStats(state, startDate, endDate, activityId){
+  /* gets stats for the activity in the inclusive period between startDate
+  and endDate. */
+  
+  let loggedTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
+  let daysDoneCount = 0
+  let daysDoneList = []
+  let repetitionsCount = 0
+
+  for(let date = startDate; date <= endDate; date = date.plus({days: 1})){
+    const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+    if(entry){
+      if(entry.completed){
+        daysDoneCount += 1
+        daysDoneList.push(date)
+      }
+      loggedTime = loggedTime.plus(getTodayTime(entry.intervals))
+      repetitionsCount += entry.repetitions? entry.repetitions.length : 0
+    }
+  }
+  
+  return { loggedTime, daysDoneCount, daysDoneList, repetitionsCount }
+}
