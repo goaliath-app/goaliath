@@ -13,7 +13,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-native-fontawesome": "^0.2.6",
     "@react-native-async-storage/async-storage": "^1.14.1",
-    "@react-native-community/datetimepicker": "3.0.4",
+    "@react-native-community/datetimepicker": "^3.5.2",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/drawer": "^5.12.4",
     "@react-navigation/native": "^5.9.3",
@@ -46,6 +46,7 @@
     "react-native-screens": "~2.15.2",
     "react-native-svg": "^12.1.0",
     "react-native-web": "~0.13.12",
+    "react-native-wheel-picker-expo": "^0.4.2",
     "react-redux": "^7.2.2",
     "redux-persist": "^6.0.0"
   },
