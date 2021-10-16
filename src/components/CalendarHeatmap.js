@@ -31,7 +31,7 @@ import { View, Text, Dimensions, FlatList } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 
-export const ActivityCalendarHeatmap = ({ activityId }) => {
+const ActivityCalendarHeatmap = ({ activityId }) => {
   const entries = useSelector((state) => selectAllActivityEntries(state, activityId))
   const today = useSelector(getTodaySelector)
   const state = useSelector((state) => state)
@@ -64,6 +64,8 @@ export const ActivityCalendarHeatmap = ({ activityId }) => {
     />
   )
 }
+
+export default ActivityCalendarHeatmap
 
 export const CalendarHeatmap = ({
   /* data: array containing the data points 

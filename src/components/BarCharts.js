@@ -48,7 +48,8 @@ export const ActivityBarChartPicker = ({ activityId }) => {
         onPress={value => setPeriod(value)}
         borderRadius={0}
         height={35}
-        buttonColor={"#674ffa"}
+        buttonColor={"#ECE0FD"}
+        selectedColor='black'
       />
       <SwitchSelector
         options={showOptions}
@@ -56,7 +57,8 @@ export const ActivityBarChartPicker = ({ activityId }) => {
         borderRadius={0}
         height={35}
         onPress={value => setShow(value)}
-        buttonColor={"#674ffa"}
+        buttonColor={"#ECE0FD"}
+        selectedColor='black'
       />
       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 14}}>
         <IconButton icon='chevron-left' size={20} onPress={() => setDate(date.minus(dateOffset))}/>
