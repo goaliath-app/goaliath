@@ -7,6 +7,13 @@ const en = {
       }
     },
 
+    dateWheelPicker: {
+      dialog: {
+        cancel: 'Cancel',
+        acept: 'OK'
+      }
+    },
+
     deleteDialog: {
       delete: 'Delete',
       cancel: 'Cancel'

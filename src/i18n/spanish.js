@@ -6,6 +6,13 @@ const es= {
           weekTimeGoal: 'Esta semana: dedicado {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
         }
     },
+
+    dateWheelPicker: {
+      dialog: {
+        cancel: 'Cancelar',
+        acept: 'OK'
+      }
+    },
   
     deleteDialog: {
         delete: 'Borrar',
