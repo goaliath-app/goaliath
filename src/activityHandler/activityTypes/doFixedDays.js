@@ -79,9 +79,38 @@ export function getDayActivityCompletionRatio(state, activityId, date){
   return dailyGoal.getDayActivityCompletionRatio(state, activityId, date)
 }
 
+function getWeekActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  let numberOfDaysGoal = 0
+  Object.values(activity.params.daysOfWeek).forEach( day => {
+    if(day){ 
+      numberOfDaysGoal += 1
+    }
+  })
+
+  const weekStartDate = date.startOf('week')
+  const weekEndDate = date.endOf('week')
+
+  let completionAccumulator = 0
+  for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
+    const entry = selectEntryByActivityIdAndDate(state, activityId, day)
+    if( entry && !entry.archived ){
+      completionAccumulator += getDayActivityCompletionRatio(state, activityId, date)
+    }
+  }
+
+  if( numberOfDaysGoal == 0 ){
+    return 1
+  } else {
+    return Math.min( 1, completionAccumulator / numberOfDaysGoal )
+  }
+}
+
 export default {
   updateEntryThunk,
   TodayScreenItem,
   getFrequencyString,
   getDayActivityCompletionRatio,
+  getWeekActivityCompletionRatio,
 }

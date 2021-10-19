@@ -177,6 +177,28 @@ export function getDayActivityCompletionRatio(state, activityId, date){
   }
 }
 
+function getWeekActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  const weeklyRepsGoal = activity.params.repetitions
+
+  const weekStartDate = date.startOf('week')
+  const weekEndDate = date.endOf('week')
+
+  let repetitionsAccumulator = 0
+  for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
+    const entry = selectEntryByActivityIdAndDate(state, activityId, day)
+    if( entry && !entry.archived ){
+      repetitionsAccumulator += entry.repetitions.length
+    }
+  }
+
+  if( weeklyRepsGoal == 0 ){
+    return 1
+  } else {
+    return Math.min( 1, repetitionsAccumulator / weeklyRepsGoal )
+  }
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
@@ -185,6 +207,7 @@ export default {
   isWeekCompleted,
   getFrequencyString,
   getDayActivityCompletionRatio,
+  getWeekActivityCompletionRatio
   // WeekView,
 }
 

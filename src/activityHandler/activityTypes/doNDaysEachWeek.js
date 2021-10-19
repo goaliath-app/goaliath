@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native-paper'
 import { useSelector } from 'react-redux'
-import { selectActivityById, selectActivityByIdAndDate, getWeeklyStats } from '../../redux'
+import { selectActivityById, selectActivityByIdAndDate, getWeeklyStats, selectEntryByActivityIdAndDate } from '../../redux'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import dailyGoals from './dailyGoals'
 import { useTranslation } from 'react-i18next';
@@ -125,6 +125,28 @@ export function getDayActivityCompletionRatio(state, activityId, date){
   return dailyGoal.getDayActivityCompletionRatio(state, activityId, date)
 }
 
+function getWeekActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  const daysGoal = activity.params.days
+
+  const weekStartDate = date.startOf('week')
+  const weekEndDate = date.endOf('week')
+
+  let completionAccumulator = 0
+  for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
+    const entry = selectEntryByActivityIdAndDate(state, activityId, day)
+    if( entry && !entry.archived ){
+      completionAccumulator += getDayActivityCompletionRatio(state, activityId, date)
+    }
+  }
+
+  if( daysGoal == 0 ){
+    return 1
+  } else {
+    return Math.min( 1, completionAccumulator / daysGoal )
+  }
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
@@ -133,6 +155,7 @@ export default {
   isWeekCompleted,
   getFrequencyString,
   getDayActivityCompletionRatio,
+  getWeekActivityCompletionRatio,
 }
 
 function isWeekCompleted( state, activityId, date ){

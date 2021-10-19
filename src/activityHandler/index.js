@@ -193,4 +193,17 @@ export function getDayCompletionRatio(state, date){
   return dayCompletionRatio
 }
 
+export function getWeekActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+
+  const activityType = activityTypes[activity.type]
+
+  if(activityType.getWeekActivityCompletionRatio){
+    return activityType.getWeekActivityCompletionRatio(state, activityId, date)
+  }else{
+    // Error
+    throw `activity type ${activity.type} does not have a getWeekActivityCompletionRatio function.`
+  }
+}
+
 
