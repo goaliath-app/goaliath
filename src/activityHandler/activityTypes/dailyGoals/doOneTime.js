@@ -35,4 +35,18 @@ function getFrequencyString(state, activityId, t){
   return t('activityHandler.dailyGoals.doOneTime.frequencyString')
 }
 
-export default { TodayScreenItem, getFrequencyString }
+export function getDayCompletionRatio(state, activityId, date){
+  const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+
+  if(!entry){
+    return 0
+  }else if(entry.completed){
+    return 1
+  }else if(entry.repetitions?.length > 0 || entry.intervals.length > 0){
+    return 0.1
+  }else{
+    return 0
+  }
+}
+
+export default { TodayScreenItem, getFrequencyString, getDayCompletionRatio }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
-import { selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry, selectGoalById, selectActivityByIdAndDate, selectAllActiveActivities } from "../redux"
+import { selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry, selectGoalById, selectActivityByIdAndDate, selectAllActiveActivities, selectEntryByActivityIdAndDate } from "../redux"
 import activityTypes from './activityTypes'
 import { WeekView as BaseWeekView } from '../components'
 import { isActive } from '../util'
@@ -147,4 +147,27 @@ export function getFrequencyString(state, activityId, t, date=null){
   activityType.getFrequencyString(state, activityId, t)
     :
     'ERROR: no frequency string'
+}
+
+export function getDayCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+
+  const activityType = activityTypes[activity.type]
+
+  if(activityType.getDayCompletionRatio){
+    return activityType.getDayCompletionRatio(state, activityId, date)
+  }else{
+    // Generic completion ratio calculation
+    const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+
+    if(!entry){
+      return 0
+    }else if(entry.completed){
+      return 1
+    }else if(entry.repetitions?.length > 0 || entry.intervals.length > 0){
+      return 0.1
+    }else{
+      return 0
+    }
+  }
 }

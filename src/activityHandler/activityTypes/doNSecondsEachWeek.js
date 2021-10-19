@@ -203,6 +203,22 @@ function getFrequencyString(state, activityId, t, date=null){
   return t('activityHandler.activityTypes.doNSecondsEachWeek.frequencyString', {expressionValue: value, expressionUnit: unit})
 }
 
+export function getDayCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+  const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+
+  if(!entry){
+    return 0
+  }else if(entry.completed){
+    return 1
+  }else{
+    const todaySeconds = getTodayTime(entry.intervals).as('seconds')
+    const weeklySecondsGoal = activity.params.seconds
+
+    return Math.min(1, todaySeconds / (weeklySecondsGoal / 7) )
+  }
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
@@ -210,6 +226,7 @@ export default {
   WeekView,
   isWeekCompleted,
   getFrequencyString,
+  getDayCompletionRatio,
 }
 
 function isWeekCompleted( state, activityId, date ){

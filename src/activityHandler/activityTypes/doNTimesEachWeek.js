@@ -161,6 +161,22 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
+export function getDayCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+  const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+
+  if(!entry){
+    return 0
+  }else if(entry.completed){
+    return 1
+  }else{
+    const todayReps = entry.repetitions.length
+    const weeklyRepsGoal = activity.params.repetitions
+
+    return Math.min(1, todayReps / (weeklyRepsGoal / 7) )
+  }
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
@@ -168,6 +184,7 @@ export default {
   addEntryThunk,
   isWeekCompleted,
   getFrequencyString,
+  getDayCompletionRatio,
   // WeekView,
 }
 

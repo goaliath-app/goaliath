@@ -118,6 +118,13 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
+export function getDayCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
+
+  return dailyGoal.getDayCompletionRatio(state, activityId, date)
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
@@ -125,6 +132,7 @@ export default {
   WeekView,
   isWeekCompleted,
   getFrequencyString,
+  getDayCompletionRatio,
 }
 
 function isWeekCompleted( state, activityId, date ){
