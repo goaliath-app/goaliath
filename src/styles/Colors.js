@@ -70,7 +70,9 @@ export const ActivityFormColor = {
 
 export const CalendarColor = {
     progressBarColor: '#7B61FF',
-    dayProgress: '#B7F5B7'
+    dayProgress: '#CFFFD1',
+    today: '#52A5F5',
+    todayTextColor: 'white'
 }
 
 export const GoalColor = {

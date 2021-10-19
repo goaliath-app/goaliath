@@ -5,14 +5,13 @@ import ProgressBar from 'react-native-progress/Bar';
 import { CalendarColor } from '../styles/Colors';
 
 /* TODO: Al mantener pulsado un día, que salga la pantalla de ese día.
-         Que se marque el día de hoy.
          Si el día es de otro mes, que salga con un estilo diferente. */
 const CalendarDayItem = ({ today, day }) => (
   <View style={styles.dayComponent}>
     <View style={{flex: 1, justifyContent: 'center', margin: 5}}>
       {/* Day ProgressBar */}
       <ProgressBar 
-      progress={0.7} 
+      progress={1} 
       height='100%' 
       color={CalendarColor.dayProgress} 
       borderWidth={0} 
@@ -21,7 +20,16 @@ const CalendarDayItem = ({ today, day }) => (
       style={{ transform: [{ rotate: '-90deg' }]}}
       />
       <View style={{position: 'absolute', flex: 1, alignSelf: 'center'}}>
+        {today.day===day.day && today.month===day.month && today.year===day.year? 
+        <View style={styles.todayView}>
+          <Subheading style={{color: CalendarColor.todayTextColor, fontWeight: 'bold' }}>
+            {day.toFormat('d')}
+          </Subheading>
+        </View>
+        :
         <Subheading>{day.toFormat('d')}</Subheading>
+         }
+        
       </View>
     </View>
   </View>
@@ -67,10 +75,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 
-  dayComponent:{
+  dayComponent: {
     flex: 1, 
     aspectRatio: 1,
   },
+
+  todayView: {
+    backgroundColor: CalendarColor.today, 
+    borderRadius: 50, 
+    width: 50, 
+    height: 50, 
+    justifyContent: 'center', 
+    alignItems: 'center'
+  }
 
 })
 
