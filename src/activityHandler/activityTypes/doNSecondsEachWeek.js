@@ -203,7 +203,7 @@ function getFrequencyString(state, activityId, t, date=null){
   return t('activityHandler.activityTypes.doNSecondsEachWeek.frequencyString', {expressionValue: value, expressionUnit: unit})
 }
 
-export function getDayCompletionRatio(state, activityId, date){
+export function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate( state, activityId, date )
   const entry = selectEntryByActivityIdAndDate(state, activityId, date)
 
@@ -226,7 +226,7 @@ export default {
   WeekView,
   isWeekCompleted,
   getFrequencyString,
-  getDayCompletionRatio,
+  getDayActivityCompletionRatio,
 }
 
 function isWeekCompleted( state, activityId, date ){

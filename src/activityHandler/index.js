@@ -149,13 +149,13 @@ export function getFrequencyString(state, activityId, t, date=null){
     'ERROR: no frequency string'
 }
 
-export function getDayCompletionRatio(state, activityId, date){
+export function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate( state, activityId, date )
 
   const activityType = activityTypes[activity.type]
 
-  if(activityType.getDayCompletionRatio){
-    return activityType.getDayCompletionRatio(state, activityId, date)
+  if(activityType.getDayActivityCompletionRatio){
+    return activityType.getDayActivityCompletionRatio(state, activityId, date)
   }else{
     // Generic completion ratio calculation
     const entry = selectEntryByActivityIdAndDate(state, activityId, date)
@@ -171,3 +171,5 @@ export function getDayCompletionRatio(state, activityId, date){
     }
   }
 }
+
+

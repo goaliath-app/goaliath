@@ -161,7 +161,7 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
-export function getDayCompletionRatio(state, activityId, date){
+export function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate( state, activityId, date )
   const entry = selectEntryByActivityIdAndDate(state, activityId, date)
 
@@ -184,7 +184,7 @@ export default {
   addEntryThunk,
   isWeekCompleted,
   getFrequencyString,
-  getDayCompletionRatio,
+  getDayActivityCompletionRatio,
   // WeekView,
 }
 
