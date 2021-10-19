@@ -3,7 +3,7 @@ import { Linking, View, Image } from 'react-native'
 import { Divider, Title, Subheading } from 'react-native-paper'
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faCalendarDay, faCalendarWeek, faTrophy, faCalendarAlt, faCog, faBlog } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarDay, faCalendarWeek, faTrophy, faCalendarAlt, faCog, faBlog, faChartBar } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { DrawerColor } from '../styles/Colors'
@@ -44,6 +44,7 @@ const Drawer = (props) => {
       <CustomDrawerItem label={t('goals.headerTitle')} icon={faTrophy} route='Goals' index={2} />
       <CustomDrawerItem label={t('calendar.headerTitle')} icon={faCalendarAlt} route='Calendar' index={3} />
       <CustomDrawerItem label={t('settings.headerTitle')} icon={faCog} route='Settings' index={4} />
+      <CustomDrawerItem label={t('statsScreen.drawerTitle')} icon={faChartBar} route='Stats' index={5} />
       <DrawerItem
         label={t('drawer.blog')}
         icon={({color})=> <FontAwesomeIcon icon={faBlog} color={color} size={20} />}

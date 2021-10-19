@@ -48,6 +48,11 @@ const es= {
   
         }
     },
+
+    statsScreen: {
+      drawerTitle: 'Estadísticas',
+      headerTitle: 'Estadísticas',
+    },
     
     todayPannel: {
       title: 'Hoy',
@@ -236,7 +241,8 @@ const es= {
         week: 'Semana',
         goals: 'Metas',
         calendar: 'Calendario',
-        settings: 'Ajustes'
+        settings: 'Ajustes',
+        stats: 'Estadísticas',
       }
     },
 

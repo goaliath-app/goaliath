@@ -44,8 +44,12 @@ const en = {
         title: 'This week',
         hoursDedicated: ' total hours dedicated',
         daysCompleted: ' days completed'
-
       }
+    },
+
+    statsScreen: {
+      drawerTitle: 'Stats',
+      headerTitle: 'Stats',
     },
 
     todayPannel: {
@@ -237,6 +241,7 @@ const en = {
         week: 'Week',
         goals: 'Goals',
         calendar: 'Calendar',
+        stats: 'Stats',
         settings: 'Settings'
       }
     },
