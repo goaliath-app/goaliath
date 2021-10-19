@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Subheading } from 'react-native-paper';
 import ProgressBar from 'react-native-progress/Bar';
 import { CalendarColor } from '../styles/Colors';
 
@@ -9,8 +9,20 @@ import { CalendarColor } from '../styles/Colors';
          Si el día es de otro mes, que salga con un estilo diferente. */
 const CalendarDayItem = ({ today, day }) => (
   <View style={styles.dayComponent}>
-    <View style={styles.dayProgress}>
-      <Text>{day.toFormat('d')}</Text>
+    <View style={{flex: 1, justifyContent: 'center', margin: 5}}>
+      {/* Day ProgressBar */}
+      <ProgressBar 
+      progress={0.7} 
+      height='100%' 
+      color={CalendarColor.dayProgress} 
+      borderWidth={0} 
+      borderRadius={0} 
+      width={null} 
+      style={{ transform: [{ rotate: '-90deg' }]}}
+      />
+      <View style={{position: 'absolute', flex: 1, alignSelf: 'center'}}>
+        <Subheading>{day.toFormat('d')}</Subheading>
+      </View>
     </View>
   </View>
 )
@@ -32,8 +44,16 @@ const CalendarWeekItem = ({ date, startOfWeek, today }) => {
           <CalendarDayItem today={today} day={date.plus({days: (6 - dayPosition)})} />
         </View>
 
+        {/* Week ProgressBar */}
         <View style={{marginHorizontal: 5, marginBottom: 15}}>
-          <ProgressBar progress={1} height={20} color={CalendarColor.progressBarColor} borderWidth={0} borderRadius={0} width={null} />
+          <ProgressBar 
+            progress={0.5} 
+            height={20} 
+            color={CalendarColor.progressBarColor} 
+            borderWidth={0} 
+            borderRadius={0} 
+            width={null} 
+          />
         </View>
       </Pressable>
 
@@ -52,14 +72,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
   },
 
-  dayProgress: {
-    backgroundColor: CalendarColor.dayProgress, 
-    margin: 5, 
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center'
-
-  }
 })
 
 export default CalendarWeekItem;
