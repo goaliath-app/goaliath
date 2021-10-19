@@ -161,7 +161,7 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
-export function getDayActivityCompletionRatio(state, activityId, date){
+function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate( state, activityId, date )
   const entry = selectEntryByActivityIdAndDate(state, activityId, date)
 
@@ -173,7 +173,11 @@ export function getDayActivityCompletionRatio(state, activityId, date){
     const todayReps = entry.repetitions.length
     const weeklyRepsGoal = activity.params.repetitions
 
-    return Math.min(1, todayReps / (weeklyRepsGoal / 7) )
+    if((weeklyRepsGoal / 7) == 0){
+      return 1
+    }else{
+      return Math.min(1, todayReps / (weeklyRepsGoal / 7) )
+    }
   }
 }
 

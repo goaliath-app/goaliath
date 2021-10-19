@@ -118,7 +118,7 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
-export function getDayActivityCompletionRatio(state, activityId, date){
+function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate(state, activityId, date)
   const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
 

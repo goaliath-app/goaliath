@@ -203,7 +203,7 @@ function getFrequencyString(state, activityId, t, date=null){
   return t('activityHandler.activityTypes.doNSecondsEachWeek.frequencyString', {expressionValue: value, expressionUnit: unit})
 }
 
-export function getDayActivityCompletionRatio(state, activityId, date){
+function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate( state, activityId, date )
   const entry = selectEntryByActivityIdAndDate(state, activityId, date)
 
@@ -215,7 +215,11 @@ export function getDayActivityCompletionRatio(state, activityId, date){
     const todaySeconds = getTodayTime(entry.intervals).as('seconds')
     const weeklySecondsGoal = activity.params.seconds
 
-    return Math.min(1, todaySeconds / (weeklySecondsGoal / 7) )
+    if((weeklySecondsGoal / 7) == 0){
+      return 1
+    }else{
+      return Math.min(1, todaySeconds / (weeklySecondsGoal / 7) )
+    }
   }
 }
 
