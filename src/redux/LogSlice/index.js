@@ -4,7 +4,7 @@ export {
     selectLogById, areWeekliesSelectedToday, selectAllActivityEntries,
     selectThisWeekEntriesByActivityId, selectEntriesByDay,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate,
-    selectDailyDurationById,getPeriodStats,
+    selectDailyDurationById, getPeriodStats, getLifeTimeStats,
 } from './LogSlice'
 
 export { 

@@ -305,3 +305,12 @@ export function getPeriodStats(state, startDate, endDate, activityId){
   
   return { loggedTime, daysDoneCount, daysDoneList, repetitionsCount }
 }
+
+export function getLifeTimeStats(state, activityId){
+  const firstLogDateTime = DateTime.fromISO(state.logs.ids[0])
+  const today = getTodaySelector(state)
+
+  if(!firstLogDateTime) return null
+
+  return getPeriodStats(state, firstLogDateTime, today, activityId)
+}

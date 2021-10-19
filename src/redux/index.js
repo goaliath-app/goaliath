@@ -27,6 +27,7 @@ export {
     selectAllActivityEntries,
     selectDailyDurationById,
     getPeriodStats,
+    getLifeTimeStats,
 } from './LogSlice'  // rename to activityInstancesSlice
 
 export { 

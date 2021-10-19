@@ -35,9 +35,11 @@ const es= {
   
     stats: {
         genericStats: {
-          title: 'Estadísticas',
-          hoursDedicated: ' horas totales dedicadas',
-          daysCompleted: ' días completada'
+          title: 'Estadísticas Globales',
+          timeDedicated: '{{expressionValue}} {{expressionUnit}} dedicados en total',
+          daysCompleted: ' días completada',
+          repetitions: ' repeticiones realizadas',
+
         },
         weekStats: {
           title: 'Esta semana',

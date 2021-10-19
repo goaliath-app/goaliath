@@ -13,6 +13,7 @@ import { isToday, isFuture } from '../../util'
 import { GeneralColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
+import { WeekStats, GenericStats } from './Stats'
 
 // TODO: use selectActivityByIdAndDate instead of selectActivityById
 const ActivityDetailScreen = ({ 
@@ -111,17 +112,14 @@ const ActivityDetailScreen = ({
           null
         }
 
-        {/* future work:
-        <WeekStats />
-        <GenericStats /> 
-        */}
+       
         <List.Item title={'Activity'} />
         <ActivityCalendarHeatmap activityId={activity.id}/>
-        <View style={{height: 30}}/>
+        <Divider style={{marginTop: 20}}/>
+        <GenericStats activityId={activity.id} /> 
         <List.Item title={'Stats'} />
-
         <ActivityBarChartPicker activityId={activity.id} />
-
+        <View style={{height:100}} />
       </ScrollView>
 
       <DeleteDialog 
