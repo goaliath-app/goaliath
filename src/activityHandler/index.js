@@ -1,6 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
-import { selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry, selectGoalById, selectActivityByIdAndDate, selectAllActiveActivities, selectEntryByActivityIdAndDate } from "../redux"
+import { 
+  selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry, 
+  selectGoalById, selectActivityByIdAndDate, selectAllActiveActivities, 
+  selectEntryByActivityIdAndDate, selectEntriesByDay 
+} from "../redux"
 import activityTypes from './activityTypes'
 import { WeekView as BaseWeekView } from '../components'
 import { isActive } from '../util'
@@ -170,6 +174,23 @@ export function getDayActivityCompletionRatio(state, activityId, date){
       return 0
     }
   }
+}
+
+export function getDayCompletionRatio(state, date){
+  const dateEntries = selectEntriesByDay(state, date)
+
+  let completionAccumulator = 0
+  let activeEntries = 0
+  for(let entry of dateEntries){
+    if(!entry.archived){
+      completionAccumulator += getDayActivityCompletionRatio(state, entry.id, date)
+      activeEntries += 1
+    }
+  }
+
+  const dayCompletionRatio = completionAccumulator / activeEntries
+
+  return dayCompletionRatio
 }
 
 
