@@ -242,7 +242,6 @@ export function selectThisWeekEntriesByActivityId(state, activityId){
 }
 
 export function selectAllActivityEntries(state, activityId){
-  // console.log(JSON.stringify(state))
   let allEntries = {}
   state.logs.ids.forEach((logDate) => {
     const thatDayEntry = state.logs.entities[logDate].entries.entities[activityId]
@@ -280,8 +279,6 @@ export function areWeekliesSelectedToday(state){
 
 export function selectDailyDurationById(state, activityId, date){
   const entry = selectEntryByActivityIdAndDate(state, activityId, date)
-  console.log('id', activityId, 'date', date)
-  console.log('ENTRY', entry)
   return entry? getTodayTime(entry.intervals) : Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
 }
 

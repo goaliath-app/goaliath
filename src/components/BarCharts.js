@@ -88,7 +88,6 @@ export const ActivityBarChart = ({
       if(period == 'week'){
         for(let date = today.startOf('week'); date <= today.endOf('week'); date = date.plus({days: 1})) {
           const duration = selectDailyDurationById(state, activityId, date)
-          console.log('duration', duration)
           data.push({
             x: date.toJSDate(),
             y: duration.as('minutes')
@@ -190,8 +189,6 @@ export const ActivityBarChart = ({
       yTickValues = [0]
     }
 
-    console.log('today', today)
-    console.log('data', data)
 
     return <VictoryBarChart 
       data={data} 
