@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { DateWheelPicker } from '../components'
 
+// TODO: make startOfWeek prop functional
 const CalendarTwo = ({ startOfWeek=1 }) => {
   const today = useSelector(getTodaySelector)
 
@@ -17,15 +18,16 @@ const CalendarTwo = ({ startOfWeek=1 }) => {
   const [ wheelPickerVisible, setwheelPickerVisible] = React.useState(false)
 
   //Get first day of selectedDate week
-  const startOfFirstWeek = selectedDate.plus({days: (0 - ((today.weekday % 7) - startOfWeek) % 7)})
+  // const startOfFirstWeek = selectedDate.plus({days: (0 - ((today.weekday % 7) - startOfWeek) % 7)})
+  const startOfFirstWeek = selectedDate.startOf('week')
   
   const weekData = []
   for (let currentDate = startOfFirstWeek; 
-    currentDate < selectedDate.plus({month: 1}); 
+    currentDate < selectedDate.set({month: selectedDate.month + 1}); 
     currentDate = currentDate.plus({days: 7})) {
       weekData.push(currentDate)
     }
-    
+  
   const month = selectedDate.toFormat('LLLL')
   const year = selectedDate.toFormat('y')
 
