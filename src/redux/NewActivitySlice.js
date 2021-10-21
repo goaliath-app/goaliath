@@ -102,7 +102,7 @@ state at the end of the day.
 const entityAdapter = createEntityAdapter();
 const initialState = entityAdapter.getInitialState({nextId: 0});
 
-const activityRecordsSlice = createSlice({
+const activitySlice = createSlice({
   name: 'activities',
   initialState,
   reducers: {
@@ -149,7 +149,7 @@ const {
   setState,
 } = activitySlice.actions
 
-export default activityRecordsSlice.reducer
+export default activitySlice.reducer
 
 // THUNKS
 export function setActivity(activity){
