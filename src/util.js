@@ -174,7 +174,7 @@ function getItemPreviousToValue(array, value, isLessThan){
   }
 
   // the value is greater to every item in the array, so return the last element
-  return array.at(-1)
+  return array[array.length-1]
 }
 
 export function getPreviousDate(datesArray, date){

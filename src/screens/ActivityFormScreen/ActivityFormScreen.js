@@ -4,7 +4,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, Keyboard, Pressable, View, 
 import { Appbar, TextInput, HelperText, Subheading, Portal, Dialog, Divider, List, Switch, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { Header, TimeInput } from '../../components';
-import { createActivity, updateActivity, selectActivityById } from '../../redux'
+import { setActivity, selectActivityById } from '../../redux'
 import { GeneralColor, ActivityFormColor } from '../../styles/Colors';
 import NumberOfWeeklyDaysInput from './NumberOfWeeklyDaysInput'
 import WeekdaySelector from './WeekdaySelector'
@@ -188,9 +188,9 @@ const ActivityFormScreen = ({ route, navigation }) => {
 
         if(validate()){
           if(activityId !== undefined){
-            dispatch(updateActivity({...newActivity, id: activity.id}))
+            dispatch(setActivity({ ...activity, ...newActivity }))
           }else{
-            dispatch(createActivity(newActivity))
+            dispatch(setActivity({ ...newActivity, archived: false, active: true }))
           }
           navigation.goBack()
         }
@@ -419,22 +419,4 @@ const styles = StyleSheet.create({
   }
 })
 
-const actionsToProps = {
-  createActivity,
-  updateActivity
-}
-
-const mapStateToProps = (state, ownProps) => {
-  const activityId = ownProps.route.params.activityId
-  const activity = selectActivityById(state, activityId)
-  if(activity){
-    return { activity: activity, goalId: activity.goalId }
-  }else{
-    if(!ownProps.route.params.goalId){
-      throw "Navigated to ActivityFormScreen without providing activityId nor goalId. At least one is required."
-    }
-    return { goalId: ownProps.route.params.goalId }
-  }
-}
-
-export default connect(mapStateToProps, actionsToProps)(ActivityFormScreen);
+export default ActivityFormScreen

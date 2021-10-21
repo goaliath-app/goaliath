@@ -12,9 +12,10 @@ import { hasSomethingToShow } from '../util'
 import { GeneralColor, GoalColor, HeaderColor } from '../styles/Colors';
 import { getFrequencyString } from '../activityHandler'
 
-const Activity = ({ name, active, id, toggleActivity, activity }) => {
+const Activity = ({ name, active, id, activity }) => {
   const navigation = useNavigation();
-  const { t, i18 } = useTranslation()
+  const { t, i18 } = useTranslation();
+  const dispatch = useDispatch();
 
   const frequencyString = useSelector((state) => getFrequencyString(state, activity.id, t))
 
@@ -26,7 +27,7 @@ const Activity = ({ name, active, id, toggleActivity, activity }) => {
         title={name}
         right={() => (
           <Switch
-            onValueChange={() => toggleActivity({id: id})} 
+            onValueChange={() => dispatch(toggleActivity(id))} 
             value={active}
           />
         )}
@@ -37,10 +38,13 @@ const Activity = ({ name, active, id, toggleActivity, activity }) => {
   );
 }
 
-const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal }) => {
+const GoalScreen = ({ activities, goal, navigation }) => {
   const [menuVisible, setMenuVisible] = React.useState(false);
   const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)
   const [motivationCollapsed, setMotivationCollapsed] = React.useState(true)
+
+  const dispatch = useDispatch()
+
 
   const { t, i18n } = useTranslation()
 
@@ -79,7 +83,6 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
       name={item.name}
       active={item.active}
       id={item.id}
-      toggleActivity={toggleActivity}
       activity={item} />
   )
 
@@ -127,7 +130,7 @@ const GoalScreen = ({ activities, goal, navigation, toggleActivity, archiveGoal 
         visible={deleteDialogVisible} 
         setVisible={setDeleteDialogVisible} 
         onDelete={()=>{
-          archiveGoal(goal.id)
+          dispatch(archiveGoal(goal.id))
           setDeleteDialogVisible(false)
           navigation.goBack()
         }}
@@ -148,9 +151,4 @@ const mapStateToProps = (state, ownProps) => {
   return { activities: thisGoalActivities, goal: goal }
 };
 
-const actionsToProps = {
-  toggleActivity,
-  archiveGoal
-}
-
-export default connect(mapStateToProps, actionsToProps)(GoalScreen);
+export default connect(mapStateToProps)(GoalScreen);

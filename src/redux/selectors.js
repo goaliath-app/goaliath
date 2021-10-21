@@ -2,31 +2,16 @@ import { useStore } from 'react-redux'
 import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
 
-import { selectActivityById, selectAllActivities, selectActivityEntities } from './ActivitySlice'
-import { selectGoalEntities, selectGoalById } from './GoalsSlice'
-import { findActivityRecord } from './ActivityRecordsSlice'
-import { selectAllWeekEntriesByActivityId, selectEntriesByDay } from './LogSlice'
+import { selectAllActivities } from './NewActivitySlice'
+import { selectGoalEntities } from './GoalsSlice'
+import { selectAllWeekEntriesByActivityId } from './LogSlice'
 
-import { getTodayTime, startOfDay, dueToday, newEntry } from './../util'
+import { getTodayTime, startOfDay } from './../util'
 
 /* 
   This file defines selectors that use data from more than one slice 
   and/or is out of the slice responsibilities
 */
-
-export function selectActivityByIdAndDate(state, activityId, date){
-  let activityRecord
-
-  if(date){
-    activityRecord = findActivityRecord(state, activityId, date)
-  } 
-
-  if(activityRecord) {
-    return activityRecord
-  }else{
-    return selectActivityById(state, activityId)
-  }
-}
 
 export function selectAllActiveActivities(state){
   /* returns a list of all activities that:

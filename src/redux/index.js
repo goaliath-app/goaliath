@@ -6,9 +6,9 @@ export {
 } from './GoalsSlice'
 
 export { 
-    createActivity, updateActivity, toggleActivity, archiveActivity, 
-    selectAllActivities, selectActivityById, selectActivityEntities,
-} from './ActivitySlice' 
+    setActivity, toggleActivity, archiveActivity,
+    selectAllActivities, selectActivityById, selectActivityByIdAndDate
+} from './NewActivitySlice'
 
 // TODO: refactor
 export { 
@@ -37,10 +37,5 @@ export {
 export { setDayStartHour, finishOnboarding, setLanguage } from './SettingsSlice'
 
 export { 
-    selectActivityByIdAndDate, selectAllActiveActivities, getWeeklyStats,
-    getTodaySelector, extractActivityList,
+    selectAllActiveActivities, getWeeklyStats, getTodaySelector,
 } from './selectors'
-
-export {
-    findAllActivityRecords
-} from './ActivityRecordsSlice'

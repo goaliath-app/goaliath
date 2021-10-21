@@ -110,7 +110,7 @@ const activitySlice = createSlice({
       const { activity, date } = action.payload
       
       // if is a new activity, set id and create its initial state
-      if(!activity.id || !state.entities[activity.id]){
+      if(activity.id == null || !state.entities[activity.id]){
         activity.id = state.nextId
         state.nextId += 1
 
@@ -144,8 +144,11 @@ const activitySlice = createSlice({
 })
 
 const { 
-  setActivity: setActivityAction, 
-  deleteActivityRecordsByDate, 
+  setActivity: setActivityAction,
+} = activitySlice.actions
+
+export const {
+  deleteActivityRecordsByDate,
   setState,
 } = activitySlice.actions
 
@@ -161,21 +164,17 @@ export function setActivity(activity){
 
 export function toggleActivity(activityId){
   return function(dispatch, getState){
-    const state = getState()
-    const today = getTodaySelector(state)
-    const activity = selectActivityById(state, activityId)
+    const activity = selectActivityById(getState(), activityId)
     const toggledActivity = {...activity, active: !activity.active}
-    dispatch(setActivity({toggledActivity, date: today}))
+    dispatch(setActivity(toggledActivity))
   }
 }
 
 export function archiveActivity(activityId){
   return function(dispatch, getState){
-    const state = getState()
-    const today = getTodaySelector(state)
-    const activity = selectActivityById(state, activityId)
+    const activity = selectActivityById(getState(), activityId)
     const archivedActivity = {...activity, archived: true}
-    dispatch(setActivity({archivedActivity, date: today}))
+    dispatch(setActivity(archivedActivity))
   }
 }
 

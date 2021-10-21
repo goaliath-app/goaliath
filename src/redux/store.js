@@ -4,11 +4,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import storage from 'redux-persist/lib/storage'
 import { persistReducer } from 'redux-persist'
 import goalsReducer from './GoalsSlice'
-import activitySlice from './ActivitySlice'
+import activitySlice from './NewActivitySlice'
 import logSlice from './LogSlice'
 import settingsSlice from './SettingsSlice'
 import tasksSlice from './TasksSlice'
-import activityRecordsSlice from './ActivityRecordsSlice'
 
 const rootReducer = combineReducers({
   goals: goalsReducer,
@@ -16,7 +15,6 @@ const rootReducer = combineReducers({
   logs: logSlice,
   settings: settingsSlice,
   tasks: tasksSlice,
-  activityRecords: activityRecordsSlice
 })
 
 const persistConfig = {

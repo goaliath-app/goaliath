@@ -225,7 +225,7 @@ export function getWeekCompletionRatio(state, activityId, date){
   // if the date is from a past week, look at the activity records of the
   // last day of that week
   }else{
-    const activityRecords = findAllActivityRecords(state, date.endOf('week'))
+    const activityRecords = []// findAllActivityRecords(state, date.endOf('week'))
 
     activityRecords.forEach( activityRecord => {
       if( dueThisWeek(state, activityRecord.id, date) ){
