@@ -73,7 +73,8 @@ export const CalendarColor = {
     dayProgress: '#CFFFD1',
     today: '#52A5F5',
     todayTextColor: 'white',
-    daysNameColor: 'silver'
+    daysNameColor: 'silver',
+    dayOtherMonth: 'grey'
 }
 
 export const GoalColor = {
