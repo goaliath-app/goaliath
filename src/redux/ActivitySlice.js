@@ -5,33 +5,6 @@ import { toISODate, getPreviousDate } from '../util'
 
 import { getTodaySelector } from './selectors'
 
-/*
-TODOS:
-
-1. Implement al funcionality of:
- X ActivitySlice
- X ActivityRecordsSlice
- - selectors.js
-  - selectAllActiveActivities
-  
-
- 2. Changes in client code:
-  - change createActivity and updateActivity calls to setActivity function of this slice
-  - change toggleActivity and archiveActivity calls to use the homonymous
-   functions in this slice
-  - change the setStates of activities and activityRecords for this slice setState
-  - remove activities and activityRecords from store, add this slice
-  - selectAllActivities => this module
-  - selectActivityById => this module
-  - selectActivityEntities => this module
-  - selectActivityByIdAndDate =>
-
-  - remove all the logging burocracy, it is not needed anymore (the activity
-    records are created automatically when the activity is changed)
-
-*/
-
-
 /* SLICE DESCRIPTION
 
 The slice is:
@@ -60,14 +33,6 @@ An entry is:
     archived: bool, is marked true when the activity is "deleted"
   }
 
-An entry can also be a reference to a past entry:
-  {
-    id: date of the entry
-    ref: date of the entry it references
-  }
-
-References are used where there is no changes in the activity from one day to the next.
-
 Example of entry (without the id):
 {
   name: 'Dummy Activity', 
@@ -86,16 +51,20 @@ Example of entry (without the id):
   archived: false
 }
 
-An entry is created for an activity whenever it is created. At the start of each
-subsequent day, a new reference entry is created for that thay, referencing
-the latest real entry for that activity.
+An entry is created for an activity whenever it is created, with the current
+date as the id.
 
-Whenever an activity is modified, activated, deactivated or archived, the
-reference entry is replaced by a real entry with all the data of the activity.
+Whenever an activity is modified, activated, deactivated or archived, another
+entry is created with the current date as the id.
 
 If an activity suffers multiple changes in a day, each change replaces
 the existing entry for that day. This way, each day's entry holds the activity
 state at the end of the day.
+
+When you select an activity, you get the latest entry.
+
+When you select and activity at a given date, you get the entry for that date,
+of, if it does not exist, the latest entry previous to that date.
 
 */
 
