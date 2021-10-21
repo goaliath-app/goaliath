@@ -122,6 +122,7 @@ export function getToday(dayStartHour){
   return startOfDay(DateTime.now(), dayStartHour)
 }
 
+// DEPRECATED
 export function dueToday(today, activity, activityGoal){
   if( !isActive(activity, activityGoal) ){
     return false
@@ -143,6 +144,12 @@ export function toDateTime(date){
   return DateTime.fromISO(date)
 }
 
+export function toISODate(date){
+  /* accepts ISO and DateTime as arguments
+  returns ISO */
+  return DateTime.fromISO(date).toISO()
+}
+
 export function isActive(activity, activityGoal){
   if(activity.archived || activityGoal.archived){
     return false
@@ -151,4 +158,45 @@ export function isActive(activity, activityGoal){
     return false
   }
   return true
+}
+
+/* 
+Returns the first value in an ordered array that is less than or equal to a 
+target value
+
+PARAMS:
+  - array: array of ascending ordered values
+  - value: value to find the previous value for
+  - compareFunction: function that compares two values, returns true if
+   the first value is less than the second value
+*/ 
+function getItemPreviousToValue(array, value, isLessThan){
+  if(array.length == 0){
+    return null
+  }
+  
+  // for each item in the array
+  for(let i = 0; i < array.length; i++){
+    // if the item is greater than the value
+    if(isLessThan(value, array[i])){
+      // if the item is the first item in the array, there is no item
+      // previous to the value
+      if(i == 0){
+        return null
+      }
+      // if it wasn't the first item, return the previous item
+      return array[i-1]
+    }
+  }
+
+  // the value is greater to every item in the array, so return the last element
+  return array.at(-1)
+}
+
+export function getPreviousDate(datesArray, date){
+  function isLessThan(a, b){
+    return DateTime.fromISO(a) < DateTime.fromISO(b)
+  }
+
+  return getItemPreviousToValue(datesArray, date, isLessThan)
 }
