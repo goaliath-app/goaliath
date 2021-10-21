@@ -72,7 +72,8 @@ export const CalendarColor = {
     progressBarColor: '#7B61FF',
     dayProgress: '#CFFFD1',
     today: '#52A5F5',
-    todayTextColor: 'white'
+    todayTextColor: 'white',
+    daysNameColor: 'silver'
 }
 
 export const GoalColor = {

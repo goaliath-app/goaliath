@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Subheading } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import ProgressBar from 'react-native-progress/Bar';
 import { CalendarColor } from '../styles/Colors';
 
@@ -8,7 +8,7 @@ import { CalendarColor } from '../styles/Colors';
          Si el día es de otro mes, que salga con un estilo diferente. */
 const CalendarDayItem = ({ today, day }) => (
   <View style={styles.dayComponent}>
-    <View style={{flex: 1, justifyContent: 'center', margin: 5}}>
+    <View style={{ flex: 1, justifyContent: 'center', margin: 2 }}>
       {/* Day ProgressBar */}
       <ProgressBar 
       progress={1} 
@@ -19,15 +19,15 @@ const CalendarDayItem = ({ today, day }) => (
       width={null} 
       style={{ transform: [{ rotate: '-90deg' }]}}
       />
-      <View style={{position: 'absolute', flex: 1, alignSelf: 'center'}}>
+      <View style={{ position: 'absolute', flex: 1, alignSelf: 'center' }}>
         {today.day===day.day && today.month===day.month && today.year===day.year? 
         <View style={styles.todayView}>
-          <Subheading style={{color: CalendarColor.todayTextColor, fontWeight: 'bold' }}>
+          <Text style={{ color: CalendarColor.todayTextColor }}>
             {day.toFormat('d')}
-          </Subheading>
+          </Text>
         </View>
         :
-        <Subheading>{day.toFormat('d')}</Subheading>
+        <Text>{day.toFormat('d')}</Text>
          }
         
       </View>
@@ -53,10 +53,10 @@ const CalendarWeekItem = ({ date, startOfWeek, today }) => {
         </View>
 
         {/* Week ProgressBar */}
-        <View style={{marginHorizontal: 5, marginBottom: 15}}>
+        <View style={{ marginHorizontal: 2, marginBottom: 10 }}>
           <ProgressBar 
             progress={0.5} 
-            height={20} 
+            height={7} 
             color={CalendarColor.progressBarColor} 
             borderWidth={0} 
             borderRadius={0} 
@@ -82,9 +82,9 @@ const styles = StyleSheet.create({
 
   todayView: {
     backgroundColor: CalendarColor.today, 
-    borderRadius: 50, 
-    width: 50, 
-    height: 50, 
+    borderRadius: 30, 
+    width: 30, 
+    height: 30, 
     justifyContent: 'center', 
     alignItems: 'center'
   }
