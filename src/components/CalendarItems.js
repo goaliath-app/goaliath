@@ -3,56 +3,66 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import ProgressBar from 'react-native-progress/Bar';
 import { CalendarColor } from '../styles/Colors';
+import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
 
 /* TODO: Al mantener pulsado un día, que salga la pantalla de ese día.
          Si el día es de otro mes, que salga con un estilo diferente. */
-const CalendarDayItem = ({ today, day, currentMonth }) => (
-  <View style={styles.dayComponent}>
-    <View style={{ flex: 1, justifyContent: 'center', margin: 2 }}>
-      {/* Day ProgressBar */}
-      <ProgressBar 
-      progress={1} 
-      height='100%' 
-      color={CalendarColor.dayProgress} 
-      borderWidth={0} 
-      borderRadius={0} 
-      width={null} 
-      style={{ transform: [{ rotate: '-90deg' }]}}
-      />
-      <View style={{ position: 'absolute', flex: 1, alignSelf: 'center' }}>
-        {today.day===day.day && today.month===day.month && today.year===day.year? 
-        <View style={styles.todayView}>
-          <Text style={{ color: CalendarColor.todayTextColor }}>
-            {day.toFormat('d')}
-          </Text>
+const CalendarDayItem = ({ today, navigation, day, currentMonth }) => (
+  <LongPressGestureHandler
+            onHandlerStateChange={(event) => { 
+              if(event.nativeEvent.state === State.ACTIVE) {
+                navigation.navigate('CalendarDayView')
+              } 
+            }}
+            minDurationMs={800}
+  >
+    <View style={styles.dayComponent}>
+      <View style={{ flex: 1, justifyContent: 'center', margin: 2 }}>
+        {/* Day ProgressBar */}
+        <ProgressBar 
+        progress={1} 
+        height='100%' 
+        color={CalendarColor.dayProgress} 
+        borderWidth={0} 
+        borderRadius={0} 
+        width={null} 
+        style={{ transform: [{ rotate: '-90deg' }]}}
+        />
+        <View style={{ position: 'absolute', flex: 1, alignSelf: 'center' }}>
+          {today.day===day.day && today.month===day.month && today.year===day.year? 
+          <View style={styles.todayView}>
+            <Text style={{ color: CalendarColor.todayTextColor }}>
+              {day.toFormat('d')}
+            </Text>
+          </View>
+          :
+          currentMonth.toFormat('L')==day.month?
+          <Text>{day.toFormat('d')}</Text>
+          :
+          <Text style={{color: CalendarColor.dayOtherMonth}}>{day.toFormat('d')}</Text>
+          }
+          
         </View>
-        :
-        currentMonth.toFormat('L')==day.month?
-        <Text>{day.toFormat('d')}</Text>
-        :
-        <Text style={{color: CalendarColor.dayOtherMonth}}>{day.toFormat('d')}</Text>
-         }
-        
       </View>
     </View>
-  </View>
+  </LongPressGestureHandler>
 )
 
 /* TODO: Add a screen with the activities for weeks and days */
-const CalendarWeekItem = ({ date, currentMonth, startOfWeek, today }) => {
+const CalendarWeekItem = ({ date, currentMonth, navigation, startOfWeek, today }) => {
   const dayPosition = ((date.weekday % 7) - startOfWeek) % 7
 
   return(
-    <View>
-      <Pressable onPress={() => {}}>
+    <Pressable onPress={() => navigation.navigate('CalendarWeekView')}>
+      <View>
         <View style={styles.weekComponent}>
-          <CalendarDayItem today={today} day={date.plus({days: (0 - dayPosition)})} currentMonth={currentMonth} />
-          <CalendarDayItem today={today} day={date.plus({days: (1 - dayPosition)})} currentMonth={currentMonth} />
-          <CalendarDayItem today={today} day={date.plus({days: (2 - dayPosition)})} currentMonth={currentMonth} />
-          <CalendarDayItem today={today} day={date.plus({days: (3 - dayPosition)})} currentMonth={currentMonth} />
-          <CalendarDayItem today={today} day={date.plus({days: (4 - dayPosition)})} currentMonth={currentMonth} />
-          <CalendarDayItem today={today} day={date.plus({days: (5 - dayPosition)})} currentMonth={currentMonth} />
-          <CalendarDayItem today={today} day={date.plus({days: (6 - dayPosition)})} currentMonth={currentMonth} />
+          <CalendarDayItem today={today} day={date.plus({days: (0 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
+          <CalendarDayItem today={today} day={date.plus({days: (1 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
+          <CalendarDayItem today={today} day={date.plus({days: (2 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
+          <CalendarDayItem today={today} day={date.plus({days: (3 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
+          <CalendarDayItem today={today} day={date.plus({days: (4 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
+          <CalendarDayItem today={today} day={date.plus({days: (5 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
+          <CalendarDayItem today={today} day={date.plus({days: (6 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
         </View>
 
         {/* Week ProgressBar */}
@@ -66,9 +76,8 @@ const CalendarWeekItem = ({ date, currentMonth, startOfWeek, today }) => {
             width={null} 
           />
         </View>
-      </Pressable>
-
-    </View>
+      </View>
+    </Pressable>
   )
 }
 

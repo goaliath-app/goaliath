@@ -17,7 +17,7 @@ const CalendarScreen = ({ navigation }) => {
     }}>
       <View>
         <Header title={t('calendar.headerTitle')} left='hamburger' navigation={navigation}/>
-        <CalendarTwo />
+        <CalendarTwo navigation={navigation} />
       </View>
     </View>
   );

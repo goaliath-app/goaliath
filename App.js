@@ -15,7 +15,7 @@ import {
   TodayScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, 
   ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen, 
   OnboardingScreen, SelectWeeklyActivitiesScreen,
-  AddTasksScreen
+  AddTasksScreen, CalendarDayViewScreen, CalendarWeekViewScreen
 } from './src/screens'
 import { Drawer as CustomDrawer } from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
@@ -50,6 +50,8 @@ const GoalsStack = () => (
 const CalendarStack = () => (
   <Stack.Navigator initialRouteName='Calendar' headerMode='none' >
     <Stack.Screen name='Calendar' component={CalendarScreen} />
+    <Stack.Screen name='CalendarDayView' component={CalendarDayViewScreen} />
+    <Stack.Screen name='CalendarWeekView' component={CalendarWeekViewScreen} />
     <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
   </Stack.Navigator>
 )
