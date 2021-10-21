@@ -122,22 +122,6 @@ export function getToday(dayStartHour){
   return startOfDay(DateTime.now(), dayStartHour)
 }
 
-// DEPRECATED
-export function dueToday(today, activity, activityGoal){
-  if( !isActive(activity, activityGoal) ){
-    return false
-  }
-  if(activity.repeatMode == 'daily'){
-    return true
-  }
-  if(activity.repeatMode == 'select'){
-    if(activity.weekDays[today.weekday]){
-      return true
-    }
-  }
-  return false
-}
-
 export function toDateTime(date){
   /* accepts ISO and DateTime as arguments
   returns DateTime */

@@ -10,10 +10,9 @@ import { useTranslation } from 'react-i18next'
 import { Header } from '../components';
 import { getTodayTime, getPreferedExpression, getToday } from '../util'
 import { CalendarColor, GeneralColor } from '../styles/Colors';
-import { extractActivityList } from '../redux'
 
 function overviewLog(state, day, t){
-  const activityList = extractActivityList(state, day)
+  const activityList = []
   let completedActivities = 0
   let undoneActivities = 0
   let secondsDedicated = 0
