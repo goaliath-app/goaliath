@@ -2,7 +2,7 @@ import { useStore } from 'react-redux'
 import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
 
-import { selectAllActivities } from './NewActivitySlice'
+import { selectAllActivities } from './ActivitySlice'
 import { selectGoalEntities } from './GoalsSlice'
 import { selectAllWeekEntriesByActivityId } from './LogSlice'
 

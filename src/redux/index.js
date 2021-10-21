@@ -8,7 +8,7 @@ export {
 export { 
     setActivity, toggleActivity, archiveActivity,
     selectAllActivities, selectActivityById, selectActivityByIdAndDate
-} from './NewActivitySlice'
+} from './ActivitySlice'
 
 // TODO: refactor
 export { 

@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import storage from 'redux-persist/lib/storage'
 import { persistReducer } from 'redux-persist'
 import goalsReducer from './GoalsSlice'
-import activitySlice from './NewActivitySlice'
+import activitySlice from './ActivitySlice'
 import logSlice from './LogSlice'
 import settingsSlice from './SettingsSlice'
 import tasksSlice from './TasksSlice'

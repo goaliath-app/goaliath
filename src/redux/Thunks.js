@@ -5,7 +5,7 @@ import { updateEntryThunk } from '../activityHandler'
 
 import {
   selectAllActivities, setActivity, selectActivityById, setState as setActivitiesState, 
-} from './NewActivitySlice'
+} from './ActivitySlice'
 
 import { 
   selectGoalById, createGoal, setState as setGoalsState 
