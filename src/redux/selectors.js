@@ -77,6 +77,7 @@ export function getTodaySelector(state){
   return startOfDay(DateTime.now(), dayStartHour)
 }
 
+// DEPRECATED
 /**
  * Get the entries of the activities that would be due on a specific day given
  * the current activities and goals.

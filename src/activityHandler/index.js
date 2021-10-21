@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux'
 import { 
   selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry, 
   selectGoalById, selectActivityByIdAndDate, selectAllActiveActivities, 
-  selectEntryByActivityIdAndDate, selectEntriesByDay 
+  selectEntryByActivityIdAndDate, selectEntriesByDay,
+  findAllActivityRecords
 } from "../redux"
 import activityTypes from './activityTypes'
 import { WeekView as BaseWeekView } from '../components'
@@ -206,4 +207,87 @@ export function getWeekActivityCompletionRatio(state, activityId, date){
   }
 }
 
+// TODO: this function is a work in progress
+export function getWeekCompletionRatio(state, activityId, date){
+  // get the number of active activities this week
+  const dueActivities = []
+
+  // if the date is from the current week, look at the active activities
+  if( date.endOf("week") >= getTodaySelector(state) ){
+    const activities = selectAllActiveActivities(state)
+    
+    activities.forEach( activity => {
+      if( dueThisWeek(state, activity.id, date) ){
+        dueActivities.push(activity)
+      }
+    }) 
+  
+  // if the date is from a past week, look at the activity records of the
+  // last day of that week
+  }else{
+    const activityRecords = findAllActivityRecords(state, date.endOf('week'))
+
+    activityRecords.forEach( activityRecord => {
+      if( dueThisWeek(state, activityRecord.id, date) ){
+        dueActivities.push(activityRecord)
+      }
+    })
+  }
+  
+  // get how much of each activity is completed this week
+  let completionAccumulator = 0
+  dueActivities.forEach( activity => {
+    completionAccumulator += getWeekActivityCompletionRatio(state, activity.id, date)
+  })
+
+  // divide the completed activities by the total number of active activities
+  if(dueActivities.length == 0){
+    return 1
+  }else{
+    return completionAccumulator / dueActivities.length
+  }
+}
+
+function dueThisWeek(state, activityId, date){
+  // This function tells wether the activity is due this week or not
+  // An activity is not due for a week if
+  //  - it is archived
+  //  - it is not active
+  //  - it is from an activityType that don't need work every week, and this
+  //    is one of these weeks
+  // 
+  // If date is present, we check the current activities.
+  // If date is of a past week, we check the activity records for the last
+  // day of that week.
+
+  let activity
+
+  if( date.endOf("week") >= getTodaySelector(state) ){
+    activity = selectActivityById(state, activityId)
+    
+  // if the date is from a past week, look at the activity record of the last
+  // day of that week
+  }else{
+    activity = selectActivityRecordByIdAndDate(state, activityId, date.endOf('week'))
+  }
+
+  if(!activity){
+    return false
+  }
+  
+  // TODO: change isActive so that it has state and activityId as arguments
+  // TODO: GET THE HISTORICAL VERSION OF THE GOAL
+  const goal = selectGoalById(state, activity.goalId) 
+  if(!isActive(activity, goal)){
+    return false
+  }
+
+  const activityType = activityTypes[activity.type]
+
+  if(activityType.dueThisWeek){
+    return activityType.dueThisWeek(state, activityId, date)
+  }else{
+    return true
+  }
+}
 

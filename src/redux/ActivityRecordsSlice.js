@@ -95,6 +95,13 @@ export function selectActivityRecordByIdAndDate(state, id, date){
   }
 }
 
+// !! TODO: This approach needs a review. We also need to record: 
+//   - when an activity is created.
+//   - when an activity is deleted or archived.
+//   - when an activity is unarchived.
+//   - when an activity is activated or deactivated.
+// We need to know which activities existed in any given point in time.
+// -----------------------------------------------------------------------------
 // searches for an activity record for that activity, starting from date and
 // going forward in time until it finds one that matches the activity
 // or the current day is reached
@@ -117,6 +124,25 @@ export function findActivityRecord(state, id, date){
   }
 
   return null
+}
+
+// TODO: this function assumes that activity records are saved every day for
+// every activity. This is probably won't be the case in the future.
+export function findAllActivityRecords(state, date){
+  const today = getTodaySelector(state)
+  const result = []
+
+  state.activityRecords.ids.forEach(id => {
+    const activityRecord = state.activityRecords.entities[id]
+
+    const entry = activityRecord.entries.entities[date.toISO()]
+
+    if(entry){
+      result.push({ ...entry, id })
+    }
+  })
+
+  return result
 }
 
 /* UTILITY FUNCTIONS */

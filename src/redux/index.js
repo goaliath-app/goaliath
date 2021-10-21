@@ -40,3 +40,7 @@ export {
     selectActivityByIdAndDate, selectAllActiveActivities, getWeeklyStats,
     getTodaySelector, extractActivityList,
 } from './selectors'
+
+export {
+    findAllActivityRecords
+} from './ActivityRecordsSlice'
