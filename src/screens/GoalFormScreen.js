@@ -1,14 +1,16 @@
 import React from 'react';
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { View, StyleSheet, KeyboardAvoidingView, ScrollView, Platform } from 'react-native'
 import { Appbar, TextInput, Subheading, Paragraph, HelperText, Title } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { Header, HelpIcon } from '../components'
-import { createGoal, updateGoal, selectGoalById } from '../redux';
+import { setGoal, selectGoalById } from '../redux';
 import { GeneralColor } from '../styles/Colors';
 
-const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
+const GoalFormScreen = ({ navigation, goal=null }) => {
   const { t, i18n } = useTranslation()
+
+  const dispatch = useDispatch()
 
   const [name, setName] = React.useState(goal?.name?goal.name:'')
   const [motivation, setMotivation] = React.useState(goal?.motivation?goal.motivation:'')
@@ -31,9 +33,9 @@ const GoalFormScreen = ({ navigation, createGoal, updateGoal, goal=null }) => {
         const newGoal = {name: name, motivation: motivation}
         if(validate(newGoal)){
           if(goal){
-            updateGoal({...newGoal, id: goal.id})
+            dispatch(setGoal({...newGoal, id: goal.id}))
           }else{
-            createGoal({name: name, motivation: motivation})
+            dispatch(setGoal({name: name, motivation: motivation}))
           }
           navigation.goBack()}
         }
@@ -99,11 +101,6 @@ const mapStateToProps = (state, ownProps) => {
   return { goal }
 }
 
-const actionsToProps = {
-  createGoal,
-  updateGoal
-}
-
 const styles = StyleSheet.create ({
   textInput: {
     fontSize: 16,
@@ -114,4 +111,4 @@ const styles = StyleSheet.create ({
   }
 })
 
-export default connect(mapStateToProps, actionsToProps)(GoalFormScreen);
+export default connect(mapStateToProps)(GoalFormScreen);

@@ -111,4 +111,25 @@ function getFrequencyString(state, activityId, t, date=null){
   return t('activityHandler.dailyGoals.doNSeconds.frequencyString', { value, unit })
 }
 
-export default { TodayScreenItem, getFrequencyString }
+function getDayActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+  const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+
+  if(!entry){
+    return 0
+  }else if(entry.completed){
+    return 1
+  }else{
+    const dedicatedTime = getTodayTime(entry.intervals)
+    const dedicatedSeconds = dedicatedTime.as('seconds')
+    const secondsGoal = activity.params.dailyGoal.params.seconds
+
+    if(secondsGoal == 0){
+      return 1
+    }else{
+      return Math.min(1, dedicatedSeconds / secondsGoal)
+    }
+  }
+}
+
+export default { TodayScreenItem, getFrequencyString, getDayActivityCompletionRatio }

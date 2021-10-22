@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, Appbar, Divider, Switch } from 'react-native-paper';
@@ -10,8 +10,10 @@ import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 
 
-const GoalListItem = ({ name, active, toggleGoal, id }) => {
+const GoalListItem = ({ name, active, id }) => {
   const navigation = useNavigation();
+
+  const dispatch = useDispatch();
 
   return (
     <View>
@@ -21,7 +23,7 @@ const GoalListItem = ({ name, active, toggleGoal, id }) => {
         right={() => (
           <Switch 
             value={active} 
-            onValueChange={ () => toggleGoal({id: id}) }
+            onValueChange={ () => dispatch(toggleGoal(id)) }
           />
         )}
       />
@@ -30,7 +32,7 @@ const GoalListItem = ({ name, active, toggleGoal, id }) => {
   );
 }
 
-const GoalsScreen = ({ navigation, goals, toggleGoal }) => {
+const GoalsScreen = ({ navigation, goals }) => {
   const { t, i18n } = useTranslation()
   
   const renderItem = ({ item }) => (
@@ -38,7 +40,6 @@ const GoalsScreen = ({ navigation, goals, toggleGoal }) => {
       id={item.id}
       name={item.name}
       active={item.active} 
-      toggleGoal={toggleGoal}
       motivation={item.motivation} 
     />
   )
@@ -67,8 +68,4 @@ const mapStateToProps = (state) => {
   return { goals: goalsToShow }
 };
 
-const actionsToProps = {
-  toggleGoal,
-}
-
-export default connect(mapStateToProps, actionsToProps)(GoalsScreen);
+export default connect(mapStateToProps)(GoalsScreen);

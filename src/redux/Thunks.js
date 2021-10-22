@@ -3,13 +3,12 @@ import { DateTime } from 'luxon'
 import { startOfDay, dueToday, newEntry, isActive } from './../util'
 import { updateEntryThunk } from '../activityHandler'
 
-import { 
-  selectAllActivities,  createActivity, setState as setActivitiesState, 
-  selectActivityById 
+import {
+  selectAllActivities, setActivity, selectActivityById, setState as setActivitiesState, 
 } from './ActivitySlice'
 
 import { 
-  selectGoalById, createGoal, setState as setGoalsState 
+  setState as setGoalsState, setGoal
 } from './GoalsSlice'
 
 import { 
@@ -20,7 +19,6 @@ import {
 
 import { setState as setTasksState, initDate as initTasksDate } from './TasksSlice'
 import { setState as setSettingsState } from './SettingsSlice'
-import { setState as setRecordsState, addActivityRecord, deleteActivityRecordsByDate } from './ActivityRecordsSlice'
 
 import { getTodaySelector } from './selectors'
 
@@ -31,10 +29,12 @@ export function generateDummyData(){
     const today = getTodaySelector(state).plus({day: -5})
     
     // goals
-    dispatch(createGoal({name: 'dummy goal'}))
+    dispatch(setGoal({name: 'dummy goal'}))
 
     // activities
-    dispatch(createActivity({
+    dispatch(setActivity({
+      archived: false,
+      active: true,
       name: 'Daily do10Seconds', 
       goalId: '0', 
       type: 'doFixedDays', 
@@ -49,7 +49,9 @@ export function generateDummyData(){
       }
     }))
 
-    dispatch(createActivity({
+    dispatch(setActivity({
+      archived: false,
+      active: true,
       name: 'Daily do1Times', 
       goalId: '0', 
       type: 'doFixedDays', 
@@ -62,7 +64,9 @@ export function generateDummyData(){
       }
     }))
 
-    dispatch(createActivity({
+    dispatch(setActivity({
+      archived: false,
+      active: true,
       name: 'do2TimesEachWeek do1Times', 
       goalId: '0', 
       type: 'doNDaysEachWeek', 
@@ -75,7 +79,9 @@ export function generateDummyData(){
       }
     }))
 
-    dispatch(createActivity({
+    dispatch(setActivity({
+      archived: false,
+      active: true,
       name: 'do10MinutesEachWeek', 
       goalId: '0', 
       type: 'doNSecondsEachWeek', 
@@ -84,7 +90,9 @@ export function generateDummyData(){
       }
     }))
 
-    dispatch(createActivity({
+    dispatch(setActivity({
+      archived: false,
+      active: true,
       name: 'do10TimesEachWeek', 
       goalId: '0', 
       type: 'doNTimesEachWeek', 
@@ -93,7 +101,9 @@ export function generateDummyData(){
       }
     }))
 
-    dispatch(createActivity({
+    dispatch(setActivity({
+      archived: false,
+      active: true,
       name: 'Daily do3Times', 
       goalId: '0', 
       type: 'doFixedDays', 
@@ -150,8 +160,6 @@ export function updateLogs(){
 
     // today log has already been created
     }else if(newestLogDate.toISO() == today.toISO()){
-      // delete activity records that may exist for today, they are not needed   
-      dispatch(deleteActivityRecordsByDate({ date: today }))
       // update today's log
       dispatch(updateLog({ date: today }))
 
@@ -164,12 +172,6 @@ export function updateLogs(){
       for(let date = newestLogDate.plus({ days: 1 }); date <= today; date = date.plus({ days: 1 })){
         dispatch(initDate(date))
         dispatch(updateLog({ date }))
-      }
-    
-      // from newestLogDate to yesterday (including both), create their activity records,
-      // so that we know how the activity were in that day.
-      for(let date = newestLogDate; date < today; date = date.plus({ days: 1 })){
-        dispatch(createActivityRecords({ date }))
       }
     }
   }
@@ -224,23 +226,6 @@ function updateLog({ date }){
   }
 }
 
-// TODO: not all activities should be recorded every day.
-// weekly activities should reflect changes back to the last monday.
-function createActivityRecords({ date }){
-  /* Puts into all entries of the specified date the current data
-  of their corresponding activities. This way, even if the activity
-  name, repeatMode or whatever gets changed, it won't change the embalmed
-  logs appearance in the calendar. */
-  return function(dispatch, getState){
-    const state = getState()
-    const logEntries = selectEntriesByDay(state, date)
-    for(let entry of logEntries){
-      const activity = selectActivityById(state, entry.id)
-      dispatch(addActivityRecord({ date, activityRecord: activity }))
-    }
-  }
-}
-
 export function importState(newState){
   return function(dispatch, getState){
     dispatch(setSettingsState({ newState: newState.settings }))
@@ -248,6 +233,5 @@ export function importState(newState){
     dispatch(setGoalsState({ newState: newState.goals }))
     dispatch(setLogsState({ newState: newState.logs }))
     dispatch(setTasksState({ newState: newState.tasks }))
-    dispatch(setRecordsState({ newState: newState.activityRecords }))
   }
 }
