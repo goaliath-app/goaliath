@@ -20,7 +20,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
   if(activity){
     goalId = activity.goalId
   }else{
-    if(!route.params.goalId){
+    if(route.params.goalId == null){
       throw "Navigated to ActivityFormScreen without providing activityId nor goalId. At least one is required."
     }
     goalId = route.params.goalId
