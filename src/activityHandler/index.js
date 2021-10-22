@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux'
 import { 
   selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry, 
   selectGoalById, selectActivityByIdAndDate, selectAllActiveActivities, 
+  selectAllActiveActivitiesByDate,
   selectEntryByActivityIdAndDate, selectEntriesByDay,
-  findAllActivityRecords
+  findAllActivityRecords, isActiveSelector
 } from "../redux"
 import activityTypes from './activityTypes'
 import { WeekView as BaseWeekView } from '../components'
@@ -207,32 +208,17 @@ export function getWeekActivityCompletionRatio(state, activityId, date){
   }
 }
 
-// TODO: this function is a work in progress
-export function getWeekCompletionRatio(state, activityId, date){
+export function getWeekCompletionRatio(state, date){
   // get the number of active activities this week
   const dueActivities = []
 
-  // if the date is from the current week, look at the active activities
-  if( date.endOf("week") >= getTodaySelector(state) ){
-    const activities = selectAllActiveActivities(state)
-    
-    activities.forEach( activity => {
-      if( dueThisWeek(state, activity.id, date) ){
-        dueActivities.push(activity)
-      }
-    }) 
+  const activities = selectAllActiveActivitiesByDate(state, date)
   
-  // if the date is from a past week, look at the activity records of the
-  // last day of that week
-  }else{
-    const activityRecords = []// findAllActivityRecords(state, date.endOf('week'))
-
-    activityRecords.forEach( activityRecord => {
-      if( dueThisWeek(state, activityRecord.id, date) ){
-        dueActivities.push(activityRecord)
-      }
-    })
-  }
+  activities.forEach( activity => {
+    if( dueThisWeek(state, activity.id, date) ){
+      dueActivities.push(activity)
+    }
+  }) 
   
   // get how much of each activity is completed this week
   let completionAccumulator = 0
@@ -260,25 +246,14 @@ function dueThisWeek(state, activityId, date){
   // If date is of a past week, we check the activity records for the last
   // day of that week.
 
-  let activity
-
-  if( date.endOf("week") >= getTodaySelector(state) ){
-    activity = selectActivityById(state, activityId)
-    
-  // if the date is from a past week, look at the activity record of the last
-  // day of that week
-  }else{
-    activity = selectActivityRecordByIdAndDate(state, activityId, date.endOf('week'))
-  }
+  const activity = selectActivityByIdAndDate(state, activityId, date.endOf("week"))
 
   if(!activity){
     return false
   }
   
-  // TODO: change isActive so that it has state and activityId as arguments
   // TODO: GET THE HISTORICAL VERSION OF THE GOAL
-  const goal = selectGoalById(state, activity.goalId) 
-  if(!isActive(activity, goal)){
+  if(!isActiveSelector(state, activityId, date.endOf("week"))){
     return false
   }
 
