@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
 
 import { selectAllActivities } from './ActivitySlice'
-import { selectGoalEntities } from './GoalsSlice'
+import { selectGoalById } from './GoalsSlice'
 import { selectAllWeekEntriesByActivityId } from './LogSlice'
 
 import { getTodayTime, startOfDay } from './../util'
@@ -18,10 +18,9 @@ export function selectAllActiveActivities(state){
   - are not disabled or archived
   - belong to goals that are not disabled or archived */
   const allActivities = selectAllActivities(state)
-  const goalEntities = selectGoalEntities(state)
 
   const activeActivities = allActivities.filter(activity => {
-    const goal = goalEntities[activity.goalId]
+    const goal = selectGoalById(state, activity.goalId)
     return(
       activity.active && !activity.archived && goal.active && !goal.archived 
     )

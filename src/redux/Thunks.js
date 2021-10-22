@@ -8,7 +8,7 @@ import {
 } from './ActivitySlice'
 
 import { 
-  selectGoalById, createGoal, setState as setGoalsState 
+  setState as setGoalsState, setGoal
 } from './GoalsSlice'
 
 import { 
@@ -29,7 +29,7 @@ export function generateDummyData(){
     const today = getTodaySelector(state).plus({day: -5})
     
     // goals
-    dispatch(createGoal({name: 'dummy goal'}))
+    dispatch(setGoal({name: 'dummy goal'}))
 
     // activities
     dispatch(setActivity({

@@ -1,8 +1,7 @@
 export { default as store } from './store'
 
 export { 
-    createGoal, toggleGoal, updateGoal, archiveGoal,
-    selectAllGoals, selectGoalById, 
+    setGoal, toggleGoal, archiveGoal, selectAllGoals, selectGoalById, 
 } from './GoalsSlice'
 
 export { 
