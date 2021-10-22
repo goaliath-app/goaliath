@@ -1,14 +1,13 @@
 export { default as store } from './store'
 
 export { 
-    createGoal, toggleGoal, updateGoal, archiveGoal,
-    selectAllGoals, selectGoalById, 
+    setGoal, toggleGoal, archiveGoal, selectAllGoals, selectGoalById, 
 } from './GoalsSlice'
 
 export { 
-    createActivity, updateActivity, toggleActivity, archiveActivity, 
-    selectAllActivities, selectActivityById, selectActivityEntities,
-} from './ActivitySlice' 
+    setActivity, toggleActivity, archiveActivity,
+    selectAllActivities, selectActivityById, selectActivityByIdAndDate
+} from './ActivitySlice'
 
 // TODO: refactor
 export { 
@@ -37,6 +36,6 @@ export {
 export { setDayStartHour, finishOnboarding, setLanguage } from './SettingsSlice'
 
 export { 
-    selectActivityByIdAndDate, selectAllActiveActivities, getWeeklyStats,
-    getTodaySelector, extractActivityList,
+    selectAllActiveActivities, getWeeklyStats, getTodaySelector,
+    selectAllActiveActivitiesByDate, isActiveSelector
 } from './selectors'

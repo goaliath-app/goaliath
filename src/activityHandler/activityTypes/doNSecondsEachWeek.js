@@ -203,6 +203,48 @@ function getFrequencyString(state, activityId, t, date=null){
   return t('activityHandler.activityTypes.doNSecondsEachWeek.frequencyString', {expressionValue: value, expressionUnit: unit})
 }
 
+function getDayActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+  const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+
+  if(!entry){
+    return 0
+  }else if(entry.completed){
+    return 1
+  }else{
+    const todaySeconds = getTodayTime(entry.intervals).as('seconds')
+    const weeklySecondsGoal = activity.params.seconds
+
+    if((weeklySecondsGoal / 7) == 0){
+      return 1
+    }else{
+      return Math.min(1, todaySeconds / (weeklySecondsGoal / 7) )
+    }
+  }
+}
+
+function getWeekActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  const weeklySecondsGoal = activity.params.seconds
+
+  const weekStartDate = date.startOf('week')
+  const weekEndDate = date.endOf('week')
+
+  let secondsAccumulator = 0
+  for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
+    const entry = selectEntryByActivityIdAndDate(state, activityId, day)
+    if( entry && !entry.archived ){
+      secondsAccumulator += getTodayTime(entry.intervals).as('seconds')
+    }
+  }
+
+  if( weeklySecondsGoal == 0 ){
+    return 1
+  } else {
+    return Math.min( 1, secondsAccumulator / weeklySecondsGoal )
+  }
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
@@ -210,6 +252,8 @@ export default {
   WeekView,
   isWeekCompleted,
   getFrequencyString,
+  getDayActivityCompletionRatio,
+  getWeekActivityCompletionRatio,
 }
 
 function isWeekCompleted( state, activityId, date ){
