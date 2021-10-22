@@ -1,6 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
-import { selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry, selectGoalById, selectActivityByIdAndDate, selectAllActiveActivities } from "../redux"
+import { 
+  selectActivityById, createOrUnarchiveEntry, archiveOrDeleteEntry, 
+  selectGoalById, selectActivityByIdAndDate, selectAllActiveActivities, 
+  selectAllActiveActivitiesByDate,
+  selectEntryByActivityIdAndDate, selectEntriesByDay,
+  findAllActivityRecords, isActiveSelector
+} from "../redux"
 import activityTypes from './activityTypes'
 import { WeekView as BaseWeekView } from '../components'
 import { isActive } from '../util'
@@ -148,3 +154,115 @@ export function getFrequencyString(state, activityId, t, date=null){
     :
     'ERROR: no frequency string'
 }
+
+export function getDayActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+
+  const activityType = activityTypes[activity.type]
+
+  if(activityType.getDayActivityCompletionRatio){
+    return activityType.getDayActivityCompletionRatio(state, activityId, date)
+  }else{
+    // Generic completion ratio calculation
+    const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+
+    if(!entry){
+      return 0
+    }else if(entry.completed){
+      return 1
+    }else if(entry.repetitions?.length > 0 || entry.intervals.length > 0){
+      return 0.1
+    }else{
+      return 0
+    }
+  }
+}
+
+export function getDayCompletionRatio(state, date){
+  const dateEntries = selectEntriesByDay(state, date)
+
+  let completionAccumulator = 0
+  let activeEntries = 0
+  for(let entry of dateEntries){
+    if(!entry.archived){
+      completionAccumulator += getDayActivityCompletionRatio(state, entry.id, date)
+      activeEntries += 1
+    }
+  }
+
+  const dayCompletionRatio = completionAccumulator / activeEntries
+
+  return dayCompletionRatio
+}
+
+export function getWeekActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+
+  const activityType = activityTypes[activity.type]
+
+  if(activityType.getWeekActivityCompletionRatio){
+    return activityType.getWeekActivityCompletionRatio(state, activityId, date)
+  }else{
+    // Error
+    throw `activity type ${activity.type} does not have a getWeekActivityCompletionRatio function.`
+  }
+}
+
+export function getWeekCompletionRatio(state, date){
+  // get the number of active activities this week
+  const dueActivities = []
+
+  const activities = selectAllActiveActivitiesByDate(state, date)
+  
+  activities.forEach( activity => {
+    if( dueThisWeek(state, activity.id, date) ){
+      dueActivities.push(activity)
+    }
+  }) 
+  
+  // get how much of each activity is completed this week
+  let completionAccumulator = 0
+  dueActivities.forEach( activity => {
+    completionAccumulator += getWeekActivityCompletionRatio(state, activity.id, date)
+  })
+
+  // divide the completed activities by the total number of active activities
+  if(dueActivities.length == 0){
+    return 1
+  }else{
+    return completionAccumulator / dueActivities.length
+  }
+}
+
+function dueThisWeek(state, activityId, date){
+  // This function tells wether the activity is due this week or not
+  // An activity is not due for a week if
+  //  - it is archived
+  //  - it is not active
+  //  - it is from an activityType that don't need work every week, and this
+  //    is one of these weeks
+  // 
+  // If date is present, we check the current activities.
+  // If date is of a past week, we check the activity records for the last
+  // day of that week.
+
+  const activity = selectActivityByIdAndDate(state, activityId, date.endOf("week"))
+
+  if(!activity){
+    return false
+  }
+  
+  // TODO: GET THE HISTORICAL VERSION OF THE GOAL
+  if(!isActiveSelector(state, activityId, date.endOf("week"))){
+    return false
+  }
+
+  const activityType = activityTypes[activity.type]
+
+  if(activityType.dueThisWeek){
+    return activityType.dueThisWeek(state, activityId, date)
+  }else{
+    return true
+  }
+}
+

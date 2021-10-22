@@ -161,6 +161,48 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
+function getDayActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+  const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+
+  if(!entry){
+    return 0
+  }else if(entry.completed){
+    return 1
+  }else{
+    const todayReps = entry.repetitions.length
+    const weeklyRepsGoal = activity.params.repetitions
+
+    if((weeklyRepsGoal / 7) == 0){
+      return 1
+    }else{
+      return Math.min(1, todayReps / (weeklyRepsGoal / 7) )
+    }
+  }
+}
+
+function getWeekActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  const weeklyRepsGoal = activity.params.repetitions
+
+  const weekStartDate = date.startOf('week')
+  const weekEndDate = date.endOf('week')
+
+  let repetitionsAccumulator = 0
+  for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
+    const entry = selectEntryByActivityIdAndDate(state, activityId, day)
+    if( entry && !entry.archived ){
+      repetitionsAccumulator += entry.repetitions.length
+    }
+  }
+
+  if( weeklyRepsGoal == 0 ){
+    return 1
+  } else {
+    return Math.min( 1, repetitionsAccumulator / weeklyRepsGoal )
+  }
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
@@ -168,6 +210,8 @@ export default {
   addEntryThunk,
   isWeekCompleted,
   getFrequencyString,
+  getDayActivityCompletionRatio,
+  getWeekActivityCompletionRatio
   // WeekView,
 }
 
