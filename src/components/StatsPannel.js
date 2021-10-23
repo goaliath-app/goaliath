@@ -8,10 +8,10 @@ import { default as GenericStats } from './GenericStats'
 
 const StatsPannel = ({ activityId }) => (
   <View>
+    <GenericStats activityId={activityId} /> 
     <List.Item title={'Activity'} />
     <ActivityCalendarHeatmap activityId={activityId}/>
     <Divider style={{marginTop: 20}}/>
-    <GenericStats activityId={activityId} /> 
     <List.Item title={'Stats'} />
     <ActivityBarChartPicker activityId={activityId} />
     <View style={{height:100}} />
