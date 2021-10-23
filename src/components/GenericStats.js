@@ -2,18 +2,39 @@ import React from 'react';
 import { View, Text, Dimensions } from 'react-native'
 import { List, Divider, FlatList } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
-import { getLifeTimeStats } from '../redux'
+import { getLifeTimeStats, selectAllActivities, selectActivityById } from '../redux'
 import { getPreferedExpression } from '../util'
 import { useSelector } from 'react-redux'
+import Duration from 'luxon/src/duration.js'
+
 
 const GenericStats = ({ activityId }) => {
   const { t, i18n } = useTranslation()
   
-  const { 
-    loggedTime, daysDoneCount, daysDoneList, repetitionsCount 
-  } = useSelector(state => getLifeTimeStats(state, activityId))
+  let time = Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
+  let completions = 0 
+  let repetitions = 0
 
-  const { value: timeValue, localeUnit: timeUnit } = getPreferedExpression(loggedTime, t)
+  const state = useSelector(state => state)
+
+  const activities = []
+
+  if (activityId != null) {
+    const activity = selectActivityById(state, activityId)
+    activities.push(activity)
+  }else{
+    activities.push(...selectAllActivities(state))
+  }
+
+  activities.forEach(activity => {
+    const { loggedTime, daysDoneCount, repetitionsCount } = getLifeTimeStats(state, activity.id)
+    time = time.plus(loggedTime)
+    completions += daysDoneCount
+    repetitions += repetitionsCount
+  })
+
+
+  const { value: timeValue, localeUnit: timeUnit } = getPreferedExpression(time, t)
 
   return(
     <View>
@@ -21,7 +42,7 @@ const GenericStats = ({ activityId }) => {
       <List.Item
         style={{height: 40}}
         left={() => <List.Icon icon="check-circle-outline" />}
-        title={ daysDoneCount + t('stats.genericStats.daysCompleted')}
+        title={ completions + t('stats.genericStats.daysCompleted')}
       />
       {
         timeValue > 0 ?
@@ -33,11 +54,11 @@ const GenericStats = ({ activityId }) => {
           : null 
       }
       { 
-        repetitionsCount > 0 ? 
+        repetitions > 0 ? 
           <List.Item
             style={{height: 40}}
             left={() => <List.Icon icon="restore" />}  // Other icon candidates: "alpha-r-circle-outline"
-            title={ repetitionsCount + t('stats.genericStats.repetitions')}
+            title={ repetitions + t('stats.genericStats.repetitions')}
           />
           : null
       }

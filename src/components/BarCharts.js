@@ -3,10 +3,12 @@ import { View, Text, Dimensions } from 'react-native'
 import { List, Divider, FlatList, IconButton } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { selectAllActivityEntries, selectEntryByActivityIdAndDate, getTodaySelector, selectDailyDurationById, getWeeklyStats, getPeriodStats } from './../redux'
+import { selectActivityById, selectEntryByActivityIdAndDate, getTodaySelector, selectDailyDurationById, selectAllActivities, getPeriodStats } from './../redux'
 import { DateTime } from 'luxon'
 import SwitchSelector from "react-native-switch-selector";
 import { GeneralColor } from "./../styles/Colors"
+import Duration from 'luxon/src/duration.js'
+
 
 // Work in progress
 
@@ -79,6 +81,13 @@ export const ActivityBarChart = ({
   }) => {
     const today = date
     const state = useSelector(state => state)
+
+    const activities = []
+    if(activityId != null){
+      activities.push(selectActivityById(state, activityId))
+    }else{
+      activities.push(...selectAllActivities(state))
+    }
     
     const data = [];
     let xLabel, yLabel, tickValues, tickFormat, yTickValues;
@@ -87,7 +96,10 @@ export const ActivityBarChart = ({
     if(show == 'time'){
       if(period == 'week'){
         for(let date = today.startOf('week'); date <= today.endOf('week'); date = date.plus({days: 1})) {
-          const duration = selectDailyDurationById(state, activityId, date)
+          let duration = Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
+          activities.forEach(activity => {
+            duration = duration.plus(selectDailyDurationById(state, activity.id, date))
+          })
           data.push({
             x: date.toJSDate(),
             y: duration.as('minutes')
@@ -103,10 +115,14 @@ export const ActivityBarChart = ({
           date <= today.endOf('month'); 
           date = date.plus({days: 7})
         ) {
-          const { loggedTime } = getPeriodStats(state, date, date.plus({days: 6}), activityId)
+          let duration = Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
+          activities.forEach(activity => {
+            const { loggedTime } = getPeriodStats(state, date, date.plus({days: 6}), activity.id)
+            duration = duration.plus(loggedTime)
+          })
           data.push({
             x: date.toJSDate(),
-            y: loggedTime.as('minutes')
+            y: duration.as('minutes')
           })
         }
         xLabel = 'Week'
@@ -118,8 +134,12 @@ export const ActivityBarChart = ({
     }else if(show == 'repetitions'){
       if(period == 'week'){
         for(let date = today.startOf('week'); date <= today.endOf('week'); date = date.plus({days: 1})) {
-          const entry = selectEntryByActivityIdAndDate(state, activityId, date)
-          const repetitions = entry?.repetitions? entry.repetitions.length : 0
+          let repetitions = 0
+          activities.forEach(activity => {
+            const entry = selectEntryByActivityIdAndDate(state, activity.id, date)
+            repetitions += entry?.repetitions? entry.repetitions.length : 0
+          })
+            
           data.push({
             x: date.toJSDate(),
             y: repetitions
@@ -135,10 +155,15 @@ export const ActivityBarChart = ({
           date <= today.endOf('month'); 
           date = date.plus({days: 7})
         ) {
-          const { repetitionsCount } = getPeriodStats(state, date, date.plus({days: 6}), activityId)
+          let repetitions = 0
+          activities.forEach(activity => {
+            const { repetitionsCount } = getPeriodStats(state, date, date.plus({days: 6}), activity.id)
+            repetitions += repetitionsCount
+          })
+            
           data.push({
             x: date.toJSDate(),
-            y: repetitionsCount
+            y: repetitions
           })
           xLabel = 'Week'
           yLabel = 'Repetitions'
@@ -149,13 +174,19 @@ export const ActivityBarChart = ({
     // ----- COMPLETION CHARTS -----
     }else if(show == 'completions'){
       if(period == 'week'){
-        yTickValues = [0, 1]
+        if(activities.length == 1){
+          yTickValues = [0, 1]
+        }
         for(let date = today.startOf('week'); date <= today.endOf('week'); date = date.plus({days: 1})) {
-          const entry = selectEntryByActivityIdAndDate(state, activityId, date)
-          const value = entry?.completed? 1 : 0
+          const completions = 0
+          activities.forEach(activity => {
+            const entry = selectEntryByActivityIdAndDate(state, activity.id, date)
+            completions += entry?.completed? 1 : 0
+          })
+            
           data.push({
             x: date.toJSDate(),
-            y: value
+            y: completions
           })
           xLabel = 'Date'
           yLabel = 'Completed'
@@ -168,10 +199,15 @@ export const ActivityBarChart = ({
           date <= today.endOf('month'); 
           date = date.plus({days: 7})
         ) {
-          const { daysDoneCount } = getPeriodStats(state, date, date.plus({days: 6}), activityId)
+          const completions = 0
+          activities.forEach(activity => {
+            const { daysDoneCount } = getPeriodStats(state, date, date.plus({days: 6}), activity.id)
+            completions += daysDoneCount
+          })
+            
           data.push({
             x: date.toJSDate(),
-            y: daysDoneCount
+            y: completions
           })
           xLabel = 'Week'
           yLabel = 'Completions'

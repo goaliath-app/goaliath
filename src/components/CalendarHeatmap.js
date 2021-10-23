@@ -26,38 +26,67 @@
 
 import React from 'react';
 import { useSelector } from 'react-redux'
-import { selectAllActivityEntries, selectActivityByIdAndDate, getTodaySelector } from './../redux'
+import { selectAllActivityEntries, selectActivityById, getTodaySelector, selectAllActivities } from './../redux'
 import { View, Text, Dimensions, FlatList } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
+import { getDayActivityCompletionRatio } from './../activityHandler'
 
 const ActivityCalendarHeatmap = ({ activityId }) => {
-  const entries = useSelector((state) => selectAllActivityEntries(state, activityId))
-  const today = useSelector(getTodaySelector)
   const state = useSelector((state) => state)
-  const heatmapData = []
-  Object.keys(entries).forEach((entryDate) => {
-    const thatDayActivity = selectActivityByIdAndDate(state, activityId, entryDate)
-    const entry = entries[entryDate]
-    let strength, color
-    if(entry.completed){
-      strength = 1
-    }else if(entry.intervals?.length > 0 || entry.repetitions?.length > 0){
-      strength = 0.1
-    }else{
-      color = '#EBEDF0'
-    }
-    heatmapData.push({ date: DateTime.fromISO(entryDate).toFormat('yyyy-MM-dd'), strength, color })
+  const today = getTodaySelector(state)
+
+  // populate activities array with all activities whose data we need to show
+  const activities = []
+
+  if(activityId != null) {
+    activities.push(selectActivityById(state, activityId))
+  } else {
+    activities.push(...selectAllActivities(state))
+  }
+
+  // generate object with dates as keys and list of that day entries as items
+  const entriesByDate = {}
+
+  activities.forEach(activity => {
+    const entries = selectAllActivityEntries(state, activity.id)
+    Object.keys(entries).forEach( entryDate => {
+      if(entriesByDate[entryDate] == null) {
+        entriesByDate[entryDate] = []
+      }
+      entriesByDate[entryDate].push(entries[entryDate])
+    })
   })
 
+  // transform the entriesByDate object into the data for the heatmap
+  const data = Object.entries(entriesByDate).map( ([ key, value ]) => {
+    const date = key, entries = value
+    let totalCompletion = 0
+    entries.forEach(entry => {
+      totalCompletion += getDayActivityCompletionRatio(state, entry.id, DateTime.fromISO(date))
+    })
+    const averageCompletion = totalCompletion / entries.length
+
+    let strength, color
+    if(averageCompletion == 0) {
+      color = '#EBEDF0'
+    }else{
+      strength = averageCompletion
+    }
+
+    return { date: DateTime.fromISO(date).toFormat('yyyy-MM-dd'), strength, color }
+  })
+
+  // calculate domain of days to show
   const domainStart = today.minus({months: 3})
   const domain = {
     start: domainStart.toFormat('yyyy-MM-dd'),
     end: today.toFormat('yyyy-MM-dd')
   }
+
   return (
     <CalendarHeatmap
-      data={heatmapData}
+      data={data}
       weekStart={1}
       domain={domain}
       emptyColor={'transparent'}
