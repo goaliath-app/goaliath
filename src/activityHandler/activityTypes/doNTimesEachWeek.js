@@ -170,7 +170,7 @@ function getDayActivityCompletionRatio(state, activityId, date){
   }else if(entry.completed){
     return 1
   }else{
-    const todayReps = entry.repetitions.length
+    const todayReps = entry.repetitions?.length ? entry.repetitions.length : 0
     const weeklyRepsGoal = activity.params.repetitions
 
     if((weeklyRepsGoal / 7) == 0){
