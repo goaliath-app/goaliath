@@ -37,13 +37,13 @@ const en = {
       genericStats: {
         title: 'Lifetime',
         timeDedicated: '{{expressionValue}} total {{expressionUnit}} dedicated',
-        daysCompleted: ' days completed',
+        daysCompleted: ' activities completed',
         repetitions: ' repetitions done',
       },
       weekStats: {
         title: 'This week',
         hoursDedicated: ' total hours dedicated',
-        daysCompleted: ' days completed'
+        daysCompleted: ' activities completed'
       }
     },
 
