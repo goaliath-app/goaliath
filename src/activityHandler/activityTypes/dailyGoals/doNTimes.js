@@ -81,7 +81,7 @@ function getDayActivityCompletionRatio(state, activityId, date){
   }else if(entry.completed){
     return 1
   }else{
-    const repetitionsDone = entry.repetitions.length
+    const repetitionsDone = entry.repetitions?.length ? entry.repetitions.length : 0
     const repetitionsGoal = activity.params.dailyGoal.params.repetitions
 
     if(repetitionsGoal == 0){

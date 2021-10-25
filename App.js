@@ -15,7 +15,7 @@ import {
   TodayScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, 
   ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen, 
   DayInCalendarScreen, OnboardingScreen, SelectWeeklyActivitiesScreen,
-  AddTasksScreen
+  AddTasksScreen, StatsScreen,
 } from './src/screens'
 import { Drawer as CustomDrawer } from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
@@ -103,6 +103,8 @@ export default function App() {
                 options={{ title: t('app.drawer.calendar') }} />
               <Drawer.Screen name='Settings' component={SettingsScreen} 
                 options={{ title: t('app.drawer.settings') }} />
+              <Drawer.Screen name='Stats' component={StatsScreen} 
+                options={{ title: t('app.drawer.stats') }} />
             </Drawer.Navigator>
             } 
           </NavigationContainer>

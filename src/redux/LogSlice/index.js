@@ -1,9 +1,10 @@
 export {
     createLog, addEntry, upsertEntry, toggleCompleted, setState, sortLog, deleteEntry, deleteLog,
     replaceEntry, setRepetitions,
-    selectLogById, areWeekliesSelectedToday,
+    selectLogById, areWeekliesSelectedToday, selectAllActivityEntries,
     selectThisWeekEntriesByActivityId, selectEntriesByDay,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate,
+    selectDailyDurationById, getPeriodStats, getLifeTimeStats,
 } from './LogSlice'
 
 export { 
