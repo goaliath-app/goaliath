@@ -44,11 +44,14 @@
     "react-native-reanimated": "~1.13.0",
     "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "~2.15.2",
-    "react-native-svg": "^12.1.0",
+    "react-native-svg": "^12.1.1",
+    "react-native-switch-selector": "^2.1.4",
     "react-native-web": "~0.13.12",
     "react-native-wheel-picker-expo": "^0.4.2",
     "react-redux": "^7.2.2",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "victory-core": "^36.0.0",
+    "victory-native": "^35.5.5"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

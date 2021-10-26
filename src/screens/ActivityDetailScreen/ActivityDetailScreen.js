@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Paragraph, Menu, Title, Divider, List } from 'react-native-paper';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon } from '../../components';
+import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon, ActivityBarChartPicker, ActivityCalendarHeatmap } from '../../components';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTodayTimer, 
   stopTodayTimer, upsertEntry, archiveActivity 
@@ -13,6 +13,8 @@ import { isToday, isFuture } from '../../util'
 import { GeneralColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
+
+import { GenericStats, StatsPannel } from '../../components'
 
 // TODO: use selectActivityByIdAndDate instead of selectActivityById
 const ActivityDetailScreen = ({ 
@@ -66,7 +68,7 @@ const ActivityDetailScreen = ({
   )
 
   return(
-    <KeyboardAvoidingView style={{flex:1}}>
+    <KeyboardAvoidingView style={{flex:1,backgroundColor: GeneralColor.screenBackground}} >
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
       <ScrollView style={{ backgroundColor: GeneralColor.background, flex: 1 }}>
         {date && !dateIsToday? 
@@ -111,11 +113,7 @@ const ActivityDetailScreen = ({
           null
         }
 
-        {/* future work:
-        <WeekStats />
-        <GenericStats /> 
-        */}
-
+        <StatsPannel activityId={activity.id} />
       </ScrollView>
 
       <DeleteDialog 

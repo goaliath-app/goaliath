@@ -42,16 +42,23 @@ const es= {
   
     stats: {
         genericStats: {
-          title: 'Estadísticas',
-          hoursDedicated: ' horas totales dedicadas',
-          daysCompleted: ' días completada'
+          title: 'Estadísticas Globales',
+          timeDedicated: '{{expressionValue}} {{expressionUnit}} dedicados en total',
+          daysCompleted: ' actividades completadas',
+          repetitions: ' repeticiones realizadas',
+
         },
         weekStats: {
           title: 'Esta semana',
           hoursDedicated: ' horas totales dedicadas',
-          daysCompleted: ' días completada'
+          daysCompleted: ' actividades completadas'
   
         }
+    },
+
+    statsScreen: {
+      drawerTitle: 'Estadísticas',
+      headerTitle: 'Estadísticas',
     },
     
     todayPannel: {
@@ -241,7 +248,8 @@ const es= {
         week: 'Semana',
         goals: 'Metas',
         calendar: 'Calendario',
-        settings: 'Ajustes'
+        settings: 'Ajustes',
+        stats: 'Estadísticas',
       }
     },
 

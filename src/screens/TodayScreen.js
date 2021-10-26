@@ -7,7 +7,6 @@ import { getTodaySelector } from '../redux'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 
-
 const TodayScreen = ({ navigation }) => {
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()

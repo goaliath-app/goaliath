@@ -11,3 +11,4 @@ export { default as SelectWeeklyActivitiesScreen } from './SelectWeeklyActivitie
 export { default as AddTasksScreen } from './AddTasksScreen'
 export { default as CalendarDayViewScreen } from './CalendarDayViewScreen'
 export { default as CalendarWeekViewScreen } from './CalendarWeekViewScreen'
+export { default as StatsScreen } from './StatsScreen'

@@ -42,16 +42,21 @@ const en = {
 
     stats: {
       genericStats: {
-        title: 'Stats',
-        hoursDedicated: ' total hours dedicated',
-        daysCompleted: ' days completed'
+        title: 'Lifetime',
+        timeDedicated: '{{expressionValue}} total {{expressionUnit}} dedicated',
+        daysCompleted: ' activities completed',
+        repetitions: ' repetitions done',
       },
       weekStats: {
         title: 'This week',
         hoursDedicated: ' total hours dedicated',
-        daysCompleted: ' days completed'
-
+        daysCompleted: ' activities completed'
       }
+    },
+
+    statsScreen: {
+      drawerTitle: 'Stats',
+      headerTitle: 'Stats',
     },
 
     todayPannel: {
@@ -243,6 +248,7 @@ const en = {
         week: 'Week',
         goals: 'Goals',
         calendar: 'Calendar',
+        stats: 'Stats',
         settings: 'Settings'
       }
     },

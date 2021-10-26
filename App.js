@@ -13,9 +13,10 @@ import { useTranslation } from 'react-i18next'
 import { store, finishOnboarding as finishOnboardingAction } from './src/redux'
 import { 
   TodayScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, 
-  ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen, 
+  ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen,
   OnboardingScreen, SelectWeeklyActivitiesScreen,
-  AddTasksScreen, CalendarDayViewScreen, CalendarWeekViewScreen
+  AddTasksScreen, CalendarDayViewScreen, CalendarWeekViewScreen,
+  DayInCalendarScreen, StatsScreen,
 } from './src/screens'
 import { Drawer as CustomDrawer } from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
@@ -104,6 +105,8 @@ export default function App() {
                 options={{ title: t('app.drawer.calendar') }} />
               <Drawer.Screen name='Settings' component={SettingsScreen} 
                 options={{ title: t('app.drawer.settings') }} />
+              <Drawer.Screen name='Stats' component={StatsScreen} 
+                options={{ title: t('app.drawer.stats') }} />
             </Drawer.Navigator>
             } 
           </NavigationContainer>
