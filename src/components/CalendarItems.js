@@ -1,56 +1,61 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 import ProgressBar from 'react-native-progress/Bar';
 import { CalendarColor } from '../styles/Colors';
 import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
+import { getWeekCompletionRatio, getDayCompletionRatio } from '../activityHandler'
 
-/* TODO: Al mantener pulsado un día, que salga la pantalla de ese día.
-         Si el día es de otro mes, que salga con un estilo diferente. */
-const CalendarDayItem = ({ today, navigation, day, currentMonth }) => (
-  <LongPressGestureHandler
-            onHandlerStateChange={(event) => { 
-              if(event.nativeEvent.state === State.ACTIVE) {
-                navigation.navigate('CalendarDayView')
-              } 
-            }}
-            minDurationMs={800}
-  >
-    <View style={styles.dayComponent}>
-      <View style={{ flex: 1, justifyContent: 'center', margin: 2 }}>
-        {/* Day ProgressBar */}
-        <ProgressBar 
-        progress={1} 
-        height='100%' 
-        color={CalendarColor.dayProgress} 
-        borderWidth={0} 
-        borderRadius={0} 
-        width={null} 
-        style={{ transform: [{ rotate: '-90deg' }]}}
-        />
-        <View style={{ position: 'absolute', flex: 1, alignSelf: 'center' }}>
-          {today.day===day.day && today.month===day.month && today.year===day.year? 
-          <View style={styles.todayView}>
-            <Text style={{ color: CalendarColor.todayTextColor }}>
-              {day.toFormat('d')}
-            </Text>
+const CalendarDayItem = ({ today, navigation, day, currentMonth }) => {
+  const dayProgress = useSelector((state)=>getDayCompletionRatio(state, day))
+
+  return(
+    <LongPressGestureHandler
+      onHandlerStateChange={(event) => { 
+        if(event.nativeEvent.state === State.ACTIVE) {
+          navigation.navigate('CalendarDayView')
+        } 
+      }}
+      minDurationMs={800}
+    >
+      <View style={styles.dayComponent}>
+        <View style={{ flex: 1, justifyContent: 'center', margin: 2 }}>
+          {/* Day ProgressBar */}
+          <ProgressBar 
+          progress={dayProgress} 
+          height='100%' 
+          color={CalendarColor.dayProgress} 
+          borderWidth={0} 
+          borderRadius={0} 
+          width={null} 
+          style={{ transform: [{ rotate: '-90deg' }]}}
+          />
+          <View style={{ position: 'absolute', flex: 1, alignSelf: 'center' }}>
+            {today.day===day.day && today.month===day.month && today.year===day.year? 
+            <View style={styles.todayView}>
+              <Text style={{ color: CalendarColor.todayTextColor }}>
+                {day.toFormat('d')}
+              </Text>
+            </View>
+            :
+            currentMonth.toFormat('L')==day.month?
+            <Text>{day.toFormat('d')}</Text>
+            :
+            <Text style={{color: CalendarColor.dayOtherMonth}}>{day.toFormat('d')}</Text>
+            }
+            
           </View>
-          :
-          currentMonth.toFormat('L')==day.month?
-          <Text>{day.toFormat('d')}</Text>
-          :
-          <Text style={{color: CalendarColor.dayOtherMonth}}>{day.toFormat('d')}</Text>
-          }
-          
         </View>
       </View>
-    </View>
-  </LongPressGestureHandler>
-)
+    </LongPressGestureHandler>
+)}
 
 /* TODO: Add a screen with the activities for weeks and days */
 const CalendarWeekItem = ({ date, currentMonth, navigation, startOfWeek, today }) => {
   const dayPosition = ((date.weekday % 7) - startOfWeek) % 7
+
+  const weekProgress = useSelector((state) => getWeekCompletionRatio(state, date))
 
   return(
     <Pressable onPress={() => navigation.navigate('CalendarWeekView')}>
@@ -68,7 +73,7 @@ const CalendarWeekItem = ({ date, currentMonth, navigation, startOfWeek, today }
         {/* Week ProgressBar */}
         <View style={{ marginHorizontal: 2, marginBottom: 10 }}>
           <ProgressBar 
-            progress={0.5} 
+            progress={weekProgress} 
             height={7} 
             color={CalendarColor.progressBarColor} 
             borderWidth={0} 
