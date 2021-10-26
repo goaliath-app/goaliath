@@ -38,9 +38,7 @@ export function selectAllActiveActivitiesByDate(state, date){
 
   const activeActivities = allActivities.filter(activity => {
     const goal = selectGoalByIdAndDate(state, activity.goalId, date)
-    return(
-      isActive(activity, goal) 
-    )
+    return isActive(activity, goal) 
   })
 
   return activeActivities

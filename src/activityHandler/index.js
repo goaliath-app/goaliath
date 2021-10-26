@@ -190,9 +190,11 @@ export function getDayCompletionRatio(state, date){
     }
   }
 
-  const dayCompletionRatio = completionAccumulator / activeEntries
-
-  return dayCompletionRatio
+  if(activeEntries == 0){
+    return 0
+  }else{
+    return completionAccumulator / activeEntries
+  }
 }
 
 export function getWeekActivityCompletionRatio(state, activityId, date){
@@ -209,13 +211,15 @@ export function getWeekActivityCompletionRatio(state, activityId, date){
 }
 
 export function getWeekCompletionRatio(state, date){
+  const weekEndDate = date.endOf("week")
+
   // get the number of active activities this week
   const dueActivities = []
 
-  const activities = selectAllActiveActivitiesByDate(state, date)
+  const activities = selectAllActiveActivitiesByDate(state, weekEndDate)
   
   activities.forEach( activity => {
-    if( dueThisWeek(state, activity.id, date) ){
+    if( dueThisWeek(state, activity.id, weekEndDate) ){
       dueActivities.push(activity)
     }
   }) 
@@ -223,12 +227,13 @@ export function getWeekCompletionRatio(state, date){
   // get how much of each activity is completed this week
   let completionAccumulator = 0
   dueActivities.forEach( activity => {
-    completionAccumulator += getWeekActivityCompletionRatio(state, activity.id, date)
+    const completionRatio = getWeekActivityCompletionRatio(state, activity.id, weekEndDate)
+    completionAccumulator += completionRatio
   })
 
   // divide the completed activities by the total number of active activities
   if(dueActivities.length == 0){
-    return 1
+    return 0
   }else{
     return completionAccumulator / dueActivities.length
   }

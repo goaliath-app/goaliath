@@ -136,7 +136,7 @@ function getWeekActivityCompletionRatio(state, activityId, date){
   for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
     const entry = selectEntryByActivityIdAndDate(state, activityId, day)
     if( entry && !entry.archived ){
-      completionAccumulator += getDayActivityCompletionRatio(state, activityId, date)
+      completionAccumulator += getDayActivityCompletionRatio(state, activityId, day)
     }
   }
 
