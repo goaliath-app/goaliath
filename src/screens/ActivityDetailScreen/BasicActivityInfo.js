@@ -21,6 +21,9 @@ const BasicActivityInfo = ({ activity, goal }) => {
       <List.Item
         title={t('basicActivityInfo.frequency') + frequencyString }
       />
+      <List.Item
+        title={activity.description} titleNumberOfLines={null}
+      />
       <Divider />
     </View>
   )

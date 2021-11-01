@@ -26,6 +26,7 @@ An entry is:
   {
     id: date of the entry, when an entry is selected it will be replaced by the activityId
     name: str, name of the activity
+    description: str, description of the activity
     goalId: id of its goal
     type: str, type of the activity
     params: { ... }, params relevant to its activity type
@@ -36,6 +37,7 @@ An entry is:
 Example of entry (without the id):
 {
   name: 'Dummy Activity', 
+  description: 'Dummy description',
   goalId: '0', 
   type: 'doFixedDays', 
   params: { 

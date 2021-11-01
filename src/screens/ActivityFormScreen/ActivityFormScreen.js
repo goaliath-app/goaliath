@@ -32,6 +32,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
  
   // state default values
   const initialName = activity?.name?activity.name:''
+  const initialDescription = activity?.description ? activity.description : ''
   const initialfrequencySelector = (
     activity?.type == 'doFixedDays'? 'daily' :
     activity?.type == 'doNDaysEachWeek'? 'free' :
@@ -65,6 +66,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
   )
 
   const [name, setName] = React.useState(initialName)
+  const [description, setDescription] = React.useState(initialDescription)
   const [frequencySelector, setFrequencySelector] = React.useState(initialfrequencySelector)  // 'daily', 'free' or 'weekly'
   const [seconds, setSeconds] = React.useState(initialSeconds) // 'seconds'
   const [repetitions, setRepetitions] = React.useState(initialRepetitions) // 'repetitions'
@@ -181,6 +183,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
 
         const newActivity = { 
           name, 
+          description,
           goalId, 
           type, 
           params, 
@@ -220,9 +223,22 @@ const ActivityFormScreen = ({ route, navigation }) => {
             setNameInputError(false)
           }} 
         />
-        <HelperText style={{paddingLeft:25}} type="error" visible={nameInputError}>
-          {t('activityForm.errors.noName')}
-        </HelperText>
+        {
+          nameInputError?
+            <HelperText style={{paddingLeft:25}} type="error" visible={nameInputError}>
+              {t('activityForm.errors.noName')}
+            </HelperText> : null
+        }
+        <TextInput 
+          style={{paddingHorizontal: 15, paddingTop: 10, paddingBottom: 10, fontSize: 16, backgroundColor: GeneralColor.textInputBackground}} 
+          mode= 'outlined' 
+          multiline={true}
+          label={t('activityForm.descriptionInputLabel')}
+          value={description} 
+          onChangeText={description => {
+            setDescription(description)
+          }} 
+        />
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
         <Pressable style={{borderWidth: 1, margin: 20, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {setFrequencyVisible(true), setNoFrequencyError(false)}}>
