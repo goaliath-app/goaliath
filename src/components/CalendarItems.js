@@ -1,14 +1,43 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next'
+import { getTodaySelector } from '../redux'
+import { useNavigation } from '@react-navigation/native';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import ProgressBar from 'react-native-progress/Bar';
 import { CalendarColor } from '../styles/Colors';
 import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
-import { getWeekCompletionRatio, getDayCompletionRatio } from '../activityHandler'
+import { dueToday, getWeekCompletionRatio, getDayCompletionRatio, getDayActivityCompletionRatio, getWeekActivityCompletionRatio } from '../activityHandler'
 
-const CalendarDayItem = ({ today, navigation, day, currentMonth }) => {
-  const dayProgress = useSelector((state)=>getDayCompletionRatio(state, day))
+const CalendarDayItem = ({ day, currentMonth, activityId, showDayNumber=true }) => {
+  const today = useSelector(getTodaySelector)
+  const navigation = useNavigation(navigation)
+
+  let dayProgress
+  if(activityId != null){
+    dayProgress = useSelector(state => getDayActivityCompletionRatio(state, activityId, day))
+  } else {
+    dayProgress = useSelector(state => getDayCompletionRatio(state, day))
+  }
+
+  const { t, i18n } = useTranslation()
+
+  const daysOfWeekInitials = [
+    t('units.dayNamesInitials.monday'),
+    t('units.dayNamesInitials.tuesday'),
+    t('units.dayNamesInitials.wednesday'),
+    t('units.dayNamesInitials.thursday'),
+    t('units.dayNamesInitials.friday'),
+    t('units.dayNamesInitials.saturday'),
+    t('units.dayNamesInitials.sunday'),
+  ]
+
+  const dayLabel = showDayNumber? day.toFormat('d') : daysOfWeekInitials[(day.weekday-1)%7]
+
+  const isDueThisDay = useSelector(state => dueToday(state, activityId, day))
+  const activityFailedThisDay = activityId != null && isDueThisDay && dayProgress < 1
+  const dayBackground = activityFailedThisDay? {backgroundColor: '#DDDDDD'} : {}
 
   return(
     <LongPressGestureHandler
@@ -19,7 +48,7 @@ const CalendarDayItem = ({ today, navigation, day, currentMonth }) => {
       }}
       minDurationMs={800}
     >
-      <View style={styles.dayComponent}>
+      <View style={{...styles.dayComponent, ...dayBackground}}>
         <View style={{ flex: 1, justifyContent: 'center', margin: 2 }}>
           {/* Day ProgressBar */}
           <ProgressBar 
@@ -35,14 +64,14 @@ const CalendarDayItem = ({ today, navigation, day, currentMonth }) => {
             {today.day===day.day && today.month===day.month && today.year===day.year? 
             <View style={styles.todayView}>
               <Text style={{ color: CalendarColor.todayTextColor }}>
-                {day.toFormat('d')}
+                {dayLabel}
               </Text>
             </View>
             :
-            currentMonth.toFormat('L')==day.month?
-            <Text>{day.toFormat('d')}</Text>
+            currentMonth == null || currentMonth.toFormat('L')==day.month?
+            <Text>{dayLabel}</Text>
             :
-            <Text style={{color: CalendarColor.dayOtherMonth}}>{day.toFormat('d')}</Text>
+            <Text style={{color: CalendarColor.dayOtherMonth}}>{dayLabel}</Text>
             }
             
           </View>
@@ -52,25 +81,40 @@ const CalendarDayItem = ({ today, navigation, day, currentMonth }) => {
 )}
 
 /* TODO: Add a screen with the activities for weeks and days */
-const CalendarWeekItem = ({ date, currentMonth, navigation, startOfWeek, today }) => {
+const CalendarWeekItem = ({ 
+  date,                  // (required) day belonging to the week to be shown 
+  currentMonth=null,     // used to gray out days that are not in the current month, null if not used
+  startOfWeek=1,         // used to determine the first day of the week, 1=Monday, 2=Tuesday, etc.
+  activityId=null,       // provide an activityId to show the progress for that activity. If null, show all activities progress
+  showDayNumbers=true,   // if false, show weekday initials instead of week numbers
+  showWeekProgress=true, // if false, the week progress bar won't be shown
+  onPress=null,          // function to call when the week is pressed 
+}) => {
   const dayPosition = ((date.weekday % 7) - startOfWeek) % 7
-
-  const weekProgress = useSelector((state) => getWeekCompletionRatio(state, date))
+  
+  let weekProgress
+  if(activityId != null){
+    weekProgress = useSelector((state) => getWeekActivityCompletionRatio(state, activityId, date))
+  }else{
+    weekProgress = useSelector((state) => getWeekCompletionRatio(state, date))
+  }
 
   return(
-    <Pressable onPress={() => navigation.navigate('CalendarWeekView')}>
+    <Pressable onPress={onPress}>
       <View>
         <View style={styles.weekComponent}>
-          <CalendarDayItem today={today} day={date.plus({days: (0 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
-          <CalendarDayItem today={today} day={date.plus({days: (1 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
-          <CalendarDayItem today={today} day={date.plus({days: (2 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
-          <CalendarDayItem today={today} day={date.plus({days: (3 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
-          <CalendarDayItem today={today} day={date.plus({days: (4 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
-          <CalendarDayItem today={today} day={date.plus({days: (5 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
-          <CalendarDayItem today={today} day={date.plus({days: (6 - dayPosition)})} currentMonth={currentMonth} navigation={navigation} />
+          { [0, 1, 2, 3, 4, 5, 6].map( dayNumber => (
+            <CalendarDayItem  
+              activityId={activityId} 
+              day={date.plus({days: (dayNumber - dayPosition)})} 
+              currentMonth={currentMonth}
+              showDayNumber={showDayNumbers} />
+          ))}
         </View>
 
         {/* Week ProgressBar */}
+        {
+        showWeekProgress?
         <View style={{ marginHorizontal: 2, marginBottom: 10 }}>
           <ProgressBar 
             progress={weekProgress} 
@@ -81,6 +125,7 @@ const CalendarWeekItem = ({ date, currentMonth, navigation, startOfWeek, today }
             width={null} 
           />
         </View>
+        : null }
       </View>
     </Pressable>
   )

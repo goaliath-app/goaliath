@@ -63,7 +63,12 @@ const CalendarTwo = ({ navigation, startOfWeek=1 }) => {
         <Text style={styles.daysName}>{t('units.dayNamesShort2.sunday')}</Text>
       </View>
       
-      {weekData.map( date => <CalendarWeekItem date={date} startOfWeek={startOfWeek} today={today} currentMonth={selectedDate} navigation={navigation}/>) }
+      {weekData.map( date => 
+        <CalendarWeekItem 
+          date={date} startOfWeek={startOfWeek} currentMonth={selectedDate} 
+          onPress={() => navigation.navigate('CalendarWeekView')}
+        />
+      )}
      
     </View>
   )
