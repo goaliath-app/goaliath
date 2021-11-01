@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
-    createOrUnarchiveEntry, archiveOrDeleteEntry, selectActivityByIdAndDate } from '../../redux'
+    createOrUnarchiveEntry, archiveOrDeleteEntry, selectActivityByIdAndDate, 
+    isActiveSelector } from '../../redux'
 import { isActive } from '../../util'
 import dailyGoals from './dailyGoals'
 
@@ -107,7 +108,29 @@ function getWeekActivityCompletionRatio(state, activityId, date){
   }
 }
 
+// returns true if the activity has to be done in the given date,
+// and not doing it that exact day would be considered a "failure"
+function dueToday(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  if(!activity){
+    return false
+  }
+
+  if(!isActiveSelector(state, activityId, date)){
+    return false
+  }
+
+  const daysOfWeek = activity.params.daysOfWeek
+  if(daysOfWeek[date.weekday]){
+    return true
+  }else{
+    return false
+  }
+}
+
 export default {
+  dueToday,
   updateEntryThunk,
   TodayScreenItem,
   getFrequencyString,

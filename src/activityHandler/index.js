@@ -271,3 +271,25 @@ function dueThisWeek(state, activityId, date){
   }
 }
 
+
+// returns true if the activity has to be done in the given date,
+// and not doing it that exact day would be considered a "failure"
+export function dueToday(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  
+  if(!activity){
+    return false
+  }
+  
+  if(!isActiveSelector(state, activityId, date)){
+      return false
+    }
+    
+  const activityType = activityTypes[activity.type]
+    
+  if(activityType.dueToday){
+    return activityType.dueToday(state, activityId, date)
+  }else{
+    return false
+  }
+}
