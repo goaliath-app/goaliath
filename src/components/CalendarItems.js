@@ -10,7 +10,7 @@ import { CalendarColor } from '../styles/Colors';
 import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
 import { dueToday, getWeekCompletionRatio, getDayCompletionRatio, getDayActivityCompletionRatio, getWeekActivityCompletionRatio } from '../activityHandler'
 
-const CalendarDayItem = ({ day, currentMonth, activityId, showDayNumber=true }) => {
+const CalendarDayItem = ({ day, currentMonth, activityId, showDayNumber=true, onDayPress }) => {
   const today = useSelector(getTodaySelector)
   const navigation = useNavigation(navigation)
 
@@ -43,7 +43,7 @@ const CalendarDayItem = ({ day, currentMonth, activityId, showDayNumber=true }) 
     <LongPressGestureHandler
       onHandlerStateChange={(event) => { 
         if(event.nativeEvent.state === State.ACTIVE) {
-          navigation.navigate('CalendarDayView')
+          onDayPress()
         } 
       }}
       minDurationMs={800}
@@ -88,7 +88,8 @@ const CalendarWeekItem = ({
   activityId=null,       // provide an activityId to show the progress for that activity. If null, show all activities progress
   showDayNumbers=true,   // if false, show weekday initials instead of week numbers
   showWeekProgress=true, // if false, the week progress bar won't be shown
-  onPress=null,          // function to call when the week is pressed 
+  onWeekPress=null,          // function to call when the week is pressed 
+  onDayPress=null,            // function to call when the day is pressed
 }) => {
   const dayPosition = ((date.weekday % 7) - startOfWeek) % 7
   
@@ -100,7 +101,7 @@ const CalendarWeekItem = ({
   }
 
   return(
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onWeekPress}>
       <View>
         <View style={styles.weekComponent}>
           { [0, 1, 2, 3, 4, 5, 6].map( dayNumber => (
@@ -108,7 +109,8 @@ const CalendarWeekItem = ({
               activityId={activityId} 
               day={date.plus({days: (dayNumber - dayPosition)})} 
               currentMonth={currentMonth}
-              showDayNumber={showDayNumbers} />
+              showDayNumber={showDayNumbers}
+              onDayPress={onDayPress} />
           ))}
         </View>
 
