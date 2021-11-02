@@ -66,7 +66,7 @@ const CalendarTwo = ({ navigation, startOfWeek=1 }) => {
       {weekData.map( date => 
         <CalendarWeekItem 
           date={date} startOfWeek={startOfWeek} currentMonth={selectedDate} 
-          onWeekPress={() => navigation.navigate('CalendarWeekView')}
+          onWeekPress={() => navigation.navigate('CalendarWeekView', {date})}
           onDayPress={() => navigation.navigate('CalendarDayView')}
         />
       )}
