@@ -155,6 +155,18 @@ export function getFrequencyString(state, activityId, t, date=null){
     'ERROR: no frequency string'
 }
 
+export function getWeekProgressString(state, activityId, date, t){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  const activityType = activityTypes[activity.type]
+
+  return activityType.getWeekProgressString?
+    activityType.getWeekProgressString(state, activityId, date, t)
+    :
+    'ERROR: no progress string'
+}
+
+
 export function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate( state, activityId, date )
 

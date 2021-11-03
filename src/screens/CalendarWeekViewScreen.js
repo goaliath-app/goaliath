@@ -1,8 +1,28 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { selectActivityByIdAndDate } from '../redux'
 import { ScrollView, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { Checkbox, Header } from '../components';
-import { CalendarWeekItem } from '../components';
+import { CalendarWeekItem, Checkbox, Header } from '../components';
+import { getWeekProgressString } from '../activityHandler';
+import { useTranslation } from 'react-i18next';
+
+
+const ActivityWeekView = ({ activityId, date }) => {
+  const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
+  const { t, i18n } = useTranslation()
+  const WeekProgress = useSelector((state) => getWeekProgressString(state, activityId, date, t))
+
+  return(
+    <View>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Text>{activity.name}</Text>
+        <Text>{WeekProgress}</Text>
+      </View>
+      <CalendarWeekItem date={date} showDayNumbers={false} />
+    </View>
+  )
+}
 
 const CalendarWeekViewScreen = ({ navigation, route }) => {
   const { date } = route.params
@@ -74,7 +94,6 @@ const CalendarWeekViewScreen = ({ navigation, route }) => {
             </View>
           </View>
         </View>
-
       </ScrollView>
     </View>
   )

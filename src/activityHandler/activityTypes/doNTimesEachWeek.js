@@ -73,15 +73,10 @@ function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, is
   const { t, i18n } = useTranslation()
   
   // selectors
-  const { repetitionsCount } = useSelector((state) => getWeeklyStats(state, today, activity.id))
   const weekCompleted = useSelector(state => isWeekCompleted(state, activity.id, today))
 
-  // alias values
-  const weeklyRepsGoal = activity.params.repetitions
-  
   // calculations
-  const repsLeft = weeklyRepsGoal - repetitionsCount
-  const description = `${repsLeft} of ${weeklyRepsGoal} repetitions remaining`
+  const description = useSelector(state => getWeekProgressString(state, activity.id, today, t))
 
   return(
     weekCompleted?
@@ -161,6 +156,20 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
+function getWeekProgressString(state, activityId, date, t){
+  const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
+  
+  // selectors
+  const { repetitionsCount } = useSelector((state) => getWeeklyStats(state, date, activity.id))
+  
+ // alias values
+ const weeklyRepsGoal = activity.params.repetitions
+  
+ // calculations
+  const repsLeft = weeklyRepsGoal - repetitionsCount
+  return `${repsLeft} of ${weeklyRepsGoal} repetitions remaining`
+}
+
 function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate( state, activityId, date )
   const entry = selectEntryByActivityIdAndDate(state, activityId, date)
@@ -210,6 +219,7 @@ export default {
   addEntryThunk,
   isWeekCompleted,
   getFrequencyString,
+  getWeekProgressString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio
   // WeekView,

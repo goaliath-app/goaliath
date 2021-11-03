@@ -121,17 +121,11 @@ function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, is
   const { t, i18n } = useTranslation()
   
   // selectors
-  const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, today, activity.id))
   const weekCompleted = useSelector(state => isWeekCompleted(state, activity.id, today))
   
   // calculations
-  const secondsTarget = activity.params.seconds
-  const timeTarget = Duration.fromObject({seconds: secondsTarget}).shiftTo('hours', 'minutes', 'seconds')
-  let timeLeft = timeTarget.minus(weeklyTime)
-  timeLeft = timeLeft.as('seconds') >= 0? timeLeft : Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
-  const timeExpr = getPreferedExpression(timeLeft, t)
-  const description = t('weeklyActivities.timeLeft', {timeExprValue: timeExpr.value, timeExprLocaleUnit: timeExpr.localeUnit})
-
+  const description = useSelector(state => getWeekProgressString(state, activity.id, today, t))
+  
   return(
     weekCompleted?
       null
@@ -203,6 +197,21 @@ function getFrequencyString(state, activityId, t, date=null){
   return t('activityHandler.activityTypes.doNSecondsEachWeek.frequencyString', {expressionValue: value, expressionUnit: unit})
 }
 
+function getWeekProgressString(state, activityId, date, t){
+  const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
+  //selectors
+  const { weeklyTime} = useSelector((state) => getWeeklyStats(state, date, activity.id))
+  
+  // calculations
+  const secondsTarget = activity.params.seconds
+  const timeTarget = Duration.fromObject({seconds: secondsTarget}).shiftTo('hours', 'minutes', 'seconds')
+  let timeLeft = timeTarget.minus(weeklyTime)
+  timeLeft = timeLeft.as('seconds') >= 0? timeLeft : Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
+  const timeExpr = getPreferedExpression(timeLeft, t)
+  return t('weeklyActivities.timeLeft', {timeExprValue: timeExpr.value, timeExprLocaleUnit: timeExpr.localeUnit})
+
+}
+
 function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate( state, activityId, date )
   const entry = selectEntryByActivityIdAndDate(state, activityId, date)
@@ -252,6 +261,7 @@ export default {
   WeekView,
   isWeekCompleted,
   getFrequencyString,
+  getWeekProgressString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
 }

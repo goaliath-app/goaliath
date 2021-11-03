@@ -73,6 +73,10 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
+function getWeekProgressString(state, activityId, date, t){
+  return getFrequencyString(state, activityId, t, date)
+}
+
 function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate(state, activityId, date)
   const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
@@ -134,6 +138,7 @@ export default {
   updateEntryThunk,
   TodayScreenItem,
   getFrequencyString,
+  getWeekProgressString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
 }

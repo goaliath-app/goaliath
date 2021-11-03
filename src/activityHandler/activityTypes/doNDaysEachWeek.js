@@ -16,6 +16,14 @@ const TodayScreenItem = ({ activityId, date }) => {
   return <DailyGoalTodayScreenItem activityId={activityId} date={date} />
 }
 
+function getWeekProgressString(state, activityId, date, t){
+  const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
+  const { daysDoneCount } = useSelector((state) => getWeeklyStats(state, date, activityId))
+
+  const daysLeft = activity.params.days - daysDoneCount
+  return t('weeklyActivities.daysLeft', {daysLeft})
+}
+
 function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){
   const { t, i18n } = useTranslation()
   
@@ -156,6 +164,7 @@ export default {
   getFrequencyString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
+  getWeekProgressString,
 }
 
 function isWeekCompleted( state, activityId, date ){
