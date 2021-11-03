@@ -94,6 +94,7 @@ export default function App() {
             <Drawer.Navigator 
               initialRouteName='Today' 
               drawerContent={(props) => <CustomDrawer {...props} />}
+              screenOptions={{ headerShown: false }}
             >
               <Drawer.Screen name='Today' component={TodayStack} 
                 options={{ title: t('app.drawer.today') }} />
