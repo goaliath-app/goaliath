@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectActivityByIdAndDate } from '../redux'
+import { selectActivityByIdAndDate, selectAllActiveActivitiesByDate } from '../redux'
 import { ScrollView, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { CalendarWeekItem, Checkbox, Header } from '../components';
@@ -16,7 +16,7 @@ const ActivityWeekView = ({ activityId, date }) => {
   return(
     <View>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Text>{activity.name}</Text>
+        <Text style={{fontWeight: 'bold' }}>{activity.name}</Text>
         <Text>{WeekProgress}</Text>
       </View>
       <CalendarWeekItem date={date} showDayNumbers={false} />
@@ -27,8 +27,10 @@ const ActivityWeekView = ({ activityId, date }) => {
 const CalendarWeekViewScreen = ({ navigation, route }) => {
   const { date } = route.params
 
-  const [ activeGoalCheckbox, setActiveGoalCheckbox] = React.useState(true)
-  const [ activeActivityCheckbox, setActiveActivityCheckbox] = React.useState(false)
+  const activities = useSelector((state) => selectAllActiveActivitiesByDate(state, date))
+
+  const [ activeGoalCheckbox, setActiveGoalCheckbox] = React.useState(false)
+  const [ activeActivityCheckbox, setActiveActivityCheckbox] = React.useState(true)
   const [ activeMoreCompletionCheckbox, setActiveMoreCompletionCheckbox] = React.useState(false)
   const [ activeLessCompletionCheckbox, setActiveLessCompletionCheckbox] = React.useState(false)
 
@@ -94,6 +96,13 @@ const CalendarWeekViewScreen = ({ navigation, route }) => {
             </View>
           </View>
         </View>
+
+        {/*ActivityWeekView*/}
+        {activeActivityCheckbox? 
+          <View>
+            {activities.map(activity => <ActivityWeekView activityId={activity.id} date={date} />)}
+          </View>
+          : <></>}
       </ScrollView>
     </View>
   )
