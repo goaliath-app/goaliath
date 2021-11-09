@@ -1,8 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectActivityByIdAndDate, selectAllActiveActivitiesByDate } from '../redux'
+import { 
+  selectActivityByIdAndDate, selectAllActiveActivitiesByDate, selectAllActiveGoalsByDate, selectGoalByIdAndDate, selectAllActiveActivitiesByGoalIdAndDate 
+} from '../redux'
 import { ScrollView, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { List, Text } from 'react-native-paper';
 import { CalendarWeekItem, Checkbox, Header } from '../components';
 import { getWeekProgressString } from '../activityHandler';
 import { useTranslation } from 'react-i18next';
@@ -24,10 +26,24 @@ const ActivityWeekView = ({ activityId, date }) => {
   )
 }
 
+const GoalWeekView = ({ goalId, date }) => {
+  const goal = useSelector((state) => selectGoalByIdAndDate(state, goalId, date))
+  const goalActivities = useSelector((state) => selectAllActiveActivitiesByGoalIdAndDate(state, goalId, date))
+  
+  return (
+    <View>
+      <List.Accordion title={goal.name}>
+        {goalActivities.map(activity => <ActivityWeekView activityId={activity.id} date={date} />)}
+      </List.Accordion>
+    </View>
+  )
+}
+
 const CalendarWeekViewScreen = ({ navigation, route }) => {
-  const { date } = route.params
+  const date = route.params.date.endOf("week")
 
   const activities = useSelector((state) => selectAllActiveActivitiesByDate(state, date))
+  const goals = useSelector((state) => selectAllActiveGoalsByDate(state, date))
 
   const [ activeGoalCheckbox, setActiveGoalCheckbox] = React.useState(false)
   const [ activeActivityCheckbox, setActiveActivityCheckbox] = React.useState(true)
@@ -96,6 +112,11 @@ const CalendarWeekViewScreen = ({ navigation, route }) => {
             </View>
           </View>
         </View>
+
+        {/*GoalWeekView*/}
+        {activeGoalCheckbox?
+          goals.map((goal) => <GoalWeekView goalId={goal.id} date={date} />)
+          : null}
 
         {/*ActivityWeekView*/}
         {activeActivityCheckbox? 

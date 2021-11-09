@@ -2,7 +2,7 @@ export { default as store } from './store'
 
 export { 
     setGoal, toggleGoal, archiveGoal, selectAllGoals, selectGoalById, 
-    selectAllActiveGoalsByDate,
+    selectAllActiveGoalsByDate, selectGoalByIdAndDate,
 } from './GoalsSlice'
 
 export { 

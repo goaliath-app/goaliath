@@ -80,6 +80,6 @@ export function selectAllActiveActivitiesByGoalIdAndDate(state, goalId, date){
   const activeActivities = selectAllActiveActivitiesByDate(state, date)
 
   return activeActivities.filter(activity => {
-    return activity.goalId === goalId
+    return activity.goalId == goalId
   })
 }
