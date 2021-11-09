@@ -75,3 +75,11 @@ export function getTodaySelector(state){
   const dayStartHour = state.settings.dayStartHour
   return startOfDay(DateTime.now(), dayStartHour)
 }
+
+export function selectAllActiveActivitiesByGoalIdAndDate(state, goalId, date){
+  const activeActivities = selectAllActiveActivitiesByDate(state, date)
+
+  return activeActivities.filter(activity => {
+    return activity.goalId === goalId
+  })
+}
