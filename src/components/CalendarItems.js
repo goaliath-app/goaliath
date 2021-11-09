@@ -36,7 +36,7 @@ const CalendarDayItem = ({ day, currentMonth, activityId, showDayNumber=true, on
   const dayLabel = showDayNumber? day.toFormat('d') : daysOfWeekInitials[(day.weekday-1)%7]
 
   const isDueThisDay = useSelector(state => dueToday(state, activityId, day))
-  const activityFailedThisDay = activityId != null && isDueThisDay && dayProgress < 1
+  const activityFailedThisDay = activityId != null && isDueThisDay && dayProgress == 0 && day < today
   const dayBackground = activityFailedThisDay? {backgroundColor: '#DDDDDD'} : {}
 
   return(
@@ -91,7 +91,8 @@ const CalendarWeekItem = ({
   onWeekPress=null,          // function to call when the week is pressed 
   onDayPress=null,            // function to call when the day is pressed
 }) => {
-  const dayPosition = ((date.weekday % 7) - startOfWeek) % 7
+  // const dayPosition = ((date.weekday % 7) - startOfWeek) % 7
+  date = date.startOf("week")
   
   let weekProgress
   if(activityId != null){
@@ -107,7 +108,7 @@ const CalendarWeekItem = ({
           { [0, 1, 2, 3, 4, 5, 6].map( dayNumber => (
             <CalendarDayItem  
               activityId={activityId} 
-              day={date.plus({days: (dayNumber - dayPosition)})} 
+              day={date.plus({days: (dayNumber)})} 
               currentMonth={currentMonth}
               showDayNumber={showDayNumbers}
               onDayPress={onDayPress} />

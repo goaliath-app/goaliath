@@ -170,6 +170,8 @@ export function getWeekProgressString(state, activityId, date, t){
 export function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate( state, activityId, date )
 
+  if(!activity) return 0
+
   const activityType = activityTypes[activity.type]
 
   if(activityType.getDayActivityCompletionRatio){
@@ -210,6 +212,8 @@ export function getDayCompletionRatio(state, date){
 }
 
 export function getWeekActivityCompletionRatio(state, activityId, date){
+  date = date.endOf('week')
+
   const activity = selectActivityByIdAndDate( state, activityId, date )
 
   const activityType = activityTypes[activity.type]
@@ -218,7 +222,7 @@ export function getWeekActivityCompletionRatio(state, activityId, date){
     return activityType.getWeekActivityCompletionRatio(state, activityId, date)
   }else{
     // Error
-    throw `activity type ${activity.type} does not have a getWeekActivityCompletionRatio function.`
+    throw `activity type ${activity?.type} does not have a getWeekActivityCompletionRatio function.`
   }
 }
 

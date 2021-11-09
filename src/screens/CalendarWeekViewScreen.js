@@ -6,7 +6,7 @@ import {
 import { ScrollView, View } from 'react-native';
 import { List, Text } from 'react-native-paper';
 import { CalendarWeekItem, Checkbox, Header } from '../components';
-import { getWeekProgressString } from '../activityHandler';
+import { getWeekProgressString, getWeekActivityCompletionRatio } from '../activityHandler';
 import { useTranslation } from 'react-i18next';
 
 
@@ -21,7 +21,7 @@ const ActivityWeekView = ({ activityId, date }) => {
         <Text style={{fontWeight: 'bold' }}>{activity.name}</Text>
         <Text>{WeekProgress}</Text>
       </View>
-      <CalendarWeekItem date={date} showDayNumbers={false} />
+      <CalendarWeekItem activityId={activityId} date={date} showDayNumbers={false} showWeekProgress={true} />
     </View>
   )
 }
@@ -43,12 +43,19 @@ const CalendarWeekViewScreen = ({ navigation, route }) => {
   const date = route.params.date.endOf("week")
 
   const activities = useSelector((state) => selectAllActiveActivitiesByDate(state, date))
+  const state = useSelector(state => state)
+
+  const activityCompletionRatios = {}
+  activities.forEach(activity => {
+    activityCompletionRatios[activity.id] = getWeekActivityCompletionRatio(state, activity.id, date)
+  })
+
+  activities.sort((a, b) => activityCompletionRatios[b.id] - activityCompletionRatios[a.id])
+
   const goals = useSelector((state) => selectAllActiveGoalsByDate(state, date))
 
-  const [ activeGoalCheckbox, setActiveGoalCheckbox] = React.useState(false)
-  const [ activeActivityCheckbox, setActiveActivityCheckbox] = React.useState(true)
-  const [ activeMoreCompletionCheckbox, setActiveMoreCompletionCheckbox] = React.useState(false)
-  const [ activeLessCompletionCheckbox, setActiveLessCompletionCheckbox] = React.useState(false)
+  const [ activeGoalCheckbox, setActiveGoalCheckbox] = React.useState(true)
+  const [ activeActivityCheckbox, setActiveActivityCheckbox] = React.useState(false)
 
   return(
     <View>
@@ -61,55 +68,31 @@ const CalendarWeekViewScreen = ({ navigation, route }) => {
 
         {/*Options selectors*/}
         <View style={{flexDirection:'row', justifyContent: 'space-around'}}>
-          {/*Type options*/}
-          <View>
-            <View style={{flexDirection:'row', alignItems: 'center'}}>
-              <Checkbox status={activeGoalCheckbox? 'checked' : 'unchecked'} 
-                onPress={() => {
-                  if(!activeGoalCheckbox && activeActivityCheckbox){
-                    setActiveActivityCheckbox(!activeActivityCheckbox)
-                  } else if(activeGoalCheckbox && !activeActivityCheckbox){
+          {/*Sort by goal*/}
+          <View style={{flexDirection:'row', alignItems: 'center'}}>
+            <Checkbox status={activeGoalCheckbox? 'checked' : 'unchecked'} 
+              onPress={() => {
+                if(!activeGoalCheckbox && activeActivityCheckbox){
                   setActiveActivityCheckbox(!activeActivityCheckbox)
-                  }
-                  setActiveGoalCheckbox(!activeGoalCheckbox)}
-                } />
-              <Text>Sort by goal</Text>
-            </View>
-            <View style={{flexDirection:'row', alignItems: 'center'}}>
-              <Checkbox status={activeActivityCheckbox? 'checked' : 'unchecked'} 
-                onPress={() => {
-                  if(!activeActivityCheckbox && activeGoalCheckbox){
-                    setActiveGoalCheckbox(!activeGoalCheckbox)
-                  } else if(activeActivityCheckbox && !activeGoalCheckbox){
-                    setActiveGoalCheckbox(!activeGoalCheckbox)
-                  }
-                  setActiveActivityCheckbox(!activeActivityCheckbox)}
-                } />
-              <Text>Sort by activity</Text>
-            </View>
+                } else if(activeGoalCheckbox && !activeActivityCheckbox){
+                setActiveActivityCheckbox(!activeActivityCheckbox)
+                }
+                setActiveGoalCheckbox(!activeGoalCheckbox)}
+              } />
+            <Text>Sort by goal</Text>
           </View>
-          {/*Completion options*/}
-          <View>
-            <View style={{flexDirection:'row', alignItems: 'center'}}>
-              <Checkbox status={activeMoreCompletionCheckbox? 'checked' : 'unchecked'}
-                onPress={() => {
-                  if(!activeMoreCompletionCheckbox && activeLessCompletionCheckbox){
-                    setActiveLessCompletionCheckbox(false)
-                  }
-                  setActiveMoreCompletionCheckbox(!activeMoreCompletionCheckbox)
-                }} />
-              <Text>Sort by more completion</Text>
-            </View>
-            <View style={{flexDirection:'row', alignItems: 'center'}}>
-              <Checkbox status={activeLessCompletionCheckbox? 'checked' : 'unchecked'} 
-                onPress={() => {
-                  if(!activeLessCompletionCheckbox && activeMoreCompletionCheckbox){
-                    setActiveMoreCompletionCheckbox(false)
-                  }
-                  setActiveLessCompletionCheckbox(!activeLessCompletionCheckbox)}
-                } />
-              <Text>Sort by less completion</Text>
-            </View>
+          {/*Sort by activity*/}
+          <View style={{flexDirection:'row', alignItems: 'center'}}>
+            <Checkbox status={activeActivityCheckbox? 'checked' : 'unchecked'} 
+              onPress={() => {
+                if(!activeActivityCheckbox && activeGoalCheckbox){
+                  setActiveGoalCheckbox(!activeGoalCheckbox)
+                } else if(activeActivityCheckbox && !activeGoalCheckbox){
+                  setActiveGoalCheckbox(!activeGoalCheckbox)
+                }
+                setActiveActivityCheckbox(!activeActivityCheckbox)}
+              } />
+            <Text>Sort by activity</Text>
           </View>
         </View>
 
