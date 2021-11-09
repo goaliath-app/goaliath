@@ -5,7 +5,8 @@ import {
   selectGoalById, selectActivityByIdAndDate, selectAllActiveActivities, 
   selectAllActiveActivitiesByDate,
   selectEntryByActivityIdAndDate, selectEntriesByDay,
-  findAllActivityRecords, isActiveSelector
+  findAllActivityRecords, isActiveSelector,
+  selectAllActiveActivitiesByGoalIdAndDate,
 } from "../redux"
 import activityTypes from './activityTypes'
 import { WeekView as BaseWeekView } from '../components'
@@ -226,13 +227,18 @@ export function getWeekActivityCompletionRatio(state, activityId, date){
   }
 }
 
-export function getWeekCompletionRatio(state, date){
+export function getWeekCompletionRatio(state, date, goalId=null){
   const weekEndDate = date.endOf("week")
 
   // get the number of active activities this week
   const dueActivities = []
 
-  const activities = selectAllActiveActivitiesByDate(state, weekEndDate)
+  let activities;
+  if(goalId != null){
+    activities = selectAllActiveActivitiesByGoalIdAndDate(state, goalId, weekEndDate)
+  }else{
+    activities = selectAllActiveActivitiesByDate(state, weekEndDate)
+  }
   
   activities.forEach( activity => {
     if( dueThisWeek(state, activity.id, weekEndDate) ){

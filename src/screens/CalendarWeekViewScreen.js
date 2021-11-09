@@ -6,7 +6,7 @@ import {
 import { ScrollView, View } from 'react-native';
 import { List, Text } from 'react-native-paper';
 import { CalendarWeekItem, Checkbox, Header } from '../components';
-import { getWeekProgressString, getWeekActivityCompletionRatio } from '../activityHandler';
+import { getWeekProgressString, getWeekActivityCompletionRatio, getWeekCompletionRatio } from '../activityHandler';
 import { useTranslation } from 'react-i18next';
 
 
@@ -29,6 +29,15 @@ const ActivityWeekView = ({ activityId, date }) => {
 const GoalWeekView = ({ goalId, date }) => {
   const goal = useSelector((state) => selectGoalByIdAndDate(state, goalId, date))
   const goalActivities = useSelector((state) => selectAllActiveActivitiesByGoalIdAndDate(state, goalId, date))
+
+  const state = useSelector(state => state)
+
+  const activityCompletionRatios = {}
+  goalActivities.forEach(activity => {
+    activityCompletionRatios[activity.id] = getWeekActivityCompletionRatio(state, activity.id, date)
+  })
+
+  goalActivities.sort((a, b) => activityCompletionRatios[b.id] - activityCompletionRatios[a.id])
   
   return (
     <View>
@@ -53,6 +62,13 @@ const CalendarWeekViewScreen = ({ navigation, route }) => {
   activities.sort((a, b) => activityCompletionRatios[b.id] - activityCompletionRatios[a.id])
 
   const goals = useSelector((state) => selectAllActiveGoalsByDate(state, date))
+
+  const goalsCompletionRatios = {}
+  goals.forEach(goal => {
+    goalsCompletionRatios[goal.id] = getWeekCompletionRatio(state, date, goal.id)
+  })
+
+  goals.sort((a, b) => goalsCompletionRatios[b.id] - goalsCompletionRatios[a.id])
 
   const [ activeGoalCheckbox, setActiveGoalCheckbox] = React.useState(true)
   const [ activeActivityCheckbox, setActiveActivityCheckbox] = React.useState(false)
