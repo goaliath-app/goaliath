@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Paragraph, Menu, Title, Divider, List } from 'react-native-paper';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon, ActivityBarChartPicker, ActivityCalendarHeatmap } from '../../components';
+import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon, DiaryChat, ActivityCalendarHeatmap } from '../../components';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTodayTimer, 
   stopTodayTimer, upsertEntry, archiveActivity 
@@ -13,8 +13,11 @@ import { isToday, isFuture } from '../../util'
 import { GeneralColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import { GenericStats, StatsPannel } from '../../components'
+
+const Tab = createMaterialTopTabNavigator();
 
 // TODO: use selectActivityByIdAndDate instead of selectActivityById
 const ActivityDetailScreen = ({ 
@@ -70,51 +73,80 @@ const ActivityDetailScreen = ({
   return(
     <KeyboardAvoidingView style={{flex:1,backgroundColor: GeneralColor.screenBackground}} >
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
-      <ScrollView style={{ backgroundColor: GeneralColor.background, flex: 1 }}>
-        {date && !dateIsToday? 
-        <>
-        <List.Item 
-          title={<Title>{dateTitle}</Title>} 
-          right={() => ( dateIsFuture?null:
-            <View style={{alignSelf: 'center', paddingRight: 12}}>
-              <HelpIcon dialogContent={
-                <Paragraph>{t('activityDetail.helpIconText')}</Paragraph>
-              }/>
-            </View>
-          )}
-        />
-        <Divider />
-        </>
-        : null
-        }
-        <BasicActivityInfo activity={activity} goal={goal} />
-        {dateIsToday?
-        <TodayPannel 
-          entry={entry} 
-          toggleCompleted={toggleCompleted} 
-          startTodayTimer={startTodayTimer} 
-          stopTodayTimer={stopTodayTimer} 
-          upsertEntry={upsertEntry} 
-          date={date} 
-          dayStartHour={dayStartHour} 
-        /> 
-        : 
-          entry?
-          <TodayPannel 
-            entry={entry} 
-            toggleCompleted={toggleCompleted} 
-            startTodayTimer={()=>{}} 
-            stopTodayTimer={()=>{}} 
-            upsertEntry={upsertEntry} 
-            date={date} 
-            dayStartHour={dayStartHour} 
-          />
-          :
-          null
-        }
+      <Tab.Navigator backBehavior="none">
+        <Tab.Screen name="Activity">
+          {() => (
+            <ScrollView style={{ backgroundColor: GeneralColor.screenBackground, flex: 1 }}>
 
-        <StatsPannel activityId={activity.id} />
-      </ScrollView>
+            {/* If showing a day other than today, add a title with the date */}
+            {date && !dateIsToday? 
+            <>
+            <List.Item 
+              title={<Title>{dateTitle}</Title>} 
+              right={() => ( dateIsFuture?null:
+                <View style={{alignSelf: 'center', paddingRight: 12}}>
+                  <HelpIcon dialogContent={
+                    <Paragraph>{t('activityDetail.helpIconText')}</Paragraph>
+                  }/>
+                </View>
+              )}
+            />
+            <Divider />
+            </>
+            : null
+            }
+    
+            {/* Show a description of the activity */}
+            <BasicActivityInfo activity={activity} goal={goal} />
+    
+            {/* If we have a date, show the controls to edit that date's entry */}
+            {dateIsToday?
+            <TodayPannel 
+              entry={entry} 
+              toggleCompleted={toggleCompleted} 
+              startTodayTimer={startTodayTimer} 
+              stopTodayTimer={stopTodayTimer} 
+              upsertEntry={upsertEntry} 
+              date={date} 
+              dayStartHour={dayStartHour} 
+            /> 
+            : 
+              entry?
+              <TodayPannel 
+                entry={entry} 
+                toggleCompleted={toggleCompleted} 
+                startTodayTimer={()=>{}} 
+                stopTodayTimer={()=>{}} 
+                upsertEntry={upsertEntry} 
+                date={date} 
+                dayStartHour={dayStartHour} 
+              />
+              :
+              null
+            }
+    
+            
+    
+          </ScrollView>
+          )}
+        </Tab.Screen>
+        <Tab.Screen name="Stats">
+          {() => (
+            <ScrollView style={{ backgroundColor: GeneralColor.screenBackground, flex: 1 }}>
+              <StatsPannel activityId={activity.id} />
+            </ ScrollView>
+          )}
+        </Tab.Screen>
+        <Tab.Screen name="Notes" >
+          { () => (
+          <View style={{ backgroundColor: GeneralColor.screenBackground, flex: 1 }}>
+            <DiaryChat /> 
+          </ View>
+          )}
+        </Tab.Screen>
+      </Tab.Navigator>
+
+      
 
       <DeleteDialog 
         visible={deleteDialogVisible} 

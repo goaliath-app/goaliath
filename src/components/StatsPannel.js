@@ -12,7 +12,7 @@ const StatsPannel = ({ activityId, goalId }) => (
     <List.Item title={'Activity'} />
     <ActivityCalendarHeatmap activityId={activityId} goalId={goalId}/>
     <Divider style={{marginTop: 20}}/>
-    <List.Item title={'Stats'} />
+    <List.Item title={'Charts'} />
     <ActivityBarChartPicker activityId={activityId} goalId={goalId} />
     <View style={{height:100}} />
   </View>
