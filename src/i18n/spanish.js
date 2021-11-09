@@ -106,10 +106,10 @@ const es= {
         stats: '{{completedActivities}} tareas hechas, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicado\n{{undoneActivities}} tareas sin hacer, {{timeLeftValue}} {{timeLeftUnit}} quedan por hacer'
     },
   
-      dayInCalendar: {
-        dailyActivities: 'Actividades diarias',
-        weeklyActivities: 'Actividades semanales'
-      },
+    weekViewInCalendar: {
+      sortByGoal: 'Ordenar por meta',
+      sortByActivity: 'Ordenar por actividad'
+    },
 
     goalForm: {
       nameError: "Introduce un nombre",

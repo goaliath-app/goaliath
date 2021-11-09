@@ -10,7 +10,7 @@ import { CalendarColor } from '../styles/Colors';
 import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
 import { dueToday, getWeekCompletionRatio, getDayCompletionRatio, getDayActivityCompletionRatio, getWeekActivityCompletionRatio } from '../activityHandler'
 
-const CalendarDayItem = ({ day, currentMonth, activityId, showDayNumber=true, onDayPress }) => {
+const CalendarDayItem = ({ day, currentMonth, activityId, showDayNumber=true, softTodayHighlight=false, onDayPress }) => {
   const today = useSelector(getTodaySelector)
   const navigation = useNavigation(navigation)
 
@@ -62,11 +62,18 @@ const CalendarDayItem = ({ day, currentMonth, activityId, showDayNumber=true, on
           />
           <View style={{ position: 'absolute', flex: 1, alignSelf: 'center' }}>
             {today.day===day.day && today.month===day.month && today.year===day.year? 
-            <View style={styles.todayView}>
-              <Text style={{ color: CalendarColor.todayTextColor }}>
-                {dayLabel}
-              </Text>
-            </View>
+              (softTodayHighlight?
+              <View style={styles.softTodayView}>
+                <Text style={{ color: CalendarColor.softTodayTextColor, fontWeight: 'bold', textDecorationLine: 'underline' }}>
+                  {dayLabel}
+                </Text>
+              </View>
+              :
+              <View style={styles.todayView}>
+                <Text style={{ color: CalendarColor.todayTextColor }}>
+                  {dayLabel}
+                </Text>
+              </View> )
             :
             currentMonth == null || currentMonth.toFormat('L')==day.month?
             <Text>{dayLabel}</Text>
@@ -90,6 +97,7 @@ const CalendarWeekItem = ({
   showWeekProgress=true, // if false, the week progress bar won't be shown
   onWeekPress=null,          // function to call when the week is pressed 
   onDayPress=null,            // function to call when the day is pressed
+  softTodayHighlight=false,  // if true, the today highlight will be a little bit softer
 }) => {
   // const dayPosition = ((date.weekday % 7) - startOfWeek) % 7
   date = date.startOf("week")
@@ -111,7 +119,8 @@ const CalendarWeekItem = ({
               day={date.plus({days: (dayNumber)})} 
               currentMonth={currentMonth}
               showDayNumber={showDayNumbers}
-              onDayPress={onDayPress} />
+              onDayPress={onDayPress}
+              softTodayHighlight={softTodayHighlight} />
           ))}
         </View>
 
@@ -143,6 +152,11 @@ const styles = StyleSheet.create({
   dayComponent: {
     flex: 1, 
     aspectRatio: 1,
+  },
+
+  softTodayView: {
+    justifyContent: 'center', 
+    alignItems: 'center'
   },
 
   todayView: {

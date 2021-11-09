@@ -8,7 +8,8 @@ import { List, Text } from 'react-native-paper';
 import { CalendarWeekItem, Checkbox, Header } from '../components';
 import { getWeekProgressString, getWeekActivityCompletionRatio, getWeekCompletionRatio } from '../activityHandler';
 import { useTranslation } from 'react-i18next';
-
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { CalendarColor, GeneralColor } from '../styles/Colors';
 
 const ActivityWeekView = ({ activityId, date }) => {
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
@@ -17,11 +18,13 @@ const ActivityWeekView = ({ activityId, date }) => {
 
   return(
     <View>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Text style={{fontWeight: 'bold' }}>{activity.name}</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, paddingVertical: 10 }}>
+        <Text style={{ fontWeight: 'bold' }}>{activity.name}</Text>
         <Text>{WeekProgress}</Text>
       </View>
-      <CalendarWeekItem activityId={activityId} date={date} showDayNumbers={false} showWeekProgress={true} />
+      <View style={{ paddingHorizontal: 20 }}>
+        <CalendarWeekItem activityId={activityId} date={date} showDayNumbers={false} showWeekProgress={true} softTodayHighlight={true} />
+      </View>
     </View>
   )
 }
@@ -38,10 +41,21 @@ const GoalWeekView = ({ goalId, date }) => {
   })
 
   goalActivities.sort((a, b) => activityCompletionRatios[b.id] - activityCompletionRatios[a.id])
+
+  const goalCompletionRatio = useSelector(state => getWeekCompletionRatio(state, date, goalId))
   
   return (
     <View>
-      <List.Accordion title={goal.name}>
+      <List.Accordion title={goal.name} 
+        style={{ backgroundColor: GeneralColor.screenBackground, borderBottomWidth: 0.2, borderBottomColor: CalendarColor.goalDivider, borderTopWidth: 0.2, borderTopColor: CalendarColor.goalDivider,paddingLeft: 10 }} 
+        left={() => (
+          <AnimatedCircularProgress
+            size={25}
+            width={5}
+            fill={goalCompletionRatio * 100}
+            tintColor={CalendarColor.goalProgress}
+            backgroundColor={CalendarColor.goalProgressBackground} />
+      )}>
         {goalActivities.map(activity => <ActivityWeekView activityId={activity.id} date={date} />)}
       </List.Accordion>
     </View>
@@ -49,6 +63,8 @@ const GoalWeekView = ({ goalId, date }) => {
 }
 
 const CalendarWeekViewScreen = ({ navigation, route }) => {
+  const { t, i18n } = useTranslation()
+
   const date = route.params.date.endOf("week")
 
   const activities = useSelector((state) => selectAllActiveActivitiesByDate(state, date))
@@ -74,18 +90,18 @@ const CalendarWeekViewScreen = ({ navigation, route }) => {
   const [ activeActivityCheckbox, setActiveActivityCheckbox] = React.useState(false)
 
   return(
-    <View>
-      <Header title={'Week View'} left='back' navigation={navigation} />
+    <View style={{ backgroundColor: GeneralColor.screenBackground, flex: 1 }}>
+      <Header title={date.toFormat('y LLLL')} left='back' navigation={navigation} />
       <ScrollView >
         {/*WeekViewComponent*/}
-        <View style={{paddingVertical: 15, paddingHorizontal: 30}}>
-          <CalendarWeekItem date={date} showDayNumbers={false} />
+        <View style={{ paddingVertical: 15, paddingHorizontal: 20 }}>
+          <CalendarWeekItem date={date} showDayNumbers={true} />
         </View>
 
         {/*Options selectors*/}
-        <View style={{flexDirection:'row', justifyContent: 'space-around'}}>
+        <View style={{ flexDirection:'row', justifyContent: 'space-evenly', paddingBottom: 10 }}>
           {/*Sort by goal*/}
-          <View style={{flexDirection:'row', alignItems: 'center'}}>
+          <View style={{flexDirection:'row', alignItems: 'center' }}>
             <Checkbox status={activeGoalCheckbox? 'checked' : 'unchecked'} 
               onPress={() => {
                 if(!activeGoalCheckbox && activeActivityCheckbox){
@@ -95,10 +111,10 @@ const CalendarWeekViewScreen = ({ navigation, route }) => {
                 }
                 setActiveGoalCheckbox(!activeGoalCheckbox)}
               } />
-            <Text>Sort by goal</Text>
+            <Text style={{ paddingRight: 10 }}>{t('weekViewInCalendar.sortByGoal')}</Text>
           </View>
           {/*Sort by activity*/}
-          <View style={{flexDirection:'row', alignItems: 'center'}}>
+          <View style={{ flexDirection:'row', alignItems: 'center' }}>
             <Checkbox status={activeActivityCheckbox? 'checked' : 'unchecked'} 
               onPress={() => {
                 if(!activeActivityCheckbox && activeGoalCheckbox){
@@ -108,7 +124,7 @@ const CalendarWeekViewScreen = ({ navigation, route }) => {
                 }
                 setActiveActivityCheckbox(!activeActivityCheckbox)}
               } />
-            <Text>Sort by activity</Text>
+            <Text style={{ paddingRight: 10 }}>{t('weekViewInCalendar.sortByActivity')}</Text>
           </View>
         </View>
 
@@ -119,10 +135,10 @@ const CalendarWeekViewScreen = ({ navigation, route }) => {
 
         {/*ActivityWeekView*/}
         {activeActivityCheckbox? 
-          <View>
-            {activities.map(activity => <ActivityWeekView activityId={activity.id} date={date} />)}
-          </View>
+          activities.map(activity => <ActivityWeekView activityId={activity.id} date={date} />)
           : <></>}
+          
+        <View style={{ height: 100 }}/>
       </ScrollView>
     </View>
   )

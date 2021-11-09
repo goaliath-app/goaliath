@@ -104,9 +104,9 @@ const en = {
       stats: '{{completedActivities}} tasks done, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicated\n{{undoneActivities}} task undone, {{timeLeftValue}} {{timeLeftUnit}} left'
     },
 
-    dayInCalendar: {
-      dailyActivities: 'Daily activities',
-      weeklyActivities: 'Weekly Activities'
+    weekViewInCalendar: {
+      sortByGoal: 'Sort by goal',
+      sortByActivity: 'Sort by activity'
     },
 
     goalForm: {
