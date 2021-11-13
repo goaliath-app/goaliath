@@ -11,7 +11,12 @@ import { DateWheelPicker } from '../components'
 import { CalendarColor } from '../styles/Colors';
 
 // TODO: make startOfWeek prop functional
-const CalendarTwo = ({ navigation, startOfWeek=1 }) => {
+const CalendarTwo = ({ 
+  startOfWeek=1,
+  onWeekPress=()=>{},     // this function will receive a date of that week as argument, as a Luxon DateTime
+  onDayPress=()=>{},      // this function will receive a date of that day as argument, as a Luxon DateTime
+  onDayLongPress=()=>{},  // this function will receive a date of that day as argument, as a Luxon DateTime
+}) => {
   const today = useSelector(getTodaySelector)
 
   const [ selectedDate, setSelectedDate ] = React.useState(today.startOf('month'))
@@ -66,8 +71,9 @@ const CalendarTwo = ({ navigation, startOfWeek=1 }) => {
       {weekData.map( date => 
         <CalendarWeekItem 
           date={date} startOfWeek={startOfWeek} currentMonth={selectedDate} 
-          onWeekPress={() => navigation.navigate('CalendarWeekView', {date})}
-          onDayPress={() => navigation.navigate('CalendarDayView')}
+          onWeekPress={onWeekPress}
+          onDayPress={onDayPress}
+          onDayLongPress={onDayLongPress}
         />
       )}
      

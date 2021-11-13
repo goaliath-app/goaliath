@@ -10,6 +10,8 @@ import { getWeekProgressString, getWeekActivityCompletionRatio, getWeekCompletio
 import { useTranslation } from 'react-i18next';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { CalendarColor, GeneralColor } from '../styles/Colors';
+import { useNavigation } from '@react-navigation/native';
+import { DateTime } from 'luxon'
 
 const ActivityWeekView = ({ activityId, date }) => {
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
@@ -23,7 +25,8 @@ const ActivityWeekView = ({ activityId, date }) => {
         <Text>{WeekProgress}</Text>
       </View>
       <View style={{ paddingHorizontal: 20 }}>
-        <CalendarWeekItem activityId={activityId} date={date} showDayNumbers={false} showWeekProgress={true} softTodayHighlight={true} />
+        <CalendarWeekItem  
+          activityId={activityId} date={date} showDayNumbers={false} showWeekProgress={true} softTodayHighlight={true} />
       </View>
     </View>
   )
@@ -62,10 +65,10 @@ const GoalWeekView = ({ goalId, date }) => {
   )
 }
 
-const CalendarWeekViewScreen = ({ navigation, route }) => {
+const CalendarWeekViewScreen = ({ route }) => {
   const { t, i18n } = useTranslation()
 
-  const date = route.params.date.endOf("week")
+  const date = DateTime.fromISO(route.params.date).endOf("week")
 
   const activities = useSelector((state) => selectAllActiveActivitiesByDate(state, date))
   const state = useSelector(state => state)
@@ -89,13 +92,15 @@ const CalendarWeekViewScreen = ({ navigation, route }) => {
   const [ activeGoalCheckbox, setActiveGoalCheckbox] = React.useState(true)
   const [ activeActivityCheckbox, setActiveActivityCheckbox] = React.useState(false)
 
+  const navigation = useNavigation()
+
   return(
     <View style={{ backgroundColor: GeneralColor.screenBackground, flex: 1 }}>
       <Header title={date.toFormat('y LLLL')} left='back' navigation={navigation} />
       <ScrollView >
         {/*WeekViewComponent*/}
         <View style={{ paddingVertical: 15, paddingHorizontal: 20 }}>
-          <CalendarWeekItem date={date} showDayNumbers={true} />
+          <CalendarWeekItem date={date} showDayNumbers={true} onDayPress={dayDate => navigation.navigate('CalendarDayView', {date: dayDate.toISO()})}/>
         </View>
 
         {/*Options selectors*/}

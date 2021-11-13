@@ -10,9 +10,16 @@ import { CalendarColor } from '../styles/Colors';
 import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
 import { dueToday, getWeekCompletionRatio, getDayCompletionRatio, getDayActivityCompletionRatio, getWeekActivityCompletionRatio } from '../activityHandler'
 
-const CalendarDayItem = ({ day, currentMonth, activityId, showDayNumber=true, softTodayHighlight=false, onDayPress }) => {
+const CalendarDayItem = ({ 
+  day, 
+  currentMonth, 
+  activityId, 
+  showDayNumber=true, 
+  softTodayHighlight=false, 
+  onLongPress=()=>{}, 
+  onPress=()=>{}, 
+}) => {
   const today = useSelector(getTodaySelector)
-  const navigation = useNavigation(navigation)
 
   let dayProgress
   if(activityId != null){
@@ -40,15 +47,8 @@ const CalendarDayItem = ({ day, currentMonth, activityId, showDayNumber=true, so
   const dayBackground = activityFailedThisDay? {backgroundColor: '#DDDDDD'} : {}
 
   return(
-    <LongPressGestureHandler
-      onHandlerStateChange={(event) => { 
-        if(event.nativeEvent.state === State.ACTIVE) {
-          onDayPress()
-        } 
-      }}
-      minDurationMs={800}
-    >
-      <View style={{...styles.dayComponent, ...dayBackground}}>
+    <View style={{...styles.dayComponent, ...dayBackground}}>
+      <Pressable onLongPress={() => onLongPress(day)} style={{flex: 1}} onPress={() => onPress(day)}>
         <View style={{ flex: 1, justifyContent: 'center', margin: 2 }}>
           {/* Day ProgressBar */}
           <ProgressBar 
@@ -80,11 +80,10 @@ const CalendarDayItem = ({ day, currentMonth, activityId, showDayNumber=true, so
             :
             <Text style={{color: CalendarColor.dayOtherMonth}}>{dayLabel}</Text>
             }
-            
           </View>
         </View>
-      </View>
-    </LongPressGestureHandler>
+      </Pressable>
+    </View>
 )}
 
 /* TODO: Add a screen with the activities for weeks and days */
@@ -95,13 +94,16 @@ const CalendarWeekItem = ({
   activityId=null,       // provide an activityId to show the progress for that activity. If null, show all activities progress
   showDayNumbers=true,   // if false, show weekday initials instead of week numbers
   showWeekProgress=true, // if false, the week progress bar won't be shown
-  onWeekPress=null,          // function to call when the week is pressed 
-  onDayPress=null,            // function to call when the day is pressed
+  onWeekPress=()=>{},          // function to call when the week is pressed 
   softTodayHighlight=false,  // if true, the today highlight will be a little bit softer
+  onDayPress=()=>{},
+  onDayLongPress=()=>{},
 }) => {
   // const dayPosition = ((date.weekday % 7) - startOfWeek) % 7
   date = date.startOf("week")
   
+  const navigation = useNavigation()
+
   let weekProgress
   if(activityId != null){
     weekProgress = useSelector((state) => getWeekActivityCompletionRatio(state, activityId, date))
@@ -110,7 +112,7 @@ const CalendarWeekItem = ({
   }
 
   return(
-    <Pressable onPress={onWeekPress}>
+    <Pressable onPress={() => onWeekPress(date)}>
       <View>
         <View style={styles.weekComponent}>
           { [0, 1, 2, 3, 4, 5, 6].map( dayNumber => (
@@ -119,8 +121,9 @@ const CalendarWeekItem = ({
               day={date.plus({days: (dayNumber)})} 
               currentMonth={currentMonth}
               showDayNumber={showDayNumbers}
-              onDayPress={onDayPress}
-              softTodayHighlight={softTodayHighlight} />
+              softTodayHighlight={softTodayHighlight}
+              onLongPress={onDayLongPress}
+              onPress={onDayPress} />
           ))}
         </View>
 
