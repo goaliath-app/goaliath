@@ -16,6 +16,14 @@ const TodayScreenItem = ({ activityId, date }) => {
   return <DailyGoalTodayScreenItem activityId={activityId} date={date} />
 }
 
+function getWeekProgressString(state, activityId, date, t){
+  const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
+  const { daysDoneCount } = useSelector((state) => getWeeklyStats(state, date, activityId))
+
+  const daysLeft = activity.params.days - daysDoneCount
+  return t('weeklyActivities.daysLeft', {daysLeft})
+}
+
 function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){
   const { t, i18n } = useTranslation()
   
@@ -136,7 +144,7 @@ function getWeekActivityCompletionRatio(state, activityId, date){
   for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
     const entry = selectEntryByActivityIdAndDate(state, activityId, day)
     if( entry && !entry.archived ){
-      completionAccumulator += getDayActivityCompletionRatio(state, activityId, date)
+      completionAccumulator += getDayActivityCompletionRatio(state, activityId, day)
     }
   }
 
@@ -156,6 +164,7 @@ export default {
   getFrequencyString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
+  getWeekProgressString,
 }
 
 function isWeekCompleted( state, activityId, date ){
@@ -164,6 +173,9 @@ function isWeekCompleted( state, activityId, date ){
   const { daysDoneCount } = getWeeklyStats(state, date, activityId)
 
   const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  if(activity == null) return false
+
   const daysTarget = activity.params.days
 
   return daysDoneCount >= daysTarget

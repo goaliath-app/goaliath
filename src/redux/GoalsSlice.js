@@ -169,6 +169,10 @@ export function selectAllGoalsByDate(state, date){
   return goalList
 }
 
+export function selectAllActiveGoalsByDate(state, date){
+  return selectAllGoalsByDate(state, date).filter(goal => goal.active && !goal.archived)
+}
+
 export function selectAllGoals(state){
   const today = getTodaySelector(state)
   return selectAllGoalsByDate(state, today)

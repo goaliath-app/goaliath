@@ -2,6 +2,7 @@ export { default as store } from './store'
 
 export { 
     setGoal, toggleGoal, archiveGoal, selectAllGoals, selectGoalById, 
+    selectAllActiveGoalsByDate, selectGoalByIdAndDate,
 } from './GoalsSlice'
 
 export { 
@@ -41,5 +42,6 @@ export { setDayStartHour, finishOnboarding, setLanguage } from './SettingsSlice'
 
 export { 
     selectAllActiveActivities, getWeeklyStats, getTodaySelector,
-    selectAllActiveActivitiesByDate, isActiveSelector
+    selectAllActiveActivitiesByDate, isActiveSelector, 
+    selectAllActiveActivitiesByGoalIdAndDate,
 } from './selectors'

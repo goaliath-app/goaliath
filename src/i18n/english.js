@@ -7,6 +7,13 @@ const en = {
       }
     },
 
+    dateWheelPicker: {
+      dialog: {
+        cancel: 'Cancel',
+        acept: 'OK'
+      }
+    },
+
     deleteDialog: {
       delete: 'Delete',
       cancel: 'Cancel'
@@ -94,13 +101,15 @@ const en = {
     
     calendar: {
       headerTitle: 'Calendar',
-      openDayButton: 'Open day',
-      stats: '{{completedActivities}} tasks done, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicated\n{{undoneActivities}} task undone, {{timeLeftValue}} {{timeLeftUnit}} left'
-    },
-
-    dayInCalendar: {
-      dailyActivities: 'Daily activities',
-      weeklyActivities: 'Weekly Activities'
+      //stats: '{{completedActivities}} tasks done, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicated\n{{undoneActivities}} task undone, {{timeLeftValue}} {{timeLeftUnit}} left',
+      dayView: {
+        header: '{{month}} {{day}}, {{year}}'
+      },
+      weekView: {
+        header: 'Week from {{weekStartDate}} to {{weekEndDate}}',
+        sortByGoal: 'Sort by goal',
+        sortByActivity: 'Sort by activity'
+      },
     },
 
     goalForm: {

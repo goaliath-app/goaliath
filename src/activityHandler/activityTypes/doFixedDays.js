@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
-    createOrUnarchiveEntry, archiveOrDeleteEntry, selectActivityByIdAndDate } from '../../redux'
+    createOrUnarchiveEntry, archiveOrDeleteEntry, selectActivityByIdAndDate, 
+    isActiveSelector } from '../../redux'
 import { isActive } from '../../util'
 import dailyGoals from './dailyGoals'
 
@@ -72,6 +73,10 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
+function getWeekProgressString(state, activityId, date, t){
+  return getFrequencyString(state, activityId, t, date)
+}
+
 function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate(state, activityId, date)
   const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
@@ -96,7 +101,7 @@ function getWeekActivityCompletionRatio(state, activityId, date){
   for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
     const entry = selectEntryByActivityIdAndDate(state, activityId, day)
     if( entry && !entry.archived ){
-      completionAccumulator += getDayActivityCompletionRatio(state, activityId, date)
+      completionAccumulator += getDayActivityCompletionRatio(state, activityId, day)
     }
   }
 
@@ -107,10 +112,33 @@ function getWeekActivityCompletionRatio(state, activityId, date){
   }
 }
 
+// returns true if the activity has to be done in the given date,
+// and not doing it that exact day would be considered a "failure"
+function dueToday(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  if(!activity){
+    return false
+  }
+
+  if(!isActiveSelector(state, activityId, date)){
+    return false
+  }
+
+  const daysOfWeek = activity.params.daysOfWeek
+  if(daysOfWeek[date.weekday]){
+    return true
+  }else{
+    return false
+  }
+}
+
 export default {
+  dueToday,
   updateEntryThunk,
   TodayScreenItem,
   getFrequencyString,
+  getWeekProgressString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
 }

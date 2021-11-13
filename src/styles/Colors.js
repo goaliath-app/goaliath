@@ -69,11 +69,16 @@ export const ActivityFormColor = {
 }
 
 export const CalendarColor = {
-    selectedDate: 'blue',
-    iconChevron: '#BBBBBB',
-    todayTextColor: '#2d4150',
-    iconDayWeekFocused: '#6200EE',
-    iconDayWeek: '#666666'
+    progressBarColor: '#7B61FF',
+    dayProgress: '#CFFFD1',
+    today: 'cornflowerblue',
+    softTodayTextColor: '#7B61FF',
+    todayTextColor: 'white',
+    daysNameColor: 'silver',
+    dayOtherMonth: 'grey',
+    goalProgress: 'cornflowerblue',
+    goalProgressBackground: 'lavender',
+    goalDivider: '#CCCCCC'
 }
 
 export const GoalColor = {

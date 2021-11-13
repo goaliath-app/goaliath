@@ -6,6 +6,13 @@ const es= {
           weekTimeGoal: 'Esta semana: dedicado {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
         }
     },
+
+    dateWheelPicker: {
+      dialog: {
+        cancel: 'Cancelar',
+        acept: 'OK'
+      }
+    },
   
     deleteDialog: {
         delete: 'Borrar',
@@ -96,14 +103,18 @@ const es= {
       
     calendar: {
         headerTitle: 'Calendario',
-        openDayButton: 'Abrir día',
-        stats: '{{completedActivities}} tareas hechas, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicado\n{{undoneActivities}} tareas sin hacer, {{timeLeftValue}} {{timeLeftUnit}} quedan por hacer'
+        //stats: '{{completedActivities}} tareas hechas, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicado\n{{undoneActivities}} tareas sin hacer, {{timeLeftValue}} {{timeLeftUnit}} quedan por hacer',
+        dayView: {
+          header: '{{day}} de {{month}} , {{year}}'
+        },
+        weekView: {
+          header: 'Semana del {{weekStartDate}} al {{weekEndDate}}',
+          sortByGoal: 'Ordenar por meta',
+          sortByActivity: 'Ordenar por actividad'
+        },
     },
   
-      dayInCalendar: {
-        dailyActivities: 'Actividades diarias',
-        weeklyActivities: 'Actividades semanales'
-      },
+    
 
     goalForm: {
       nameError: "Introduce un nombre",

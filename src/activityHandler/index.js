@@ -5,7 +5,8 @@ import {
   selectGoalById, selectActivityByIdAndDate, selectAllActiveActivities, 
   selectAllActiveActivitiesByDate,
   selectEntryByActivityIdAndDate, selectEntriesByDay,
-  findAllActivityRecords, isActiveSelector
+  findAllActivityRecords, isActiveSelector,
+  selectAllActiveActivitiesByGoalIdAndDate,
 } from "../redux"
 import activityTypes from './activityTypes'
 import { WeekView as BaseWeekView } from '../components'
@@ -155,8 +156,22 @@ export function getFrequencyString(state, activityId, t, date=null){
     'ERROR: no frequency string'
 }
 
+export function getWeekProgressString(state, activityId, date, t){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  const activityType = activityTypes[activity.type]
+
+  return activityType.getWeekProgressString?
+    activityType.getWeekProgressString(state, activityId, date, t)
+    :
+    'ERROR: no progress string'
+}
+
+
 export function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate( state, activityId, date )
+
+  if(!activity) return 0
 
   const activityType = activityTypes[activity.type]
 
@@ -190,12 +205,16 @@ export function getDayCompletionRatio(state, date){
     }
   }
 
-  const dayCompletionRatio = completionAccumulator / activeEntries
-
-  return dayCompletionRatio
+  if(activeEntries == 0){
+    return 0
+  }else{
+    return completionAccumulator / activeEntries
+  }
 }
 
 export function getWeekActivityCompletionRatio(state, activityId, date){
+  date = date.endOf('week')
+
   const activity = selectActivityByIdAndDate( state, activityId, date )
 
   const activityType = activityTypes[activity.type]
@@ -204,18 +223,25 @@ export function getWeekActivityCompletionRatio(state, activityId, date){
     return activityType.getWeekActivityCompletionRatio(state, activityId, date)
   }else{
     // Error
-    throw `activity type ${activity.type} does not have a getWeekActivityCompletionRatio function.`
+    throw `activity type ${activity?.type} does not have a getWeekActivityCompletionRatio function.`
   }
 }
 
-export function getWeekCompletionRatio(state, date){
+export function getWeekCompletionRatio(state, date, goalId=null){
+  const weekEndDate = date.endOf("week")
+
   // get the number of active activities this week
   const dueActivities = []
 
-  const activities = selectAllActiveActivitiesByDate(state, date)
+  let activities;
+  if(goalId != null){
+    activities = selectAllActiveActivitiesByGoalIdAndDate(state, goalId, weekEndDate)
+  }else{
+    activities = selectAllActiveActivitiesByDate(state, weekEndDate)
+  }
   
   activities.forEach( activity => {
-    if( dueThisWeek(state, activity.id, date) ){
+    if( dueThisWeek(state, activity.id, weekEndDate) ){
       dueActivities.push(activity)
     }
   }) 
@@ -223,12 +249,13 @@ export function getWeekCompletionRatio(state, date){
   // get how much of each activity is completed this week
   let completionAccumulator = 0
   dueActivities.forEach( activity => {
-    completionAccumulator += getWeekActivityCompletionRatio(state, activity.id, date)
+    const completionRatio = getWeekActivityCompletionRatio(state, activity.id, weekEndDate)
+    completionAccumulator += completionRatio
   })
 
   // divide the completed activities by the total number of active activities
   if(dueActivities.length == 0){
-    return 1
+    return 0
   }else{
     return completionAccumulator / dueActivities.length
   }
@@ -266,3 +293,25 @@ function dueThisWeek(state, activityId, date){
   }
 }
 
+
+// returns true if the activity has to be done in the given date,
+// and not doing it that exact day would be considered a "failure"
+export function dueToday(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  
+  if(!activity){
+    return false
+  }
+  
+  if(!isActiveSelector(state, activityId, date)){
+      return false
+    }
+    
+  const activityType = activityTypes[activity.type]
+    
+  if(activityType.dueToday){
+    return activityType.dueToday(state, activityId, date)
+  }else{
+    return false
+  }
+}

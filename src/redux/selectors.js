@@ -38,9 +38,7 @@ export function selectAllActiveActivitiesByDate(state, date){
 
   const activeActivities = allActivities.filter(activity => {
     const goal = selectGoalByIdAndDate(state, activity.goalId, date)
-    return(
-      isActive(activity, goal) 
-    )
+    return isActive(activity, goal) 
   })
 
   return activeActivities
@@ -76,4 +74,12 @@ export function getTodaySelector(state){
   /* returns DateTime */
   const dayStartHour = state.settings.dayStartHour
   return startOfDay(DateTime.now(), dayStartHour)
+}
+
+export function selectAllActiveActivitiesByGoalIdAndDate(state, goalId, date){
+  const activeActivities = selectAllActiveActivitiesByDate(state, date)
+
+  return activeActivities.filter(activity => {
+    return activity.goalId == goalId
+  })
 }
