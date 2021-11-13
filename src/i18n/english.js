@@ -100,13 +100,15 @@ const en = {
     
     calendar: {
       headerTitle: 'Calendar',
-      openDayButton: 'Open day',
-      stats: '{{completedActivities}} tasks done, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicated\n{{undoneActivities}} task undone, {{timeLeftValue}} {{timeLeftUnit}} left'
-    },
-
-    weekViewInCalendar: {
-      sortByGoal: 'Sort by goal',
-      sortByActivity: 'Sort by activity'
+      //stats: '{{completedActivities}} tasks done, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicated\n{{undoneActivities}} task undone, {{timeLeftValue}} {{timeLeftUnit}} left',
+      dayView: {
+        header: '{{month}} {{day}}, {{year}}'
+      },
+      weekView: {
+        header: 'Week from {{weekStartDate}} to {{weekEndDate}}',
+        sortByGoal: 'Sort by goal',
+        sortByActivity: 'Sort by activity'
+      },
     },
 
     goalForm: {

@@ -65,6 +65,17 @@ const GoalWeekView = ({ goalId, date }) => {
   )
 }
 
+function headerTitle(date, t){
+  const weekStart = date.startOf("week")
+  const weekEnd = date.endOf("week")
+
+  return t('calendar.weekView.header', {weekStartDate: dayLabel(weekStart, t), weekEndDate: dayLabel(weekEnd, t) })
+}
+
+function dayLabel(date, t){
+  return date.toFormat("d") + ' ' + t('units.monthNamesShort.' + date.toFormat('LLLL').toLowerCase())
+}
+
 const CalendarWeekViewScreen = ({ route }) => {
   const { t, i18n } = useTranslation()
 
@@ -96,7 +107,7 @@ const CalendarWeekViewScreen = ({ route }) => {
 
   return(
     <View style={{ backgroundColor: GeneralColor.screenBackground, flex: 1 }}>
-      <Header title={date.toFormat('y LLLL')} left='back' navigation={navigation} />
+      <Header title={headerTitle(date, t)} left='back' navigation={navigation} />
       <ScrollView >
         {/*WeekViewComponent*/}
         <View style={{ paddingVertical: 15, paddingHorizontal: 20 }}>
@@ -116,7 +127,7 @@ const CalendarWeekViewScreen = ({ route }) => {
                 }
                 setActiveGoalCheckbox(!activeGoalCheckbox)}
               } />
-            <Text style={{ paddingRight: 10 }}>{t('weekViewInCalendar.sortByGoal')}</Text>
+            <Text style={{ paddingRight: 10 }}>{t('calendar.weekView.sortByGoal')}</Text>
           </View>
           {/*Sort by activity*/}
           <View style={{ flexDirection:'row', alignItems: 'center' }}>
@@ -129,7 +140,7 @@ const CalendarWeekViewScreen = ({ route }) => {
                 }
                 setActiveActivityCheckbox(!activeActivityCheckbox)}
               } />
-            <Text style={{ paddingRight: 10 }}>{t('weekViewInCalendar.sortByActivity')}</Text>
+            <Text style={{ paddingRight: 10 }}>{t('calendar.weekView.sortByActivity')}</Text>
           </View>
         </View>
 

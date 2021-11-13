@@ -102,14 +102,18 @@ const es= {
       
     calendar: {
         headerTitle: 'Calendario',
-        openDayButton: 'Abrir día',
-        stats: '{{completedActivities}} tareas hechas, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicado\n{{undoneActivities}} tareas sin hacer, {{timeLeftValue}} {{timeLeftUnit}} quedan por hacer'
+        //stats: '{{completedActivities}} tareas hechas, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicado\n{{undoneActivities}} tareas sin hacer, {{timeLeftValue}} {{timeLeftUnit}} quedan por hacer',
+        dayView: {
+          header: '{{day}} de {{month}} , {{year}}'
+        },
+        weekView: {
+          header: 'Semana del {{weekStartDate}} al {{weekEndDate}}',
+          sortByGoal: 'Ordenar por meta',
+          sortByActivity: 'Ordenar por actividad'
+        },
     },
   
-    weekViewInCalendar: {
-      sortByGoal: 'Ordenar por meta',
-      sortByActivity: 'Ordenar por actividad'
-    },
+    
 
     goalForm: {
       nameError: "Introduce un nombre",

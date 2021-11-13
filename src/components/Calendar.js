@@ -17,6 +17,8 @@ const CalendarTwo = ({
   onDayPress=()=>{},      // this function will receive a date of that day as argument, as a Luxon DateTime
   onDayLongPress=()=>{},  // this function will receive a date of that day as argument, as a Luxon DateTime
 }) => {
+  const { t, i18n } = useTranslation()
+
   const today = useSelector(getTodaySelector)
 
   const [ selectedDate, setSelectedDate ] = React.useState(today.startOf('month'))
@@ -34,10 +36,8 @@ const CalendarTwo = ({
       weekData.push(currentDate)
     }
   
-  const month = selectedDate.toFormat('LLLL')
+  const monthLabel = t('units.monthNames.' + selectedDate.toFormat('LLLL').toLowerCase())
   const year = selectedDate.toFormat('y')
-
-  const { t, i18n } = useTranslation()
   
   return(
     <View style={{ padding: 15 }}>
@@ -47,7 +47,7 @@ const CalendarTwo = ({
           <FontAwesomeIcon icon={faChevronLeft} />
         </Pressable>
         <Pressable onPress={() => setwheelPickerVisible(true)}>
-          <Subheading>{month} {year}</Subheading>
+          <Subheading>{monthLabel} {year}</Subheading>
           {wheelPickerVisible?
           <DateWheelPicker initialSelectedDate={selectedDate} onDismiss={() => setwheelPickerVisible(false)} onOKPress={(newDate) => setSelectedDate(newDate)} today={today} visible={wheelPickerVisible} />
           :
