@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Header } from '../components';
 import { CalendarColor, GeneralColor } from '../styles/Colors';
-import { CalendarTwo } from '../components/index'
+import { Calendar } from '../components/index'
 
 const CalendarScreen = ({ navigation }) => {  
   const { t, i18n } = useTranslation()
@@ -17,7 +17,7 @@ const CalendarScreen = ({ navigation }) => {
     }}>
       <View>
         <Header title={t('calendar.headerTitle')} left='hamburger' navigation={navigation}/>
-        <CalendarTwo 
+        <Calendar 
           onWeekPress={weekDate => navigation.navigate('CalendarWeekView', {date: weekDate.toISO()})}
           onDayPress={weekDate => navigation.navigate('CalendarWeekView', {date: weekDate.toISO()})}
           onDayLongPress={dayDate => navigation.navigate('CalendarDayView', {date: dayDate.toISO()})} 

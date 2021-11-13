@@ -11,7 +11,7 @@ import { DateWheelPicker } from '../components'
 import { CalendarColor } from '../styles/Colors';
 
 // TODO: make startOfWeek prop functional
-const CalendarTwo = ({ 
+const Calendar = ({ 
   startOfWeek=1,
   onWeekPress=()=>{},     // this function will receive a date of that week as argument, as a Luxon DateTime
   onDayPress=()=>{},      // this function will receive a date of that day as argument, as a Luxon DateTime
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default CalendarTwo;
+export default Calendar;
