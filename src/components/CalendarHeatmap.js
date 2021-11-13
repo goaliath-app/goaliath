@@ -32,7 +32,7 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { getDayActivityCompletionRatio } from './../activityHandler'
 
-const ActivityCalendarHeatmap = ({ activityId }) => {
+const ActivityCalendarHeatmap = ({ activityId, goalId }) => {
   const state = useSelector((state) => state)
   const today = getTodaySelector(state)
 
@@ -41,6 +41,8 @@ const ActivityCalendarHeatmap = ({ activityId }) => {
 
   if(activityId != null) {
     activities.push(selectActivityById(state, activityId))
+  }else if(goalId != null){
+    activities.push(...selectAllActivities(state).filter(activity => activity.goalId == goalId))
   } else {
     activities.push(...selectAllActivities(state))
   }

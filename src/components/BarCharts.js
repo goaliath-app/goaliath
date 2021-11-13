@@ -17,7 +17,7 @@ import {
 } from 'victory-native'
 
 
-export const ActivityBarChartPicker = ({ activityId }) => {
+export const ActivityBarChartPicker = ({ activityId, goalId }) => {
   const [ show, setShow ] = React.useState('time')
   const [ period, setPeriod ] = React.useState('week')
   const [ date, setDate ] = React.useState(useSelector(getTodaySelector))
@@ -67,7 +67,7 @@ export const ActivityBarChartPicker = ({ activityId }) => {
         <Text>{title}</Text>
         <IconButton icon='chevron-right' size={20} onPress={() => setDate(date.plus(dateOffset))}/>
       </View>
-      <ActivityBarChart activityId={activityId} period={period} show={show} date={date}/>
+      <ActivityBarChart activityId={activityId} goalId={goalId} period={period} show={show} date={date}/>
     </View>
   )
 }
@@ -75,6 +75,7 @@ export const ActivityBarChartPicker = ({ activityId }) => {
 // TODO: select the appropiate y time unit: (seconds, minutes or hours)
 export const ActivityBarChart = ({
     activityId, 
+    goalId,
     show,   // 'repetitions', 'time' or 'completions' 
     period,  // 'week', 'month'
     date,
@@ -85,6 +86,8 @@ export const ActivityBarChart = ({
     const activities = []
     if(activityId != null){
       activities.push(selectActivityById(state, activityId))
+    }else if(goalId != null){
+      activities.push(...selectAllActivities(state).filter(activity => activity.goalId == goalId))
     }else{
       activities.push(...selectAllActivities(state))
     }

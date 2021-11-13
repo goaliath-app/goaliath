@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux'
 import Duration from 'luxon/src/duration.js'
 
 
-const GenericStats = ({ activityId }) => {
+const GenericStats = ({ activityId, goalId }) => {
   const { t, i18n } = useTranslation()
   
   let time = Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
@@ -22,6 +22,8 @@ const GenericStats = ({ activityId }) => {
   if (activityId != null) {
     const activity = selectActivityById(state, activityId)
     activities.push(activity)
+  }else if(goalId != null){
+    activities.push(...selectAllActivities(state).filter(activity => activity.goalId == goalId))
   }else{
     activities.push(...selectAllActivities(state))
   }

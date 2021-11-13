@@ -73,6 +73,7 @@ const es= {
     activityForm: {
         headerTitle: 'Nueva actividad',
         nameInputLabel: 'Nombre de la actividad',
+        descriptionInputLabel: 'Descripción (opcional)',
         weeklyDaysLabel: 'Días a la semana',
         errors: {
           noName: 'Es necesario un nombre para tu actividad',
