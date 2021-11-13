@@ -173,6 +173,9 @@ function isWeekCompleted( state, activityId, date ){
   const { daysDoneCount } = getWeeklyStats(state, date, activityId)
 
   const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  if(activity == null) return false
+
   const daysTarget = activity.params.days
 
   return daysDoneCount >= daysTarget

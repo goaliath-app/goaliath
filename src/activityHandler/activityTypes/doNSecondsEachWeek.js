@@ -272,6 +272,9 @@ function isWeekCompleted( state, activityId, date ){
   const { weeklyTime } = getWeeklyStats(state, date, activityId)
 
   const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  if(activity == null) return false
+
   const secondsTarget = activity.params.seconds
 
   return weeklyTime.as('seconds') >= secondsTarget

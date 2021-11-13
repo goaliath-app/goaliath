@@ -231,6 +231,9 @@ function isWeekCompleted( state, activityId, date ){
   const { repetitionsCount } = getWeeklyStats(state, date, activityId)
 
   const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  if(activity == null) return false
+
   const repsTarget = activity.params.repetitions
 
   return repetitionsCount >= repsTarget
