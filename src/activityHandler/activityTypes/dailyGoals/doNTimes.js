@@ -1,7 +1,9 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { selectEntryByActivityIdAndDate, toggleCompleted, upsertEntry } from '../../../redux'
-import { selectActivityByIdAndDate } from '../../../util'
+import { 
+  selectEntryByActivityIdAndDate, toggleCompleted, upsertEntry, 
+  selectActivityByIdAndDate, setRepetitions
+} from '../../../redux'
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native'
 import { IconButton } from 'react-native-paper'
@@ -21,14 +23,14 @@ const TodayScreenItem = ({ activityId, date }) => {
   
   // alias values
   const repsGoal = activity.params.dailyGoal.params.repetitions
-  const todayReps = entry.repetitions
+  const todayReps = entry.repetitions? entry.repetitions.length : 0
   
   // compute values
   const repsLeft = repsGoal - todayReps < 0 ? 0 : repsGoal - todayReps
   
   // functions
   function addOne(){
-    dispatch(upsertEntry({ date, entry: { ...entry, repetitions: todayReps + 1 } }))
+    dispatch(setRepetitions({ date, id: entry.id, repetitions: todayReps + 1 }))
   }
   
   // get the correct left component
@@ -44,7 +46,7 @@ const TodayScreenItem = ({ activityId, date }) => {
   
   React.useEffect(() => {
     if( entry.repetitions === undefined ){
-      dispatch(upsertEntry({ date, entry: { ...entry, repetitions: 0 } }))
+      dispatch(upsertEntry({ date, entry: { ...entry, repetitions: [] } }))
     }
     if( todayReps >= repsGoal && !entry.completed ){
       dispatch(toggleCompleted({date: date, id: activityId}))
@@ -70,4 +72,24 @@ function getFrequencyString(state, activityId, t, date=null){
   return t('activityHandler.dailyGoals.doNTimes.frequencyString', { repetitions })
 }
 
-export default { TodayScreenItem, getFrequencyString }
+function getDayActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+  const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+
+  if(!entry){
+    return 0
+  }else if(entry.completed){
+    return 1
+  }else{
+    const repetitionsDone = entry.repetitions?.length ? entry.repetitions.length : 0
+    const repetitionsGoal = activity.params.dailyGoal.params.repetitions
+
+    if(repetitionsGoal == 0){
+      return 1
+    }else{
+      return Math.min(1, repetitionsDone / repetitionsGoal)
+    }
+  }
+}
+
+export default { TodayScreenItem, getFrequencyString, getDayActivityCompletionRatio }

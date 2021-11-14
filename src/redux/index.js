@@ -1,30 +1,47 @@
 export { default as store } from './store'
 
 export { 
-    createGoal, toggleGoal, updateGoal, archiveGoal,
-    selectAllGoals, selectGoalById, selectGoalEntities 
+    setGoal, toggleGoal, archiveGoal, selectAllGoals, selectGoalById, 
+    selectAllActiveGoalsByDate, selectGoalByIdAndDate,
 } from './GoalsSlice'
 
 export { 
-    createActivity, updateActivity, toggleActivity, archiveActivity, 
-    selectAllActivities, selectActivityById, selectActivityEntities,
-} from './ActivitySlice' 
+    setActivity, toggleActivity, archiveActivity,
+    selectAllActivities, selectActivityById, selectActivityByIdAndDate
+} from './ActivitySlice'
+
+// TODO: refactor
+export { 
+    addEntry, // rename to addActivityInstance
+    toggleCompleted,
+    upsertEntry, // rename to updateActivityInstance
+    deleteEntry, // rename to deleteActivityInstance
+    startTodayTimer, 
+    stopTodayTimer, 
+    weekliesSelectedToday,
+    selectEntriesByDay, // rename to selectActivityInstancesByDay
+    areWeekliesSelectedToday, 
+    selectAllWeekEntriesByActivityId, // rename to selectAllWeekInstancesByActivityId 
+    selectEntryByActivityIdAndDate, // rename to selectInstanceByActivityIdAndDate
+    setRepetitions,
+    selectAllActivityEntries,
+    selectDailyDurationById,
+    getPeriodStats,
+    getLifeTimeStats,
+} from './LogSlice'  // rename to activityInstancesSlice
 
 export { 
-    createLog, addEntry, deleteOneTodaysEntry, toggleCompleted, deleteLog,
-    startTodayTimer, stopTodayTimer, sortTodayLog, upsertEntry, replaceEntry,
-    weekliesSelectedToday, deleteEntry,
-    selectAllLogs, selectLogById, areWeekliesSelectedToday,
-    selectThisWeekEntriesByActivityId, selectLogEntities, selectEntriesByDay,
-    selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate,
-    areTasksAddedToday, addTask, toggleTask, selectTasks, getTodayTasks,
-    addTodayTask, tasksAddedToday, addActivityRecord, findActivityRecord,
-    deleteAllActivityRecords,
-    deleteTodayTask,
-} from './LogSlice'
+    addTodayTask, toggleTask, areTasksAddedToday, deleteTodayTask, getTodayTasks, tasksAddedToday 
+} from './TasksSlice'
 
 export { 
     generateDummyData, updateLogs, importState, archiveOrDeleteEntry, createOrUnarchiveEntry
 } from './Thunks'
 
 export { setDayStartHour, finishOnboarding, setLanguage } from './SettingsSlice'
+
+export { 
+    selectAllActiveActivities, getWeeklyStats, getTodaySelector,
+    selectAllActiveActivitiesByDate, isActiveSelector, 
+    selectAllActiveActivitiesByGoalIdAndDate,
+} from './selectors'

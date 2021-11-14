@@ -5,9 +5,10 @@ import { GeneralColor, SelectWeekliesColor } from '../styles/Colors';
 import { Header, Checkbox } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Appbar, List, Text } from 'react-native-paper';
-import { selectAllActivities, selectEntriesByDay, addEntry, selectActivityEntities, deleteEntry, weekliesSelectedToday, upsertEntry, archiveOrDeleteEntry, createOrUnarchiveEntry } from '../redux';
-import { extractActivityList, getToday, getWeeklyStats, getPreferedExpression, newEntry, selectAllActiveActivities, getTodaySelector } from '../util';
-import Duration from 'luxon/src/duration.js'
+import { 
+  selectAllActivities, selectEntriesByDay, weekliesSelectedToday, 
+  getTodaySelector 
+} from '../redux';
 import { WeekView } from '../components';
 import { SelectWeekliesItemDue, addEntryThunk, removeEntryThunk, WeekView as ActivityHandlerWeekView, SelectWeekliesItemCompleted } from './../activityHandler'
 
@@ -106,111 +107,3 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
 }
 
 export default SelectWeeklyActivitiesScreen;
-
-
-// LEGACY CODE BELOW
-// const WeeklyList = ({activities, status, setStatus, selectedActivity, onActivityPress}) => {
-//   const { t, i18n } = useTranslation()
-
-//   function renderDue({item}){
-//     let description
-
-//     } else { RENDER DUE FOR WEEKLY TIME ACTIVITIES
-//       const timeGoal = Duration.fromObject({seconds: item.timeGoal}).shiftTo('hours', 'minutes', 'seconds')
-//       let timeLeft = timeGoal.minus(item.weeklyTime)
-//       timeLeft = timeLeft.as('seconds') >= 0? timeLeft : Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
-//       const timeExpr = getPreferedExpression(timeLeft, t)
-//       description = t('weeklyActivities.timeLeft', {timeExprValue: timeExpr.value, timeExprLocaleUnit: timeExpr.localeUnit})
-//     }
-
-//     function toggleStatus(){
-//       setStatus( {...status, [item.id]: (status[item.id]=='checked'? 'unchecked' : 'checked') } )
-//     }
-
-//     return(
-//       <WeeklyListItem name={item.name} description={description} id={item.id} 
-//         status={status[item.id]} onCheckboxPress={() => {
-//           toggleStatus()
-//           onActivityPress(item.id)
-//         }} selected={selectedActivity==item.id} 
-//         onPress={() => onActivityPress(item.id)}/> 
-//     )
-//   }
-
-//   function renderCompleted({item}){
-//     let description
-
-//     if(item.goal == 'check'){
-//       description = t('weeklyActivities.checkCompleted', {weeklyTimes: item.weeklyTimes})
-//     } else {
-//       const timeExpr = getPreferedExpression(item.weeklyTime, t)
-//       description = t('weeklyActivities.timedCompleted', {unit: timeExpr.value, expression: timeExpr.localeUnit})
-//     }
-
-//     return (
-//       <WeeklyListItem name={item.name} description={description} id={item.id} status='checked' 
-//       checkboxColor='black' onPress={() => onActivityPress(item.id)} selected={selectedActivity==item.id}/>  
-//     )
-//   }
-
-//   function isCompleted(activity){
-//     if(activity.goal == 'check'){
-//       const daysLeft = activity.timesPerWeek - activity.weeklyTimes
-//       return daysLeft < 1
-//     }else{
-//       const timeGoal = Duration.fromObject({seconds: activity.timeGoal}).shiftTo('hours', 'minutes', 'seconds')
-//       let timeLeft = timeGoal.minus(activity.weeklyTime)
-//       return timeLeft < 1
-//     }
-//   }
-
-//   const completedActivities = activities.filter(activity => isCompleted(activity) )
-//   const dueActivities       = activities.filter(activity => !isCompleted(activity))
-
-
-//   return (
-//     <View>
-//       <FlatList 
-//         data={dueActivities}
-//         renderItem={renderDue}    
-//       />
-//       <FlatList
-//         data={completedActivities}
-//         renderItem={renderCompleted}
-//       />
-//     </View>
-//   )
-// }
-
-
-
-
-
-
-// const mapStateToProps = (state) => {
-//   const { dayStartHour } = state.settings
-//   const today = getToday(dayStartHour)
-//   const todayEntries = extractActivityList(state, today)
-//   const weeklyEntries = todayEntries.filter(entry => entry.repeatMode=='weekly')
-//   const allActivities = selectAllActiveActivities(state)
-//   const weeklyActivities = allActivities.filter(activity => activity.repeatMode=='weekly')
-  
-//   // inyect weeklyTime and weeklyTimes to each activity of weeklyActivities
-//   weeklyActivities.forEach((activity, i) => {
-//     const { weeklyTime, weeklyTimes, daysDone } = getWeeklyStats(state, today, activity.id)
-
-//     weeklyActivities[i] = {...activity, weeklyTime, weeklyTimes, daysDone}
-//   })
-//   return { weeklyEntries, weeklyActivities, today }
-// }
-
-// const actionsToProps = {
-//   addEntry,
-//   deleteEntry,
-//   weekliesSelectedToday,
-//   upsertEntry,
-//   archiveOrDeleteEntry,
-//   createOrUnarchiveEntry,
-// }
-
-// export default connect(mapStateToProps, actionsToProps)(SelectWeeklyActivitiesScreen)

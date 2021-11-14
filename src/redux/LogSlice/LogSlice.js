@@ -1,10 +1,14 @@
 import { createSlice, createEntityAdapter, current } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import { isActivityRunning, startOfWeek, getToday, getTodaySelector } from '../../util'
+import { isActivityRunning, startOfWeek, getTodayTime } from '../../util'
 import arrayMove from 'array-move'
+import Duration from 'luxon/src/duration.js'
+
+
+import { getTodaySelector } from '../selectors'
 
 function compareEntries(a, b){
-  if( a.completed == b.completed ){
+  if( (a.completed != null) == (b.completed != null) ){
     return 0
   }
   if( a.completed ){
@@ -15,8 +19,6 @@ function compareEntries(a, b){
 
 const logAdapter = createEntityAdapter();
 const entryAdapter = createEntityAdapter();
-const tasksAdapter = createEntityAdapter();
-const activityRecordsAdapter = createEntityAdapter();
 
 const initialState = logAdapter.getInitialState();
 
@@ -32,19 +34,9 @@ Each log is:
   {
     id: Date,
     weekliesSelected: defaults to false, true daily selection of weekly activities has been done
-    tasksAdded: defaults to false, true once the user adds (or chooses to don't add) a one time task
     entries: { 
       ids: array of all entry ids, 
       entities: { [entryId]: entry } 
-    },
-    activityRecords: {
-      ids: array of all activity records ids,
-      entities: { [activityRecordId]: activityRecord }
-    }
-    tasks: { 
-      nextId: next id to be used for a new task (autoincremented)
-      ids: array of all task ids,
-      entities: { [taskId]: task }
     }
   }
 
@@ -52,23 +44,9 @@ An entry is:
   {
     id: id matching with the activity this log comes from
     intervals: [{startDate: Date, endDate: Date}],
-    completed: bool,
+    completed: ISODate of completion, or null if not completed,
     archived: bool, (a log is archived if it contains information that may be useful in the future but should not be shown i.e. if the activity has been disabled after logging some time on it)
-    ...other data specific to the activity type, like repetitions for doNTimes and doNTimesEachWeek
-  }
-
-an activityRecord is:
-  {
-    id: id matching the related activity from the activitySlice
-    ...all data that activity normally has in the activitySlice
-  }
-activityRecord store how an activity was UNTIL and INCLUDING the day of this log.
-
-A task is:
-  {
-    id: id for this entry,
-    name: name of the task,
-    completed: bool,
+    (optional) repetitions: list of ISODates of each repetition, 
   }
 
 */
@@ -85,10 +63,7 @@ const logSlice = createSlice({
       const log= {
         id: date.toISO(),
         weekliesSelected: false,
-        tasksAdded: false,
         entries: entryAdapter.getInitialState(),
-        activityRecords: activityRecordsAdapter.getInitialState(),
-        tasks: tasksAdapter.getInitialState({nextId: 0}),
       }
       logAdapter.addOne(state, log)
     },
@@ -96,11 +71,6 @@ const logSlice = createSlice({
       const { date, value } = action.payload
       const selectedDay = state.entities[date.toISO()]
       selectedDay.weekliesSelected = value
-    },
-    setTasksAdded(state, action){
-      const { date, value } = action.payload
-      const selectedDay = state.entities[date.toISO()]
-      selectedDay.tasksAdded = value
     },
     addEntry(state, action){
       /* add a single entry to a daily log */
@@ -127,8 +97,12 @@ const logSlice = createSlice({
       entryAdapter.removeOne(todaysLog, entryId)
     },
     toggleCompleted(state, action){
+      // select data
       const { date, id } = action.payload
       const log = state.entities[date.toISO()].entries
+      const entry = log.entities[id]
+      
+      // get index of the first completed entry in that date
       let firstCompletedIndex = 0
       for(let i = 0; i < log.ids.length; i++){
         if(log.entities[log.ids[i]].completed){
@@ -136,10 +110,16 @@ const logSlice = createSlice({
           break
         }
       }
-      const entry = log.entities[id]
-      const newCompleted = !entry.completed
-      entryAdapter.upsertOne(log, {...entry, completed: newCompleted})
-      const newPosition = newCompleted? -1 : firstCompletedIndex
+      
+      // toggle the completed status of the entry
+      if(entry.completed){
+        entry.completed = null
+      }else{
+        entry.completed = DateTime.now().toISO()
+      }
+      
+      // move the entry to its new position
+      const newPosition = entry.completed? -1 : firstCompletedIndex
       log.ids = arrayMove(log.ids, log.ids.indexOf(id), newPosition)
     },
     startTimer(state, action){
@@ -198,68 +178,33 @@ const logSlice = createSlice({
         ))
       }
     },
-    addTask(state, action){
-      const { date, task } = action.payload
-      const selectedDay = state.entities[date.toISO()]
-      tasksAdapter.addOne(selectedDay.tasks, {...task, id: selectedDay.tasks.nextId})
-      selectedDay.tasks.nextId += 1
+    setRepetitions(state, action){
+      const { date, id, repetitions } = action.payload
+      const log = state.entities[date.toISO()].entries
+      const entry = log.entities[id]
+
+      if(entry.repetitions == undefined) return
+
+      if( entry.repetitions.length < repetitions ){
+        for(let i = entry.repetitions.length; i < repetitions; i++){
+          entry.repetitions.push(DateTime.now().toISO())
+        }
+      }else if( entry.repetitions.length > repetitions ){
+        entry.repetitions = entry.repetitions.slice(0, repetitions)
+      }
     },
-    toggleTask(state, action){
-      const { date, id } = action.payload
-      const selectedDay = state.entities[date.toISO()]
-      const task = selectedDay.tasks.entities[id]
-      tasksAdapter.updateOne(selectedDay.tasks, {id: task.id, changes: {completed: !task.completed}})
-    },
-    deleteTask(state, action){
-      const { date, id } = action.payload
-      const selectedDay = state.entities[date.toISO()]
-      tasksAdapter.removeOne(selectedDay.tasks, id)
-    },
-    addActivityRecord(state, action){
-      const { date, activityRecord } = action.payload
-      const selectedDay = state.entities[date.toISO()]
-      activityRecordsAdapter.addOne(selectedDay.activityRecords, activityRecord)
-    },
-    deleteAllActivityRecords(state, action){
-      const { date } = action.payload
-      const selectedDay = state.entities[date.toISO()]
-      activityRecordsAdapter.removeAll(selectedDay.activityRecords)
-    }
   }
 })
 
 export const { 
   createLog, addEntry, deleteEntry, toggleCompleted, startTimer, 
   stopTimer, sortLog, upsertEntry, setState, deleteLog, replaceEntry,
-  capAllTimers, setWeekliesSelected, addTask, toggleTask, setTasksAdded, 
-  deleteTask, addActivityRecord, deleteAllActivityRecords,
+  capAllTimers, setWeekliesSelected, setRepetitions,
 } = logSlice.actions
 
 export const { 
-  selectAll: selectAllLogs, selectById: selectLogById, selectEntities: selectLogEntities
+  selectById: selectLogById
 } = logAdapter.getSelectors(state => state.logs)
-
-export function selectActivityRecordByIdAndDate(state, id, date){
-  const isoDate = date.toISO()
-  const log = selectLogById(state, isoDate)
-  return log? log.activityRecords.entities[id] : null
-}
-
-// searches for an activity record for that activity, starting from date and
-// going forward in time until it finds one that matches the activity
-// or the current day is reached
-export function findActivityRecord(state, id, date){
-  let currentDate = date
-  const today = getTodaySelector(state)
-
-  while( today > currentDate ){
-    const activityRecord = selectActivityRecordByIdAndDate(state, id, currentDate)
-    if(activityRecord) return activityRecord
-    currentDate = currentDate.plus({days: 1})
-  }
-
-  return null  // there is no matching activity record
-}
 
 export function selectEntriesByDay(state, day){
   const thatDayLog = selectLogById(state, day.toISO())
@@ -296,6 +241,17 @@ export function selectThisWeekEntriesByActivityId(state, activityId){
   selectAllWeekEntriesByActivityId(state, activityId, DateTime.now())
 }
 
+export function selectAllActivityEntries(state, activityId){
+  let allEntries = {}
+  state.logs.ids.forEach((logDate) => {
+    const thatDayEntry = state.logs.entities[logDate].entries.entities[activityId]
+    if(thatDayEntry){
+      allEntries[logDate] = thatDayEntry
+    }
+  })
+  return allEntries
+}
+
 export default logSlice.reducer
 
 function getStartOfWeekDay(date, weekDayNumber, dayStartHour){
@@ -312,27 +268,8 @@ function stopActivity(entry){
 }
 
 function selectTodayLog(state){
-  const { dayStartHour } = state.settings
-  const log = selectLogById(state, getToday(dayStartHour).toISO())
+  const log = selectLogById(state, getTodaySelector(state).toISO())
   return log
-}
-
-export function getTodayTasks(state){
-  const log = selectTodayLog(state)
-  const tasks = log?.tasks
-  if(!tasks) return []
-
-  const { selectAll: selectAllTasks } = entryAdapter.getSelectors()
-  const taskList = selectAllTasks(tasks)
-  if(!taskList) return []
-
-  return taskList
-}
-
-export function selectTasks(state, date){
-  const log = selectLogById(state, date.toISO())
-  const tasks = log?.tasks?.entities
-  return tasks? tasks : {}
 }
 
 export function areWeekliesSelectedToday(state){
@@ -340,7 +277,40 @@ export function areWeekliesSelectedToday(state){
   return log?.weekliesSelected? log.weekliesSelected : false
 }
 
-export function areTasksAddedToday(state){
-  const log = selectTodayLog(state)
-  return log?.tasksAdded? log.tasksAdded : false
+export function selectDailyDurationById(state, activityId, date){
+  const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+  return entry? getTodayTime(entry.intervals) : Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
+}
+
+export function getPeriodStats(state, startDate, endDate, activityId){
+  /* gets stats for the activity in the inclusive period between startDate
+  and endDate. */
+  
+  let loggedTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
+  let daysDoneCount = 0
+  let daysDoneList = []
+  let repetitionsCount = 0
+
+  for(let date = startDate; date <= endDate; date = date.plus({days: 1})){
+    const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+    if(entry){
+      if(entry.completed){
+        daysDoneCount += 1
+        daysDoneList.push(date)
+      }
+      loggedTime = loggedTime.plus(getTodayTime(entry.intervals))
+      repetitionsCount += entry.repetitions? entry.repetitions.length : 0
+    }
+  }
+  
+  return { loggedTime, daysDoneCount, daysDoneList, repetitionsCount }
+}
+
+export function getLifeTimeStats(state, activityId){
+  const firstLogDateTime = DateTime.fromISO(state.logs.ids[0])
+  const today = getTodaySelector(state)
+
+  if(!firstLogDateTime) return null
+
+  return getPeriodStats(state, firstLogDateTime, today, activityId)
 }

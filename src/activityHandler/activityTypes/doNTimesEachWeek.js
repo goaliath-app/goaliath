@@ -1,8 +1,9 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { selectEntryByActivityIdAndDate, 
-    createOrUnarchiveEntry, toggleCompleted, upsertEntry } from '../../redux'
-import { getWeeklyStats, getTodaySelector, selectActivityByIdAndDate } from '../../util'
+import { 
+  selectEntryByActivityIdAndDate, createOrUnarchiveEntry, toggleCompleted, 
+  selectActivityByIdAndDate, getWeeklyStats, getTodaySelector, setRepetitions,
+} from '../../redux'
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import { View, } from 'react-native'
@@ -26,7 +27,7 @@ const TodayScreenItem = ({ activityId, date }) => {
   // alias values
   const weeklyReps = repetitionsCount
   const weeklyRepsGoal = activity.params.repetitions
-  const todayReps = entry.repetitions
+  const todayReps = entry.repetitions.length
   
   // compute values
   const totalReps = weeklyReps + todayReps
@@ -34,7 +35,7 @@ const TodayScreenItem = ({ activityId, date }) => {
   
   // functions
   function addOne(){
-    dispatch(upsertEntry({ date, entry: { ...entry, repetitions: todayReps + 1 } }))
+    dispatch(setRepetitions({date, id: activityId, repetitions: todayReps + 1}))
   }
   
   // get the correct left component
@@ -50,7 +51,6 @@ const TodayScreenItem = ({ activityId, date }) => {
   
   React.useEffect(() => {
     if( totalReps >= weeklyRepsGoal && !entry.completed ){
-      console.log('entry.completed', entry.completed)
       dispatch(toggleCompleted({date: date, id: activityId}))
     }
   }, [totalReps, weeklyRepsGoal])
@@ -73,15 +73,10 @@ function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, is
   const { t, i18n } = useTranslation()
   
   // selectors
-  const { repetitionsCount } = useSelector((state) => getWeeklyStats(state, today, activity.id))
   const weekCompleted = useSelector(state => isWeekCompleted(state, activity.id, today))
 
-  // alias values
-  const weeklyRepsGoal = activity.params.repetitions
-  
   // calculations
-  const repsLeft = weeklyRepsGoal - repetitionsCount
-  const description = `${repsLeft} of ${weeklyRepsGoal} repetitions remaining`
+  const description = useSelector(state => getWeekProgressString(state, activity.id, today, t))
 
   return(
     weekCompleted?
@@ -148,7 +143,7 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
 // addEntryThunk to add the repetitions field to entries of this activity type
 function addEntryThunk( activityId, date ){
   return (dispatch, getState) => {
-    dispatch(createOrUnarchiveEntry(date, activityId, { repetitions: 0 }))
+    dispatch(createOrUnarchiveEntry(date, activityId, { repetitions: [] }))
   }
 }
 
@@ -161,6 +156,62 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
+function getWeekProgressString(state, activityId, date, t){
+  const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
+  
+  // selectors
+  const { repetitionsCount } = useSelector((state) => getWeeklyStats(state, date, activity.id))
+  
+ // alias values
+ const weeklyRepsGoal = activity.params.repetitions
+  
+ // calculations
+  const repsLeft = weeklyRepsGoal - repetitionsCount
+  return `${repsLeft} of ${weeklyRepsGoal} repetitions remaining`
+}
+
+function getDayActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+  const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+
+  if(!entry){
+    return 0
+  }else if(entry.completed){
+    return 1
+  }else{
+    const todayReps = entry.repetitions?.length ? entry.repetitions.length : 0
+    const weeklyRepsGoal = activity.params.repetitions
+
+    if((weeklyRepsGoal / 7) == 0){
+      return 1
+    }else{
+      return Math.min(1, todayReps / (weeklyRepsGoal / 7) )
+    }
+  }
+}
+
+function getWeekActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  const weeklyRepsGoal = activity.params.repetitions
+
+  const weekStartDate = date.startOf('week')
+  const weekEndDate = date.endOf('week')
+
+  let repetitionsAccumulator = 0
+  for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
+    const entry = selectEntryByActivityIdAndDate(state, activityId, day)
+    if( entry && !entry.archived ){
+      repetitionsAccumulator += entry.repetitions.length
+    }
+  }
+
+  if( weeklyRepsGoal == 0 ){
+    return 1
+  } else {
+    return Math.min( 1, repetitionsAccumulator / weeklyRepsGoal )
+  }
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
@@ -168,6 +219,9 @@ export default {
   addEntryThunk,
   isWeekCompleted,
   getFrequencyString,
+  getWeekProgressString,
+  getDayActivityCompletionRatio,
+  getWeekActivityCompletionRatio
   // WeekView,
 }
 
@@ -177,6 +231,9 @@ function isWeekCompleted( state, activityId, date ){
   const { repetitionsCount } = getWeeklyStats(state, date, activityId)
 
   const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  if(activity == null) return false
+
   const repsTarget = activity.params.repetitions
 
   return repetitionsCount >= repsTarget

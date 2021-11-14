@@ -2,8 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { View } from 'react-native'
 import { IconButton } from 'react-native-paper'
-import { getTodayTime, isActivityRunning, getPreferedExpression, getTodaySelector, selectActivityByIdAndDate } from '../../../util'
-import { toggleCompleted, stopTodayTimer, startTodayTimer, selectEntryByActivityIdAndDate } from '../../../redux'
+import { getTodayTime, isActivityRunning, getPreferedExpression } from '../../../util'
+import { toggleCompleted, stopTodayTimer, startTodayTimer, selectEntryByActivityIdAndDate, selectActivityByIdAndDate, getTodaySelector } from '../../../redux'
 import PlayFilledIcon from '../../../../assets/play-filled'
 import PlayOutlinedIcon from '../../../../assets/play-outlined'
 import PauseFilledIcon from '../../../../assets/pause-filled'
@@ -14,7 +14,7 @@ import { ActivityListItem, DoubleProgressBar } from '../../../components'
 // addEntryThunk to add the repetitions field to entries of this activity type
 function addEntryThunk( activityId, date ){
   return (dispatch, getState) => {
-    dispatch(createOrUnarchiveEntry(date, activityId, { repetitions: 0 }))
+    dispatch(createOrUnarchiveEntry(date, activityId, { repetitions: [] }))
   }
 }
 
@@ -111,4 +111,25 @@ function getFrequencyString(state, activityId, t, date=null){
   return t('activityHandler.dailyGoals.doNSeconds.frequencyString', { value, unit })
 }
 
-export default { TodayScreenItem, getFrequencyString }
+function getDayActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+  const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+
+  if(!entry){
+    return 0
+  }else if(entry.completed){
+    return 1
+  }else{
+    const dedicatedTime = getTodayTime(entry.intervals)
+    const dedicatedSeconds = dedicatedTime.as('seconds')
+    const secondsGoal = activity.params.dailyGoal.params.seconds
+
+    if(secondsGoal == 0){
+      return 1
+    }else{
+      return Math.min(1, dedicatedSeconds / secondsGoal)
+    }
+  }
+}
+
+export default { TodayScreenItem, getFrequencyString, getDayActivityCompletionRatio }

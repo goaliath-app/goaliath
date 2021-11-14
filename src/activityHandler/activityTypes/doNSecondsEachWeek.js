@@ -1,7 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { selectActivityById, selectEntryByActivityIdAndDate, toggleCompleted, stopTodayTimer, startTodayTimer } from '../../redux'
-import { getWeeklyStats, isActivityRunning, getPreferedExpression, getTodaySelector, getTodayTime, roundValue, selectActivityByIdAndDate } from '../../util'
+import { 
+  selectActivityById, selectEntryByActivityIdAndDate, toggleCompleted, 
+  stopTodayTimer, startTodayTimer, selectActivityByIdAndDate, getWeeklyStats, 
+  getTodaySelector 
+} from '../../redux'
+import { isActivityRunning, getPreferedExpression, getTodayTime, roundValue } from '../../util'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import { useTranslation } from 'react-i18next';
 import Duration from 'luxon/src/duration.js'
@@ -117,17 +121,11 @@ function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, is
   const { t, i18n } = useTranslation()
   
   // selectors
-  const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, today, activity.id))
   const weekCompleted = useSelector(state => isWeekCompleted(state, activity.id, today))
   
   // calculations
-  const secondsTarget = activity.params.seconds
-  const timeTarget = Duration.fromObject({seconds: secondsTarget}).shiftTo('hours', 'minutes', 'seconds')
-  let timeLeft = timeTarget.minus(weeklyTime)
-  timeLeft = timeLeft.as('seconds') >= 0? timeLeft : Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
-  const timeExpr = getPreferedExpression(timeLeft, t)
-  const description = t('weeklyActivities.timeLeft', {timeExprValue: timeExpr.value, timeExprLocaleUnit: timeExpr.localeUnit})
-
+  const description = useSelector(state => getWeekProgressString(state, activity.id, today, t))
+  
   return(
     weekCompleted?
       null
@@ -199,6 +197,63 @@ function getFrequencyString(state, activityId, t, date=null){
   return t('activityHandler.activityTypes.doNSecondsEachWeek.frequencyString', {expressionValue: value, expressionUnit: unit})
 }
 
+function getWeekProgressString(state, activityId, date, t){
+  const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
+  //selectors
+  const { weeklyTime} = useSelector((state) => getWeeklyStats(state, date, activity.id))
+  
+  // calculations
+  const secondsTarget = activity.params.seconds
+  const timeTarget = Duration.fromObject({seconds: secondsTarget}).shiftTo('hours', 'minutes', 'seconds')
+  let timeLeft = timeTarget.minus(weeklyTime)
+  timeLeft = timeLeft.as('seconds') >= 0? timeLeft : Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
+  const timeExpr = getPreferedExpression(timeLeft, t)
+  return t('weeklyActivities.timeLeft', {timeExprValue: timeExpr.value, timeExprLocaleUnit: timeExpr.localeUnit})
+
+}
+
+function getDayActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate( state, activityId, date )
+  const entry = selectEntryByActivityIdAndDate(state, activityId, date)
+
+  if(!entry){
+    return 0
+  }else if(entry.completed){
+    return 1
+  }else{
+    const todaySeconds = getTodayTime(entry.intervals).as('seconds')
+    const weeklySecondsGoal = activity.params.seconds
+
+    if((weeklySecondsGoal / 7) == 0){
+      return 1
+    }else{
+      return Math.min(1, todaySeconds / (weeklySecondsGoal / 7) )
+    }
+  }
+}
+
+function getWeekActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  const weeklySecondsGoal = activity.params.seconds
+
+  const weekStartDate = date.startOf('week')
+  const weekEndDate = date.endOf('week')
+
+  let secondsAccumulator = 0
+  for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
+    const entry = selectEntryByActivityIdAndDate(state, activityId, day)
+    if( entry && !entry.archived ){
+      secondsAccumulator += getTodayTime(entry.intervals).as('seconds')
+    }
+  }
+
+  if( weeklySecondsGoal == 0 ){
+    return 1
+  } else {
+    return Math.min( 1, secondsAccumulator / weeklySecondsGoal )
+  }
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
@@ -206,6 +261,9 @@ export default {
   WeekView,
   isWeekCompleted,
   getFrequencyString,
+  getWeekProgressString,
+  getDayActivityCompletionRatio,
+  getWeekActivityCompletionRatio,
 }
 
 function isWeekCompleted( state, activityId, date ){
@@ -214,6 +272,9 @@ function isWeekCompleted( state, activityId, date ){
   const { weeklyTime } = getWeeklyStats(state, date, activityId)
 
   const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  if(activity == null) return false
+
   const secondsTarget = activity.params.seconds
 
   return weeklyTime.as('seconds') >= secondsTarget

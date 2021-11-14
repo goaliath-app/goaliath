@@ -7,6 +7,13 @@ const en = {
       }
     },
 
+    dateWheelPicker: {
+      dialog: {
+        cancel: 'Cancel',
+        acept: 'OK'
+      }
+    },
+
     deleteDialog: {
       delete: 'Delete',
       cancel: 'Cancel'
@@ -35,16 +42,21 @@ const en = {
 
     stats: {
       genericStats: {
-        title: 'Stats',
-        hoursDedicated: ' total hours dedicated',
-        daysCompleted: ' days completed'
+        title: 'Lifetime',
+        timeDedicated: '{{expressionValue}} total {{expressionUnit}} dedicated',
+        daysCompleted: ' activities completed',
+        repetitions: ' repetitions done',
       },
       weekStats: {
         title: 'This week',
         hoursDedicated: ' total hours dedicated',
-        daysCompleted: ' days completed'
-
+        daysCompleted: ' activities completed'
       }
+    },
+
+    statsScreen: {
+      drawerTitle: 'Stats',
+      headerTitle: 'Stats',
     },
 
     todayPannel: {
@@ -59,6 +71,7 @@ const en = {
     activityForm: {
       headerTitle: 'New activity',
       nameInputLabel: 'Activity\'s name',
+      descriptionInputLabel: 'Description (optional)',
       weeklyDaysLabel: 'Days each week',
       errors: {
         noName: 'A name is required',
@@ -88,13 +101,15 @@ const en = {
     
     calendar: {
       headerTitle: 'Calendar',
-      openDayButton: 'Open day',
-      stats: '{{completedActivities}} tasks done, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicated\n{{undoneActivities}} task undone, {{timeLeftValue}} {{timeLeftUnit}} left'
-    },
-
-    dayInCalendar: {
-      dailyActivities: 'Daily activities',
-      weeklyActivities: 'Weekly Activities'
+      //stats: '{{completedActivities}} tasks done, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicated\n{{undoneActivities}} task undone, {{timeLeftValue}} {{timeLeftUnit}} left',
+      dayView: {
+        header: '{{month}} {{day}}, {{year}}'
+      },
+      weekView: {
+        header: 'Week from {{weekStartDate}} to {{weekEndDate}}',
+        sortByGoal: 'Sort by goal',
+        sortByActivity: 'Sort by activity'
+      },
     },
 
     goalForm: {
@@ -236,6 +251,7 @@ const en = {
         week: 'Week',
         goals: 'Goals',
         calendar: 'Calendar',
+        stats: 'Stats',
         settings: 'Settings'
       }
     },

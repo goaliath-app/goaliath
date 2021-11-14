@@ -1,15 +1,14 @@
 export {
     createLog, addEntry, upsertEntry, toggleCompleted, setState, sortLog, deleteEntry, deleteLog,
-    replaceEntry, addTask, toggleTask, addActivityRecord,
-    selectAllLogs, selectLogById, areWeekliesSelectedToday,
-    selectThisWeekEntriesByActivityId, selectLogEntities, selectEntriesByDay,
+    replaceEntry, setRepetitions,
+    selectLogById, areWeekliesSelectedToday, selectAllActivityEntries,
+    selectThisWeekEntriesByActivityId, selectEntriesByDay,
     selectAllWeekEntriesByActivityId, selectEntryByActivityIdAndDate,
-    selectTasks, areTasksAddedToday, getTodayTasks, findActivityRecord, deleteAllActivityRecords
+    selectDailyDurationById, getPeriodStats, getLifeTimeStats,
 } from './LogSlice'
 
 export { 
     deleteOneTodaysEntry, startTodayTimer, stopTodayTimer, sortTodayLog, capAllTimers, weekliesSelectedToday,
-    addTodayTask, tasksAddedToday, deleteTodayTask,
 } from './Thunks'
 
 export { default as default } from './LogSlice'

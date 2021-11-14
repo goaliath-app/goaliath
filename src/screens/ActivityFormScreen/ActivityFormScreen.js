@@ -4,7 +4,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, Keyboard, Pressable, View, 
 import { Appbar, TextInput, HelperText, Subheading, Portal, Dialog, Divider, List, Switch, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { Header, TimeInput } from '../../components';
-import { createActivity, updateActivity, selectActivityById } from '../../redux'
+import { setActivity, selectActivityById } from '../../redux'
 import { GeneralColor, ActivityFormColor } from '../../styles/Colors';
 import NumberOfWeeklyDaysInput from './NumberOfWeeklyDaysInput'
 import WeekdaySelector from './WeekdaySelector'
@@ -20,7 +20,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
   if(activity){
     goalId = activity.goalId
   }else{
-    if(!route.params.goalId){
+    if(route.params.goalId == null){
       throw "Navigated to ActivityFormScreen without providing activityId nor goalId. At least one is required."
     }
     goalId = route.params.goalId
@@ -32,6 +32,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
  
   // state default values
   const initialName = activity?.name?activity.name:''
+  const initialDescription = activity?.description ? activity.description : ''
   const initialfrequencySelector = (
     activity?.type == 'doFixedDays'? 'daily' :
     activity?.type == 'doNDaysEachWeek'? 'free' :
@@ -65,6 +66,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
   )
 
   const [name, setName] = React.useState(initialName)
+  const [description, setDescription] = React.useState(initialDescription)
   const [frequencySelector, setFrequencySelector] = React.useState(initialfrequencySelector)  // 'daily', 'free' or 'weekly'
   const [seconds, setSeconds] = React.useState(initialSeconds) // 'seconds'
   const [repetitions, setRepetitions] = React.useState(initialRepetitions) // 'repetitions'
@@ -181,19 +183,17 @@ const ActivityFormScreen = ({ route, navigation }) => {
 
         const newActivity = { 
           name, 
+          description,
           goalId, 
           type, 
           params, 
         }
 
-        console.log('newActivity', newActivity)
-
         if(validate()){
           if(activityId !== undefined){
-            console.log('editada')
-            dispatch(updateActivity({...newActivity, id: activity.id}))
+            dispatch(setActivity({ ...activity, ...newActivity }))
           }else{
-            dispatch(createActivity(newActivity))
+            dispatch(setActivity({ ...newActivity, archived: false, active: true }))
           }
           navigation.goBack()
         }
@@ -223,9 +223,22 @@ const ActivityFormScreen = ({ route, navigation }) => {
             setNameInputError(false)
           }} 
         />
-        <HelperText style={{paddingLeft:25}} type="error" visible={nameInputError}>
-          {t('activityForm.errors.noName')}
-        </HelperText>
+        {
+          nameInputError?
+            <HelperText style={{paddingLeft:25}} type="error" visible={nameInputError}>
+              {t('activityForm.errors.noName')}
+            </HelperText> : null
+        }
+        <TextInput 
+          style={{paddingHorizontal: 15, paddingTop: 10, paddingBottom: 10, fontSize: 16, backgroundColor: GeneralColor.textInputBackground}} 
+          mode= 'outlined' 
+          multiline={true}
+          label={t('activityForm.descriptionInputLabel')}
+          value={description} 
+          onChangeText={description => {
+            setDescription(description)
+          }} 
+        />
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
         <Pressable style={{borderWidth: 1, margin: 20, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {setFrequencyVisible(true), setNoFrequencyError(false)}}>
@@ -422,22 +435,4 @@ const styles = StyleSheet.create({
   }
 })
 
-const actionsToProps = {
-  createActivity,
-  updateActivity
-}
-
-const mapStateToProps = (state, ownProps) => {
-  const activityId = ownProps.route.params.activityId
-  const activity = selectActivityById(state, activityId)
-  if(activity){
-    return { activity: activity, goalId: activity.goalId }
-  }else{
-    if(!ownProps.route.params.goalId){
-      throw "Navigated to ActivityFormScreen without providing activityId nor goalId. At least one is required."
-    }
-    return { goalId: ownProps.route.params.goalId }
-  }
-}
-
-export default connect(mapStateToProps, actionsToProps)(ActivityFormScreen);
+export default ActivityFormScreen

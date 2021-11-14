@@ -1,8 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
-    createOrUnarchiveEntry, archiveOrDeleteEntry } from '../../redux'
-import { isActive, selectActivityByIdAndDate } from '../../util'
+    createOrUnarchiveEntry, archiveOrDeleteEntry, selectActivityByIdAndDate, 
+    isActiveSelector } from '../../redux'
+import { isActive } from '../../util'
 import dailyGoals from './dailyGoals'
 
 function updateEntryThunk( activityId, date ){
@@ -72,8 +73,72 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
+function getWeekProgressString(state, activityId, date, t){
+  return getFrequencyString(state, activityId, t, date)
+}
+
+function getDayActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
+
+  return dailyGoal.getDayActivityCompletionRatio(state, activityId, date)
+}
+
+function getWeekActivityCompletionRatio(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  let numberOfDaysGoal = 0
+  Object.values(activity.params.daysOfWeek).forEach( day => {
+    if(day){ 
+      numberOfDaysGoal += 1
+    }
+  })
+
+  const weekStartDate = date.startOf('week')
+  const weekEndDate = date.endOf('week')
+
+  let completionAccumulator = 0
+  for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
+    const entry = selectEntryByActivityIdAndDate(state, activityId, day)
+    if( entry && !entry.archived ){
+      completionAccumulator += getDayActivityCompletionRatio(state, activityId, day)
+    }
+  }
+
+  if( numberOfDaysGoal == 0 ){
+    return 1
+  } else {
+    return Math.min( 1, completionAccumulator / numberOfDaysGoal )
+  }
+}
+
+// returns true if the activity has to be done in the given date,
+// and not doing it that exact day would be considered a "failure"
+function dueToday(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  if(!activity){
+    return false
+  }
+
+  if(!isActiveSelector(state, activityId, date)){
+    return false
+  }
+
+  const daysOfWeek = activity.params.daysOfWeek
+  if(daysOfWeek[date.weekday]){
+    return true
+  }else{
+    return false
+  }
+}
+
 export default {
+  dueToday,
   updateEntryThunk,
   TodayScreenItem,
   getFrequencyString,
+  getWeekProgressString,
+  getDayActivityCompletionRatio,
+  getWeekActivityCompletionRatio,
 }
