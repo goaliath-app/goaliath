@@ -20,6 +20,7 @@ const GoalListItem = ({ name, active, id }) => {
       <List.Item 
         onPress={() => navigation.navigate('Goal', { goalId: id })}
         title={name}
+        titleNumberOfLines={2}
         right={() => (
           <Switch 
             value={active} 

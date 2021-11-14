@@ -13,6 +13,8 @@ import { CalendarColor, GeneralColor } from '../styles/Colors';
 import { useNavigation } from '@react-navigation/native';
 import { DateTime } from 'luxon'
 
+//TODO: Fix frequency traduction.
+      //Fix activity name and activity frequency to show both
 const ActivityWeekView = ({ activityId, date }) => {
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   const { t, i18n } = useTranslation()
@@ -50,6 +52,7 @@ const GoalWeekView = ({ goalId, date }) => {
   return (
     <View>
       <List.Accordion title={goal.name} 
+        titleNumberOfLines={2}
         style={{ backgroundColor: GeneralColor.screenBackground, borderBottomWidth: 0.2, borderBottomColor: CalendarColor.goalDivider, borderTopWidth: 0.2, borderTopColor: CalendarColor.goalDivider,paddingLeft: 10 }} 
         left={() => (
           <AnimatedCircularProgress

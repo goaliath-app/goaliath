@@ -51,6 +51,7 @@ export const ActivityListItem = ({ activity, entry, date, left, description }) =
            : null
         )}
         title={activity.name}
+        titleNumberOfLines={2}
         description={description}
         onPress={() => {
           navigation.navigate('ActivityDetail', {activityId: activity.id, date: date.toISO()})
@@ -221,6 +222,7 @@ export const SelectWeekliesListItem = ({checked, color='black', navigation}) => 
           </View>
         )}
         title={t('today.selectWeekliesTitle')}
+        titleNumberOfLines={2}
         // description={t('today.selectWeekliesDescription')}
         onPress={() => {navigation.navigate('SelectWeeklyActivities')}}
       />
@@ -245,6 +247,7 @@ export const SelectTasksListItem = ({checked, onPress}) => {
           </View>
         )}
         title={t('today.selectTasksTitle')}
+        titleNumberOfLines={2}
         // description={t('today.selectTasksDescription')}
         onPress={onPress}
       />

@@ -25,6 +25,7 @@ const Activity = ({ name, active, id, activity }) => {
         style={{paddingTop: 5}}
         onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
         title={name}
+        titleNumberOfLines={2}
         right={() => (
           <Switch
             onValueChange={() => dispatch(toggleActivity(id))} 
