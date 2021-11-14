@@ -86,7 +86,6 @@ const CalendarDayItem = ({
     </View>
 )}
 
-/* TODO: Add a screen with the activities for weeks and days */
 const CalendarWeekItem = ({ 
   date,                  // (required) day belonging to the week to be shown 
   currentMonth=null,     // used to gray out days that are not in the current month, null if not used
