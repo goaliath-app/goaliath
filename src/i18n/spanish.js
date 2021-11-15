@@ -24,15 +24,20 @@ const es= {
     },
   
     activityDetail: {
-        threeDotsMenu: {
-          editActivity: 'Editar actividad',
-          deleteActivity: 'Borrar actividad'
-        },
-        helpIconText: 'Estos son los detalles de una actividad pasada. Incluso si has modificado el objetivo o la frecuencia de la actividad, aquí podrás verla exactamente como fue ese día.',
-        deleteDialog: {
-          title: '¿Borrar actividad?',
-          body: "Esta acción no puede deshacerse."
-        },
+      threeDotsMenu: {
+        editActivity: 'Editar actividad',
+        deleteActivity: 'Borrar actividad',
+        changeGoal: "Mover a otra meta",
+      },
+      helpIconText: 'Estos son los detalles de una actividad pasada. Incluso si has modificado el objetivo o la frecuencia de la actividad, aquí podrás verla exactamente como fue ese día.',
+      deleteDialog: {
+        title: '¿Borrar actividad?',
+        body: "Esta acción no puede deshacerse."
+      },
+      changeGoalDialogTitle: "Seleccionar nueva meta",
+      changeGoalDialogCancel: "Cancelar",
+      changeGoalDialogBody: 'Meta actual: {{currentGoal}}',
+      changeGoalSnackbar: "Actividad movida a otra meta"
     },
   
     basicActivityInfo: {

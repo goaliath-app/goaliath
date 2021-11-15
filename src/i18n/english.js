@@ -26,13 +26,18 @@ const en = {
     activityDetail: {
       threeDotsMenu: {
         editActivity: 'Edit activity',
-        deleteActivity: 'Delete activity'
+        deleteActivity: 'Delete activity',
+        changeGoal: "Move to other goal",
       },
       helpIconText: 'These are the details of a past activity. Even if you have modified the activity goal or frequency, here you will see them as they were this specific day.',
       deleteDialog: {
         title: 'Delete activity?',
         body: "This can't be undone."
       },
+      changeGoalDialogTitle: "Select target goal",
+      changeGoalDialogCancel: "Cancel",
+      changeGoalDialogBody: 'Current goal: {{currentGoal}}',
+      changeGoalSnackbar: "Activity moved to other goal"
     },
 
     basicActivityInfo: {

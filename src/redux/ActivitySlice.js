@@ -149,6 +149,13 @@ export function archiveActivity(activityId){
   }
 }
 
+export function changeActivityGoal(activityId, goalId){
+  return function(dispatch, getState){
+    const activity = selectActivityById(getState(), activityId)
+    const updatedActivity = { ...activity, goalId }
+    dispatch(setActivity(updatedActivity))
+  }
+}
 
 // SELECTORS
 export function selectActivityByIdAndDate(state, activityId, date){

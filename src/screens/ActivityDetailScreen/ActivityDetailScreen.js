@@ -14,7 +14,7 @@ import { GeneralColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
 
-import { GenericStats, StatsPannel } from '../../components'
+import { GenericStats, StatsPannel, MoveToGoalDialog } from '../../components'
 
 // TODO: use selectActivityByIdAndDate instead of selectActivityById
 const ActivityDetailScreen = ({ 
@@ -36,6 +36,7 @@ const ActivityDetailScreen = ({
 
   const [menuVisible, setMenuVisible] = React.useState(false);  // sets the visibility of the threeDotsMenu
   const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
+  const [moveToGoalDialogVisible, setMoveToGoalDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
 
   const { t, i18n } = useTranslation()
 
@@ -52,6 +53,10 @@ const ActivityDetailScreen = ({
       setDeleteDialogVisible(true)
       setMenuVisible(false)
     }} title={t('activityDetail.threeDotsMenu.deleteActivity')}  />
+    <Menu.Item onPress={() => {
+      setMoveToGoalDialogVisible(true)
+      setMenuVisible(false)
+    }} title={t('activityDetail.threeDotsMenu.changeGoal')}  />
     </>
   )
 
@@ -126,6 +131,12 @@ const ActivityDetailScreen = ({
         }}
         title={t('activityDetail.deleteDialog.title')}
         body={t('activityDetail.deleteDialog.body')}
+      />
+
+      <MoveToGoalDialog 
+        visible={moveToGoalDialogVisible} 
+        setVisible={setMoveToGoalDialogVisible} 
+        activityId={activity.id} 
       />
     </KeyboardAvoidingView>
   )

@@ -6,7 +6,7 @@ export {
 } from './GoalsSlice'
 
 export { 
-    setActivity, toggleActivity, archiveActivity,
+    setActivity, toggleActivity, archiveActivity, changeActivityGoal,
     selectAllActivities, selectActivityById, selectActivityByIdAndDate
 } from './ActivitySlice'
 
