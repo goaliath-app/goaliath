@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Share } from 'react-native'
 import { connect } from 'react-redux';
-import { Text, List, Divider, Paragraph, Portal, Dialog, Button } from 'react-native-paper'
+import { Text, List, Divider, Paragraph, Portal, Snackbar, Dialog, Button } from 'react-native-paper'
 import { DateTime } from 'luxon'
 import DateTimePickerModal from "react-native-modal-datetime-picker"
 import email from 'react-native-email'
@@ -19,13 +19,24 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
   const [isLanguageDialogVisible, setLanguageDialogVisible] = React.useState(false);
   const [isImportDialogVisible, setImportDialogVisible] = React.useState(false);
   const [importedStateText, setImportedStateText] = React.useState('');
+  const [isSnackbarVisible, setSnackbarVisible] = React.useState(false)
+  const [snackbarValue, setSnackbarValue] = React.useState('')
 
   const { t, i18n } = useTranslation()
+
+  const onToggleSnackBar = () => setSnackbarVisible(true);
+  const onDismissSnackBar = () => setSnackbarVisible(false);
 
   const changeDayStartHour = (JSDate) => {
     const dateTime = DateTime.fromJSDate(JSDate)
     setDatePickerVisibility(false)
     setDayStartHour(dateTime.toISO());
+    
+    //Snackbar
+    setSnackbarValue(dateTime.toFormat('T') > DateTime.now().toFormat('T')?
+     t('settings.yesterdaySnackbar', {startHour: dateTime.toFormat('T').toString()}) 
+     : t('settings.todaySnackbar', {startHour: dateTime.toFormat('T').toString()}))
+    onToggleSnackBar()
   };
 
   const readFile = () => {
@@ -95,6 +106,8 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
             {t('settings.languageLocale')}
           </Text>} />
       <Divider />
+      
+      <Snackbar visible={isSnackbarVisible} onDismiss={onDismissSnackBar}>{snackbarValue}</Snackbar>
 
       <DateTimePickerModal
         isVisible={isDatePickerVisible}

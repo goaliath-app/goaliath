@@ -148,6 +148,8 @@ const es= {
     settings: {
         headerTitle: 'Ajustes',
         startHour: 'Hora de inicio del día',
+        todaySnackbar: 'El día de hoy terminará a las {{startHour}} de mañana.',
+        yesterdaySnackbar: 'Has regresado al día de ayer. Terminará a las {{startHour}} de hoy.',
         startHourDescription: 'A esta hora se reiniciarán las actividades diarias' ,
         feedback: 'Mándanos tus sugerencias',
         feedbackDescription: 'Manda un mensaje a los desarrolladores',

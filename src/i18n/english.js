@@ -146,6 +146,8 @@ const en = {
     settings: {
       headerTitle: 'Settings',
       startHour: 'Start of the next day',
+      todaySnackbar: 'Today will end at {{startHour}} tomorrow.',
+      yesterdaySnackbar: 'You have returned to yesterday. It ends at {{startHour}} today.',
       startHourDescription: 'At this time the daily activities will reset' ,
       feedback: 'Send feedback',
       feedbackDescription: 'Send a message to the developers',
