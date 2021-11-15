@@ -183,6 +183,9 @@ const en = {
       selectTasksTitle: 'Add one time tasks for today',
       selectTasksDescription: 'Tap here to add',
       oneTimeTaskDescription: 'One Time Task',
+      dayChangeDialogTitle: "A new day begins!",
+      dayChangeDialogBody: "The day has changed to {{date}} while the app was open.\n\nIf you need to be able to do a day's activities until a later hour, you can change the Day Start Hour in the settings screen.",
+      dayChangeDialogConfirmLabel: "Go to new day",
     },
 
     addTasks: {

@@ -1,7 +1,8 @@
 import React from 'react';
+import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { View, ScrollView } from 'react-native'
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { ActivityList } from '../components'
 import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog } from '../components';
 import { 
@@ -10,23 +11,18 @@ import {
 } from '../redux'
 import { areThereWeeklyActivities, areTherePendingWeeklyActivities } from '../activityHandler'
 import { useTranslation } from 'react-i18next'
+import { getToday } from '../util'
 
 const DayContent = ({ date }) => {
+  
   // setup hooks
   const navigation = useNavigation()
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
 
-  useFocusEffect(
-    React.useCallback(() => {
-      if(timeStatus == 'today'){
-        dispatch(updateLogs())
-      }
-    }, [timeStatus])
-  )
-
   // selectors
-  const today      = useSelector(getTodaySelector)
+  // using getToday because on day change getTodaySelector was still returning the previous day
+  const today      = getToday(useSelector(state => state.settings.dayStartHour))
   const entryList  = useSelector((state) => selectEntriesByDay(state, date))
   const taskList   = useSelector(getTodayTasks)
   const tasksAdded = useSelector(areTasksAddedToday)
@@ -65,8 +61,12 @@ const DayContent = ({ date }) => {
   const completedTasks = taskList.filter(task => task.completed)
   const pendingTasks = taskList.filter(task => !task.completed)
 
-  
-
+  useEffect(() => 
+    {
+      if(timeStatus == 'today'){
+        dispatch(updateLogs())
+      }
+    }, [timeStatus, date.toISO(), today.toISO()])
   
   return (
     <View>

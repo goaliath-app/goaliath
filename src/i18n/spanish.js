@@ -185,6 +185,9 @@ const es= {
       selectTasksTitle: 'Añade las tareas puntuales de hoy',
       selectTasksDescription: 'Pulsa para añadir',
       oneTimeTaskDescription: 'Tarea puntual',
+      dayChangeDialogTitle: "¡Buenos días!",
+      dayChangeDialogBody: "El día ha cambiado a {{date}} mientras la app estaba abierta.\n\nSi necesitas hacer las actividades del día hasta más tarde, puedes cambiar la hora de inicio del día en la pantalla de ajustes.",
+      dayChangeDialogConfirmLabel: "Ver nuevo día",
     },
 
     addTasks: {
