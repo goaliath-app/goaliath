@@ -142,6 +142,7 @@ const es= {
 
     goals: {
         headerTitle: 'Metas',
+        goalDescription: '{{activitiesNumber}} actividades activas',
         infoContent: "No tienes metas todavía.\n\nLas metas son la base de Goaliath, son las cosas que quieres conseguir, dedicar tiempo o trabajar en ellas.\n\nPuedes crear una nueva meta pulsando el icono +."
     },
 

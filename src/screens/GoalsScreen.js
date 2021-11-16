@@ -8,10 +8,17 @@ import { selectAllGoals, toggleGoal } from '../redux'
 import { hasSomethingToShow } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
+import { useSelector } from 'react-redux'
+import { selectAllActiveActivitiesByGoalIdAndDate, getTodaySelector } from '../redux';
 
 
 const GoalListItem = ({ name, active, id }) => {
+  const { t, i18n } = useTranslation()
+
   const navigation = useNavigation();
+
+  const today= useSelector(getTodaySelector)
+  const activities = useSelector((state) => selectAllActiveActivitiesByGoalIdAndDate(state, id, today))
 
   const dispatch = useDispatch();
 
@@ -27,6 +34,7 @@ const GoalListItem = ({ name, active, id }) => {
             onValueChange={ () => dispatch(toggleGoal(id)) }
           />
         )}
+        description={t('goals.goalDescription', {activitiesNumber: activities.length})}
       />
       <Divider />
     </View>
