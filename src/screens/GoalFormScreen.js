@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect, useDispatch } from 'react-redux'
-import { View, StyleSheet, KeyboardAvoidingView, ScrollView, Platform } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { Appbar, TextInput, Subheading, Paragraph, HelperText, Title } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { Header, HelpIcon } from '../components'
 import { setGoal, selectGoalById } from '../redux';
 import { GeneralColor } from '../styles/Colors';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const GoalFormScreen = ({ navigation, goal=null }) => {
   const { t, i18n } = useTranslation()
@@ -44,17 +45,14 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
   )
 
   return(
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, backgroundColor: GeneralColor.screenBackground }}
-    >
+    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header 
         title={t('goalForm.headerTitle')} 
         left='back' 
         navigation={navigation} 
         buttons={headerButtons} 
       />
-      <ScrollView style={{flex: 1, marginHorizontal: 16}} overScrollMode='never'>
+      <KeyboardAwareScrollView style={{ paddingHorizontal: 16 }}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
           <Subheading style={styles.subheading}>{t('goalForm.goalNameSubheading')}</Subheading>
         </View>
@@ -91,8 +89,8 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
           value={motivation}
           onChangeText={setMotivation}
           />
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
+    </View>
   )
 }
 

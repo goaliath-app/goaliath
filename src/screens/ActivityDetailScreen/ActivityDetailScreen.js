@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, KeyboardAvoidingView, ScrollView } from 'react-native'
+import { View } from 'react-native'
 import { connect } from 'react-redux';
 import { Paragraph, Menu, Title, Divider, List } from 'react-native-paper';
 import { DateTime } from 'luxon'
@@ -13,7 +13,7 @@ import { isToday, isFuture } from '../../util'
 import { GeneralColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { GenericStats, StatsPannel, MoveToGoalDialog } from '../../components'
 
 // TODO: use selectActivityByIdAndDate instead of selectActivityById
@@ -73,9 +73,9 @@ const ActivityDetailScreen = ({
   )
 
   return(
-    <KeyboardAvoidingView style={{flex:1,backgroundColor: GeneralColor.screenBackground}} >
+    <View style={{flex:1,backgroundColor: GeneralColor.screenBackground}} >
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
-      <ScrollView style={{ backgroundColor: GeneralColor.background, flex: 1 }}>
+      <KeyboardAwareScrollView style={{ backgroundColor: GeneralColor.background, flex: 1 }}>
         {date && !dateIsToday? 
         <>
         <List.Item 
@@ -119,7 +119,7 @@ const ActivityDetailScreen = ({
         }
 
         <StatsPannel activityId={activity.id} />
-      </ScrollView>
+      </KeyboardAwareScrollView>
 
       <DeleteDialog 
         visible={deleteDialogVisible} 
@@ -138,7 +138,7 @@ const ActivityDetailScreen = ({
         setVisible={setMoveToGoalDialogVisible} 
         activityId={activity.id} 
       />
-    </KeyboardAvoidingView>
+    </View>
   )
 }
 

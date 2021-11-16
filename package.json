@@ -40,6 +40,7 @@
     "react-native-dropdown-picker": "^5.2.3",
     "react-native-email": "^1.1.0",
     "react-native-gesture-handler": "~1.8.0",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-material-tabs": "^4.1.2",
     "react-native-modal-datetime-picker": "^9.2.0",
     "react-native-paper": "^4.7.2",

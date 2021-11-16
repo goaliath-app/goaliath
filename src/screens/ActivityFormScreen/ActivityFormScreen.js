@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, useSelector, useDispatch } from 'react-redux'
-import { KeyboardAvoidingView, Platform, ScrollView, Keyboard, Pressable, View, StyleSheet } from 'react-native';
+import { Keyboard, Pressable, View, StyleSheet } from 'react-native';
 import { Appbar, TextInput, HelperText, Subheading, Portal, Dialog, Divider, List, Switch, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { Header, TimeInput } from '../../components';
@@ -8,6 +8,7 @@ import { setActivity, selectActivityById } from '../../redux'
 import { GeneralColor, ActivityFormColor } from '../../styles/Colors';
 import NumberOfWeeklyDaysInput from './NumberOfWeeklyDaysInput'
 import WeekdaySelector from './WeekdaySelector'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 
 const ActivityFormScreen = ({ route, navigation }) => {
@@ -224,16 +225,13 @@ const ActivityFormScreen = ({ route, navigation }) => {
   )
 
   return(
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}
-    >
+    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header 
         title={activity?.name?activity.name:t('activityForm.headerTitle')} 
         left='back' navigation={navigation} 
         buttons={headerButtons}
       />
-      <ScrollView style={{flexGrow: 0}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
+      <KeyboardAwareScrollView style={{flexGrow: 0}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
         <TextInput 
           error={nameInputError} 
           style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, height: 55, backgroundColor: GeneralColor.textInputBackground}} 
@@ -451,8 +449,8 @@ const ActivityFormScreen = ({ route, navigation }) => {
               </Dialog.Content>
           </Dialog>
         </Portal>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
+    </View>
   )
 }
 

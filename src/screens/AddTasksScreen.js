@@ -1,12 +1,13 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, ScrollView } from 'react-native';
+import { View } from 'react-native';
 import { GeneralColor } from '../styles/Colors';
 import { Header } from '../components';
 import { useTranslation } from 'react-i18next';
 import { Appbar, Paragraph, TextInput, Subheading, IconButton } from 'react-native-paper';
 import { addTodayTask, tasksAddedToday } from '../redux'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 
 const AddTasksScreen = ({ navigation, addTodayTask, tasksAddedToday }) => {
@@ -40,7 +41,7 @@ const AddTasksScreen = ({ navigation, addTodayTask, tasksAddedToday }) => {
     />
     <View style={{flex: 1, paddingHorizontal: 14}}>
       <Paragraph style={{paddingVertical: 10}}>{t('addTasks.description')}</Paragraph>
-      <ScrollView overScrollMode='never' style={{flex: 1}}
+      <KeyboardAwareScrollView overScrollMode='never' style={{flex: 1}}
         onContentSizeChange={()=>{if(scrollViewRef) scrollViewRef.scrollToEnd()}} 
         ref={r => setScrollViewRef(r)}>
         {
@@ -87,7 +88,7 @@ const AddTasksScreen = ({ navigation, addTodayTask, tasksAddedToday }) => {
             )
           })
         }
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </View>
   </View>
   )
