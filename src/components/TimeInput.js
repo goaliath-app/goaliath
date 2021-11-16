@@ -4,7 +4,7 @@ import { Text, TextInput } from 'react-native-paper';
 import { Duration } from 'luxon'
 import { TimeInputColor } from '../styles/Colors'
 
-const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularColor, selectedColor=TimeInputColor.selectedColor }) => {
+const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularColor, selectedColor=TimeInputColor.selectedColor, maxHours=23 }) => {
 
   const [currentFocus, setCurrentFocus] = React.useState()
   const [selection, setSelection] = React.useState()
@@ -81,7 +81,7 @@ const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularCo
           setSelection({start:0, end: hours.toString().length})
           setCurrentFocus('hours')
         }}
-        {...commonProps({ unit: 'hours', maxValue: 23 })} 
+        {...commonProps({ unit: 'hours', maxValue: maxHours })} 
       />
 
       <Text style={{fontSize: 50, marginBottom: 5, color: regularColor}}>:</Text>

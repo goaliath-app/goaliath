@@ -40,12 +40,26 @@ const ActivityFormScreen = ({ route, navigation }) => {
     activity?.type == 'doNTimesEachWeek'? 'weekly' :
     null
   )
-  const initialSeconds = (
-    activity?.params.seconds? activity.params.seconds :
-    activity?.params.dailyGoal?.params.seconds? activity.params.dailyGoal.params.seconds :
-    0
+
+  const initialDailySeconds = (
+    activity && activity.type == "doFixedDays" && activity.params.dailyGoal == "doNSeconds"?
+      activity.params.dailyGoal.params.seconds
+      : 0
   )
-  const initialTimeGoalSwitch = initialSeconds? true : false
+
+  const initialFreeSeconds = (
+    activity && activity.type == "doNDaysEachWeek" && activity.params.dailyGoal == "doNSeconds"?
+    activity.params.dailyGoal.params.seconds
+    : 0
+  )
+
+  const initialWeeklySeconds = (
+    activity && activity.type == "doNSecondsEachWeek" & activity.params.seconds?
+    activity.params.seconds
+    : 0
+  )
+
+  const initialTimeGoalSwitch = initialDailySeconds || initialFreeSeconds || initialWeeklySeconds ? true : false
   const initialRepetitions = (
     activity?.params.repetitions? activity.params.repetitions :
     activity?.params.dailyGoal?.params.repetitions? activity.params.dailyGoal.params.repetitions :
@@ -68,7 +82,9 @@ const ActivityFormScreen = ({ route, navigation }) => {
   const [name, setName] = React.useState(initialName)
   const [description, setDescription] = React.useState(initialDescription)
   const [frequencySelector, setFrequencySelector] = React.useState(initialfrequencySelector)  // 'daily', 'free' or 'weekly'
-  const [seconds, setSeconds] = React.useState(initialSeconds) // 'seconds'
+  const [dailySeconds, setDailySeconds] = React.useState(initialDailySeconds) // 'seconds' daily activities
+  const [freeSeconds, setFreeSeconds] = React.useState(initialFreeSeconds) // 'seconds' free activities
+  const [weeklySeconds, setWeeklySeconds] = React.useState(initialWeeklySeconds) // 'seconds' weekly activities
   const [repetitions, setRepetitions] = React.useState(initialRepetitions) // 'repetitions'
   const [daysOfWeek, setDaysOfWeek] = React.useState(initialDaysOfWeek) // '1', '2', '3', '4', '5', '6', '7'
   const [days, setDays] = React.useState(initialDays) // int
@@ -100,7 +116,13 @@ const ActivityFormScreen = ({ route, navigation }) => {
       error = true
     }
     
-    if(timeGoalSwitch && !seconds){
+    if(
+      timeGoalSwitch && (
+        frequencySelector == "daily" && !dailySeconds
+        || frequencySelector == "weekly" && !weeklySeconds
+        || frequencySelector == "free" && !freeSeconds
+      )
+    ){
       setTimeInputError(true)
       error = true
     }
@@ -148,7 +170,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
           if(timeGoalSwitch){
             dailyGoal = {
               type: 'doNSeconds',
-              params: { seconds }
+              params: { seconds: dailySeconds }
             }
           }else if(multipleTimesSwitch){
             dailyGoal = {
@@ -171,14 +193,14 @@ const ActivityFormScreen = ({ route, navigation }) => {
           params = {
             days: Number.parseInt(days), 
             dailyGoal: (
-              timeGoalSwitch? {type: 'doNSeconds', params: { seconds } } :
+              timeGoalSwitch? {type: 'doNSeconds', params: { seconds: freeSeconds } } :
                 {type: 'doOneTime', params:  {}}
             )
           }
         }else if(type == 'doNTimesEachWeek'){
           params = { repetitions }
         }else if(type == 'doNSecondsEachWeek'){
-          params = { seconds }
+          params = { seconds: weeklySeconds }
         }
 
         const newActivity = { 
@@ -378,11 +400,18 @@ const ActivityFormScreen = ({ route, navigation }) => {
             {timeGoalSwitch?
               <View>
                 <TimeInput
-                  value={seconds}
+                  value={frequencySelector=='daily'? dailySeconds :
+                          frequencySelector=='free'? freeSeconds :
+                          frequencySelector=='weekly'? weeklySeconds :
+                          null}
                   onValueChange={ (value) => {
-                    setSeconds(value)
+                    frequencySelector=='daily'? setDailySeconds(value) :
+                    frequencySelector=='free'? setFreeSeconds(value) :
+                    frequencySelector=='weekly'? setWeeklySeconds(value) :
+                    null
                     setTimeInputError(false)
                   }}
+                  maxHours={frequencySelector=='weekly'? 99 : 23}
                 />
                 <HelperText 
                   style={{
