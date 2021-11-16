@@ -168,7 +168,7 @@ const en = {
       languageDescription: 'Only changes the app default texts',
       importDialog:{
         title: 'Import data?',
-        content: "This can't be undone, your app data will be rewrite.",
+        content: "This can't be undone, your app data will be rewriten.",
         buttonAcept: 'Import',
         buttonCancel: 'Cancel'
       },
