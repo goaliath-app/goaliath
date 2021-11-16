@@ -19,13 +19,10 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
   const [isLanguageDialogVisible, setLanguageDialogVisible] = React.useState(false);
   const [isImportDialogVisible, setImportDialogVisible] = React.useState(false);
   const [importedStateText, setImportedStateText] = React.useState('');
-  const [isSnackbarVisible, setSnackbarVisible] = React.useState(false)
-  const [snackbarValue, setSnackbarValue] = React.useState('')
+  const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
 
   const { t, i18n } = useTranslation()
 
-  const onToggleSnackBar = () => setSnackbarVisible(true);
-  const onDismissSnackBar = () => setSnackbarVisible(false);
 
   const changeDayStartHour = (JSDate) => {
     const dateTime = DateTime.fromJSDate(JSDate)
@@ -33,10 +30,9 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
     setDayStartHour(dateTime.toISO());
     
     //Snackbar
-    setSnackbarValue(dateTime.toFormat('T') > DateTime.now().toFormat('T')?
+    setSnackbarMessage(dateTime.toFormat('T') > DateTime.now().toFormat('T')?
      t('settings.yesterdaySnackbar', {startHour: dateTime.toFormat('T').toString()}) 
      : t('settings.todaySnackbar', {startHour: dateTime.toFormat('T').toString()}))
-    onToggleSnackBar()
   };
 
   const readFile = () => {
@@ -53,7 +49,11 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
   function importStateFromText(text){
     // TODO: dont break if file is bad formatted
     setImportDialogVisible(false)
-    const state = JSON.parse(text)
+    try {
+      const state = JSON.parse(text)
+    } catch(e) {
+      setSnackbarMessage("Import failed: wrong file format")
+    }
     importState(state)
   }
 
@@ -107,8 +107,6 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
           </Text>} />
       <Divider />
       
-      <Snackbar visible={isSnackbarVisible} onDismiss={onDismissSnackBar}>{snackbarValue}</Snackbar>
-
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="time"
@@ -140,6 +138,12 @@ const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, st
             </Dialog.Content>
         </Dialog>
       </Portal>
+
+      <Snackbar
+        visible={snackbarMessage != ""}
+        onDismiss={()=>setSnackbarMessage("")}
+        duration={5000}
+      >{snackbarMessage}</Snackbar>
 
     </View>
     
