@@ -20,7 +20,7 @@ const StatsScreen = ({ navigation }) => {
       <Header title={t('statsScreen.headerTitle')} left='hamburger' navigation={navigation} />
       <GoalSelector onGoalSelection={setSelectedGoal}/>
       <Divider style={{marginHorizontal: 8}}/>
-      <StatsPannel goalId={selectedGoal} />
+      <StatsPannel goalId={selectedGoal == "all"? null : selectedGoal} />
     </ScrollView>
   );
 }
@@ -40,7 +40,7 @@ const GoalSelector = ({onGoalSelection}) => {
   const [items, setItems] = useState(
     [ 
       ...goals.map( goal => ({label: goal.name, value: goal.id}) ),
-      {label: "All goals", value: null}
+      {label: "All goals", value: 'all'}
     ]
   );
 
