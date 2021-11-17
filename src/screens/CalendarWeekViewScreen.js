@@ -6,7 +6,7 @@ import {
 import { ScrollView, View } from 'react-native';
 import { List, Text } from 'react-native-paper';
 import { CalendarWeekItem, Checkbox, Header } from '../components';
-import { getWeekProgressString, getWeekActivityCompletionRatio, getWeekCompletionRatio } from '../activityHandler';
+import { getWeekProgressString, getWeekActivityCompletionRatio, getGoalWeekCompletionRatio } from '../activityHandler';
 import { useTranslation } from 'react-i18next';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { CalendarColor, GeneralColor } from '../styles/Colors';
@@ -47,7 +47,7 @@ const GoalWeekView = ({ goalId, date }) => {
 
   goalActivities.sort((a, b) => activityCompletionRatios[b.id] - activityCompletionRatios[a.id])
 
-  const goalCompletionRatio = useSelector(state => getWeekCompletionRatio(state, date, goalId))
+  const goalCompletionRatio = useSelector(state => getGoalWeekCompletionRatio(state, date, goalId))
   
   return (
     <View>
@@ -98,7 +98,7 @@ const CalendarWeekViewScreen = ({ route }) => {
 
   const goalsCompletionRatios = {}
   goals.forEach(goal => {
-    goalsCompletionRatios[goal.id] = getWeekCompletionRatio(state, date, goal.id)
+    goalsCompletionRatios[goal.id] = getGoalWeekCompletionRatio(state, date, goal.id)
   })
 
   goals.sort((a, b) => goalsCompletionRatios[b.id] - goalsCompletionRatios[a.id])

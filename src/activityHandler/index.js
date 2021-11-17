@@ -227,18 +227,11 @@ export function getWeekActivityCompletionRatio(state, activityId, date){
   }
 }
 
-export function getWeekCompletionRatio(state, date, goalId=null){
+function getActivitySetWeekCompletionRatio(state, activities, date){
   const weekEndDate = date.endOf("week")
 
   // get the number of active activities this week
   const dueActivities = []
-
-  let activities;
-  if(goalId != null){
-    activities = selectAllActiveActivitiesByGoalIdAndDate(state, goalId, weekEndDate)
-  }else{
-    activities = selectAllActiveActivitiesByDate(state, weekEndDate)
-  }
   
   activities.forEach( activity => {
     if( dueThisWeek(state, activity.id, weekEndDate) ){
@@ -259,6 +252,33 @@ export function getWeekCompletionRatio(state, date, goalId=null){
   }else{
     return completionAccumulator / dueActivities.length
   }
+}
+
+export function getGoalWeekCompletionRatio(state, date, goalId){
+  const weekEndDate = date.endOf("week")
+
+  const activities = selectAllActiveActivitiesByGoalIdAndDate(state, goalId, weekEndDate)
+
+  return getActivitySetWeekCompletionRatio(state, activities, date)
+}
+
+export function getWeekCompletionRatio(state, date){
+  const weekEndDate = date.endOf("week")
+
+  const activities = selectAllActiveActivitiesByDate(state, weekEndDate)
+
+  return getActivitySetWeekCompletionRatio(state, activities, date)
+}
+
+export function getFreeActivitiesWeekCompletionRatio(state, date){
+  const weekEndDate = date.endOf("week")
+
+  let activities = selectAllActiveActivitiesByDate(state, weekEndDate)
+  activities = activities.filter( activity => {
+    return usesSelectWeekliesScreen(state, activity.id)
+  })
+
+  return getActivitySetWeekCompletionRatio(state, activities, date)
 }
 
 function dueThisWeek(state, activityId, date){

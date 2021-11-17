@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { List, IconButton, Text } from 'react-native-paper'
 import * as Progress from 'react-native-progress';
 import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue } from '../util'
-import { toggleCompleted, startTodayTimer, stopTodayTimer } from '../redux'
+import { toggleCompleted, startTodayTimer, stopTodayTimer, selectAllActivities } from '../redux'
 import PlayFilledIcon from '../../assets/play-filled'
 import PlayOutlinedIcon from '../../assets/play-outlined'
 import PauseFilledIcon from '../../assets/pause-filled'
@@ -15,6 +15,8 @@ import { ActivityListItemColors } from '../styles/Colors'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import Checkbox from './Checkbox'
+import { useSelector } from 'react-redux';
+import { usesSelectWeekliesScreen, getFreeActivitiesWeekCompletionRatio } from '../activityHandler'
 
 
 export const ActivityListItem = ({ activity, entry, date, left, description }) => {
@@ -205,8 +207,15 @@ const legacy_ActivityListItem = ({
   );
 }
 
-export const SelectWeekliesListItem = ({checked, color='black', navigation}) => {
+export const SelectWeekliesListItem = ({ date, checked, color='black', navigation}) => {
   const { t, i18n } = useTranslation()
+
+  const state = useSelector((state) => state)
+  const activities = selectAllActivities(state)
+  const weekActivities = activities.filter( activity => usesSelectWeekliesScreen(state, activity.id) )
+
+  const weekActivitiesNumber = weekActivities.length
+  const weekProgress = getFreeActivitiesWeekCompletionRatio(state, date)
 
   return(
     <View style={{ backgroundColor: ActivityListItemColors.listItemBackground }}>
@@ -223,7 +232,7 @@ export const SelectWeekliesListItem = ({checked, color='black', navigation}) => 
         )}
         title={t('today.selectWeekliesTitle')}
         titleNumberOfLines={2}
-        // description={t('today.selectWeekliesDescription')}
+        description={t('today.selectWeekliesDescription', {weekActivitiesNumber: weekActivitiesNumber, weekProgress: Math.round(weekProgress * 100)})}
         onPress={() => {navigation.navigate('SelectWeeklyActivities')}}
       />
     </View>

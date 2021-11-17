@@ -74,7 +74,7 @@ const DayContent = ({ date }) => {
         <ActivityList data={pendingActivities} date={date} />
         <TaskList tasks={ pendingTasks } onTaskPress={task => {setSelectedTask(task)}} />
         { weekliesSelector=='unchecked' ?
-        <SelectWeekliesListItem checked={false} navigation={navigation}/>
+        <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
         : <></> }
         { tasksSelector == 'unchecked' ?
           <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
@@ -83,10 +83,10 @@ const DayContent = ({ date }) => {
         <ActivityList data={completedActivities} date={date} />
         <TaskList tasks={ completedTasks } onTaskPress={task => {setSelectedTask(task)}} />
         { weekliesSelector == 'checked' ?
-        <SelectWeekliesListItem checked={true} navigation={navigation}/>
+        <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
         : <></> }
         { weekliesSelector == 'allcompleted' ?
-        <SelectWeekliesListItem checked={true} navigation={navigation} color='grey'/>
+        <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color='grey'/>
         : <></> }
         { tasksSelector == 'checked' ?
           <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
