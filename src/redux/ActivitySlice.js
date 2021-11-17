@@ -149,6 +149,14 @@ export function archiveActivity(activityId){
   }
 }
 
+export function restoreActivity(activityId){
+  return function(dispatch, getState){
+    const activity = selectActivityById(getState(), activityId)
+    const restoredActivity = {...activity, archived: false}
+    dispatch(setActivity(restoredActivity))
+  }
+}
+
 export function changeActivityGoal(activityId, goalId){
   return function(dispatch, getState){
     const activity = selectActivityById(getState(), activityId)

@@ -1,20 +1,46 @@
 import React from 'react';
 import { View } from 'react-native'
-import { connect } from 'react-redux';
-import { Paragraph, Menu, Title, Divider, List } from 'react-native-paper';
+import { connect, useDispatch } from 'react-redux';
+import { Paragraph, Menu, Title, Divider, List, Card, Button } from 'react-native-paper';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon, ActivityBarChartPicker, ActivityCalendarHeatmap } from '../../components';
+import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon } from '../../components';
+import { useNavigation } from '@react-navigation/native';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTodayTimer, 
-  stopTodayTimer, upsertEntry, archiveActivity 
+  stopTodayTimer, upsertEntry, archiveActivity, restoreActivity
 } from '../../redux'
 import { isToday, isFuture } from '../../util'
 import { GeneralColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { GenericStats, StatsPannel, MoveToGoalDialog } from '../../components'
+import { StatsPannel, MoveToGoalDialog } from '../../components'
+
+const ArchivedWarning = ({ activity }) => {
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigation = useNavigation()
+
+  return (
+    activity.archived?
+      <>
+      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
+        <Card.Content>
+          <Title>{t("activityDetail.archivedWarning")}</Title>
+        </Card.Content>
+        <Card.Actions style={{alignSelf: 'center'}}>
+          <Button onPress={ () => {
+            dispatch(restoreActivity(activity.id))
+            navigation.goBack()
+          }}>{t("activityDetail.restoreButton")}</Button>
+        </Card.Actions>
+      </Card>
+      <Divider />
+      </>
+    : null
+  )
+}
 
 // TODO: use selectActivityByIdAndDate instead of selectActivityById
 const ActivityDetailScreen = ({ 
@@ -61,7 +87,7 @@ const ActivityDetailScreen = ({
   )
 
   const headerButtons =  (
-    date && !dateIsToday?
+    date && !dateIsToday || activity.archived ?
     null
     :
     <ThreeDotsMenu 
@@ -76,6 +102,7 @@ const ActivityDetailScreen = ({
     <View style={{flex:1,backgroundColor: GeneralColor.screenBackground}} >
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
       <KeyboardAwareScrollView style={{ backgroundColor: GeneralColor.background, flex: 1 }}>
+        <ArchivedWarning activity={activity} />
         {date && !dateIsToday? 
         <>
         <List.Item 

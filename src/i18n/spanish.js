@@ -18,6 +18,11 @@ const es= {
       title: 'Metas archivadas',
       empty: 'No hay ninguna meta archivada'
     },
+
+    archivedActivitiesScreen: {
+      title: 'Archivo: {{goalName}}',
+      empty: 'Esta meta no tiene actividades archivadas'
+    },
   
     deleteDialog: {
         delete: 'Archivar',
@@ -31,18 +36,20 @@ const es= {
     activityDetail: {
       threeDotsMenu: {
         editActivity: 'Editar actividad',
-        deleteActivity: 'Borrar actividad',
+        deleteActivity: 'Archivar actividad',
         changeGoal: "Mover a otra meta",
       },
       helpIconText: 'Estos son los detalles de una actividad pasada. Incluso si has modificado el objetivo o la frecuencia de la actividad, aquí podrás verla exactamente como fue ese día.',
       deleteDialog: {
-        title: '¿Borrar actividad?',
-        body: "Esta acción no puede deshacerse."
+        title: '¿Archivar actividad?',
+        body: "Podrás restaurarla desde el menu superior derecho de la pantalla de su meta."
       },
       changeGoalDialogTitle: "Seleccionar nueva meta",
       changeGoalDialogCancel: "Cancelar",
       changeGoalDialogBody: 'Meta actual: {{currentGoal}}',
-      changeGoalSnackbar: "Actividad movida a otra meta"
+      changeGoalSnackbar: "Actividad movida a otra meta",
+      archivedWarning: "Esta actividad está archivada",
+      restoreButton: "Restaurar actividad",
     },
   
     basicActivityInfo: {
@@ -142,6 +149,7 @@ const es= {
       threeDotsMenu: {
         editGoal: 'Editar meta',
         deleteGoal: 'Eliminar meta',
+        viewArchivedActivities: 'Ver actividades archivadas',
       },
       deleteDialog: {
         title: '¿Archivar meta?',

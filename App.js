@@ -16,7 +16,7 @@ import {
   ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen,
   OnboardingScreen, SelectWeeklyActivitiesScreen,
   AddTasksScreen, CalendarDayViewScreen, CalendarWeekViewScreen,
-  DayInCalendarScreen, StatsScreen, ArchivedGoalsScreen,
+  StatsScreen, ArchivedGoalsScreen, ArchivedActivitiesScreen
 } from './src/screens'
 import { Drawer as CustomDrawer } from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
@@ -46,6 +46,7 @@ const GoalsStack = () => (
     <Stack.Screen name='ActivityForm' component={ActivityFormScreen} />
     <Stack.Screen name='GoalForm' component={GoalFormScreen} />
     <Stack.Screen name='ArchivedGoals' component={ArchivedGoalsScreen} />
+    <Stack.Screen name='ArchivedActivities' component={ArchivedActivitiesScreen} />
   </Stack.Navigator>
 )
 

@@ -19,6 +19,11 @@ const en = {
       empty: 'There are no archived goals'
     },
 
+    archivedActivitiesScreen: {
+      title: 'Archive: {{goalName}}',
+      empty: 'This goal has no archived activities'
+    },
+
     deleteDialog: {
       delete: 'Archive',
       cancel: 'Cancel'
@@ -31,18 +36,20 @@ const en = {
     activityDetail: {
       threeDotsMenu: {
         editActivity: 'Edit activity',
-        deleteActivity: 'Delete activity',
+        deleteActivity: 'Archive activity',
         changeGoal: "Move to other goal",
       },
       helpIconText: 'These are the details of a past activity. Even if you have modified the activity goal or frequency, here you will see them as they were this specific day.',
       deleteDialog: {
-        title: 'Delete activity?',
-        body: "This can't be undone."
+        title: 'Archive activity?',
+        body: "You can restore it later from the top right menu of its goal."
       },
       changeGoalDialogTitle: "Select target goal",
       changeGoalDialogCancel: "Cancel",
       changeGoalDialogBody: 'Current goal: {{currentGoal}}',
-      changeGoalSnackbar: "Activity moved to other goal"
+      changeGoalSnackbar: "Activity moved to other goal",
+      archivedWarning: "This activity is archived",
+      restoreButton: "Restore activity",
     },
 
     basicActivityInfo: {
@@ -140,6 +147,7 @@ const en = {
       threeDotsMenu: {
         editGoal: 'Edit goal',
         deleteGoal: 'Archive goal',
+        viewArchivedActivities: 'View archived activities',
       },
       deleteDialog: {
         title: 'Archive goal?',

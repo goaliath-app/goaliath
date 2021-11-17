@@ -84,6 +84,10 @@ const GoalScreen = ({ activities, goal, navigation }) => {
         setMenuVisible(false)
         setDeleteDialogVisible(true)
         }} title={t('goal.threeDotsMenu.deleteGoal')}  />
+      <Menu.Item onPress={() => {
+        setMenuVisible(false)
+        navigation.navigate("ArchivedActivities", { goalId: goal.id })
+        }} title={t('goal.threeDotsMenu.viewArchivedActivities')}  />
     </>
   )
 
