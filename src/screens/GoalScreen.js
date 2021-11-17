@@ -1,18 +1,18 @@
 import React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { View, FlatList, Pressable, ScrollView } from 'react-native';
-import { List, Switch, Appbar, Menu, Paragraph, Divider, Title } from 'react-native-paper';
+import { List, Switch, Appbar, Menu, Paragraph, Divider, Button, Card, Title } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { Header, ThreeDotsMenu, DeleteDialog, InfoCard } from '../components';
-import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal } from '../redux'
+import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal, restoreGoal } from '../redux'
 import { hasSomethingToShow } from '../util'
 import { GeneralColor, GoalColor, HeaderColor } from '../styles/Colors';
 import { getFrequencyString } from '../activityHandler'
 
-const Activity = ({ name, active, id, activity }) => {
+const Activity = ({ name, active, id, activity, goal }) => {
   const navigation = useNavigation();
   const { t, i18 } = useTranslation();
   const dispatch = useDispatch();
@@ -28,6 +28,7 @@ const Activity = ({ name, active, id, activity }) => {
         titleNumberOfLines={2}
         right={() => (
           <Switch
+            disabled={goal.archived}
             onValueChange={() => dispatch(toggleActivity(id))} 
             value={active}
           />
@@ -37,6 +38,28 @@ const Activity = ({ name, active, id, activity }) => {
       <Divider />
     </View>
   );
+}
+
+const ArchivedWarning = ({ goal }) => {
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigation = useNavigation()
+
+  return (
+    goal.archived?
+      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
+        <Card.Content>
+          <Title>{t("goal.archivedWarning")}</Title>
+        </Card.Content>
+        <Card.Actions style={{alignSelf: 'center'}}>
+          <Button onPress={ () => {
+            dispatch(restoreGoal(goal.id))
+            navigation.goBack()
+          }}>{t("goal.restoreButton")}</Button>
+        </Card.Actions>
+      </Card>
+    : null
+  )
 }
 
 const GoalScreen = ({ activities, goal, navigation }) => {
@@ -51,31 +74,32 @@ const GoalScreen = ({ activities, goal, navigation }) => {
 
   const menuItems = (
     <>
-    <Menu.Item title={t('goal.threeDotsMenu.editGoal')} 
-      onPress={() => {
+      <Menu.Item title={t('goal.threeDotsMenu.editGoal')} 
+        onPress={() => {
+          setMenuVisible(false)
+          navigation.navigate('GoalForm', { id: goal.id } )
+        }}
+      />
+      <Menu.Item onPress={() => {
         setMenuVisible(false)
-        navigation.navigate('GoalForm', { id: goal.id } )
-      }}
-    />
-    <Menu.Item onPress={() => {
-      setMenuVisible(false)
-      setDeleteDialogVisible(true)
-      }} title={t('goal.threeDotsMenu.deleteGoal')}  />
+        setDeleteDialogVisible(true)
+        }} title={t('goal.threeDotsMenu.deleteGoal')}  />
     </>
   )
 
   const headerButtons = (
+    goal.archived? null :
     <>
-    <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
-        navigation.navigate('ActivityForm', { goalId: goal.id })
-      }}
-    />
-    <ThreeDotsMenu 
-      menuItems={menuItems} 
-      openMenu= {() => setMenuVisible(true)} 
-      closeMenu= {() => setMenuVisible(false)} 
-      visible={menuVisible} 
-    />
+      <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
+          navigation.navigate('ActivityForm', { goalId: goal.id })
+        }}
+      />
+      <ThreeDotsMenu 
+        menuItems={menuItems} 
+        openMenu= {() => setMenuVisible(true)} 
+        closeMenu= {() => setMenuVisible(false)} 
+        visible={menuVisible} 
+      />
     </>
   )
 
@@ -84,13 +108,16 @@ const GoalScreen = ({ activities, goal, navigation }) => {
       name={item.name}
       active={item.active}
       id={item.id}
-      activity={item} />
+      activity={item}
+      goal={goal} />
   )
 
   return (
     <>
       <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
         <Header title={goal.name} left='back' navigation={navigation} buttons={headerButtons}/>
+        {/* ArchivedWarning only shows if the goal is archived */}
+        <ArchivedWarning goal={goal}/>
         <View style={{ flex: 1 }}>
           <View style={{flexShrink: 1}}>
             {hasSomethingToShow(activities)?

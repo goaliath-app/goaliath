@@ -138,6 +138,14 @@ export function archiveGoal(goalId){
   }
 }
 
+export function restoreGoal(goalId){
+  return function(dispatch, getState){
+    const goal = selectGoalById(getState(), goalId)
+    const restoredGoal = {...goal, archived: false}
+    dispatch(setGoal(restoredGoal))
+  }
+}
+
 
 // SELECTORS
 export function selectGoalByIdAndDate(state, goalId, date){

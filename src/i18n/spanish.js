@@ -13,9 +13,14 @@ const es= {
         acept: 'OK'
       }
     },
+
+    archivedGoalsScreen: {
+      title: 'Metas archivadas',
+      empty: 'No hay ninguna meta archivada'
+    },
   
     deleteDialog: {
-        delete: 'Borrar',
+        delete: 'Archivar',
         cancel: 'Cancelar'
     },
   
@@ -139,16 +144,21 @@ const es= {
         deleteGoal: 'Eliminar meta',
       },
       deleteDialog: {
-        title: '¿Eliminar meta?',
-        body: "Se borrará la meta y todas sus actividades. No puede deshacerse.",
+        title: '¿Archivar meta?',
+        body: "Podrás ver la meta y restaurarla más adelante desde el menú de la pantalla de metas.",
       },
-      infoContent: "Esta meta no tiene ninguna actividad todavía.\n\nUna actividad es una tarea recurrente que puede tener o no un requisito de tiempo.\n\nPara cada meta deberías crear las actividades que vayan a ayudarte a completar la meta si las realizas con constancia.\n\nDiseñar tus actividades de esta forma te permitirán irte a la cama pensando: \"Hoy he hecho todo lo que tenía que hacer\"."
+      infoContent: "Esta meta no tiene ninguna actividad todavía.\n\nUna actividad es una tarea recurrente que puede tener o no un requisito de tiempo.\n\nPara cada meta deberías crear las actividades que vayan a ayudarte a completar la meta si las realizas con constancia.\n\nDiseñar tus actividades de esta forma te permitirán irte a la cama pensando: \"Hoy he hecho todo lo que tenía que hacer\".",
+      archivedWarning: "Esta meta está archivada",
+      restoreButton: "RESTAURAR META",
     },
 
     goals: {
         headerTitle: 'Metas',
         goalDescription: '{{activitiesNumber}} actividades activas',
-        infoContent: "No tienes metas todavía.\n\nLas metas son la base de Goaliath, son las cosas que quieres conseguir, dedicar tiempo o trabajar en ellas.\n\nPuedes crear una nueva meta pulsando el icono +."
+        infoContent: "No tienes metas todavía.\n\nLas metas son la base de Goaliath, son las cosas que quieres conseguir, dedicar tiempo o trabajar en ellas.\n\nPuedes crear una nueva meta pulsando el icono +.",
+        menu: {
+          viewArchived: "View archived goals",
+        },
     },
 
     settings: {

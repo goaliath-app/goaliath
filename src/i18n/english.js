@@ -14,8 +14,13 @@ const en = {
       }
     },
 
+    archivedGoalsScreen: {
+      title: 'Archived goals',
+      empty: 'There are no archived goals'
+    },
+
     deleteDialog: {
-      delete: 'Delete',
+      delete: 'Archive',
       cancel: 'Cancel'
     },
 
@@ -134,19 +139,24 @@ const en = {
       motivation: 'Motivation',
       threeDotsMenu: {
         editGoal: 'Edit goal',
-        deleteGoal: 'Delete goal',
+        deleteGoal: 'Archive goal',
       },
       deleteDialog: {
-        title: 'Delete goal?',
-        body: "This will delete all its activities. Can't be undone.",
+        title: 'Archive goal?',
+        body: "You can still view and restore it from the menu of the Goals screen.",
       },
-      infoContent: "This goal doesn't have any activities yet.\n\nAn activity is a recurring task that may have a time dedication requisite or not.\n\nFor each goal you should create the activities that you believe will make you reach the goal if done consistently.\n\nDesigning your activities this way will allow you to go to bed thinking: \"Today I've done all I had to\"."
+      infoContent: "This goal doesn't have any activities yet.\n\nAn activity is a recurring task that may have a time dedication requisite or not.\n\nFor each goal you should create the activities that you believe will make you reach the goal if done consistently.\n\nDesigning your activities this way will allow you to go to bed thinking: \"Today I've done all I had to\".",
+      archivedWarning: "This goal is archived",
+      restoreButton: "RESTORE GOAL"
     },
 
     goals: {
       headerTitle: 'Goals',
       goalDescription: '{{activitiesNumber}} active activities',
-      infoContent: 'You have no goals right now.\n\nGoals are the base of Goaliath. They are the meaningful things you want to achieve, work on or dedicate time to.\n\nYou can create a new goal pressing the + icon on the top right.'
+      infoContent: 'You have no goals right now.\n\nGoals are the base of Goaliath. They are the meaningful things you want to achieve, work on or dedicate time to.\n\nYou can create a new goal pressing the + icon on the top right.',
+      menu: {
+        viewArchived: "View archived goals",
+      }
     },
 
     settings: {

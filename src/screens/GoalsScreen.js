@@ -2,8 +2,8 @@ import React from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Appbar, Divider, Switch } from 'react-native-paper';
-import { Header, InfoCard } from '../components'
+import { List, Appbar, Divider, Switch, Menu } from 'react-native-paper';
+import { Header, InfoCard, ThreeDotsMenu } from '../components'
 import { selectAllGoals, toggleGoal } from '../redux'
 import { hasSomethingToShow } from '../util'
 import { useTranslation } from 'react-i18next'
@@ -43,6 +43,7 @@ const GoalListItem = ({ name, active, id }) => {
 
 const GoalsScreen = ({ navigation, goals }) => {
   const { t, i18n } = useTranslation()
+  const [menuVisible, setMenuVisible] = React.useState(false);
   
   const renderItem = ({ item }) => (
     <GoalListItem
@@ -52,13 +53,32 @@ const GoalsScreen = ({ navigation, goals }) => {
       motivation={item.motivation} 
     />
   )
+
+  const menuItems = (
+    <>
+    <Menu.Item title={t("goals.menu.viewArchived")} 
+      onPress={() => {
+        setMenuVisible(false)
+        navigation.navigate('ArchivedGoals')
+      }}
+    />
+    </>
+  )
       
   return(
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header 
         title={t('goals.headerTitle')} left='hamburger' navigation={navigation} 
         buttons={
-          <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} />
+        <>
+          <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color="white"/>
+          <ThreeDotsMenu 
+            menuItems={menuItems} 
+            openMenu= {() => setMenuVisible(true)} 
+            closeMenu= {() => setMenuVisible(false)} 
+            visible={menuVisible} 
+          />
+        </>
         }/>
       {hasSomethingToShow(goals)?
         <FlatList data={goals} renderItem={renderItem} />
