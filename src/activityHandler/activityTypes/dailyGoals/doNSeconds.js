@@ -74,13 +74,18 @@ const TodayScreenItem = ({ activityId, date }) => {
     if(entry.completed){
       leftSlot = <IconButton icon={() => <PauseFilledIcon />} onPress={onPressPause} />
     }else{
-      leftSlot = <IconButton icon={() => <PauseOutlinedIcon />} onPress={onPressPause} />
+      leftSlot = <IconButton icon={() => <PauseOutlinedIcon />} 
+                    onLongPress={() => {dispatch(toggleCompleted({date: date, id: activityId}));
+                                        dispatch(stopTodayTimer( activityId ))}}
+                    onPress={onPressPause} />
     }
   }else{
     if(entry.completed){
       leftSlot = <IconButton icon={() => <PlayFilledIcon />} onPress={onPressStart} />
     }else{
-      leftSlot = <IconButton icon={() => <PlayOutlinedIcon />} onPress={onPressStart} />
+      leftSlot = <IconButton icon={() => <PlayOutlinedIcon />} 
+                    onLongPress={() => dispatch(toggleCompleted({date: date, id: activityId}))}
+                    onPress={onPressStart} />
     }
   }
 
