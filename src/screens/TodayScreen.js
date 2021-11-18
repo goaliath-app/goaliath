@@ -7,9 +7,13 @@ import { Header } from '../components';
 import { getToday } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
+import { useFocusEffect } from '@react-navigation/native';
 import { Button, Text } from 'react-native-paper'
+import { updateLogs } from '../redux'
 
 const TodayScreen = ({ navigation }) => {
+  const dispatch = useDispatch()
+
   function updateDay(){
     const today = getToday(dayStartHour)
     if(date.toISO() != today.toISO()) {
@@ -38,6 +42,12 @@ const TodayScreen = ({ navigation }) => {
       }, 60000)
       return () => clearInterval(intervalId)  // this function executes before running the effect again
   }, [today.toISO(), date.toISO(), dayStartHour])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(updateLogs())
+    })
+  );
 
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>

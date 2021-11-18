@@ -74,13 +74,6 @@ const DayContent = ({ date }) => {
 
   const completedTasks = taskList.filter(task => task.completed)
   const pendingTasks = taskList.filter(task => !task.completed)
-
-  useEffect(() => 
-    {
-      if(timeStatus == 'today'){
-        dispatch(updateLogs())
-      }
-    }, [timeStatus, date.toISO(), today.toISO()])
   
   return (
     <View>
