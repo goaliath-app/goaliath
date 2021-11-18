@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
-import { Header, ThreeDotsMenu, DeleteDialog, InfoCard } from '../components';
+import { Header, ThreeDotsMenu, DeleteGoalDialog, InfoCard } from '../components';
 import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal, restoreGoal } from '../redux'
 import { hasSomethingToShow } from '../util'
 import { GeneralColor, GoalColor, HeaderColor } from '../styles/Colors';
@@ -158,16 +158,11 @@ const GoalScreen = ({ activities, goal, navigation }) => {
         </View>
       </View>
 
-      <DeleteDialog 
-        visible={deleteDialogVisible} 
-        setVisible={setDeleteDialogVisible} 
-        onDelete={()=>{
-          dispatch(archiveGoal(goal.id))
-          setDeleteDialogVisible(false)
-          navigation.goBack()
-        }}
-        title={t('goal.deleteDialog.title')}
-        body={t('goal.deleteDialog.body')}
+      <DeleteGoalDialog
+        visible={deleteDialogVisible}
+        onDismiss={() => setDeleteDialogVisible(false)} 
+        onDelete={() => navigation.goBack()}
+        goalId={goal.id}
       />
     </>
   )

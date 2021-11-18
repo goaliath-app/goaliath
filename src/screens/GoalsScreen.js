@@ -3,7 +3,9 @@ import { connect, useDispatch } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, Appbar, Divider, Switch, Menu } from 'react-native-paper';
-import { Header, InfoCard, ThreeDotsMenu } from '../components'
+import { Text, Paragraph, Portal, Snackbar, Dialog, Button } from 'react-native-paper'
+
+import { Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog } from '../components'
 import { selectAllGoals, toggleGoal } from '../redux'
 import { hasSomethingToShow } from '../util'
 import { useTranslation } from 'react-i18next'
@@ -14,6 +16,9 @@ import { selectAllActiveActivitiesByGoalIdAndDate, getTodaySelector } from '../r
 
 const GoalListItem = ({ name, active, id }) => {
   const { t, i18n } = useTranslation()
+
+  const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
+  const [ isDeleteDialogVisible, setDeleteDialogVisible ] = React.useState(false)
 
   const navigation = useNavigation();
 
@@ -26,6 +31,7 @@ const GoalListItem = ({ name, active, id }) => {
     <View>
       <List.Item 
         onPress={() => navigation.navigate('Goal', { goalId: id })}
+        onLongPress={() => setLongPressDialogVisible(true)}
         title={name}
         titleNumberOfLines={2}
         right={() => (
@@ -37,6 +43,36 @@ const GoalListItem = ({ name, active, id }) => {
         description={t('goals.goalDescription', {activitiesNumber: activities.length})}
       />
       <Divider />
+
+      {/* Long press menu */}
+      <Portal>
+        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+          <Dialog.Title>{name}</Dialog.Title>
+            <Dialog.Content>
+              <Divider />
+              <List.Item title={t("goals.longPressMenu.edit")} onPress={() => {
+                setLongPressDialogVisible(false)
+                navigation.navigate('GoalForm', { id: id } )
+              }} />
+              <Divider />
+              <List.Item title={t("goals.longPressMenu.archive")} onPress={() => {
+                setLongPressDialogVisible(false)
+                setDeleteDialogVisible(true)
+              }} />
+              <Divider />
+              <List.Item title={t("goals.longPressMenu.viewArchivedActivities")} onPress={() => {
+                setLongPressDialogVisible(false)
+                navigation.navigate("ArchivedActivities", { goalId: id })
+              }} />
+              <Divider />
+            </Dialog.Content>
+        </Dialog>
+      </Portal>
+
+      <DeleteGoalDialog 
+        visible={isDeleteDialogVisible} 
+        onDismiss={() => {setDeleteDialogVisible(false)}} 
+        goalId={id} />
     </View>
   );
 }

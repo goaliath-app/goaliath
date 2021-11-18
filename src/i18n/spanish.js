@@ -172,6 +172,11 @@ const es= {
         menu: {
           viewArchived: "View archived goals",
         },
+        longPressMenu: {
+          edit: "Editar",
+          archive: "Archivar",
+          viewArchivedActivities: "Ver actividades archivadas",
+        }
     },
 
     settings: {

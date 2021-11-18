@@ -169,6 +169,11 @@ const en = {
       infoContent: 'You have no goals right now.\n\nGoals are the base of Goaliath. They are the meaningful things you want to achieve, work on or dedicate time to.\n\nYou can create a new goal pressing the + icon on the top right.',
       menu: {
         viewArchived: "View archived goals",
+      },
+      longPressMenu: {
+        edit: "Edit",
+        archive: "Archive",
+        viewArchivedActivities: "View archived activities",
       }
     },
 

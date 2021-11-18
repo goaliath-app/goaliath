@@ -102,7 +102,7 @@ const DayContent = ({ date }) => {
       </ScrollView>
       <DeleteDialog 
         visible={selectedTask} 
-        setVisible={(value) => setSelectedTask(null)}
+        onDismiss={() => setSelectedTask(null)}
         onDelete={() => {
           dispatch(deleteTodayTask(selectedTask.id))
           setSelectedTask(null)

@@ -150,7 +150,7 @@ const ActivityDetailScreen = ({
 
       <DeleteDialog 
         visible={deleteDialogVisible} 
-        setVisible={setDeleteDialogVisible}
+        onDismiss={() => setDeleteDialogVisible(false)}
         onDelete={() => {
           archiveActivity(activity.id)
           setDeleteDialogVisible(false)
