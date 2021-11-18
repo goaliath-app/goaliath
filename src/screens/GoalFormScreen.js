@@ -47,7 +47,7 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
   return(
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header 
-        title={t('goalForm.headerTitle')} 
+        title={goal?.name? goal.name : t('goalForm.headerTitle')} 
         left='back' 
         navigation={navigation} 
         buttons={headerButtons} 
