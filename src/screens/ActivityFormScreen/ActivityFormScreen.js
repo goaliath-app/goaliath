@@ -261,7 +261,11 @@ const ActivityFormScreen = ({ route, navigation }) => {
         />
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
-        <Pressable style={{borderWidth: 1, margin: 20, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {setFrequencyVisible(true), setNoFrequencyError(false)}}>
+        <Pressable style={{borderWidth: 1, margin: 20, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {
+          Keyboard.dismiss()
+          setFrequencyVisible(true)
+          setNoFrequencyError(false)
+        }}>
           <Text style={{ fontSize: 16 }}>{!frequencySelector? t('activityForm.frequencyLabel')
             :frequencySelector=='daily'? t('activityForm.dialog.dailyTitle')
             :frequencySelector=='free'? t('activityForm.dialog.freeTitle')
