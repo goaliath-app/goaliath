@@ -7,6 +7,11 @@ const es= {
         }
     },
 
+    dayContent: {
+      futureWarningTitle: 'Este es un día futuro',
+      futureWarningSubtitle: 'Mañana es mañana.\nPreocupaciones futuras tienen curas futuras,\nY debemos de ocuparnos de hoy.\n — Sofocles',
+    },
+
     dateWheelPicker: {
       dialog: {
         cancel: 'Cancelar',

@@ -7,6 +7,11 @@ const en = {
       }
     },
 
+    dayContent: {
+      futureWarningTitle: 'This is a future day',
+      futureWarningSubtitle: 'Tomorrow is tomorrow.\nFuture cares have future cures,\nAnd we must mind today.\n — Sofocles',
+    },
+
     dateWheelPicker: {
       dialog: {
         cancel: 'Cancel',
