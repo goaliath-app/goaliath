@@ -163,6 +163,11 @@ const es= {
       infoContent: "Esta meta no tiene ninguna actividad todavía.\n\nUna actividad es una tarea recurrente que puede tener o no un requisito de tiempo.\n\nPara cada meta deberías crear las actividades que vayan a ayudarte a completar la meta si las realizas con constancia.\n\nDiseñar tus actividades de esta forma te permitirán irte a la cama pensando: \"Hoy he hecho todo lo que tenía que hacer\".",
       archivedWarning: "Esta meta está archivada",
       restoreButton: "RESTAURAR META",
+      longPressMenu: {
+        edit: "Editar",
+        archive: "Archivar",
+        move: "Mover a otra meta",
+      }
     },
 
     goals: {

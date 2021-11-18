@@ -160,7 +160,12 @@ const en = {
       },
       infoContent: "This goal doesn't have any activities yet.\n\nAn activity is a recurring task that may have a time dedication requisite or not.\n\nFor each goal you should create the activities that you believe will make you reach the goal if done consistently.\n\nDesigning your activities this way will allow you to go to bed thinking: \"Today I've done all I had to\".",
       archivedWarning: "This goal is archived",
-      restoreButton: "RESTORE GOAL"
+      restoreButton: "RESTORE GOAL",
+      longPressMenu: {
+        edit: "Edit",
+        archive: "Archive",
+        move: "Move to another goal",
+      }
     },
 
     goals: {

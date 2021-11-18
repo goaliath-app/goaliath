@@ -2,11 +2,12 @@ import React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { View, FlatList, Pressable, ScrollView } from 'react-native';
 import { List, Switch, Appbar, Menu, Paragraph, Divider, Button, Card, Title } from 'react-native-paper';
+import { Portal, Dialog } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
-import { Header, ThreeDotsMenu, DeleteGoalDialog, InfoCard } from '../components';
+import { Header, ThreeDotsMenu, DeleteGoalDialog, InfoCard, DeleteActivityDialog, MoveToGoalDialog } from '../components';
 import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal, restoreGoal } from '../redux'
 import { hasSomethingToShow } from '../util'
 import { GeneralColor, GoalColor, HeaderColor } from '../styles/Colors';
@@ -17,6 +18,10 @@ const Activity = ({ name, active, id, activity, goal }) => {
   const { t, i18 } = useTranslation();
   const dispatch = useDispatch();
 
+  const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
+  const [ isDeleteDialogVisible, setDeleteDialogVisible ] = React.useState(false)
+  const [ isMoveToGoalDialogVisible, setMoveToGoalDialogVisible ] = React.useState(false)
+
   const frequencyString = useSelector((state) => getFrequencyString(state, activity.id, t))
 
   return (
@@ -24,6 +29,7 @@ const Activity = ({ name, active, id, activity, goal }) => {
       <List.Item
         style={{paddingTop: 5}}
         onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
+        onLongPress={() => setLongPressDialogVisible(true)}
         title={name}
         titleNumberOfLines={2}
         right={() => (
@@ -36,6 +42,43 @@ const Activity = ({ name, active, id, activity, goal }) => {
         description={frequencyString} 
       />
       <Divider />
+
+      {/* Long press menu */}
+      <Portal>
+        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+          <Dialog.Title>{name}</Dialog.Title>
+            <Dialog.Content>
+              <Divider />
+              <List.Item title={t("goal.longPressMenu.edit")} onPress={() => {
+                setLongPressDialogVisible(false)
+                navigation.navigate('ActivityForm', { activityId: id } )
+              }} />
+              <Divider />
+              <List.Item title={t("goal.longPressMenu.archive")} onPress={() => {
+                setLongPressDialogVisible(false)
+                setDeleteDialogVisible(true)
+              }} />
+              <Divider />
+              <List.Item title={t("goal.longPressMenu.move")} onPress={() => {
+                setLongPressDialogVisible(false)
+                setMoveToGoalDialogVisible(true)
+              }} />
+              <Divider />
+            </Dialog.Content>
+        </Dialog>
+      </Portal>
+
+      <DeleteActivityDialog
+        visible={isDeleteDialogVisible}
+        onDismiss={() => setDeleteDialogVisible(false)}
+        activityId={activity.id}
+      />
+
+      <MoveToGoalDialog 
+        visible={isMoveToGoalDialogVisible} 
+        setVisible={setMoveToGoalDialogVisible} 
+        activityId={activity.id} 
+      />
     </View>
   );
 }

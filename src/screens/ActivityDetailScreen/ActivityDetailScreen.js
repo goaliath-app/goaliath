@@ -4,7 +4,7 @@ import { connect, useDispatch } from 'react-redux';
 import { Paragraph, Menu, Title, Divider, List, Card, Button } from 'react-native-paper';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon } from '../../components';
+import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon, DeleteActivityDialog } from '../../components';
 import { useNavigation } from '@react-navigation/native';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTodayTimer, 
@@ -148,16 +148,13 @@ const ActivityDetailScreen = ({
         <StatsPannel activityId={activity.id} />
       </KeyboardAwareScrollView>
 
-      <DeleteDialog 
-        visible={deleteDialogVisible} 
+      <DeleteActivityDialog
+        visible={deleteDialogVisible}
         onDismiss={() => setDeleteDialogVisible(false)}
         onDelete={() => {
-          archiveActivity(activity.id)
-          setDeleteDialogVisible(false)
           navigation.goBack()
         }}
-        title={t('activityDetail.deleteDialog.title')}
-        body={t('activityDetail.deleteDialog.body')}
+        activityId={activity.id}
       />
 
       <MoveToGoalDialog 
