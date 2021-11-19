@@ -20,6 +20,8 @@ const ActivityWeekView = ({ activityId, date }) => {
   const { t, i18n } = useTranslation()
   const WeekProgress = useSelector((state) => getWeekProgressString(state, activityId, date, t))
 
+  const navigation = useNavigation()
+
   return(
     <View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, paddingVertical: 10 }}>
@@ -28,7 +30,7 @@ const ActivityWeekView = ({ activityId, date }) => {
       </View>
       <View style={{ paddingHorizontal: 20 }}>
         <CalendarWeekItem  
-          activityId={activityId} date={date} showDayNumbers={false} showWeekProgress={true} softTodayHighlight={true} />
+          activityId={activityId} date={date} showDayNumbers={false} showWeekProgress={true} softTodayHighlight={true} onDayPress={dayDate => navigation.navigate('ActivityDetail', {activityId, date: dayDate.toISO()})}/>
       </View>
     </View>
   )
