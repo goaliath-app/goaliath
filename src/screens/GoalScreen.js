@@ -1,14 +1,13 @@
 import React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { View, FlatList, Pressable, ScrollView } from 'react-native';
-import { List, Switch, Appbar, Menu, Paragraph, Divider, Button, Card, Title } from 'react-native-paper';
-import { Portal, Dialog } from 'react-native-paper'
+import { List, Switch, Appbar, Menu, Paragraph, Divider, Button, Card, Title, Portal, Dialog } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { Header, ThreeDotsMenu, DeleteGoalDialog, InfoCard, DeleteActivityDialog, MoveToGoalDialog } from '../components';
-import { selectAllActivities, selectGoalById, toggleActivity, archiveGoal, restoreGoal } from '../redux'
+import { selectAllActivities, selectGoalById, toggleActivity, restoreGoal } from '../redux'
 import { hasSomethingToShow } from '../util'
 import { GeneralColor, GoalColor, HeaderColor } from '../styles/Colors';
 import { getFrequencyString } from '../activityHandler'

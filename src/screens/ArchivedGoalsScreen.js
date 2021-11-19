@@ -2,22 +2,25 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Divider, Switch } from 'react-native-paper';
+import { List, Switch, Divider, Portal, Dialog } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
-import { selectAllGoals, toggleGoal } from '../redux'
+import { selectAllGoals, toggleGoal, restoreGoal } from '../redux'
 import { GeneralColor } from '../styles/Colors';
 import { Header, InfoCard, } from '../components'
 
 
 const ArchivedGoalListItem = ({ name, active, id }) => {
+  const { t, i18 } = useTranslation();
   const navigation = useNavigation();
-
   const dispatch = useDispatch();
+
+  const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
 
   return (
     <View>
       <List.Item 
         onPress={() => navigation.navigate('Goal', { goalId: id })}
+        onLongPress={() => setLongPressDialogVisible(true)}
         title={name}
         right={() => (
           <Switch 
@@ -28,6 +31,21 @@ const ArchivedGoalListItem = ({ name, active, id }) => {
         )}
       />
       <Divider />
+
+      {/* Long press menu */}
+      <Portal>
+        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+          <Dialog.Title>{name}</Dialog.Title>
+            <Dialog.Content>
+              <Divider />
+              <List.Item title={t("archivedGoalsScreen.longPressMenu.restore")} onPress={() => {
+                dispatch(restoreGoal(id))
+                setLongPressDialogVisible(false)
+              }} />
+              <Divider />
+            </Dialog.Content>
+        </Dialog>
+      </Portal>
     </View>
   );
 }

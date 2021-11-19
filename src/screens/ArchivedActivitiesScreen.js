@@ -1,17 +1,20 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { View, FlatList } from 'react-native';
-import { List, Switch, Divider } from 'react-native-paper';
+import { List, Switch, Divider, Portal, Dialog } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next'
 import { Header, InfoCard } from '../components';
-import { selectAllActivities, selectGoalById } from '../redux'
+import { selectAllActivities, selectGoalById, restoreActivity } from '../redux'
 import { GeneralColor } from '../styles/Colors';
 import { getFrequencyString } from '../activityHandler'
 
 const Activity = ({ name, active, id, activity, goal }) => {
   const navigation = useNavigation();
   const { t, i18 } = useTranslation();
+  const dispatch = useDispatch();
+
+  const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
 
   const frequencyString = useSelector((state) => getFrequencyString(state, activity.id, t))
 
@@ -19,6 +22,7 @@ const Activity = ({ name, active, id, activity, goal }) => {
     <View>
       <List.Item
         style={{paddingTop: 5}}
+        onLongPress={() => setLongPressDialogVisible(true)}
         onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
         title={name}
         right={() => (
@@ -30,6 +34,21 @@ const Activity = ({ name, active, id, activity, goal }) => {
         description={frequencyString} 
       />
       <Divider />
+
+      {/* Long press menu */}
+      <Portal>
+        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+          <Dialog.Title>{name}</Dialog.Title>
+            <Dialog.Content>
+              <Divider />
+              <List.Item title={t("archivedActivitiesScreen.longPressMenu.restore")} onPress={() => {
+                dispatch(restoreActivity(activity.id))
+                setLongPressDialogVisible(false)
+              }} />
+              <Divider />
+            </Dialog.Content>
+        </Dialog>
+      </Portal>
     </View>
   );
 }

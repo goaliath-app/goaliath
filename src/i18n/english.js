@@ -21,12 +21,18 @@ const en = {
 
     archivedGoalsScreen: {
       title: 'Archived goals',
-      empty: 'There are no archived goals'
+      empty: 'There are no archived goals',
+      longPressMenu: {
+        restore: "Restore goal"
+      }
     },
 
     archivedActivitiesScreen: {
       title: 'Archive: {{goalName}}',
-      empty: 'This goal has no archived activities'
+      empty: 'This goal has no archived activities',
+      longPressMenu: {
+        restore: "Restore activity"
+      }
     },
 
     deleteDialog: {

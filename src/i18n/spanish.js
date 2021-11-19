@@ -21,12 +21,18 @@ const es= {
 
     archivedGoalsScreen: {
       title: 'Metas archivadas',
-      empty: 'No hay ninguna meta archivada'
+      empty: 'No hay ninguna meta archivada',
+      longPressMenu: {
+        restore: "Restaurar meta"
+      }
     },
 
     archivedActivitiesScreen: {
       title: 'Archivo: {{goalName}}',
-      empty: 'Esta meta no tiene actividades archivadas'
+      empty: 'Esta meta no tiene actividades archivadas',
+      longPressMenu: {
+        restore: "Restaurar actividad"
+      }
     },
   
     deleteDialog: {
