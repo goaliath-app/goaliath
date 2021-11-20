@@ -123,7 +123,7 @@ const en = {
         header: '{{month}} {{day}}, {{year}}'
       },
       weekView: {
-        header: 'Week from {{weekStartDate}} to {{weekEndDate}}',
+        header: '{{weekStartDate}} - {{weekEndDate}} {{year}}',
         sortByGoal: 'Sort by goal',
         sortByActivity: 'Sort by activity'
       },
@@ -246,17 +246,23 @@ const en = {
     activityHandler: {
       activityTypes: {
         doNSecondsEachWeek: {
-          frequencyString: '{{expressionValue}} {{expressionUnit}} per week'
+          frequencyString: '{{expressionValue}} {{expressionUnit}} per week',
+          completed: 'Completed',
+          secondsLeft: '{{timeExprValue}} {{timeExprLocaleUnit}} left'
         },
         doNTimesEachWeek: {
-          frequencyString: '{{repetitions}} repetitions each week'
+          frequencyString: '{{repetitions}} repetitions each week',
+          timesLeft: '{{repetitionsLeft}} repetitions left',
+          completed: 'Completed'
         },
         doFixedDays: {
           everyDayFrequencyString: 'every day',
           frequencyString: 'on {{daysOfWeek}}',
         },
         doNDaysEachWeek: {
-          frequencyString: '{{days}} days each week'
+          frequencyString: '{{days}} days each week',
+          completed: 'Completed',
+          daysLeft: '{{daysLeft}} days left'
         }
       },
       dailyGoals: {

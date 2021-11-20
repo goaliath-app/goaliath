@@ -167,7 +167,8 @@ function getWeekProgressString(state, activityId, date, t){
   
  // calculations
   const repsLeft = weeklyRepsGoal - repetitionsCount
-  return `${repsLeft} of ${weeklyRepsGoal} repetitions remaining`
+
+  return (repsLeft == 0 ? t('activityHandler.activityTypes.doNDaysEachWeek.completed') : t('activityHandler.activityTypes.doNTimesEachWeek.timesLeft', { repetitionsLeft: repsLeft }))
 }
 
 function getDayActivityCompletionRatio(state, activityId, date){

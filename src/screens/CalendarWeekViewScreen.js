@@ -25,8 +25,8 @@ const ActivityWeekView = ({ activityId, date }) => {
   return(
     <View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, paddingVertical: 10 }}>
-        <Text style={{ fontWeight: 'bold' }}>{activity.name}</Text>
-        <Text>{WeekProgress}</Text>
+        <Text style={{ flex: 1, fontWeight: 'bold' }}>{activity.name}</Text>
+        <Text style={{paddingLeft: 10}}>{WeekProgress}</Text>
       </View>
       <View style={{ paddingHorizontal: 20 }}>
         <CalendarWeekItem  
@@ -74,7 +74,7 @@ function headerTitle(date, t){
   const weekStart = date.startOf("week")
   const weekEnd = date.endOf("week")
 
-  return t('calendar.weekView.header', {weekStartDate: dayLabel(weekStart, t), weekEndDate: dayLabel(weekEnd, t) })
+  return t('calendar.weekView.header', {weekStartDate: dayLabel(weekStart, t), weekEndDate: dayLabel(weekEnd, t), year: date.toFormat('yyyy') })
 }
 
 function dayLabel(date, t){

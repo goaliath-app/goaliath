@@ -213,7 +213,7 @@ function getWeekProgressString(state, activityId, date, t){
   let timeLeft = timeTarget.minus(weeklyTime)
   timeLeft = timeLeft.as('seconds') >= 0? timeLeft : Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
   const timeExpr = getPreferedExpression(timeLeft, t)
-  return t('weeklyActivities.timeLeft', {timeExprValue: timeExpr.value, timeExprLocaleUnit: timeExpr.localeUnit})
+  return (timeExpr.value==0? t('activityHandler.activityTypes.doNSecondsEachWeek.completed') : t('activityHandler.activityTypes.doNSecondsEachWeek.secondsLeft', {timeExprValue: timeExpr.value, timeExprLocaleUnit: timeExpr.localeUnit}))
 
 }
 

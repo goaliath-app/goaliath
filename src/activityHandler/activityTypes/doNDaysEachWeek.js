@@ -21,7 +21,7 @@ function getWeekProgressString(state, activityId, date, t){
   const { daysDoneCount } = useSelector((state) => getWeeklyStats(state, date, activityId))
 
   const daysLeft = activity.params.days - daysDoneCount
-  return t('weeklyActivities.daysLeft', {daysLeft})
+  return (daysLeft == 0 ? t('activityHandler.activityTypes.doNDaysEachWeek.completed') : t('activityHandler.activityTypes.doNDaysEachWeek.daysLeft', {daysLeft}))
 }
 
 function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){

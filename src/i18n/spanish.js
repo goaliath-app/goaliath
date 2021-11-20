@@ -125,7 +125,7 @@ const es= {
           header: '{{day}} de {{month}} , {{year}}'
         },
         weekView: {
-          header: 'Semana del {{weekStartDate}} al {{weekEndDate}}',
+          header: '{{weekStartDate}} - {{weekEndDate}} {{year}}',
           sortByGoal: 'Ordenar por meta',
           sortByActivity: 'Ordenar por actividad'
         },
@@ -248,17 +248,23 @@ const es= {
     activityHandler: {
       activityTypes: {
         doNSecondsEachWeek: {
-          frequencyString: '{{expressionValue}} {{expressionUnit}} a la semana'
+          frequencyString: '{{expressionValue}} {{expressionUnit}} a la semana',
+          completed: 'Completada',
+          secondsLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}'
         },
         doNTimesEachWeek: {
-          frequencyString: '{{repetitions}} repeticiones a la semana'
+          frequencyString: '{{repetitions}} repeticiones a la semana',
+          timesLeft: 'Quedan {{repetitionsLeft}} repeticiones',
+          completed: 'Completada'
         },
         doFixedDays: {
           everyDayFrequencyString: 'cada día',
           frequencyString: 'los {{daysOfWeek}}',
         },
         doNDaysEachWeek: {
-          frequencyString: '{{days}} días a la semana'
+          frequencyString: '{{days}} días a la semana',
+          completed: 'Completada',
+          daysLeft: 'Quedan {{daysLeft}} días'
         }
       },
       dailyGoals: {
