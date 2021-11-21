@@ -198,7 +198,7 @@ export function archiveOrDeleteEntry(date, entryId){
   }
 }
 
-export function createOrUnarchiveEntry(date, activityId, extraData = {}){
+export function createOrUnarchiveEntry(date, activityId){
   /* creates an entry in specified day for the chosen activity if it does not exist.
   If it exists and is archived, unarchives it. */
   return function(dispatch, getState){
@@ -209,7 +209,7 @@ export function createOrUnarchiveEntry(date, activityId, extraData = {}){
       dispatch(upsertEntry({ date, entry: { ...entry, archived: false }}))
     }else if(!entry){
       const activity = selectActivityById(state, activityId)
-      const entry = { ...newEntry(activity), ...extraData, date }
+      const entry = { ...newEntry(activity), date }
       dispatch(addEntry({ date, entry }))
     }
   }

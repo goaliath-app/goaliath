@@ -66,6 +66,10 @@ const TodayScreenItem = ({ activityId, date }) => {
   )
 }
 
+function usesRepetitions(state, activityId, date){
+  return true
+}
+
 function getFrequencyString(state, activityId, t, date=null){
   const activity = selectActivityByIdAndDate(state, activityId, date)
   const repetitions = activity.params.dailyGoal.params.repetitions
@@ -92,4 +96,9 @@ function getDayActivityCompletionRatio(state, activityId, date){
   }
 }
 
-export default { TodayScreenItem, getFrequencyString, getDayActivityCompletionRatio }
+export default { 
+  TodayScreenItem, 
+  getFrequencyString,
+  getDayActivityCompletionRatio,
+  usesRepetitions
+}

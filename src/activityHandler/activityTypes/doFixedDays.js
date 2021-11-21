@@ -21,6 +21,17 @@ function updateEntryThunk( activityId, date ){
   }
 }
 
+function usesRepetitions(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
+
+  if(dailyGoal.usesRepetitions){
+    return dailyGoal.usesRepetitions(state, activityId, date)
+  }else{
+    return false
+  }
+}
+
 const TodayScreenItem = ({ activityId, date }) => {
   const activity = useSelector( state => selectActivityByIdAndDate(state, activityId, date) )
 
@@ -141,4 +152,5 @@ export default {
   getWeekProgressString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
+  usesRepetitions
 }

@@ -14,7 +14,7 @@ import { ActivityListItem, DoubleProgressBar } from '../../../components'
 // addEntryThunk to add the repetitions field to entries of this activity type
 function addEntryThunk( activityId, date ){
   return (dispatch, getState) => {
-    dispatch(createOrUnarchiveEntry(date, activityId, { repetitions: [] }))
+    dispatch(createOrUnarchiveEntry(date, activityId))
   }
 }
 

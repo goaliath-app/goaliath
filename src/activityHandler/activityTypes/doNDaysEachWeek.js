@@ -16,6 +16,17 @@ const TodayScreenItem = ({ activityId, date }) => {
   return <DailyGoalTodayScreenItem activityId={activityId} date={date} />
 }
 
+function usesRepetitions(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
+
+  if(dailyGoal.usesRepetitions){
+    return dailyGoal.usesRepetitions(state, activityId, date)
+  }else{
+    return false
+  }
+}
+
 function getWeekProgressString(state, activityId, date, t){
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   const { daysDoneCount } = useSelector((state) => getWeeklyStats(state, date, activityId))
@@ -165,6 +176,7 @@ export default {
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
   getWeekProgressString,
+  usesRepetitions,
 }
 
 function isWeekCompleted( state, activityId, date ){

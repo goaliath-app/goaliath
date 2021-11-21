@@ -69,7 +69,8 @@ export function getPreferedExpression(duration, t){
 export function newEntry(activity){
   return(
     {
-      intervals: [], 
+      intervals: [],
+      repetitions: [],
       completed: null, 
       id: activity.id,
       archived: false

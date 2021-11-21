@@ -68,6 +68,10 @@ const TodayScreenItem = ({ activityId, date }) => {
   )
 }
 
+function usesRepetitions(state, activityId, date){
+  return true
+}
+
 function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){
   // misc. hooks
   const { t, i18n } = useTranslation()
@@ -143,7 +147,7 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
 // addEntryThunk to add the repetitions field to entries of this activity type
 function addEntryThunk( activityId, date ){
   return (dispatch, getState) => {
-    dispatch(createOrUnarchiveEntry(date, activityId, { repetitions: [] }))
+    dispatch(createOrUnarchiveEntry(date, activityId))
   }
 }
 
@@ -222,7 +226,8 @@ export default {
   getFrequencyString,
   getWeekProgressString,
   getDayActivityCompletionRatio,
-  getWeekActivityCompletionRatio
+  getWeekActivityCompletionRatio,
+  usesRepetitions
   // WeekView,
 }
 

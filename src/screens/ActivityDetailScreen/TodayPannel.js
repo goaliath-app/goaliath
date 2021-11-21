@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { View } from 'react-native'
 import { Button, List, Checkbox, Divider, Paragraph, TextInput } from 'react-native-paper';
 import { TimeInput } from '../../components';
@@ -8,6 +8,7 @@ import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
 import { TodayPannelColor } from '../../styles/Colors';
 import { setRepetitions } from './../../redux'
+import { usesRepetitions } from '../../activityHandler'
 
 const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour }) => {
     React.useEffect(() => {
@@ -32,6 +33,8 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
     const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
 
     const dispatch = useDispatch()
+
+    const showRepetitions = useSelector(state => usesRepetitions(state, entry.id, date))
     
     function updateTotalTime(seconds){
       const newInterval = dateIsToday?{
@@ -66,7 +69,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
             </View>
           )}
         />
-        {entry.repetitions !== undefined ?
+        {showRepetitions ?
           <View>
             <List.Item title={t('todayPannel.repetitions')} />
             <View style={{ alignItems:'center' }}>

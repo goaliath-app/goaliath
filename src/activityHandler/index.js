@@ -339,3 +339,19 @@ export function dueToday(state, activityId, date){
     return false
   }
 }
+
+export function usesRepetitions(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  
+  if(!activity){
+    return false
+  }
+
+  const activityType = activityTypes[activity.type]
+    
+  if(activityType.usesRepetitions){
+    return activityType.usesRepetitions(state, activityId, date)
+  }else{
+    return false
+  }
+}
