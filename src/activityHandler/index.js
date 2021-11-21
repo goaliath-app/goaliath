@@ -44,11 +44,13 @@ export const TodayScreenItem = ({ activityId, date }) => {
 }
 
 export function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){
+  const isActivityActive = useSelector( state => isActiveSelector(state, activity.id, today) )
+
   const activityType = activityTypes[activity.type]
   const ActivityTypeSelectWeekliesItemDue = activityType.SelectWeekliesItemDue
 
   return (
-    ActivityTypeSelectWeekliesItemDue?
+    isActivityActive && ActivityTypeSelectWeekliesItemDue?
       <ActivityTypeSelectWeekliesItemDue activity={activity} today={today} isChecked={isChecked} onCheckboxPress={onCheckboxPress} isSelected={isSelected} onPress={onPress} />
       :
       null
@@ -56,11 +58,13 @@ export function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPr
 }
 
 export function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
+  const isActivityActive = useSelector( state => isActiveSelector(state, activity.id, today) )
+
   const activityType = activityTypes[activity.type]
   const ActivityTypeSelectWeekliesItemCompleted = activityType.SelectWeekliesItemCompleted
 
   return (
-    ActivityTypeSelectWeekliesItemCompleted?
+    isActivityActive && ActivityTypeSelectWeekliesItemCompleted?
       <ActivityTypeSelectWeekliesItemCompleted activity={activity} today={today} isSelected={isSelected} onPress={onPress} />
       :
       null
