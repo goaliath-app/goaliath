@@ -139,8 +139,16 @@ function getFrequencyString(state, activityId, t, date=null){
 
 function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate(state, activityId, date)
+  
+  // getWeekActivityCompletionRatio can call this function on an activity
+  // that is not of type 'doFixedDays', so we need to check if the activity
+  // has a dailyGoal
+  if(!activity.params.dailyGoal){
+    return 0
+  }
+  
   const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
-
+  
   return dailyGoal.getDayActivityCompletionRatio(state, activityId, date)
 }
 
