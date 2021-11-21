@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { 
   selectActivityById, selectEntryByActivityIdAndDate, toggleCompleted, 
   stopTodayTimer, startTodayTimer, selectActivityByIdAndDate, getWeeklyStats, 
-  getTodaySelector 
+  getTodaySelector, isActiveSelector,
 } from '../../redux'
 import { isActivityRunning, getPreferedExpression, getTodayTime, roundValue } from '../../util'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
@@ -237,6 +237,18 @@ function getDayActivityCompletionRatio(state, activityId, date){
   }
 }
 
+function updateEntryThunk( activityId, date ){
+  return function(dispatch, getState){
+    const state = getState()
+    const isActive = isActiveSelector(state, activityId, date)
+      
+    // if activity is active and this day is one of the selected days of the week
+    if( !isActive ){
+      dispatch( archiveOrDeleteEntry(date, activityId) )
+    }
+  }
+}
+
 function getWeekActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate(state, activityId, date)
   const weeklySecondsGoal = activity.params.seconds
@@ -269,6 +281,7 @@ export default {
   getWeekProgressString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
+  updateEntryThunk,
 }
 
 function isWeekCompleted( state, activityId, date ){

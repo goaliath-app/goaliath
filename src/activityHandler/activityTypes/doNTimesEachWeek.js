@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { 
   selectEntryByActivityIdAndDate, createOrUnarchiveEntry, toggleCompleted, 
   selectActivityByIdAndDate, getWeeklyStats, getTodaySelector, setRepetitions,
+  isActiveSelector,
 } from '../../redux'
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
@@ -175,6 +176,18 @@ function getWeekProgressString(state, activityId, date, t){
   return (repsLeft == 0 ? t('activityHandler.activityTypes.doNDaysEachWeek.completed') : t('activityHandler.activityTypes.doNTimesEachWeek.timesLeft', { repetitionsLeft: repsLeft }))
 }
 
+function updateEntryThunk( activityId, date ){
+  return function(dispatch, getState){
+    const state = getState()
+    const isActive = isActiveSelector(state, activityId, date)
+      
+    // if activity is active and this day is one of the selected days of the week
+    if( !isActive ){
+      dispatch( archiveOrDeleteEntry(date, activityId) )
+    }
+  }
+}
+
 function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate( state, activityId, date )
   const entry = selectEntryByActivityIdAndDate(state, activityId, date)
@@ -227,7 +240,8 @@ export default {
   getWeekProgressString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
-  usesRepetitions
+  usesRepetitions,
+  updateEntryThunk,
   // WeekView,
 }
 

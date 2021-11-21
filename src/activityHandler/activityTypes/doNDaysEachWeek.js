@@ -1,7 +1,10 @@
 import React from 'react';
 import { Text } from 'react-native-paper'
 import { useSelector } from 'react-redux'
-import { selectActivityById, selectActivityByIdAndDate, getWeeklyStats, selectEntryByActivityIdAndDate } from '../../redux'
+import { 
+  selectActivityById, selectActivityByIdAndDate, getWeeklyStats, 
+  selectEntryByActivityIdAndDate, isActiveSelector,
+} from '../../redux'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import dailyGoals from './dailyGoals'
 import { useTranslation } from 'react-i18next';
@@ -137,6 +140,18 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
+function updateEntryThunk( activityId, date ){
+  return function(dispatch, getState){
+    const state = getState()
+    const isActive = isActiveSelector(state, activityId, date)
+      
+    // if activity is active and this day is one of the selected days of the week
+    if( !isActive ){
+      dispatch( archiveOrDeleteEntry(date, activityId) )
+    }
+  }
+}
+
 function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate(state, activityId, date)
   
@@ -185,6 +200,7 @@ export default {
   getWeekActivityCompletionRatio,
   getWeekProgressString,
   usesRepetitions,
+  updateEntryThunk,
 }
 
 function isWeekCompleted( state, activityId, date ){
