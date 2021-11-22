@@ -3,7 +3,7 @@ import { Text } from 'react-native-paper'
 import { useSelector } from 'react-redux'
 import { 
   selectActivityById, selectActivityByIdAndDate, getWeeklyStats, 
-  selectEntryByActivityIdAndDate, isActiveSelector,
+  selectEntryByActivityIdAndDate, isActiveSelector, archiveOrDeleteEntry,
 } from '../../redux'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import dailyGoals from './dailyGoals'

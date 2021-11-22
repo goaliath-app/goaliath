@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { 
   selectActivityById, selectEntryByActivityIdAndDate, toggleCompleted, 
   stopTodayTimer, startTodayTimer, selectActivityByIdAndDate, getWeeklyStats, 
-  getTodaySelector, isActiveSelector,
+  getTodaySelector, isActiveSelector, archiveOrDeleteEntry,
 } from '../../redux'
 import { isActivityRunning, getPreferedExpression, getTodayTime, roundValue } from '../../util'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'

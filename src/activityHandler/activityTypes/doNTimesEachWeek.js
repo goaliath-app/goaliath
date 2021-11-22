@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { 
   selectEntryByActivityIdAndDate, createOrUnarchiveEntry, toggleCompleted, 
   selectActivityByIdAndDate, getWeeklyStats, getTodaySelector, setRepetitions,
-  isActiveSelector,
+  isActiveSelector, archiveOrDeleteEntry,
 } from '../../redux'
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
