@@ -1,6 +1,7 @@
 import { createSlice, createEntityAdapter} from '@reduxjs/toolkit'
-import { toISODate, getPreviousDate } from '../util'
+import { toISODate, getPreviousDate, getNewestDate } from '../util'
 import { getTodaySelector } from './selectors'
+import { DateTime } from 'luxon'
 
 // TODO: This slice is essentially a copy of ActivitySlice
 // The logic for the slice of entities with change log should be generalized
@@ -146,6 +147,26 @@ export function restoreGoal(goalId){
   }
 }
 
+// function that moves all records from the given date to the previous day,
+// used when there is a day regresion caused by a dayStartHour change.
+export function moveAllGoalRecordsOneDayBack(date){
+  return function(dispatch, getState){
+    const state = getState()
+
+    const dateEntries = selectAllEntriesByDate(state, date)
+
+    const previousDay = date.minus({ days: 1 })
+
+    dateEntries.forEach(entry => {
+      dispatch(setGoal(entry, previousDay))
+      setGoalAction({goal: entry, date: previousDay})
+    })
+
+    dispatch(deleteGoalRecordsByDate({ date }))
+
+  }
+}
+
 
 // SELECTORS
 export function selectGoalByIdAndDate(state, goalId, date){
@@ -184,6 +205,32 @@ export function selectAllActiveGoalsByDate(state, date){
 export function selectAllGoals(state){
   const today = getTodaySelector(state)
   return selectAllGoalsByDate(state, today)
+}
+
+// selects all entries saved on a given date. Does not search in other days
+export function selectAllEntriesByDate(state, date){
+  const entries = []
+
+  state.goals.ids.forEach(id => {
+    const entry = state.goals.entities[id].entries.entities[date.toISO()]
+    if(entry) entries.push({ ...entry, id: id })
+  })
+
+  return entries
+}
+
+// returns the Luxon DateTime of the latest entry. If there are no entries,
+// returns the epoch DateTime
+export function selectLatestGoalEntryDate(state){
+  let latestDates = []
+
+  state.goals.ids.forEach(id => {
+    const goal = state.goals.entities[id]
+    const entryDates = goal.entries.ids
+    latestDates.push( getNewestDate(entryDates) )
+  })
+
+  return DateTime.fromISO(getNewestDate(latestDates))
 }
 
 

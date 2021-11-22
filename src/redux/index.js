@@ -3,12 +3,14 @@ export { default as store } from './store'
 export { 
     setGoal, toggleGoal, archiveGoal, selectAllGoals, selectGoalById, 
     selectAllActiveGoalsByDate, selectGoalByIdAndDate, restoreGoal,
+    moveAllGoalRecordsOneDayBack, selectLatestGoalEntryDate,
 } from './GoalsSlice'
 
 export { 
     setActivity, toggleActivity, archiveActivity, changeActivityGoal,
     selectAllActivities, selectActivityById, selectActivityByIdAndDate,
-    restoreActivity,
+    restoreActivity, moveAllActivityRecordsOneDayBack, selectAllEntriesByDate,
+    selectLatestActivityEntryDate,
 } from './ActivitySlice'
 
 // TODO: refactor
