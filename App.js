@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler';  // this import needs to be at the top.
+import * as Notifications from 'expo-notifications';
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Provider as PaperProvider } from  'react-native-paper'
@@ -21,6 +22,16 @@ import {
 import { Drawer as CustomDrawer } from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
 import { generateDummyData } from './src/redux/Thunks'
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => {
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    };
+  },
+});
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();

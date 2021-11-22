@@ -5,6 +5,9 @@
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "notification": {
+      "icon": "./assets/icon.png"
+    },
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -26,6 +29,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
+      "useNextNotificationsApi": true,
       "package": "app.goaliath"
     },
     "web": {

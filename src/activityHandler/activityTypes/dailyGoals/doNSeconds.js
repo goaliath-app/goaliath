@@ -1,3 +1,4 @@
+import * as Notifications from 'expo-notifications';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { View } from 'react-native'
@@ -42,9 +43,18 @@ const TodayScreenItem = ({ activityId, date }) => {
   }
 
   function onPressStart(){
+    //Start Timer
     if(date.toISO() == todayDate.toISO()){
      dispatch(startTodayTimer( activityId ))
     }
+    //Send notification
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Look at that notification',
+        body: "I'm so proud of myself!",
+      },
+      trigger: null,
+    });
   }
 
   function update(){
