@@ -34,7 +34,7 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
         const newGoal = {name: name, motivation: motivation}
         if(validate(newGoal)){
           if(goal){
-            dispatch(setGoal({...newGoal, id: goal.id}))
+            dispatch(setGoal({...goal, ...newGoal, id: goal.id}))
           }else{
             dispatch(setGoal({name: name, motivation: motivation}))
           }
