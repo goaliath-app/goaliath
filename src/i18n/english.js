@@ -182,6 +182,7 @@ const en = {
         viewArchived: "View archived goals",
       },
       longPressMenu: {
+        add: "Add new activity",
         edit: "Edit",
         archive: "Archive",
         viewArchivedActivities: "View archived activities",

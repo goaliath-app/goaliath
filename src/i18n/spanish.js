@@ -184,6 +184,7 @@ const es= {
           viewArchived: "View archived goals",
         },
         longPressMenu: {
+          add: "Añadir nueva actividad",
           edit: "Editar",
           archive: "Archivar",
           viewArchivedActivities: "Ver actividades archivadas",

@@ -60,6 +60,11 @@ const GoalListItem = ({ name, active, id }) => {
                 setDeleteDialogVisible(true)
               }} />
               <Divider />
+              <List.Item title={t("goals.longPressMenu.add")} onPress={() => {
+                setLongPressDialogVisible(false)
+                navigation.navigate('ActivityForm', { goalId: id } )
+              }} />
+              <Divider />
               <List.Item title={t("goals.longPressMenu.viewArchivedActivities")} onPress={() => {
                 setLongPressDialogVisible(false)
                 navigation.navigate("ArchivedActivities", { goalId: id })
