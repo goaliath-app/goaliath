@@ -124,7 +124,11 @@ const en = {
         freeDescription: 'Choose when to do it on the fly',
         weeklyTitle: 'Weekly Total',
         weeklyDescription: 'Reach a certain goal each week'
-      }
+      },
+      snackbar: {
+        activityCreated: 'Activity created',
+        activityUpdated: 'Activity updated',
+      },
     },
     
     calendar: {

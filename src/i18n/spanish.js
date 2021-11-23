@@ -126,7 +126,11 @@ const es= {
           freeDescription: 'Elige cuando hacerlas sobre la marcha.',
           weeklyTitle: 'Total semanal',
           weeklyDescription: 'Cumple con un objetivo cada semana.'
-        }
+        },
+        snackbar: {
+          activityCreated: 'Actividad creada',
+          activityUpdated: 'Actividad editada',
+        },
       },
       
     calendar: {

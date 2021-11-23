@@ -21,6 +21,7 @@ import {
 import { Drawer as CustomDrawer } from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
 import { generateDummyData } from './src/redux/Thunks'
+import { Snackbar } from 'react-native-paper'
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -59,12 +60,15 @@ const CalendarStack = () => (
   </Stack.Navigator>
 )
 
+export const Context = React.createContext({})
+
 export default function App() {
   // React.useEffect(() => {
   //   store.dispatch(generateDummyData())
   // }, [])
 
   const [newUser, setNewUser] = React.useState()
+  const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
 
   function finishOnboarding(){
     store.dispatch(finishOnboardingAction())
@@ -86,32 +90,39 @@ export default function App() {
         onBeforeLift={()=>onStoreRehydration()}
       >
         <PaperProvider>
-          <NavigationContainer>
-            <StatusBar 
-              style={StatusBarColor.style} 
-              translucent={false} 
-              backgroundColor={StatusBarColor.backgroundColor}
-            />
-            {newUser?
-            <OnboardingScreen finishOnboarding={finishOnboarding} />
-            : 
-            <Drawer.Navigator 
-              initialRouteName='Today' 
-              drawerContent={(props) => <CustomDrawer {...props} />}
-            >
-              <Drawer.Screen name='Today' component={TodayStack} 
-                options={{ title: t('app.drawer.today') }} />
-              <Drawer.Screen name='Goals' component={GoalsStack} 
-                options={{ title: t('app.drawer.goals') }} />
-              <Drawer.Screen name='Calendar' component={CalendarStack} 
-                options={{ title: t('app.drawer.calendar') }} />
-              <Drawer.Screen name='Settings' component={SettingsScreen} 
-                options={{ title: t('app.drawer.settings') }} />
-              <Drawer.Screen name='Stats' component={StatsScreen} 
-                options={{ title: t('app.drawer.stats') }} />
-            </Drawer.Navigator>
-            } 
-          </NavigationContainer>
+          <Context.Provider value={ {showSnackbar: setSnackbarMessage} } >
+            <NavigationContainer>
+              <StatusBar 
+                style={StatusBarColor.style} 
+                translucent={false} 
+                backgroundColor={StatusBarColor.backgroundColor}
+              />
+              {newUser?
+              <OnboardingScreen finishOnboarding={finishOnboarding} />
+              : 
+              <Drawer.Navigator 
+                initialRouteName='Today' 
+                drawerContent={(props) => <CustomDrawer {...props} />}
+              >
+                <Drawer.Screen name='Today' component={TodayStack} 
+                  options={{ title: t('app.drawer.today') }} />
+                <Drawer.Screen name='Goals' component={GoalsStack} 
+                  options={{ title: t('app.drawer.goals') }} />
+                <Drawer.Screen name='Calendar' component={CalendarStack} 
+                  options={{ title: t('app.drawer.calendar') }} />
+                <Drawer.Screen name='Settings' component={SettingsScreen} 
+                  options={{ title: t('app.drawer.settings') }} />
+                <Drawer.Screen name='Stats' component={StatsScreen} 
+                  options={{ title: t('app.drawer.stats') }} />
+              </Drawer.Navigator>
+              }
+              <Snackbar
+                visible={snackbarMessage != ""}
+                onDismiss={()=>setSnackbarMessage("")}
+                duration={5000}
+              >{snackbarMessage}</Snackbar>
+            </NavigationContainer>
+          </Context.Provider>
         </PaperProvider>
       </PersistGate>
     </ReduxProvider>
