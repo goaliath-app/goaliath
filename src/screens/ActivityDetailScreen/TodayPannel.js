@@ -1,3 +1,4 @@
+import * as Notifications from 'expo-notifications';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { View } from 'react-native'
@@ -10,7 +11,7 @@ import { TodayPannelColor } from '../../styles/Colors';
 import { setRepetitions } from './../../redux'
 import { usesRepetitions } from '../../activityHandler'
 
-const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour }) => {
+const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour, activity }) => {
     React.useEffect(() => {
       if (isActivityRunning(entry.intervals)) {
         const intervalId = setInterval(() => {
@@ -23,7 +24,18 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
     const { t, i18n } = useTranslation()
   
     function onPressPlay(){
+      //Start timer
       startTodayTimer(entry.id)
+      //Send notification
+      Notifications.scheduleNotificationAsync({
+        content: {
+          title: t('notifications.timer.title'),
+          body: t('notifications.timer.body', {activityName: activity.name}),
+          priority: 'max',
+          sticky: true
+        },
+        trigger: null,
+      });
     }
   
     function onPressPause(){

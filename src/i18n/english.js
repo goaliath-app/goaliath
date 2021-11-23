@@ -388,6 +388,13 @@ const en = {
       blog: 'Website',
       blogURL: 'https://goaliath-app.github.io/',
       appName: 'Goaliath'
+    },
+
+    notifications: {
+      timer: {
+        title: 'Go for it! You can do it',
+        body: 'You are working in {{activityName}}'
+      }
     }
   }
 }

@@ -11,6 +11,7 @@ import PauseFilledIcon from '../../../../assets/pause-filled'
 import PauseOutlinedIcon from '../../../../assets/pause-outlined'
 import { ActivityListItemColors } from '../../../styles/Colors'
 import { ActivityListItem, DoubleProgressBar } from '../../../components'
+import { useTranslation } from 'react-i18next'
 
 // addEntryThunk to add the repetitions field to entries of this activity type
 function addEntryThunk( activityId, date ){
@@ -21,6 +22,8 @@ function addEntryThunk( activityId, date ){
 
 const TodayScreenItem = ({ activityId, date }) => {
   const dispatch = useDispatch()
+
+  const { t, i18n } = useTranslation()
 
   // selector hooks
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
@@ -34,7 +37,7 @@ const TodayScreenItem = ({ activityId, date }) => {
   const secondsGoal = activity.params.dailyGoal.params.seconds
   const progress = Math.min(todayTime.as('seconds') / secondsGoal, 1)
   const timerIsRunning = isActivityRunning(entry.intervals)
-
+ 
   // function definitions
   function onPressPause(){
     if(date.toISO() == todayDate.toISO()){
@@ -50,8 +53,10 @@ const TodayScreenItem = ({ activityId, date }) => {
     //Send notification
     Notifications.scheduleNotificationAsync({
       content: {
-        title: 'Look at that notification',
-        body: "I'm so proud of myself!",
+        title: t('notifications.timer.title'),
+        body: t('notifications.timer.body', {activityName: activity.name}),
+        priority: 'max',
+        sticky: true
       },
       trigger: null,
     });

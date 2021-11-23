@@ -54,8 +54,10 @@ const TodayScreenItem = ({ activityId, date }) => {
     //Send notification
     Notifications.scheduleNotificationAsync({
       content: {
-        title: 'Look at that notification',
-        body: "I'm so proud of myself!",
+        title: t('notifications.timer.title'),
+        body: t('notifications.timer.body', {activityName: activity.name}),
+        priority: 'max',
+        sticky: true
       },
       trigger: null,
     });
