@@ -36,6 +36,10 @@ const TodayStack = () => (
     <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
     <Stack.Screen name='ActivityForm' component={ActivityFormScreen} />
     <Stack.Screen name='SelectWeeklyActivities' component={SelectWeeklyActivitiesScreen} />
+    <Stack.Screen name='Goal' component={GoalScreen} />
+    <Stack.Screen name='GoalForm' component={GoalFormScreen} />
+    <Stack.Screen name='ArchivedGoals' component={ArchivedGoalsScreen} />
+    <Stack.Screen name='ArchivedActivities' component={ArchivedActivitiesScreen} />
   </Stack.Navigator>
 )
 

@@ -4,7 +4,11 @@ const es= {
         description: {
           todayTimeGoal: 'Objetivo: {{expressionValue}} {{expressionUnit}}',
           weekTimeGoal: 'Esta semana: dedicado {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
-        }
+        },
+        longPressMenu: {
+          edit: 'Editar actividad',
+          viewGoal: 'Ver meta'
+        },
     },
 
     dayContent: {
