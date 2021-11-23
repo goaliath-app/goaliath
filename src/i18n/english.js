@@ -235,7 +235,7 @@ const en = {
       selectWeekliesDescription: '{{weekActivitiesNumber}} activities, {{weekProgress}}% completed this week',
       selectTasksTitle: 'Add one time tasks for today',
       selectTasksDescription: 'Tap here to add',
-      oneTimeTaskDescription: 'One Time Task',
+      oneTimeTaskDescription: 'One time task',
       dayChangeDialogTitle: "A new day begins!",
       dayChangeDialogBody: "The day has changed to {{date}} while the app was open.\n\nIf you need to be able to do a day's activities until a later hour, you can change the Day Start Hour in the settings screen.",
       dayChangeDialogConfirmLabel: "Go to new day",
@@ -244,6 +244,14 @@ const en = {
     addTasks: {
       title: 'Add One Time Tasks',
       description: 'The tasks will be added to this day as "do once" activities.',
+    },
+
+    taskList: {
+      longPressMenu: {
+        paragraph: 'This is a one time task',
+        delete: 'Delete Task',
+        deleteSnackbar: 'Task deleted',
+      }
     },
 
     weeklyActivities: {

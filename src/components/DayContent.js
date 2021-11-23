@@ -44,10 +44,6 @@ const DayContent = ({ date }) => {
   const areTherePendingWeeklyActivitiesResult = useSelector((state) => areTherePendingWeeklyActivities(state, date))
   const areThereWeeklyActivitiesResult = useSelector(areThereWeeklyActivities) 
 
-  
-  // state hooks
-  const [ selectedTask, setSelectedTask] = React.useState()
-  
   // compute values
   const timeStatus = (
     today.toISO() == date.toISO() ? 'today' :
@@ -80,7 +76,7 @@ const DayContent = ({ date }) => {
       <ScrollView>
         { timeStatus == 'future' ? <FutureWarning /> : null }
         <ActivityList data={pendingActivities} date={date} />
-        <TaskList tasks={ pendingTasks } onTaskPress={task => {setSelectedTask(task)}} />
+        <TaskList tasks={ pendingTasks } />
         { weekliesSelector=='unchecked' ?
         <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
         : <></> }
@@ -89,7 +85,7 @@ const DayContent = ({ date }) => {
           : <></> 
         }
         <ActivityList data={completedActivities} date={date} />
-        <TaskList tasks={ completedTasks } onTaskPress={task => {setSelectedTask(task)}} />
+        <TaskList tasks={ completedTasks } />
         { weekliesSelector == 'checked' ?
         <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
         : <></> }
@@ -100,16 +96,6 @@ const DayContent = ({ date }) => {
           <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
           : <></> }
       </ScrollView>
-      <DeleteDialog 
-        visible={selectedTask} 
-        onDismiss={() => setSelectedTask(null)}
-        onDelete={() => {
-          dispatch(deleteTodayTask(selectedTask.id))
-          setSelectedTask(null)
-        }}
-        title={'Delete "'+selectedTask?.name+'"'}
-        body={'This is a One Time Task. Do you want to delete it?'}
-      />
     </View>
   );
 }

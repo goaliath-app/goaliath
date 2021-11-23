@@ -247,6 +247,14 @@ const es= {
       title: 'Añade Tareas Puntuales',
       description: 'Las tareas aparencerán en este día como actividades que hacer solo una vez.',
     },
+
+    taskList: {
+      longPressMenu: {
+        paragraph: 'Tarea puntual',
+        delete: 'Eliminar tarea',
+        deleteSnackbar: 'Tarea eliminada',
+      }
+    },
     
     weeklyActivities: {
       headerTitle: 'Selecciona las actividades semanales',
