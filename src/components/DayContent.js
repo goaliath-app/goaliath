@@ -7,8 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ActivityList } from '../components'
 import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog } from '../components';
 import { 
-  updateLogs, areWeekliesSelectedToday, getTodayTasks, areTasksAddedToday, 
-  deleteTodayTask, selectEntriesByDay, getTodaySelector 
+  areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay 
 } from '../redux'
 import { areThereWeeklyActivities, areTherePendingWeeklyActivities } from '../activityHandler'
 import { useTranslation } from 'react-i18next'
@@ -38,8 +37,7 @@ const DayContent = ({ date }) => {
   // using getToday because on day change getTodaySelector was still returning the previous day
   const today      = getToday(useSelector(state => state.settings.dayStartHour))
   const entryList  = useSelector((state) => selectEntriesByDay(state, date))
-  const taskList   = useSelector(getTodayTasks)
-  const tasksAdded = useSelector(areTasksAddedToday)
+  const tasksAdded = useSelector(state => areTasksAdded(state, date))
   const areWeekliesSelectedTodayResult = useSelector(areWeekliesSelectedToday)
   const areTherePendingWeeklyActivitiesResult = useSelector((state) => areTherePendingWeeklyActivities(state, date))
   const areThereWeeklyActivitiesResult = useSelector(areThereWeeklyActivities) 
@@ -68,15 +66,12 @@ const DayContent = ({ date }) => {
   const completedActivities = entryList.filter(entry => entry.completed)
   const pendingActivities   = entryList.filter(entry => !entry.completed)
 
-  const completedTasks = taskList.filter(task => task.completed)
-  const pendingTasks = taskList.filter(task => !task.completed)
-  
   return (
     <View>
       <ScrollView>
         { timeStatus == 'future' ? <FutureWarning /> : null }
         <ActivityList data={pendingActivities} date={date} />
-        <TaskList tasks={ pendingTasks } />
+        <TaskList date={date} show='pending' />
         { weekliesSelector=='unchecked' ?
         <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
         : <></> }
@@ -85,7 +80,7 @@ const DayContent = ({ date }) => {
           : <></> 
         }
         <ActivityList data={completedActivities} date={date} />
-        <TaskList tasks={ completedTasks } />
+        <TaskList date={date} show='completed' />
         { weekliesSelector == 'checked' ?
         <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
         : <></> }

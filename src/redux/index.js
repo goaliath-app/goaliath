@@ -34,7 +34,8 @@ export {
 } from './LogSlice'  // rename to activityInstancesSlice
 
 export { 
-    addTodayTask, toggleTask, areTasksAddedToday, deleteTodayTask, getTodayTasks, tasksAddedToday 
+    addTodayTask, toggleTask, deleteTask, tasksAddedToday, selectAllTasksByDate,
+     areTasksAdded,
 } from './TasksSlice'
 
 export { 

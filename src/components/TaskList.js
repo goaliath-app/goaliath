@@ -3,7 +3,7 @@ import { connect, useSelector, useDispatch } from 'react-redux';
 import { View } from 'react-native'
 import { List, Portal, Dialog, Divider, Paragraph, Title } from 'react-native-paper'
 import { getToday } from '../util'
-import { toggleTask, getTodaySelector, deleteTodayTask } from '../redux'
+import { toggleTask, getTodaySelector, deleteTask, selectAllTasksByDate } from '../redux'
 import { useTranslation } from 'react-i18next'
 import { ActivityListItemColors } from '../styles/Colors'
 import Checkbox from './Checkbox'
@@ -12,19 +12,30 @@ import { DeleteDialog } from '../components'
 import { Context } from '../../App'
 
 
-const TaskList = ({ tasks }) => (
+const TaskList = ({ date, show="all" }) => {
+  const allTasks   = useSelector(state => selectAllTasksByDate(state, date))
+  const completedTasks = allTasks.filter(task => task.completed)
+  const pendingTasks = allTasks.filter(task => !task.completed)
+
+  const filteredtasks = (
+    show == "completed" ? completedTasks :
+    show == "pending" ? pendingTasks :
+    allTasks
+  )
+
+  return (
     <FlatList
-      data={tasks}
-      renderItem={({ item }) => <TaskListItem task={item} />}
+      data={filteredtasks}
+      renderItem={({ item }) => <TaskListItem date={date} task={item} />}
     />
   )
+}
 
 export default TaskList
 
-const TaskListItem = ({ task }) => {
+const TaskListItem = ({ date, task }) => {
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
   const dispatch = useDispatch()
-  const today = useSelector(getTodaySelector)
   const { t, i18n } = useTranslation()
   const { showSnackbar } = React.useContext(Context);
 
@@ -37,7 +48,7 @@ const TaskListItem = ({ task }) => {
               color='black'
               uncheckedColor='black'
               status={task.completed? 'checked' : 'unchecked'}
-              onPress={() => {dispatch(toggleTask(today, task.id))}}
+              onPress={() => {dispatch(toggleTask(date, task.id))}}
             />
           </View>
         )}
@@ -57,7 +68,7 @@ const TaskListItem = ({ task }) => {
               <List.Item title={t("taskList.longPressMenu.delete")} onPress={() => {
                 setLongPressDialogVisible(false)
                 showSnackbar(t("taskList.longPressMenu.deleteSnackbar"))
-                dispatch(deleteTodayTask(task.id))
+                dispatch(deleteTask(date, task.id))
               }} />
               <Divider />
             </Dialog.Content>
