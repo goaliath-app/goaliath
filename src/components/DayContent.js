@@ -67,31 +67,29 @@ const DayContent = ({ date }) => {
   const pendingActivities   = entryList.filter(entry => !entry.completed)
 
   return (
-    <View>
-      <ScrollView>
-        { timeStatus == 'future' ? <FutureWarning /> : null }
-        <ActivityList data={pendingActivities} date={date} />
-        <TaskList date={date} show='pending' />
-        { weekliesSelector=='unchecked' ?
-        <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
+    <ScrollView style={{flex: 1}}>
+      { timeStatus == 'future' ? <FutureWarning /> : null }
+      <ActivityList data={pendingActivities} date={date} />
+      <TaskList date={date} show='pending' />
+      { weekliesSelector=='unchecked' ?
+      <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
+      : <></> }
+      { tasksSelector == 'unchecked' ?
+        <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
+        : <></> 
+      }
+      <ActivityList data={completedActivities} date={date} />
+      <TaskList date={date} show='completed' />
+      { weekliesSelector == 'checked' ?
+      <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
+      : <></> }
+      { weekliesSelector == 'allcompleted' ?
+      <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color='grey'/>
+      : <></> }
+      { tasksSelector == 'checked' ?
+        <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
         : <></> }
-        { tasksSelector == 'unchecked' ?
-          <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
-          : <></> 
-        }
-        <ActivityList data={completedActivities} date={date} />
-        <TaskList date={date} show='completed' />
-        { weekliesSelector == 'checked' ?
-        <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
-        : <></> }
-        { weekliesSelector == 'allcompleted' ?
-        <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color='grey'/>
-        : <></> }
-        { tasksSelector == 'checked' ?
-          <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
-          : <></> }
-      </ScrollView>
-    </View>
+    </ScrollView>
   );
 }
 
