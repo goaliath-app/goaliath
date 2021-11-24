@@ -56,8 +56,9 @@ const TodayScreenItem = ({ activityId, date }) => {
         title: t('notifications.timer.title'),
         body: t('notifications.timer.body', {activityName: activity.name}),
         priority: 'max',
+        autoDismiss: false,
         sticky: true
-      },
+      },        
       trigger: null,
     });
   }
