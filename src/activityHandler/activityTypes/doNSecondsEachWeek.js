@@ -41,9 +41,12 @@ const TodayScreenItem = ({ activityId, date }) => {
 
   // function definitions
   function onPressPause(){
+    //Stop Timer
     if(date.toISO() == todayDate.toISO()){
       dispatch(stopTodayTimer( activityId ))
     }
+    //Dismiss notification
+    Notifications.dismissNotificationAsync('timer')
   }
 
   function onPressStart(){
@@ -53,6 +56,7 @@ const TodayScreenItem = ({ activityId, date }) => {
     }
     //Send notification
     Notifications.scheduleNotificationAsync({
+      identifier: 'timer' ,
       content: {
         title: t('notifications.timer.title'),
         body: t('notifications.timer.body', {activityName: activity.name}),

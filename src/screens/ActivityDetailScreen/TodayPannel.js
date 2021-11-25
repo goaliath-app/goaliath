@@ -28,6 +28,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
       startTodayTimer(entry.id)
       //Send notification
       Notifications.scheduleNotificationAsync({
+        identifier: 'timer',
         content: {
           title: t('notifications.timer.title'),
           body: t('notifications.timer.body', {activityName: activity.name}),
@@ -39,7 +40,11 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
     }
   
     function onPressPause(){
+      //Stop timer
       stopTodayTimer(entry.id)
+      //Dismiss notification
+      Notifications.dismissNotificationAsync('timer')
+
     }
   
     const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
