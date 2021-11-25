@@ -126,25 +126,6 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
   )
 }
 
-
-// TODO
-// const WeekView = ({ activityId, date, todayChecked }) => {
-//   // selectors
-//   const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, date, activityId))
-//   const activity = useSelector( state => selectActivityById(state, activityId) )
-
-//   const daysDone = (
-//     todayChecked=='checked'?
-//       [ ...daysDoneList, date.weekday ]
-//     : 
-//       daysDoneList
-//   )
-
-//   return (
-//     <BaseWeekView dayOfWeek={date.weekday} daysDone={daysDone} daysLeft={[]} />
-//   )
-// }
-
 // addEntryThunk to add the repetitions field to entries of this activity type
 function addEntryThunk( activityId, date ){
   return (dispatch, getState) => {
@@ -242,7 +223,6 @@ export default {
   getWeekActivityCompletionRatio,
   usesRepetitions,
   updateEntryThunk,
-  // WeekView,
 }
 
 function isWeekCompleted( state, activityId, date ){

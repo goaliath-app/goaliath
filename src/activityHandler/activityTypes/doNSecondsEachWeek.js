@@ -6,7 +6,7 @@ import {
   getTodaySelector, isActiveSelector, archiveOrDeleteEntry,
 } from '../../redux'
 import { isActivityRunning, getPreferedExpression, getTodayTime, roundValue } from '../../util'
-import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
+import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import Duration from 'luxon/src/duration.js'
 import { View } from 'react-native'
@@ -175,26 +175,6 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
   )
 }
 
-
-// TODO: atm it just shows as done days with a entry that has completed==true
-// intended: show as done days that has tracked time > 0 
-const WeekView = ({ activityId, date, todayChecked }) => {
-  // selectors
-  const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, date, activityId))
-  const activity = useSelector( state => selectActivityById(state, activityId) )
-
-  const daysDone = (
-    todayChecked=='checked'?
-      [ ...daysDoneList, date.weekday ]
-    : 
-      daysDoneList
-  )
-
-  return (
-    <BaseWeekView dayOfWeek={date.weekday} daysDone={daysDone} daysLeft={[]} />
-  )
-}
-
 function getFrequencyString(state, activityId, t, date=null){
   const activity = selectActivityByIdAndDate(state, activityId, date)
   const seconds = activity.params.seconds
@@ -275,7 +255,6 @@ export default {
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
   TodayScreenItem,
-  WeekView,
   isWeekCompleted,
   getFrequencyString,
   getWeekProgressString,

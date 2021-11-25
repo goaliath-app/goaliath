@@ -97,31 +97,6 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
   )
 }
 
-const WeekView = ({ activityId, date, todayChecked }) => {
-  // selectors
-  const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, date, activityId))
-  const activity = useSelector( state => selectActivityById(state, activityId) )
-
-  // calculations
-  const daysLeft = activity.params.days - daysDoneCount - (todayChecked=='checked'?1:0)
-  
-  let daysLeftList = []
-  for(let i = date.weekday+1; i < date.weekday+1 + daysLeft && i < 8; i++){
-    daysLeftList.push(i)
-  }
-  
-  const daysDone = (
-    todayChecked=='checked'?
-      [ ...daysDoneList, date.weekday ]
-    : 
-      daysDoneList
-  )
-
-  return (
-    <BaseWeekView dayOfWeek={date.weekday} daysDone={daysDone} daysLeft={daysLeftList} />
-  )
-}
-
 function getFrequencyString(state, activityId, t, date=null){
     const activity = selectActivityByIdAndDate(state, activityId, date)
 
@@ -193,7 +168,6 @@ export default {
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
   TodayScreenItem,
-  WeekView,
   isWeekCompleted,
   getFrequencyString,
   getDayActivityCompletionRatio,
