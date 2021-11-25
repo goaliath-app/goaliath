@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { 
   selectEntryByActivityIdAndDate, createOrUnarchiveEntry, toggleCompleted, 
   selectActivityByIdAndDate, getWeeklyStats, getTodaySelector, setRepetitions,
-  isActiveSelector, archiveOrDeleteEntry,
+  isActiveSelector, archiveOrDeleteEntry, getPeriodStats,
 } from '../../redux'
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
@@ -146,7 +146,7 @@ function getWeekProgressString(state, activityId, date, t){
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   
   // selectors
-  const { repetitionsCount } = useSelector((state) => getWeeklyStats(state, date, activity.id))
+  const { repetitionsCount } = getPeriodStats(state, date.startOf('week'), date, activity.id)
   
  // alias values
  const weeklyRepsGoal = activity.params.repetitions

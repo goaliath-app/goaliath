@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { 
   selectActivityById, selectEntryByActivityIdAndDate, toggleCompleted, 
   stopTodayTimer, startTodayTimer, selectActivityByIdAndDate, getWeeklyStats, 
-  getTodaySelector, isActiveSelector, archiveOrDeleteEntry,
+  getTodaySelector, isActiveSelector, archiveOrDeleteEntry, getPeriodStats,
 } from '../../redux'
 import { isActivityRunning, getPreferedExpression, getTodayTime, roundValue } from '../../util'
 import { WeeklyListItem } from '../../components'
@@ -185,12 +185,12 @@ function getFrequencyString(state, activityId, t, date=null){
 function getWeekProgressString(state, activityId, date, t){
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   //selectors
-  const { weeklyTime} = useSelector((state) => getWeeklyStats(state, date, activity.id))
+  const { loggedTime } = getPeriodStats(state, date.startOf('week'), date, activity.id)
   
   // calculations
   const secondsTarget = activity.params.seconds
   const timeTarget = Duration.fromObject({seconds: secondsTarget}).shiftTo('hours', 'minutes', 'seconds')
-  let timeLeft = timeTarget.minus(weeklyTime)
+  let timeLeft = timeTarget.minus(loggedTime)
   timeLeft = timeLeft.as('seconds') >= 0? timeLeft : Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
   const timeExpr = getPreferedExpression(timeLeft, t)
   return (timeExpr.value==0? t('activityHandler.activityTypes.doNSecondsEachWeek.completed') : t('activityHandler.activityTypes.doNSecondsEachWeek.secondsLeft', {timeExprValue: timeExpr.value, timeExprLocaleUnit: timeExpr.localeUnit}))

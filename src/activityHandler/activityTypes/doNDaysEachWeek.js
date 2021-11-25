@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { 
   selectActivityById, selectActivityByIdAndDate, getWeeklyStats, 
   selectEntryByActivityIdAndDate, isActiveSelector, archiveOrDeleteEntry,
+  getPeriodStats,
 } from '../../redux'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import dailyGoals from './dailyGoals'
@@ -32,8 +33,8 @@ function usesRepetitions(state, activityId, date){
 
 function getWeekProgressString(state, activityId, date, t){
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
-  const { daysDoneCount } = useSelector((state) => getWeeklyStats(state, date, activityId))
-
+  const { daysDoneCount } = getPeriodStats(state, date.startOf('week'), date, activity.id)
+  
   const daysLeft = activity.params.days - daysDoneCount
   return (daysLeft == 0 ? t('activityHandler.activityTypes.doNDaysEachWeek.completed') : t('activityHandler.activityTypes.doNDaysEachWeek.daysLeft', {daysLeft}))
 }
