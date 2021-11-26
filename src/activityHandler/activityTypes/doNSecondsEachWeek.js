@@ -38,6 +38,7 @@ const TodayScreenItem = ({ activityId, date }) => {
   const weeklyProgress = Math.min(weeklyTime.as('seconds') / secondsGoal, 1)
   const totalProgress = Math.min(totalTime.as('seconds') / secondsGoal, 1) 
   const timerIsRunning = isActivityRunning(entry.intervals)
+  const secondsRemaining = secondsGoal - totalTime.as('seconds')
 
   // function definitions
   function onPressPause(){
@@ -45,8 +46,9 @@ const TodayScreenItem = ({ activityId, date }) => {
     if(date.toISO() == todayDate.toISO()){
       dispatch(stopTodayTimer( activityId ))
     }
-    //Dismiss notification
+    //Dismiss notifications
     Notifications.dismissNotificationAsync('timer')
+    Notifications.cancelScheduledNotificationAsync('complete' + activityId)
   }
 
   function onPressStart(){
@@ -65,6 +67,17 @@ const TodayScreenItem = ({ activityId, date }) => {
       },
       trigger: null,
     });
+    //Schedule complete notification
+    Notifications.scheduleNotificationAsync({
+      identifier: 'complete' + activityId,
+      content: {
+        title: t('notifications.complete.title'),
+        body: t('notifications.complete.body', {activityName: activity.name})
+      },
+      trigger: {
+        seconds: secondsRemaining
+      }
+    })
   }
 
   function update(){

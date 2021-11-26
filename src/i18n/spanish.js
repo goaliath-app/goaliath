@@ -396,6 +396,10 @@ const es= {
       timer: {
         title: '¡Dale caña! Puedes hacerlo',
         body: 'Estás trabajando en {{activityName}}'
+      },
+      complete: {
+        title: '¡Bien hecho!',
+        body: 'Has completado la actividad {{activityName}}'
       }
     }
   }

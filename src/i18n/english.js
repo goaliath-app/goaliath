@@ -394,6 +394,10 @@ const en = {
       timer: {
         title: 'Go for it! You can do it',
         body: 'You are working in {{activityName}}'
+      },
+      complete: {
+        title: 'Good job!',
+        body: 'You have completed the activity {{activityName}}'
       }
     }
   }
