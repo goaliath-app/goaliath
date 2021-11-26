@@ -70,27 +70,3 @@ const GenericStats = ({ activityId, goalId }) => {
 }
 
 export default GenericStats
-
-
-// UNUSED
-const WeekStats = () => {
-  const { t, i18n } = useTranslation()
-  return (
-  <View>
-    <List.Item title={t('stats.genericStats.title')} />
-    <List.Item
-    left={() => <List.Icon icon="clock-outline" />}
-    title={66 + t('stats.weekStats.hoursDedicated')}
-    />
-    <List.Item
-    left={() => <List.Icon icon="check-circle-outline" />}
-    title={66 + t('stats.weekStats.daysCompleted')}
-    />
-    <List.Item
-    left={() => <List.Icon icon="check-circle-outline" />}
-    title={66 + " repetitions this week."}
-    />
-    <Divider />
-  </View>
-  )
-}
