@@ -48,7 +48,10 @@ const TodayScreenItem = ({ activityId, date }) => {
     leftSlot = <IconButton icon={() => <CheckboxMultipleBlankOutline />} onPress={addOne} />
   }
   
-  const description = `${todayReps} done today - ${repsLeft} of ${weeklyRepsGoal} left this week`
+  const description = t(
+    'activityHandler.activityTypes.doNTimesEachWeek.listItemDescription', 
+    { todayReps, repsLeft, weeklyRepsGoal }
+  )
   
   React.useEffect(() => {
     if( totalReps >= weeklyRepsGoal && !entry.completed ){
@@ -106,7 +109,11 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
   
   const weekCompleted = useSelector(state => isWeekCompleted(state, activity.id, today))
 
-  const description = `${activity.params.repetitions} repetitions goal met this week`
+  const description = t(
+    'activityHandler.activityTypes.doNTimesEachWeek.weeklyCompletedDescription',
+    { repetitionsGoal: activity.params.repetitions }
+  )
+  
 
   return(
     weekCompleted?

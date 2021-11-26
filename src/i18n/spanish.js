@@ -78,7 +78,8 @@ const es= {
           timeDedicated: '{{expressionValue}} {{expressionUnit}} dedicados en total',
           daysCompleted: ' actividades completadas',
           repetitions: ' repeticiones realizadas',
-
+          filterByGoal: 'Filtrar por meta',
+          allGoals: 'Todas las metas'
         },
         weekStats: {
           title: 'Esta semana',
@@ -86,6 +87,16 @@ const es= {
           daysCompleted: ' actividades completadas'
   
         }
+    },
+
+    barchart: {
+      time: 'Tiempo',
+      repetitions: 'Repeticiones',
+      completed: 'Completadas',
+      month: 'Mes',
+      week: 'Semana',
+      date: 'Fecha',
+      minutes: 'Minutos',
     },
 
     statsScreen: {
@@ -292,6 +303,8 @@ const es= {
         },
         doNTimesEachWeek: {
           frequencyString: '{{repetitions}} repeticiones a la semana',
+          listItemDescription: '{{todayReps}} reps hoy - {{repsLeft}} de {{weeklyRepsGoal}} esta semana',
+          weeklyCompletedDescription: '{{repetitionsGoal}} repeticiones completadas',
           timesLeft: 'Quedan {{repetitionsLeft}} repeticiones',
           completed: 'Completada'
         },
@@ -313,6 +326,7 @@ const es= {
         },
         doNTimes: {
           frequencyString: '{{repetitions}} veces',
+          listItemDescription: '{{todayReps}} de {{repsGoal}} reps hechas hoy',
         },
         doOneTime: {
           frequencyString: 'Hacer',

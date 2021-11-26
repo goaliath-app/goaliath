@@ -42,7 +42,10 @@ const TodayScreenItem = ({ activityId, date }) => {
     leftSlot = <IconButton icon={() => <CheckboxMultipleBlankOutline />} onPress={addOne} />
   }
   
-  const description = `${todayReps} of ${repsGoal} reps done today`
+  const description = t(
+    'activityHandler.dailyGoals.doNTimes.listItemDescription',
+    { todayReps, repsGoal }
+  )
   
   React.useEffect(() => {
     if( entry.repetitions === undefined ){

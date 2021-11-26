@@ -56,15 +56,21 @@ const ActivityDetailScreen = ({
   date,
   dayStartHour,
 }) => {
+  const { t, i18n } = useTranslation()
+
   const dateIsToday = date?isToday(date, dayStartHour):false
   const dateIsFuture = date?isFuture(date, dayStartHour):false
-  const dateTitle = date?date.toFormat('d MMMM yyyy'):null
+  const monthLabel = date?t('units.monthNames.' + date.toFormat('MMMM').toLowerCase()):null
+  const dateTitle = ( date ? 
+    t('calendar.dayView.header', 
+      {month: monthLabel, day: date.toFormat('d'), year: date.toFormat('yyyy')}) 
+    : null
+  )
 
   const [menuVisible, setMenuVisible] = React.useState(false);  // sets the visibility of the threeDotsMenu
   const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
   const [moveToGoalDialogVisible, setMoveToGoalDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
 
-  const { t, i18n } = useTranslation()
 
   // items that appear in the three dots menu
   const menuItems = (

@@ -40,7 +40,7 @@ const GoalSelector = ({onGoalSelection}) => {
   const [items, setItems] = useState(
     [ 
       ...goals.map( goal => ({label: goal.name, value: goal.id}) ),
-      {label: "All goals", value: 'all'}
+      {label: t("stats.genericStats.allGoals"), value: 'all'}
     ]
   );
 
@@ -48,7 +48,7 @@ const GoalSelector = ({onGoalSelection}) => {
     <View style={{marginHorizontal: 8, marginVertical: 8}}>
       <View style={{flex: 1}}>
         <DropDownPicker
-          placeholder="Filter by goal"
+          placeholder={t("stats.genericStats.filterByGoal")}
           open={open}
           value={value}
           items={items}
