@@ -4,16 +4,7 @@ const en = {
       description: {
         todayTimeGoal: 'Goal: {{expressionValue}} {{expressionUnit}}',
         weekTimeGoal: 'This week: Done {{weeklyTimeNumber}} of {{expressionValue}} {{expressionUnit}}'
-      },
-      longPressMenu: {
-        edit: 'Edit activity',
-        viewGoal: 'View goal'
-      },
-    },
-
-    dayContent: {
-      futureWarningTitle: 'This is a future day',
-      futureWarningSubtitle: 'Tomorrow is tomorrow.\nFuture cares have future cures,\nAnd we must mind today.\n — Sofocles',
+      }
     },
 
     dateWheelPicker: {
@@ -23,24 +14,8 @@ const en = {
       }
     },
 
-    archivedGoalsScreen: {
-      title: 'Archived goals',
-      empty: 'There are no archived goals',
-      longPressMenu: {
-        restore: "Restore goal"
-      }
-    },
-
-    archivedActivitiesScreen: {
-      title: 'Archive: {{goalName}}',
-      empty: 'This goal has no archived activities',
-      longPressMenu: {
-        restore: "Restore activity"
-      }
-    },
-
     deleteDialog: {
-      delete: 'Archive',
+      delete: 'Delete',
       cancel: 'Cancel'
     },
 
@@ -51,20 +26,13 @@ const en = {
     activityDetail: {
       threeDotsMenu: {
         editActivity: 'Edit activity',
-        deleteActivity: 'Archive activity',
-        changeGoal: "Move to other goal",
+        deleteActivity: 'Delete activity'
       },
       helpIconText: 'These are the details of a past activity. Even if you have modified the activity goal or frequency, here you will see them as they were this specific day.',
       deleteDialog: {
-        title: 'Archive activity?',
-        body: "You can restore it later from the top right menu of its goal."
+        title: 'Delete activity?',
+        body: "This can't be undone."
       },
-      changeGoalDialogTitle: "Select target goal",
-      changeGoalDialogCancel: "Cancel",
-      changeGoalDialogBody: 'Current goal: {{currentGoal}}',
-      changeGoalSnackbar: "Activity moved to other goal",
-      archivedWarning: "This activity is archived",
-      restoreButton: "Restore activity",
     },
 
     basicActivityInfo: {
@@ -78,24 +46,12 @@ const en = {
         timeDedicated: '{{expressionValue}} total {{expressionUnit}} dedicated',
         daysCompleted: ' activities completed',
         repetitions: ' repetitions done',
-        filterByGoal: 'Filter by goal',
-        allGoals: 'All goals'
       },
       weekStats: {
         title: 'This week',
         hoursDedicated: ' total hours dedicated',
         daysCompleted: ' activities completed'
       }
-    },
-
-    barchart: {
-      time: 'Time',
-      repetitions: 'Repetitions',
-      completed: 'Completed',
-      month: 'Month',
-      week: 'Week',
-      date: 'Date',
-      minutes: 'Minutes',
     },
 
     statsScreen: {
@@ -140,11 +96,7 @@ const en = {
         freeDescription: 'Choose when to do it on the fly',
         weeklyTitle: 'Weekly Total',
         weeklyDescription: 'Reach a certain goal each week'
-      },
-      snackbar: {
-        activityCreated: 'Activity created',
-        activityUpdated: 'Activity updated',
-      },
+      }
     },
     
     calendar: {
@@ -154,7 +106,7 @@ const en = {
         header: '{{month}} {{day}}, {{year}}'
       },
       weekView: {
-        header: '{{weekStartDate}} - {{weekEndDate}} {{year}}',
+        header: 'Week from {{weekStartDate}} to {{weekEndDate}}',
         sortByGoal: 'Sort by goal',
         sortByActivity: 'Sort by activity'
       },
@@ -177,43 +129,23 @@ const en = {
       motivation: 'Motivation',
       threeDotsMenu: {
         editGoal: 'Edit goal',
-        deleteGoal: 'Archive goal',
-        viewArchivedActivities: 'View archived activities',
+        deleteGoal: 'Delete goal',
       },
       deleteDialog: {
-        title: 'Archive goal?',
-        body: "You can still view and restore it from the menu of the Goals screen.",
+        title: 'Delete goal?',
+        body: "This will delete all its activities. Can't be undone.",
       },
-      infoContent: "This goal doesn't have any activities yet.\n\nAn activity is a recurring task that may have a time dedication requisite or not.\n\nFor each goal you should create the activities that you believe will make you reach the goal if done consistently.\n\nDesigning your activities this way will allow you to go to bed thinking: \"Today I've done all I had to\".",
-      archivedWarning: "This goal is archived",
-      restoreButton: "RESTORE GOAL",
-      longPressMenu: {
-        edit: "Edit",
-        archive: "Archive",
-        move: "Move to another goal",
-      }
+      infoContent: "This goal doesn't have any activities yet.\n\nAn activity is a recurring task that may have a time dedication requisite or not.\n\nFor each goal you should create the activities that you believe will make you reach the goal if done consistently.\n\nDesigning your activities this way will allow you to go to bed thinking: \"Today I've done all I had to\"."
     },
 
     goals: {
       headerTitle: 'Goals',
-      goalDescription: '{{activitiesNumber}} active activities',
-      infoContent: 'You have no goals right now.\n\nGoals are the base of Goaliath. They are the meaningful things you want to achieve, work on or dedicate time to.\n\nYou can create a new goal pressing the + icon on the top right.',
-      menu: {
-        viewArchived: "View archived goals",
-      },
-      longPressMenu: {
-        add: "Add new activity",
-        edit: "Edit",
-        archive: "Archive",
-        viewArchivedActivities: "View archived activities",
-      }
+      infoContent: 'You have no goals right now.\n\nGoals are the base of Goaliath. They are the meaningful things you want to achieve, work on or dedicate time to.\n\nYou can create a new goal pressing the + icon on the top right.'
     },
 
     settings: {
       headerTitle: 'Settings',
       startHour: 'Start of the next day',
-      todaySnackbar: 'Today will end at {{startHour}} tomorrow.',
-      yesterdaySnackbar: 'You have returned to yesterday. It ends at {{startHour}} today.',
       startHourDescription: 'At this time the daily activities will reset' ,
       feedback: 'Send feedback',
       feedbackDescription: 'Send a message to the developers',
@@ -228,7 +160,7 @@ const en = {
       languageDescription: 'Only changes the app default texts',
       importDialog:{
         title: 'Import data?',
-        content: "This can't be undone, your app data will be rewriten.",
+        content: "This can't be undone, your app data will be rewrite.",
         buttonAcept: 'Import',
         buttonCancel: 'Cancel'
       },
@@ -244,26 +176,15 @@ const en = {
       headerTitle: 'Today',
       infoContent: 'There are no activities scheduled for today. You can go to the "Goals" section of the app to create new activities.',
       selectWeekliesTitle: 'Choose weekly activities for today',
-      selectWeekliesDescription: '{{weekActivitiesNumber}} activities, {{weekProgress}}% completed this week',
+      selectWeekliesDescription: 'Tap here to select',
       selectTasksTitle: 'Add one time tasks for today',
       selectTasksDescription: 'Tap here to add',
-      oneTimeTaskDescription: 'One time task',
-      dayChangeDialogTitle: "A new day begins!",
-      dayChangeDialogBody: "The day has changed to {{date}} while the app was open.\n\nIf you need to be able to do a day's activities until a later hour, you can change the Day Start Hour in the settings screen.",
-      dayChangeDialogConfirmLabel: "Go to new day",
+      oneTimeTaskDescription: 'One Time Task',
     },
 
     addTasks: {
       title: 'Add One Time Tasks',
       description: 'The tasks will be added to this day as "do once" activities.',
-    },
-
-    taskList: {
-      longPressMenu: {
-        paragraph: 'This is a one time task',
-        delete: 'Delete Task',
-        deleteSnackbar: 'Task deleted',
-      }
     },
 
     weeklyActivities: {
@@ -296,25 +217,17 @@ const en = {
     activityHandler: {
       activityTypes: {
         doNSecondsEachWeek: {
-          frequencyString: '{{expressionValue}} {{expressionUnit}} per week',
-          completed: 'Completed',
-          secondsLeft: '{{timeExprValue}} {{timeExprLocaleUnit}} left'
+          frequencyString: '{{expressionValue}} {{expressionUnit}} per week'
         },
         doNTimesEachWeek: {
-          frequencyString: '{{repetitions}} repetitions each week',
-          listItemDescription: '{{todayReps}} done today - {{repsLeft}} of {{weeklyRepsGoal}} left this week',
-          weeklyCompletedDescription: '{{repetitionsGoal}} repetitions goal met this week',
-          timesLeft: '{{repetitionsLeft}} repetitions left',
-          completed: 'Completed'
+          frequencyString: '{{repetitions}} repetitions each week'
         },
         doFixedDays: {
           everyDayFrequencyString: 'every day',
           frequencyString: 'on {{daysOfWeek}}',
         },
         doNDaysEachWeek: {
-          frequencyString: '{{days}} days each week',
-          completed: 'Completed',
-          daysLeft: '{{daysLeft}} days left'
+          frequencyString: '{{days}} days each week'
         }
       },
       dailyGoals: {
@@ -325,7 +238,6 @@ const en = {
         },
         doNTimes: {
           frequencyString: '{{repetitions}} times',
-          listItemDescription: '{{todayReps}} of {{repsGoal}} reps done today',
         },
         doOneTime: {
           frequencyString: 'Do',
@@ -420,17 +332,6 @@ const en = {
       blog: 'Website',
       blogURL: 'https://goaliath-app.github.io/',
       appName: 'Goaliath'
-    },
-
-    notifications: {
-      timer: {
-        title: 'You are working on: ',
-        body: '{{activityName}}'
-      },
-      complete: {
-        title: 'You have completed the activity: ',
-        body: '{{activityName}}'
-      }
     }
   }
 }

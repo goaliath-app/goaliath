@@ -18,32 +18,27 @@ import {
 
 
 export const ActivityBarChartPicker = ({ activityId, goalId }) => {
-  const { t, i18n } = useTranslation()
-
   const [ show, setShow ] = React.useState('time')
   const [ period, setPeriod ] = React.useState('week')
   const [ date, setDate ] = React.useState(useSelector(getTodaySelector))
 
   const showOptions = [
-    { label:t("barchart.time"), value: 'time' },
-    { label:t("barchart.repetitions"), value: 'repetitions' },
-    { label:t("barchart.completed"), value: 'completions'}
+    { label:'Time', value: 'time' },
+    { label:'Repetitions', value: 'repetitions' },
+    { label:'Completed', value: 'completions'}
   ]
   const periodOptions = [
-    { label:t("barchart.week"), value: 'week' },
-    { label:t("barchart.month"), value: 'month' },
+    { label:'Week', value: 'week' },
+    { label:'Month', value: 'month' },
   ]
 
   let title = "Stats";
   let dateOffset;  // value to move the date when pressing the buttons
   if(period == 'week'){
-    const weekStartMonthLabel = t('units.monthNamesShort.' + date.startOf('week').toFormat('LLLL').toLowerCase())
-    const weekEndMonthLabel = t('units.monthNamesShort.' + date.endOf('week').toFormat('LLLL').toLowerCase())
-    title = `${weekStartMonthLabel} ${date.startOf('week').toFormat('d')} - ${weekEndMonthLabel} ${date.endOf('week').toFormat('d')}    ${date.endOf('week').toFormat('yyyy')}`
+    title = date.startOf('week').toFormat('MMM d') + " - " + date.endOf('week').toFormat('MMM d') + "    " + date.endOf('week').toFormat('yyyy');
     dateOffset = {days: 7}
   }else if(period == 'month'){
-    const monthLabel = t('units.monthNames.' + date.toFormat('LLLL').toLowerCase())
-    title = monthLabel + " " + date.toFormat('yyyy')
+    title = date.toFormat('MMMM yyyy')
     dateOffset = {months: 1}
   }
 
@@ -85,9 +80,6 @@ export const ActivityBarChart = ({
     period,  // 'week', 'month'
     date,
   }) => {
-
-    const { t } = useTranslation()
-
     const today = date
     const state = useSelector(state => state)
 
@@ -115,8 +107,8 @@ export const ActivityBarChart = ({
             x: date.toJSDate(),
             y: duration.as('minutes')
           })
-          xLabel = t('barchart.date')
-          yLabel = t('barchart.minutes')
+          xLabel = 'Date'
+          yLabel = 'Minutes'
           tickValues = data.map(point => point.x)
           tickFormat = t => DateTime.fromJSDate(t).toFormat("d")
         }
@@ -136,8 +128,8 @@ export const ActivityBarChart = ({
             y: duration.as('minutes')
           })
         }
-        xLabel = t('barchart.week')
-        yLabel = t('barchart.minutes')
+        xLabel = 'Week'
+        yLabel = 'Minutes'
         tickValues = data.map(point => point.x)
         tickFormat = t => DateTime.fromJSDate(t).startOf('week').toFormat("d") + "-" + DateTime.fromJSDate(t).endOf('week').toFormat("d")
       }
@@ -155,8 +147,8 @@ export const ActivityBarChart = ({
             x: date.toJSDate(),
             y: repetitions
           })
-          xLabel = t('barchart.date')
-          yLabel = t('barchart.repetitions')
+          xLabel = 'Date'
+          yLabel = 'Repetitions'
           tickValues = data.map(point => point.x)
           tickFormat = t => DateTime.fromJSDate(t).toFormat("d")
         }
@@ -176,8 +168,8 @@ export const ActivityBarChart = ({
             x: date.toJSDate(),
             y: repetitions
           })
-          xLabel = t('barchart.week')
-          yLabel = t('barchart.repetitions')
+          xLabel = 'Week'
+          yLabel = 'Repetitions'
         }
         tickValues = data.map(point => point.x)
         tickFormat = t => DateTime.fromJSDate(t).startOf('week').toFormat("d") + "-" + DateTime.fromJSDate(t).endOf('week').toFormat("d")
@@ -199,8 +191,8 @@ export const ActivityBarChart = ({
             x: date.toJSDate(),
             y: completions
           })
-          xLabel = t('barchart.date')
-          yLabel = t('barchart.completed')
+          xLabel = 'Date'
+          yLabel = 'Completed'
           tickValues = data.map(point => point.x)
           tickFormat = t => DateTime.fromJSDate(t).toFormat("d")
         }
@@ -220,8 +212,8 @@ export const ActivityBarChart = ({
             x: date.toJSDate(),
             y: completions
           })
-          xLabel = t('barchart.week')
-          yLabel = t('barchart.completed')
+          xLabel = 'Week'
+          yLabel = 'Completions'
         }
         tickValues = data.map(point => point.x)
         tickFormat = t => DateTime.fromJSDate(t).startOf('week').toFormat("d") + "-" + DateTime.fromJSDate(t).endOf('week').toFormat("d")

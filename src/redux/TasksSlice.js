@@ -1,6 +1,6 @@
 import { createSlice, createEntityAdapter} from '@reduxjs/toolkit'
 import { DateTime } from 'luxon';
-import { toDateTime, toISODate } from '../util'
+import { toDateTime } from '../util'
 import { getTodaySelector } from './selectors'
 
 /* SLICE DESCRIPTION
@@ -87,7 +87,7 @@ export default tasksSlice.reducer
 
 
 const { 
-  addTask, setTasksAdded, toggleTask: toggleTaskAction, deleteTask: deleteTaskAction,
+  addTask, setTasksAdded, toggleTask: toggleTaskAction, deleteTask 
 } = tasksSlice.actions
 
 const { 
@@ -96,24 +96,29 @@ const {
 
 
 /* SELECTORS */
-export function areTasksAdded(state, date){
-  const isoDate = toISODate(date)
-  const entry = selectEntryById(state, isoDate)
-  return entry?.tasksAdded? entry.tasksAdded : false
+function selectTodayEntry(state){
+  const today = getTodaySelector(state)
+  return selectEntryById(state, today.toISO())
 }
 
-export function selectAllTasksByDate(state, date){
-  const isoDate = toISODate(date)
-  
-  const tasks = state.tasks.entities[isoDate]?.tasks
+export function areTasksAddedToday(state){
+  const todayEntry = selectTodayEntry(state)
+  return todayEntry?.tasksAdded? todayEntry.tasksAdded : false
+}
+
+export function getTodayTasks(state){
+  const todayEntry = selectTodayEntry(state)
+  const tasks = todayEntry?.tasks
   if(!tasks) return []
 
   const { selectAll: selectAllTasks } = entityAdapter.getSelectors()
+
   const taskList = selectAllTasks(tasks)
   if(!taskList) return []
 
   return taskList
 }
+
 
 /* THUNKS */
 export function addTodayTask(name){
@@ -125,9 +130,11 @@ export function addTodayTask(name){
   }
 }
 
-export function deleteTask(date, id){
+export function deleteTodayTask(id){
   return function(dispatch, getState){
-    dispatch(deleteTaskAction({ date, id }))
+    const state = getState()
+    const today = getTodaySelector(state)
+    dispatch(deleteTask({ date: today, id }))
   }
 }
 

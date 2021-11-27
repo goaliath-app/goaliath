@@ -10,20 +10,16 @@ import PauseFilledIcon from '../../../../assets/pause-filled'
 import PauseOutlinedIcon from '../../../../assets/pause-outlined'
 import { ActivityListItemColors } from '../../../styles/Colors'
 import { ActivityListItem, DoubleProgressBar } from '../../../components'
-import { useTranslation } from 'react-i18next'
-import Notifications from '../../../notifications';
 
 // addEntryThunk to add the repetitions field to entries of this activity type
 function addEntryThunk( activityId, date ){
   return (dispatch, getState) => {
-    dispatch(createOrUnarchiveEntry(date, activityId))
+    dispatch(createOrUnarchiveEntry(date, activityId, { repetitions: [] }))
   }
 }
 
 const TodayScreenItem = ({ activityId, date }) => {
   const dispatch = useDispatch()
-
-  const { t, i18n } = useTranslation()
 
   // selector hooks
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
@@ -35,28 +31,20 @@ const TodayScreenItem = ({ activityId, date }) => {
 
   // compute values
   const secondsGoal = activity.params.dailyGoal.params.seconds
-  const secondsDedicated = todayTime.as('seconds')
-  const progress = Math.min(secondsDedicated / secondsGoal, 1)
+  const progress = Math.min(todayTime.as('seconds') / secondsGoal, 1)
   const timerIsRunning = isActivityRunning(entry.intervals)
-  const secondsRemaining = secondsGoal - secondsDedicated
- 
+
   // function definitions
   function onPressPause(){
-    //Stop timer
     if(date.toISO() == todayDate.toISO()){
       dispatch(stopTodayTimer( activityId ))
     }
-    //Dismiss notifications
-    Notifications.timerStoped(activityId)
   }
 
   function onPressStart(){
-    //Start Timer
     if(date.toISO() == todayDate.toISO()){
      dispatch(startTodayTimer( activityId ))
     }
-    //Send timer notifications
-    Notifications.timerStarted(activity, entry, secondsRemaining, t)
   }
 
   function update(){
@@ -86,18 +74,13 @@ const TodayScreenItem = ({ activityId, date }) => {
     if(entry.completed){
       leftSlot = <IconButton icon={() => <PauseFilledIcon />} onPress={onPressPause} />
     }else{
-      leftSlot = <IconButton icon={() => <PauseOutlinedIcon />} 
-                    onLongPress={() => {dispatch(toggleCompleted({date: date, id: activityId}));
-                                        dispatch(stopTodayTimer( activityId ))}}
-                    onPress={onPressPause} />
+      leftSlot = <IconButton icon={() => <PauseOutlinedIcon />} onPress={onPressPause} />
     }
   }else{
     if(entry.completed){
       leftSlot = <IconButton icon={() => <PlayFilledIcon />} onPress={onPressStart} />
     }else{
-      leftSlot = <IconButton icon={() => <PlayOutlinedIcon />} 
-                    onLongPress={() => dispatch(toggleCompleted({date: date, id: activityId}))}
-                    onPress={onPressStart} />
+      leftSlot = <IconButton icon={() => <PlayOutlinedIcon />} onPress={onPressStart} />
     }
   }
 
@@ -149,19 +132,4 @@ function getDayActivityCompletionRatio(state, activityId, date){
   }
 }
 
-function getTimeGoal(state, activityId, date){
-  const activity = selectActivityByIdAndDate(state, activityId, date)
-
-  return (
-    activity?.params.dailyGoal?.params.seconds != null ? 
-      activity.params.dailyGoal.params.seconds 
-      : null
-  )
-}
-
-export default { 
-  TodayScreenItem, 
-  getFrequencyString, 
-  getDayActivityCompletionRatio,
-  getTimeGoal, 
-}
+export default { TodayScreenItem, getFrequencyString, getDayActivityCompletionRatio }

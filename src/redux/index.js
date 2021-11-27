@@ -2,15 +2,12 @@ export { default as store } from './store'
 
 export { 
     setGoal, toggleGoal, archiveGoal, selectAllGoals, selectGoalById, 
-    selectAllActiveGoalsByDate, selectGoalByIdAndDate, restoreGoal,
-    moveAllGoalRecordsOneDayBack, selectLatestGoalEntryDate,
+    selectAllActiveGoalsByDate, selectGoalByIdAndDate,
 } from './GoalsSlice'
 
 export { 
-    setActivity, toggleActivity, archiveActivity, changeActivityGoal,
-    selectAllActivities, selectActivityById, selectActivityByIdAndDate,
-    restoreActivity, moveAllActivityRecordsOneDayBack, selectAllEntriesByDate,
-    selectLatestActivityEntryDate,
+    setActivity, toggleActivity, archiveActivity,
+    selectAllActivities, selectActivityById, selectActivityByIdAndDate
 } from './ActivitySlice'
 
 // TODO: refactor
@@ -34,8 +31,7 @@ export {
 } from './LogSlice'  // rename to activityInstancesSlice
 
 export { 
-    addTodayTask, toggleTask, deleteTask, tasksAddedToday, selectAllTasksByDate,
-     areTasksAdded,
+    addTodayTask, toggleTask, areTasksAddedToday, deleteTodayTask, getTodayTasks, tasksAddedToday 
 } from './TasksSlice'
 
 export { 

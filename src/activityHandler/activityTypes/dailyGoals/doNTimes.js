@@ -42,10 +42,7 @@ const TodayScreenItem = ({ activityId, date }) => {
     leftSlot = <IconButton icon={() => <CheckboxMultipleBlankOutline />} onPress={addOne} />
   }
   
-  const description = t(
-    'activityHandler.dailyGoals.doNTimes.listItemDescription',
-    { todayReps, repsGoal }
-  )
+  const description = `${todayReps} of ${repsGoal} reps done today`
   
   React.useEffect(() => {
     if( entry.repetitions === undefined ){
@@ -67,10 +64,6 @@ const TodayScreenItem = ({ activityId, date }) => {
       />
     </View>
   )
-}
-
-function usesRepetitions(state, activityId, date){
-  return true
 }
 
 function getFrequencyString(state, activityId, t, date=null){
@@ -99,9 +92,4 @@ function getDayActivityCompletionRatio(state, activityId, date){
   }
 }
 
-export default { 
-  TodayScreenItem, 
-  getFrequencyString,
-  getDayActivityCompletionRatio,
-  usesRepetitions
-}
+export default { TodayScreenItem, getFrequencyString, getDayActivityCompletionRatio }

@@ -1,17 +1,14 @@
 import { DateTime } from 'luxon'
 
-import { startOfDay, dueToday, newEntry, isActive, getNewestDate } from './../util'
+import { startOfDay, dueToday, newEntry, isActive } from './../util'
 import { updateEntryThunk } from '../activityHandler'
 
 import {
-  selectAllActivities, setActivity, selectActivityById, 
-  setState as setActivitiesState, moveAllActivityRecordsOneDayBack,
-  selectLatestActivityEntryDate,
+  selectAllActivities, setActivity, selectActivityById, setState as setActivitiesState, 
 } from './ActivitySlice'
 
 import { 
-  setState as setGoalsState, setGoal, moveAllGoalRecordsOneDayBack,
-  selectLatestGoalEntryDate,
+  setState as setGoalsState, setGoal
 } from './GoalsSlice'
 
 import { 
@@ -124,9 +121,22 @@ export function generateDummyData(){
   }
 }
 
+
+function getNewestDate(isoDatesList){
+  const epoch = DateTime.fromMillis(0)
+
+  const loggedDateTimes = isoDatesList.map((isoDate) => DateTime.fromISO(isoDate))
+  
+  const newestLogDate = loggedDateTimes.reduce((curr, prev) => {
+    return curr>=prev? curr : prev
+  }, epoch)
+
+  return newestLogDate
+}
+
 export function updateLogs(){
   return function(dispatch, getState){
-    let state = getState()
+    const state = getState()
     const { logs: { ids: loggedDatesISO } } = state
     const today = getTodaySelector(state)
     const epoch = DateTime.fromMillis(0)
@@ -138,25 +148,8 @@ export function updateLogs(){
     while(newestLogDate > today){
       // hard delete it and repeat
       dispatch(deleteLog({ isoDate: newestLogDate.toISO() }))
-      state = getState()
-      const { logs: { ids: newLoggedDatesISO } } = state
+      const { logs: { ids: newLoggedDatesISO } } = getState()
       newestLogDate = getNewestDate(newLoggedDatesISO)
-    }
-
-    // move changes to goals and goals from tomorrow to today (if any)
-    let newestGoalEntryDate = selectLatestGoalEntryDate(state)
-    while(newestGoalEntryDate > today){
-      dispatch(moveAllGoalRecordsOneDayBack(newestGoalEntryDate))
-      state = getState()
-      newestGoalEntryDate = selectLatestGoalEntryDate(state)
-    }
-
-    // move changes to activities and goals from tomorrow to today (if any)
-    let newestActivityEntryDate = selectLatestActivityEntryDate(state)
-    while(newestActivityEntryDate > today){
-      dispatch(moveAllActivityRecordsOneDayBack(newestActivityEntryDate))
-      state = getState()
-      newestActivityEntryDate = selectLatestActivityEntryDate(state)
     }
 
     // there are no logs
@@ -205,7 +198,7 @@ export function archiveOrDeleteEntry(date, entryId){
   }
 }
 
-export function createOrUnarchiveEntry(date, activityId){
+export function createOrUnarchiveEntry(date, activityId, extraData = {}){
   /* creates an entry in specified day for the chosen activity if it does not exist.
   If it exists and is archived, unarchives it. */
   return function(dispatch, getState){
@@ -216,7 +209,7 @@ export function createOrUnarchiveEntry(date, activityId){
       dispatch(upsertEntry({ date, entry: { ...entry, archived: false }}))
     }else if(!entry){
       const activity = selectActivityById(state, activityId)
-      const entry = { ...newEntry(activity), date }
+      const entry = { ...newEntry(activity), ...extraData, date }
       dispatch(addEntry({ date, entry }))
     }
   }

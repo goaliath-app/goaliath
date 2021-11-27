@@ -2,10 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View, ScrollView } from 'react-native'
-import { 
-  DayContent, GenericStats, ActivityCalendarHeatmap, Header, 
-  ActivityBarChartPicker, StatsPannel, BottomScreenPadding 
-} from '../components'
+import { DayContent, GenericStats, ActivityCalendarHeatmap, Header, ActivityBarChartPicker, StatsPannel } from '../components'
 import { getTodaySelector, selectAllGoals } from '../redux'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
@@ -23,8 +20,7 @@ const StatsScreen = ({ navigation }) => {
       <Header title={t('statsScreen.headerTitle')} left='hamburger' navigation={navigation} />
       <GoalSelector onGoalSelection={setSelectedGoal}/>
       <Divider style={{marginHorizontal: 8}}/>
-      <StatsPannel goalId={selectedGoal == "all"? null : selectedGoal} />
-      <BottomScreenPadding />
+      <StatsPannel goalId={selectedGoal} />
     </ScrollView>
   );
 }
@@ -44,7 +40,7 @@ const GoalSelector = ({onGoalSelection}) => {
   const [items, setItems] = useState(
     [ 
       ...goals.map( goal => ({label: goal.name, value: goal.id}) ),
-      {label: t("stats.genericStats.allGoals"), value: 'all'}
+      {label: "All goals", value: null}
     ]
   );
 
@@ -52,7 +48,7 @@ const GoalSelector = ({onGoalSelection}) => {
     <View style={{marginHorizontal: 8, marginVertical: 8}}>
       <View style={{flex: 1}}>
         <DropDownPicker
-          placeholder={t("stats.genericStats.filterByGoal")}
+          placeholder="Filter by goal"
           open={open}
           value={value}
           items={items}

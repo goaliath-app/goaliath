@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Share } from 'react-native'
-import { connect, useDispatch } from 'react-redux';
-import { Text, List, Divider, Paragraph, Portal, Snackbar, Dialog, Button } from 'react-native-paper'
+import { connect } from 'react-redux';
+import { Text, List, Divider, Paragraph, Portal, Dialog, Button } from 'react-native-paper'
 import { DateTime } from 'luxon'
 import DateTimePickerModal from "react-native-modal-datetime-picker"
 import email from 'react-native-email'
@@ -9,32 +9,23 @@ import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker'
 import { useTranslation } from 'react-i18next'
-import { setDayStartHour, importState, setLanguage, updateLogs } from '../redux'
+import { setDayStartHour, importState, setLanguage } from '../redux'
 import { Header } from '../components'
 import { GeneralColor, SettingsColor } from '../styles/Colors';
 
 
-const SettingsScreen = ({ settings, setLanguage, navigation, state, importState }) => {
+const SettingsScreen = ({ settings, setDayStartHour, setLanguage, navigation, state, importState }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
   const [isLanguageDialogVisible, setLanguageDialogVisible] = React.useState(false);
   const [isImportDialogVisible, setImportDialogVisible] = React.useState(false);
   const [importedStateText, setImportedStateText] = React.useState('');
-  const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
 
   const { t, i18n } = useTranslation()
-  const dispatch = useDispatch()
-
 
   const changeDayStartHour = (JSDate) => {
     const dateTime = DateTime.fromJSDate(JSDate)
     setDatePickerVisibility(false)
-    dispatch(setDayStartHour(dateTime.toISO()))
-    dispatch(updateLogs())
-    
-    //Snackbar
-    setSnackbarMessage(dateTime.toFormat('T') > DateTime.now().toFormat('T')?
-     t('settings.yesterdaySnackbar', {startHour: dateTime.toFormat('T').toString()}) 
-     : t('settings.todaySnackbar', {startHour: dateTime.toFormat('T').toString()}))
+    setDayStartHour(dateTime.toISO());
   };
 
   const readFile = () => {
@@ -51,11 +42,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
   function importStateFromText(text){
     // TODO: dont break if file is bad formatted
     setImportDialogVisible(false)
-    try {
-      const state = JSON.parse(text)
-    } catch(e) {
-      setSnackbarMessage("Import failed: wrong file format")
-    }
+    const state = JSON.parse(text)
     importState(state)
   }
 
@@ -108,7 +95,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
             {t('settings.languageLocale')}
           </Text>} />
       <Divider />
-      
+
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="time"
@@ -140,12 +127,6 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
             </Dialog.Content>
         </Dialog>
       </Portal>
-
-      <Snackbar
-        visible={snackbarMessage != ""}
-        onDismiss={()=>setSnackbarMessage("")}
-        duration={5000}
-      >{snackbarMessage}</Snackbar>
 
     </View>
     
