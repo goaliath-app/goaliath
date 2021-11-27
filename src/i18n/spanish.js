@@ -421,6 +421,17 @@ const es= {
       blog: 'Sitio web',
       blogURL: 'https://goaliath-app.github.io/es/',
       appName: 'Goaliath'
+    },
+
+    notifications: {
+      timer: {
+        title: 'Estás trabajando en: ',
+        body: '{{activityName}}'
+      },
+      complete: {
+        title: 'Has completado la actividad: ',
+        body: '{{activityName}}'
+      }
     }
   }
 }

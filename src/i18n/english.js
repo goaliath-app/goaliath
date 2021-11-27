@@ -420,6 +420,17 @@ const en = {
       blog: 'Website',
       blogURL: 'https://goaliath-app.github.io/',
       appName: 'Goaliath'
+    },
+
+    notifications: {
+      timer: {
+        title: 'You are working on: ',
+        body: '{{activityName}}'
+      },
+      complete: {
+        title: 'You have completed the activity: ',
+        body: '{{activityName}}'
+      }
     }
   }
 }
