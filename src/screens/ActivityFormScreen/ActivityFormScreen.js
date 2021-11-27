@@ -3,7 +3,7 @@ import { connect, useSelector, useDispatch } from 'react-redux'
 import { Keyboard, Pressable, View, StyleSheet } from 'react-native';
 import { Appbar, TextInput, HelperText, Subheading, Portal, Dialog, Divider, List, Switch, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
-import { Header, TimeInput } from '../../components';
+import { Header, TimeInput, BottomScreenPadding } from '../../components';
 import { setActivity, selectActivityById } from '../../redux'
 import { GeneralColor, ActivityFormColor } from '../../styles/Colors';
 import NumberOfWeeklyDaysInput from './NumberOfWeeklyDaysInput'
@@ -458,6 +458,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
               </Dialog.Content>
           </Dialog>
         </Portal>
+        <BottomScreenPadding />
       </KeyboardAwareScrollView>
     </View>
   )

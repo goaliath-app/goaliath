@@ -4,7 +4,10 @@ import { connect, useDispatch } from 'react-redux';
 import { Paragraph, Menu, Title, Divider, List, Card, Button } from 'react-native-paper';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon, DeleteActivityDialog } from '../../components';
+import { 
+  Header, ThreeDotsMenu, DeleteDialog, HelpIcon, DeleteActivityDialog,
+  BottomScreenPadding,
+} from '../../components';
 import { useNavigation } from '@react-navigation/native';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTodayTimer, 
@@ -152,6 +155,8 @@ const ActivityDetailScreen = ({
         }
 
         <StatsPannel activityId={activity.id} />
+
+        <BottomScreenPadding />
       </KeyboardAwareScrollView>
 
       <DeleteActivityDialog

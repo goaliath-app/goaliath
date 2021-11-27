@@ -2,7 +2,10 @@ import React from 'react';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View, ScrollView } from 'react-native'
-import { DayContent, GenericStats, ActivityCalendarHeatmap, Header, ActivityBarChartPicker, StatsPannel } from '../components'
+import { 
+  DayContent, GenericStats, ActivityCalendarHeatmap, Header, 
+  ActivityBarChartPicker, StatsPannel, BottomScreenPadding 
+} from '../components'
 import { getTodaySelector, selectAllGoals } from '../redux'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
@@ -21,6 +24,7 @@ const StatsScreen = ({ navigation }) => {
       <GoalSelector onGoalSelection={setSelectedGoal}/>
       <Divider style={{marginHorizontal: 8}}/>
       <StatsPannel goalId={selectedGoal == "all"? null : selectedGoal} />
+      <BottomScreenPadding />
     </ScrollView>
   );
 }

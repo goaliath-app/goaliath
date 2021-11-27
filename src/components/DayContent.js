@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { View, ScrollView } from 'react-native'
 import { Card, Title, Paragraph } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native';
-import { ActivityList } from '../components'
+import { ActivityList, BottomScreenPadding } from '../components'
 import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog } from '../components';
 import { 
   areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay 
@@ -89,6 +89,7 @@ const DayContent = ({ date }) => {
       { tasksSelector == 'checked' ?
         <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
         : <></> }
+      <BottomScreenPadding />  
     </ScrollView>
   );
 }

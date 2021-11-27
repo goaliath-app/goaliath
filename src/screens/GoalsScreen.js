@@ -5,7 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { List, Appbar, Divider, Switch, Menu } from 'react-native-paper';
 import { Text, Paragraph, Portal, Snackbar, Dialog, Button } from 'react-native-paper'
 
-import { Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog } from '../components'
+import { Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog, BottomScreenPadding } from '../components'
+
 import { selectAllGoals, toggleGoal } from '../redux'
 import { hasSomethingToShow } from '../util'
 import { useTranslation } from 'react-i18next'
@@ -122,7 +123,7 @@ const GoalsScreen = ({ navigation, goals }) => {
         </>
         }/>
       {hasSomethingToShow(goals)?
-        <FlatList data={goals} renderItem={renderItem} />
+        <FlatList data={goals} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
       :
         <InfoCard content={t('goals.infoContent')} />
       }
