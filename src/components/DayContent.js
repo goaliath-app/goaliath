@@ -1,43 +1,47 @@
 import React from 'react';
+import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { View, ScrollView } from 'react-native'
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { ActivityList } from '../components'
+import { Card, Title, Paragraph } from 'react-native-paper'
+import { useNavigation } from '@react-navigation/native';
+import { ActivityList, BottomScreenPadding } from '../components'
 import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog } from '../components';
 import { 
-  updateLogs, areWeekliesSelectedToday, getTodayTasks, areTasksAddedToday, 
-  deleteTodayTask, selectEntriesByDay, getTodaySelector 
+  areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay 
 } from '../redux'
 import { areThereWeeklyActivities, areTherePendingWeeklyActivities } from '../activityHandler'
 import { useTranslation } from 'react-i18next'
+import { getToday } from '../util'
+
+const FutureWarning = () => {
+  const { t, i18n } = useTranslation()
+
+  return (
+      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
+        <Card.Content>
+          <Title>{t("dayContent.futureWarningTitle")}</Title>
+          <Paragraph>{t("dayContent.futureWarningSubtitle")}</Paragraph>
+        </Card.Content>
+      </Card>
+  )
+}
 
 const DayContent = ({ date }) => {
+  
   // setup hooks
   const navigation = useNavigation()
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
 
-  useFocusEffect(
-    React.useCallback(() => {
-      if(timeStatus == 'today'){
-        dispatch(updateLogs())
-      }
-    }, [timeStatus])
-  )
-
   // selectors
-  const today      = useSelector(getTodaySelector)
+  // using getToday because on day change getTodaySelector was still returning the previous day
+  const today      = getToday(useSelector(state => state.settings.dayStartHour))
   const entryList  = useSelector((state) => selectEntriesByDay(state, date))
-  const taskList   = useSelector(getTodayTasks)
-  const tasksAdded = useSelector(areTasksAddedToday)
+  const tasksAdded = useSelector(state => areTasksAdded(state, date))
   const areWeekliesSelectedTodayResult = useSelector(areWeekliesSelectedToday)
   const areTherePendingWeeklyActivitiesResult = useSelector((state) => areTherePendingWeeklyActivities(state, date))
   const areThereWeeklyActivitiesResult = useSelector(areThereWeeklyActivities) 
 
-  
-  // state hooks
-  const [ selectedTask, setSelectedTask] = React.useState()
-  
   // compute values
   const timeStatus = (
     today.toISO() == date.toISO() ? 'today' :
@@ -62,47 +66,31 @@ const DayContent = ({ date }) => {
   const completedActivities = entryList.filter(entry => entry.completed)
   const pendingActivities   = entryList.filter(entry => !entry.completed)
 
-  const completedTasks = taskList.filter(task => task.completed)
-  const pendingTasks = taskList.filter(task => !task.completed)
-
-  
-
-  
   return (
-    <View>
-      <ScrollView>
-        <ActivityList data={pendingActivities} date={date} />
-        <TaskList tasks={ pendingTasks } onTaskPress={task => {setSelectedTask(task)}} />
-        { weekliesSelector=='unchecked' ?
-        <SelectWeekliesListItem checked={false} navigation={navigation}/>
+    <ScrollView style={{flex: 1}}>
+      { timeStatus == 'future' ? <FutureWarning /> : null }
+      <ActivityList data={pendingActivities} date={date} />
+      <TaskList date={date} show='pending' />
+      { weekliesSelector=='unchecked' ?
+      <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
+      : <></> }
+      { tasksSelector == 'unchecked' ?
+        <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
+        : <></> 
+      }
+      <ActivityList data={completedActivities} date={date} />
+      <TaskList date={date} show='completed' />
+      { weekliesSelector == 'checked' ?
+      <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
+      : <></> }
+      { weekliesSelector == 'allcompleted' ?
+      <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color='grey'/>
+      : <></> }
+      { tasksSelector == 'checked' ?
+        <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
         : <></> }
-        { tasksSelector == 'unchecked' ?
-          <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
-          : <></> 
-        }
-        <ActivityList data={completedActivities} date={date} />
-        <TaskList tasks={ completedTasks } onTaskPress={task => {setSelectedTask(task)}} />
-        { weekliesSelector == 'checked' ?
-        <SelectWeekliesListItem checked={true} navigation={navigation}/>
-        : <></> }
-        { weekliesSelector == 'allcompleted' ?
-        <SelectWeekliesListItem checked={true} navigation={navigation} color='grey'/>
-        : <></> }
-        { tasksSelector == 'checked' ?
-          <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
-          : <></> }
-      </ScrollView>
-      <DeleteDialog 
-        visible={selectedTask} 
-        setVisible={(value) => setSelectedTask(null)}
-        onDelete={() => {
-          dispatch(deleteTodayTask(selectedTask.id))
-          setSelectedTask(null)
-        }}
-        title={'Delete "'+selectedTask?.name+'"'}
-        body={'This is a One Time Task. Do you want to delete it?'}
-      />
-    </View>
+      <BottomScreenPadding />  
+    </ScrollView>
   );
 }
 

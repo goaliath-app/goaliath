@@ -4,7 +4,16 @@ const es= {
         description: {
           todayTimeGoal: 'Objetivo: {{expressionValue}} {{expressionUnit}}',
           weekTimeGoal: 'Esta semana: dedicado {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
-        }
+        },
+        longPressMenu: {
+          edit: 'Editar actividad',
+          viewGoal: 'Ver meta'
+        },
+    },
+
+    dayContent: {
+      futureWarningTitle: 'Este es un día futuro',
+      futureWarningSubtitle: 'Mañana es mañana.\nPreocupaciones futuras tienen curas futuras,\nY debemos de ocuparnos de hoy.\n — Sofocles',
     },
 
     dateWheelPicker: {
@@ -13,9 +22,25 @@ const es= {
         acept: 'OK'
       }
     },
+
+    archivedGoalsScreen: {
+      title: 'Metas archivadas',
+      empty: 'No hay ninguna meta archivada',
+      longPressMenu: {
+        restore: "Restaurar meta"
+      }
+    },
+
+    archivedActivitiesScreen: {
+      title: 'Archivo: {{goalName}}',
+      empty: 'Esta meta no tiene actividades archivadas',
+      longPressMenu: {
+        restore: "Restaurar actividad"
+      }
+    },
   
     deleteDialog: {
-        delete: 'Borrar',
+        delete: 'Archivar',
         cancel: 'Cancelar'
     },
   
@@ -24,15 +49,22 @@ const es= {
     },
   
     activityDetail: {
-        threeDotsMenu: {
-          editActivity: 'Editar actividad',
-          deleteActivity: 'Borrar actividad'
-        },
-        helpIconText: 'Estos son los detalles de una actividad pasada. Incluso si has modificado el objetivo o la frecuencia de la actividad, aquí podrás verla exactamente como fue ese día.',
-        deleteDialog: {
-          title: '¿Borrar actividad?',
-          body: "Esta acción no puede deshacerse."
-        },
+      threeDotsMenu: {
+        editActivity: 'Editar actividad',
+        deleteActivity: 'Archivar actividad',
+        changeGoal: "Mover a otra meta",
+      },
+      helpIconText: 'Estos son los detalles de una actividad pasada. Incluso si has modificado el objetivo o la frecuencia de la actividad, aquí podrás verla exactamente como fue ese día.',
+      deleteDialog: {
+        title: '¿Archivar actividad?',
+        body: "Podrás restaurarla desde el menu superior derecho de la pantalla de su meta."
+      },
+      changeGoalDialogTitle: "Seleccionar nueva meta",
+      changeGoalDialogCancel: "Cancelar",
+      changeGoalDialogBody: 'Meta actual: {{currentGoal}}',
+      changeGoalSnackbar: "Actividad movida a otra meta",
+      archivedWarning: "Esta actividad está archivada",
+      restoreButton: "Restaurar actividad",
     },
   
     basicActivityInfo: {
@@ -46,7 +78,8 @@ const es= {
           timeDedicated: '{{expressionValue}} {{expressionUnit}} dedicados en total',
           daysCompleted: ' actividades completadas',
           repetitions: ' repeticiones realizadas',
-
+          filterByGoal: 'Filtrar por meta',
+          allGoals: 'Todas las metas'
         },
         weekStats: {
           title: 'Esta semana',
@@ -54,6 +87,16 @@ const es= {
           daysCompleted: ' actividades completadas'
   
         }
+    },
+
+    barchart: {
+      time: 'Tiempo',
+      repetitions: 'Repeticiones',
+      completed: 'Completadas',
+      month: 'Mes',
+      week: 'Semana',
+      date: 'Fecha',
+      minutes: 'Minutos',
     },
 
     statsScreen: {
@@ -98,7 +141,11 @@ const es= {
           freeDescription: 'Elige cuando hacerlas sobre la marcha.',
           weeklyTitle: 'Total semanal',
           weeklyDescription: 'Cumple con un objetivo cada semana.'
-        }
+        },
+        snackbar: {
+          activityCreated: 'Actividad creada',
+          activityUpdated: 'Actividad editada',
+        },
       },
       
     calendar: {
@@ -108,7 +155,7 @@ const es= {
           header: '{{day}} de {{month}} , {{year}}'
         },
         weekView: {
-          header: 'Semana del {{weekStartDate}} al {{weekEndDate}}',
+          header: '{{weekStartDate}} - {{weekEndDate}} {{year}}',
           sortByGoal: 'Ordenar por meta',
           sortByActivity: 'Ordenar por actividad'
         },
@@ -132,22 +179,42 @@ const es= {
       threeDotsMenu: {
         editGoal: 'Editar meta',
         deleteGoal: 'Eliminar meta',
+        viewArchivedActivities: 'Ver actividades archivadas',
       },
       deleteDialog: {
-        title: '¿Eliminar meta?',
-        body: "Se borrará la meta y todas sus actividades. No puede deshacerse.",
+        title: '¿Archivar meta?',
+        body: "Podrás ver la meta y restaurarla más adelante desde el menú de la pantalla de metas.",
       },
-      infoContent: "Esta meta no tiene ninguna actividad todavía.\n\nUna actividad es una tarea recurrente que puede tener o no un requisito de tiempo.\n\nPara cada meta deberías crear las actividades que vayan a ayudarte a completar la meta si las realizas con constancia.\n\nDiseñar tus actividades de esta forma te permitirán irte a la cama pensando: \"Hoy he hecho todo lo que tenía que hacer\"."
+      infoContent: "Esta meta no tiene ninguna actividad todavía.\n\nUna actividad es una tarea recurrente que puede tener o no un requisito de tiempo.\n\nPara cada meta deberías crear las actividades que vayan a ayudarte a completar la meta si las realizas con constancia.\n\nDiseñar tus actividades de esta forma te permitirán irte a la cama pensando: \"Hoy he hecho todo lo que tenía que hacer\".",
+      archivedWarning: "Esta meta está archivada",
+      restoreButton: "RESTAURAR META",
+      longPressMenu: {
+        edit: "Editar",
+        archive: "Archivar",
+        move: "Mover a otra meta",
+      }
     },
 
     goals: {
         headerTitle: 'Metas',
-        infoContent: "No tienes metas todavía.\n\nLas metas son la base de Goaliath, son las cosas que quieres conseguir, dedicar tiempo o trabajar en ellas.\n\nPuedes crear una nueva meta pulsando el icono +."
+        goalDescription: '{{activitiesNumber}} actividades activas',
+        infoContent: "No tienes metas todavía.\n\nLas metas son la base de Goaliath, son las cosas que quieres conseguir, dedicar tiempo o trabajar en ellas.\n\nPuedes crear una nueva meta pulsando el icono +.",
+        menu: {
+          viewArchived: "View archived goals",
+        },
+        longPressMenu: {
+          add: "Añadir nueva actividad",
+          edit: "Editar",
+          archive: "Archivar",
+          viewArchivedActivities: "Ver actividades archivadas",
+        }
     },
 
     settings: {
         headerTitle: 'Ajustes',
         startHour: 'Hora de inicio del día',
+        todaySnackbar: 'El día de hoy terminará a las {{startHour}} de mañana.',
+        yesterdaySnackbar: 'Has regresado al día de ayer. Terminará a las {{startHour}} de hoy.',
         startHourDescription: 'A esta hora se reiniciarán las actividades diarias' ,
         feedback: 'Mándanos tus sugerencias',
         feedbackDescription: 'Manda un mensaje a los desarrolladores',
@@ -178,15 +245,26 @@ const es= {
       headerTitle: 'Hoy',
       infoContent: 'No hay actividades programadas para esta semana. Puedes ir a la sección "Metas" para crear nuevas actividades.',
       selectWeekliesTitle: 'Elige las actividades semanales para hoy',
-      selectWeekliesDescription: 'Pulsa aquí',
+      selectWeekliesDescription: '{{weekActivitiesNumber}} actividades, {{weekProgress}}% completado esta semana',
       selectTasksTitle: 'Añade las tareas puntuales de hoy',
       selectTasksDescription: 'Pulsa para añadir',
       oneTimeTaskDescription: 'Tarea puntual',
+      dayChangeDialogTitle: "¡Buenos días!",
+      dayChangeDialogBody: "El día ha cambiado a {{date}} mientras la app estaba abierta.\n\nSi necesitas hacer las actividades del día hasta más tarde, puedes cambiar la hora de inicio del día en la pantalla de ajustes.",
+      dayChangeDialogConfirmLabel: "Ver nuevo día",
     },
 
     addTasks: {
       title: 'Añade Tareas Puntuales',
       description: 'Las tareas aparencerán en este día como actividades que hacer solo una vez.',
+    },
+
+    taskList: {
+      longPressMenu: {
+        paragraph: 'Tarea puntual',
+        delete: 'Eliminar tarea',
+        deleteSnackbar: 'Tarea eliminada',
+      }
     },
     
     weeklyActivities: {
@@ -219,17 +297,25 @@ const es= {
     activityHandler: {
       activityTypes: {
         doNSecondsEachWeek: {
-          frequencyString: '{{expressionValue}} {{expressionUnit}} a la semana'
+          frequencyString: '{{expressionValue}} {{expressionUnit}} a la semana',
+          completed: 'Completada',
+          secondsLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}'
         },
         doNTimesEachWeek: {
-          frequencyString: '{{repetitions}} repeticiones a la semana'
+          frequencyString: '{{repetitions}} repeticiones a la semana',
+          listItemDescription: '{{todayReps}} reps hoy - {{repsLeft}} de {{weeklyRepsGoal}} esta semana',
+          weeklyCompletedDescription: '{{repetitionsGoal}} repeticiones completadas',
+          timesLeft: 'Quedan {{repetitionsLeft}} repeticiones',
+          completed: 'Completada'
         },
         doFixedDays: {
           everyDayFrequencyString: 'cada día',
           frequencyString: 'los {{daysOfWeek}}',
         },
         doNDaysEachWeek: {
-          frequencyString: '{{days}} días a la semana'
+          frequencyString: '{{days}} días a la semana',
+          completed: 'Completada',
+          daysLeft: 'Quedan {{daysLeft}} días'
         }
       },
       dailyGoals: {
@@ -240,6 +326,7 @@ const es= {
         },
         doNTimes: {
           frequencyString: '{{repetitions}} veces',
+          listItemDescription: '{{todayReps}} de {{repsGoal}} reps hechas hoy',
         },
         doOneTime: {
           frequencyString: 'Hacer',
@@ -334,6 +421,17 @@ const es= {
       blog: 'Sitio web',
       blogURL: 'https://goaliath-app.github.io/es/',
       appName: 'Goaliath'
+    },
+
+    notifications: {
+      timer: {
+        title: 'Estás trabajando en: ',
+        body: '{{activityName}}'
+      },
+      complete: {
+        title: 'Has completado la actividad: ',
+        body: '{{activityName}}'
+      }
     }
   }
 }

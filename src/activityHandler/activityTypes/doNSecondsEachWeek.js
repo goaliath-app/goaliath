@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { 
   selectActivityById, selectEntryByActivityIdAndDate, toggleCompleted, 
   stopTodayTimer, startTodayTimer, selectActivityByIdAndDate, getWeeklyStats, 
-  getTodaySelector 
+  getTodaySelector, isActiveSelector, archiveOrDeleteEntry, getPeriodStats,
 } from '../../redux'
 import { isActivityRunning, getPreferedExpression, getTodayTime, roundValue } from '../../util'
-import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
+import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import Duration from 'luxon/src/duration.js'
 import { View } from 'react-native'
@@ -17,6 +17,7 @@ import PauseFilledIcon from '../../../assets/pause-filled'
 import PauseOutlinedIcon from '../../../assets/pause-outlined'
 import { ActivityListItemColors } from '../../styles/Colors'
 import { ActivityListItem, DoubleProgressBar } from '../../components'
+import Notifications from '../../notifications';
 
 const TodayScreenItem = ({ activityId, date }) => {
   const dispatch = useDispatch()
@@ -37,18 +38,25 @@ const TodayScreenItem = ({ activityId, date }) => {
   const weeklyProgress = Math.min(weeklyTime.as('seconds') / secondsGoal, 1)
   const totalProgress = Math.min(totalTime.as('seconds') / secondsGoal, 1) 
   const timerIsRunning = isActivityRunning(entry.intervals)
+  const secondsRemaining = secondsGoal - totalTime.as('seconds')
 
   // function definitions
   function onPressPause(){
+    //Stop Timer
     if(date.toISO() == todayDate.toISO()){
       dispatch(stopTodayTimer( activityId ))
     }
+    //Dismiss notifications
+    Notifications.timerStoped(activityId)
   }
 
   function onPressStart(){
+    //Start Timer
     if(date.toISO() == todayDate.toISO()){
      dispatch(startTodayTimer( activityId ))
     }
+    //Send timer notifications
+    Notifications.timerStarted(activity, entry, secondsRemaining, t)
   }
 
   function update(){
@@ -78,13 +86,18 @@ const TodayScreenItem = ({ activityId, date }) => {
     if(entry.completed){
       leftSlot = <IconButton icon={() => <PauseFilledIcon />} onPress={onPressPause} />
     }else{
-      leftSlot = <IconButton icon={() => <PauseOutlinedIcon />} onPress={onPressPause} />
+      leftSlot = <IconButton icon={() => <PauseOutlinedIcon />} 
+                    onLongPress={() => {dispatch(toggleCompleted({date: date, id: activityId}));
+                                        dispatch(stopTodayTimer( activityId ))}}
+                    onPress={onPressPause} />
     }
   }else{
     if(entry.completed){
       leftSlot = <IconButton icon={() => <PlayFilledIcon />} onPress={onPressStart} />
     }else{
-      leftSlot = <IconButton icon={() => <PlayOutlinedIcon />} onPress={onPressStart} />
+      leftSlot = <IconButton icon={() => <PlayOutlinedIcon />} 
+                    onLongPress={() => dispatch(toggleCompleted({date: date, id: activityId}))}
+                    onPress={onPressStart} />
     }
   }
 
@@ -170,26 +183,6 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
   )
 }
 
-
-// TODO: atm it just shows as done days with a entry that has completed==true
-// intended: show as done days that has tracked time > 0 
-const WeekView = ({ activityId, date, todayChecked }) => {
-  // selectors
-  const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, date, activityId))
-  const activity = useSelector( state => selectActivityById(state, activityId) )
-
-  const daysDone = (
-    todayChecked=='checked'?
-      [ ...daysDoneList, date.weekday ]
-    : 
-      daysDoneList
-  )
-
-  return (
-    <BaseWeekView dayOfWeek={date.weekday} daysDone={daysDone} daysLeft={[]} />
-  )
-}
-
 function getFrequencyString(state, activityId, t, date=null){
   const activity = selectActivityByIdAndDate(state, activityId, date)
   const seconds = activity.params.seconds
@@ -200,15 +193,15 @@ function getFrequencyString(state, activityId, t, date=null){
 function getWeekProgressString(state, activityId, date, t){
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   //selectors
-  const { weeklyTime} = useSelector((state) => getWeeklyStats(state, date, activity.id))
+  const { loggedTime } = getPeriodStats(state, date.startOf('week'), date, activity.id)
   
   // calculations
   const secondsTarget = activity.params.seconds
   const timeTarget = Duration.fromObject({seconds: secondsTarget}).shiftTo('hours', 'minutes', 'seconds')
-  let timeLeft = timeTarget.minus(weeklyTime)
+  let timeLeft = timeTarget.minus(loggedTime)
   timeLeft = timeLeft.as('seconds') >= 0? timeLeft : Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
   const timeExpr = getPreferedExpression(timeLeft, t)
-  return t('weeklyActivities.timeLeft', {timeExprValue: timeExpr.value, timeExprLocaleUnit: timeExpr.localeUnit})
+  return (timeExpr.value==0? t('activityHandler.activityTypes.doNSecondsEachWeek.completed') : t('activityHandler.activityTypes.doNSecondsEachWeek.secondsLeft', {timeExprValue: timeExpr.value, timeExprLocaleUnit: timeExpr.localeUnit}))
 
 }
 
@@ -228,6 +221,18 @@ function getDayActivityCompletionRatio(state, activityId, date){
       return 1
     }else{
       return Math.min(1, todaySeconds / (weeklySecondsGoal / 7) )
+    }
+  }
+}
+
+function updateEntryThunk( activityId, date ){
+  return function(dispatch, getState){
+    const state = getState()
+    const isActive = isActiveSelector(state, activityId, date)
+      
+    // if activity is active and this day is one of the selected days of the week
+    if( !isActive ){
+      dispatch( archiveOrDeleteEntry(date, activityId) )
     }
   }
 }
@@ -254,16 +259,23 @@ function getWeekActivityCompletionRatio(state, activityId, date){
   }
 }
 
+function getTimeGoal(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  return activity?.params.seconds != null ? activity.params.seconds : null
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
   TodayScreenItem,
-  WeekView,
   isWeekCompleted,
   getFrequencyString,
   getWeekProgressString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
+  updateEntryThunk,
+  getTimeGoal,
 }
 
 function isWeekCompleted( state, activityId, date ){

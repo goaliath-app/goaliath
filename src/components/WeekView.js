@@ -1,10 +1,21 @@
+/*
+   This component was used to show the current state of the week for a 
+   given activity in the selectWeekliesScreen. It has been replaced by
+   the calendar week view component and is not in use anymore.
+*/
+
+
 import React from 'react';
 import { View } from 'react-native';
 import { Subheading } from 'react-native-paper';
 import { WeekViewColor } from '../styles/Colors';
 import { useTranslation } from 'react-i18next';
 
-const WeekView = ({dayOfWeek, daysDone, daysLeft}) => {
+const WeekView = ({
+  dayOfWeek,  // int from 1 to 7 indicating which is the current weekday
+  daysDone,   // array of days to be marked as done
+  daysLeft    // array of days to be marked as left to do
+}) => {
   const { t, i18n } = useTranslation()
 
   function getDaysState(elementId, dayOfWeek){

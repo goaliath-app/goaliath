@@ -9,7 +9,6 @@ import {
   selectAllActiveActivitiesByGoalIdAndDate,
 } from "../redux"
 import activityTypes from './activityTypes'
-import { WeekView as BaseWeekView } from '../components'
 import { isActive } from '../util'
 
 import { List } from 'react-native-paper'
@@ -44,11 +43,13 @@ export const TodayScreenItem = ({ activityId, date }) => {
 }
 
 export function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){
+  const isActivityActive = useSelector( state => isActiveSelector(state, activity.id, today) )
+
   const activityType = activityTypes[activity.type]
   const ActivityTypeSelectWeekliesItemDue = activityType.SelectWeekliesItemDue
 
   return (
-    ActivityTypeSelectWeekliesItemDue?
+    isActivityActive && ActivityTypeSelectWeekliesItemDue?
       <ActivityTypeSelectWeekliesItemDue activity={activity} today={today} isChecked={isChecked} onCheckboxPress={onCheckboxPress} isSelected={isSelected} onPress={onPress} />
       :
       null
@@ -56,11 +57,13 @@ export function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPr
 }
 
 export function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
+  const isActivityActive = useSelector( state => isActiveSelector(state, activity.id, today) )
+
   const activityType = activityTypes[activity.type]
   const ActivityTypeSelectWeekliesItemCompleted = activityType.SelectWeekliesItemCompleted
 
   return (
-    ActivityTypeSelectWeekliesItemCompleted?
+    isActivityActive && ActivityTypeSelectWeekliesItemCompleted?
       <ActivityTypeSelectWeekliesItemCompleted activity={activity} today={today} isSelected={isSelected} onPress={onPress} />
       :
       null
@@ -79,21 +82,6 @@ export function usesSelectWeekliesScreen(state, activityId){
       || activityType.SelectWeekliesItemDue !== undefined )
   )
 }
-
-export const WeekView = ({ activityId, date, todayChecked }) => {
-  const activity = useSelector( state => selectActivityById( state, activityId ) )
-
-  const activityType = activityTypes[activity.type]
-  const ActivityTypeWeekView = activityType.WeekView
-
-  return(
-    ActivityTypeWeekView?
-      <ActivityTypeWeekView activityId={activityId} date={date} todayChecked={todayChecked} />
-      : 
-      <BaseWeekView dayOfWeek={date.weekday} daysDone={todayChecked=='checked'?[date.weekday]:[]} daysLeft={[]} />
-  )
-}
-
 
 /* ATM solely for creating entry of weekly activities when they are selected in the SelectWeekliesScreen */
 export function addEntryThunk( activityId, date ){
@@ -227,18 +215,11 @@ export function getWeekActivityCompletionRatio(state, activityId, date){
   }
 }
 
-export function getWeekCompletionRatio(state, date, goalId=null){
+function getActivitySetWeekCompletionRatio(state, activities, date){
   const weekEndDate = date.endOf("week")
 
   // get the number of active activities this week
   const dueActivities = []
-
-  let activities;
-  if(goalId != null){
-    activities = selectAllActiveActivitiesByGoalIdAndDate(state, goalId, weekEndDate)
-  }else{
-    activities = selectAllActiveActivitiesByDate(state, weekEndDate)
-  }
   
   activities.forEach( activity => {
     if( dueThisWeek(state, activity.id, weekEndDate) ){
@@ -259,6 +240,33 @@ export function getWeekCompletionRatio(state, date, goalId=null){
   }else{
     return completionAccumulator / dueActivities.length
   }
+}
+
+export function getGoalWeekCompletionRatio(state, date, goalId){
+  const weekEndDate = date.endOf("week")
+
+  const activities = selectAllActiveActivitiesByGoalIdAndDate(state, goalId, weekEndDate)
+
+  return getActivitySetWeekCompletionRatio(state, activities, date)
+}
+
+export function getWeekCompletionRatio(state, date){
+  const weekEndDate = date.endOf("week")
+
+  const activities = selectAllActiveActivitiesByDate(state, weekEndDate)
+
+  return getActivitySetWeekCompletionRatio(state, activities, date)
+}
+
+export function getFreeActivitiesWeekCompletionRatio(state, date){
+  const weekEndDate = date.endOf("week")
+
+  let activities = selectAllActiveActivitiesByDate(state, weekEndDate)
+  activities = activities.filter( activity => {
+    return usesSelectWeekliesScreen(state, activity.id)
+  })
+
+  return getActivitySetWeekCompletionRatio(state, activities, date)
 }
 
 function dueThisWeek(state, activityId, date){
@@ -313,5 +321,39 @@ export function dueToday(state, activityId, date){
     return activityType.dueToday(state, activityId, date)
   }else{
     return false
+  }
+}
+
+export function usesRepetitions(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  
+  if(!activity){
+    return false
+  }
+
+  const activityType = activityTypes[activity.type]
+    
+  if(activityType.usesRepetitions){
+    return activityType.usesRepetitions(state, activityId, date)
+  }else{
+    return false
+  }
+}
+
+// returns the number of seconds of the time goal or null if the activity
+// doesn't have a time goal
+export function getTimeGoal(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  
+  if(!activity){
+    return null
+  }
+
+  const activityType = activityTypes[activity.type]
+    
+  if(activityType.getTimeGoal){
+    return activityType.getTimeGoal(state, activityId, date)
+  }else{
+    return null
   }
 }

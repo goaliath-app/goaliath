@@ -69,7 +69,8 @@ export function getPreferedExpression(duration, t){
 export function newEntry(activity){
   return(
     {
-      intervals: [], 
+      intervals: [],
+      repetitions: [],
       completed: null, 
       id: activity.id,
       archived: false
@@ -183,4 +184,16 @@ export function getPreviousDate(datesArray, date){
   }
 
   return getItemPreviousToValue(datesArray, date, isLessThan)
+}
+
+export function getNewestDate(isoDatesList){
+  const epoch = DateTime.fromMillis(0)
+
+  const loggedDateTimes = isoDatesList.map((isoDate) => DateTime.fromISO(isoDate))
+  
+  const newestLogDate = loggedDateTimes.reduce((curr, prev) => {
+    return curr>=prev? curr : prev
+  }, epoch)
+
+  return newestLogDate
 }

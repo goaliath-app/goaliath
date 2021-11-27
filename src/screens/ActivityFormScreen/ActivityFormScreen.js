@@ -1,16 +1,20 @@
 import React from 'react';
 import { connect, useSelector, useDispatch } from 'react-redux'
-import { KeyboardAvoidingView, Platform, ScrollView, Keyboard, Pressable, View, StyleSheet } from 'react-native';
+import { Keyboard, Pressable, View, StyleSheet } from 'react-native';
 import { Appbar, TextInput, HelperText, Subheading, Portal, Dialog, Divider, List, Switch, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
-import { Header, TimeInput } from '../../components';
+import { Header, TimeInput, BottomScreenPadding } from '../../components';
 import { setActivity, selectActivityById } from '../../redux'
 import { GeneralColor, ActivityFormColor } from '../../styles/Colors';
 import NumberOfWeeklyDaysInput from './NumberOfWeeklyDaysInput'
 import WeekdaySelector from './WeekdaySelector'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Context } from '../../../App'
 
 
 const ActivityFormScreen = ({ route, navigation }) => {
+
+  const { showSnackbar } = React.useContext(Context);
 
   // extract data from route params and redux
   const activityId = route.params.activityId
@@ -40,12 +44,26 @@ const ActivityFormScreen = ({ route, navigation }) => {
     activity?.type == 'doNTimesEachWeek'? 'weekly' :
     null
   )
-  const initialSeconds = (
-    activity?.params.seconds? activity.params.seconds :
-    activity?.params.dailyGoal?.params.seconds? activity.params.dailyGoal.params.seconds :
-    0
+
+  const initialDailySeconds = (
+    activity && activity.type == "doFixedDays" && activity.params.dailyGoal == "doNSeconds"?
+      activity.params.dailyGoal.params.seconds
+      : 0
   )
-  const initialTimeGoalSwitch = initialSeconds? true : false
+
+  const initialFreeSeconds = (
+    activity && activity.type == "doNDaysEachWeek" && activity.params.dailyGoal == "doNSeconds"?
+    activity.params.dailyGoal.params.seconds
+    : 0
+  )
+
+  const initialWeeklySeconds = (
+    activity && activity.type == "doNSecondsEachWeek" & activity.params.seconds?
+    activity.params.seconds
+    : 0
+  )
+
+  const initialTimeGoalSwitch = initialDailySeconds || initialFreeSeconds || initialWeeklySeconds ? true : false
   const initialRepetitions = (
     activity?.params.repetitions? activity.params.repetitions :
     activity?.params.dailyGoal?.params.repetitions? activity.params.dailyGoal.params.repetitions :
@@ -68,7 +86,9 @@ const ActivityFormScreen = ({ route, navigation }) => {
   const [name, setName] = React.useState(initialName)
   const [description, setDescription] = React.useState(initialDescription)
   const [frequencySelector, setFrequencySelector] = React.useState(initialfrequencySelector)  // 'daily', 'free' or 'weekly'
-  const [seconds, setSeconds] = React.useState(initialSeconds) // 'seconds'
+  const [dailySeconds, setDailySeconds] = React.useState(initialDailySeconds) // 'seconds' daily activities
+  const [freeSeconds, setFreeSeconds] = React.useState(initialFreeSeconds) // 'seconds' free activities
+  const [weeklySeconds, setWeeklySeconds] = React.useState(initialWeeklySeconds) // 'seconds' weekly activities
   const [repetitions, setRepetitions] = React.useState(initialRepetitions) // 'repetitions'
   const [daysOfWeek, setDaysOfWeek] = React.useState(initialDaysOfWeek) // '1', '2', '3', '4', '5', '6', '7'
   const [days, setDays] = React.useState(initialDays) // int
@@ -100,7 +120,13 @@ const ActivityFormScreen = ({ route, navigation }) => {
       error = true
     }
     
-    if(timeGoalSwitch && !seconds){
+    if(
+      timeGoalSwitch && (
+        frequencySelector == "daily" && !dailySeconds
+        || frequencySelector == "weekly" && !weeklySeconds
+        || frequencySelector == "free" && !freeSeconds
+      )
+    ){
       setTimeInputError(true)
       error = true
     }
@@ -148,7 +174,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
           if(timeGoalSwitch){
             dailyGoal = {
               type: 'doNSeconds',
-              params: { seconds }
+              params: { seconds: dailySeconds }
             }
           }else if(multipleTimesSwitch){
             dailyGoal = {
@@ -171,14 +197,14 @@ const ActivityFormScreen = ({ route, navigation }) => {
           params = {
             days: Number.parseInt(days), 
             dailyGoal: (
-              timeGoalSwitch? {type: 'doNSeconds', params: { seconds } } :
+              timeGoalSwitch? {type: 'doNSeconds', params: { seconds: freeSeconds } } :
                 {type: 'doOneTime', params:  {}}
             )
           }
         }else if(type == 'doNTimesEachWeek'){
           params = { repetitions }
         }else if(type == 'doNSecondsEachWeek'){
-          params = { seconds }
+          params = { seconds: weeklySeconds }
         }
 
         const newActivity = { 
@@ -192,8 +218,10 @@ const ActivityFormScreen = ({ route, navigation }) => {
         if(validate()){
           if(activityId !== undefined){
             dispatch(setActivity({ ...activity, ...newActivity }))
+            showSnackbar(t("activityForm.snackbar.activityUpdated"))
           }else{
             dispatch(setActivity({ ...newActivity, archived: false, active: true }))
+            showSnackbar(t("activityForm.snackbar.activityCreated"))
           }
           navigation.goBack()
         }
@@ -202,16 +230,13 @@ const ActivityFormScreen = ({ route, navigation }) => {
   )
 
   return(
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}
-    >
+    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header 
         title={activity?.name?activity.name:t('activityForm.headerTitle')} 
         left='back' navigation={navigation} 
         buttons={headerButtons}
       />
-      <ScrollView style={{flexGrow: 0}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
+      <KeyboardAwareScrollView style={{flexGrow: 0}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
         <TextInput 
           error={nameInputError} 
           style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, height: 55, backgroundColor: GeneralColor.textInputBackground}} 
@@ -241,7 +266,11 @@ const ActivityFormScreen = ({ route, navigation }) => {
         />
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
-        <Pressable style={{borderWidth: 1, margin: 20, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {setFrequencyVisible(true), setNoFrequencyError(false)}}>
+        <Pressable style={{borderWidth: 1, margin: 20, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {
+          Keyboard.dismiss()
+          setFrequencyVisible(true)
+          setNoFrequencyError(false)
+        }}>
           <Text style={{ fontSize: 16 }}>{!frequencySelector? t('activityForm.frequencyLabel')
             :frequencySelector=='daily'? t('activityForm.dialog.dailyTitle')
             :frequencySelector=='free'? t('activityForm.dialog.freeTitle')
@@ -378,11 +407,18 @@ const ActivityFormScreen = ({ route, navigation }) => {
             {timeGoalSwitch?
               <View>
                 <TimeInput
-                  value={seconds}
+                  value={frequencySelector=='daily'? dailySeconds :
+                          frequencySelector=='free'? freeSeconds :
+                          frequencySelector=='weekly'? weeklySeconds :
+                          null}
                   onValueChange={ (value) => {
-                    setSeconds(value)
+                    frequencySelector=='daily'? setDailySeconds(value) :
+                    frequencySelector=='free'? setFreeSeconds(value) :
+                    frequencySelector=='weekly'? setWeeklySeconds(value) :
+                    null
                     setTimeInputError(false)
                   }}
+                  maxHours={frequencySelector=='weekly'? 99 : 23}
                 />
                 <HelperText 
                   style={{
@@ -422,8 +458,9 @@ const ActivityFormScreen = ({ route, navigation }) => {
               </Dialog.Content>
           </Dialog>
         </Portal>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        <BottomScreenPadding />
+      </KeyboardAwareScrollView>
+    </View>
   )
 }
 

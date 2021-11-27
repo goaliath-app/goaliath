@@ -21,6 +21,17 @@ function updateEntryThunk( activityId, date ){
   }
 }
 
+function usesRepetitions(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
+
+  if(dailyGoal.usesRepetitions){
+    return dailyGoal.usesRepetitions(state, activityId, date)
+  }else{
+    return false
+  }
+}
+
 const TodayScreenItem = ({ activityId, date }) => {
   const activity = useSelector( state => selectActivityByIdAndDate(state, activityId, date) )
 
@@ -31,7 +42,8 @@ const TodayScreenItem = ({ activityId, date }) => {
 }
 
 function getFrequencyString(state, activityId, t, date=null){
-    const activity = selectActivityByIdAndDate(state, activityId, date)
+  const activity = date? selectActivityByIdAndDate(state, activityId, date)
+    : selectActivityById(state, activityId)
 
   const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
   
@@ -79,6 +91,14 @@ function getWeekProgressString(state, activityId, date, t){
 
 function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  // getWeekActivityCompletionRatio can call this function on an activity
+  // that is not of type 'doFixedDays', so we need to check if the activity
+  // has a dailyGoal
+  if(!activity.params.dailyGoal){
+    return 0
+  }
+
   const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
 
   return dailyGoal.getDayActivityCompletionRatio(state, activityId, date)
@@ -133,6 +153,18 @@ function dueToday(state, activityId, date){
   }
 }
 
+function getTimeGoal(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  if( !activity?.params.dailyGoal ) return null
+
+  const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
+  
+  if( !dailyGoal?.getTimeGoal ) return null
+  
+  return dailyGoal.getTimeGoal(state, activityId, date)
+}
+
 export default {
   dueToday,
   updateEntryThunk,
@@ -141,4 +173,6 @@ export default {
   getWeekProgressString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
+  usesRepetitions,
+  getTimeGoal,
 }

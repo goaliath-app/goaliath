@@ -6,27 +6,31 @@ import {
 import { ScrollView, View } from 'react-native';
 import { List, Text } from 'react-native-paper';
 import { CalendarWeekItem, Checkbox, Header } from '../components';
-import { getWeekProgressString, getWeekActivityCompletionRatio, getWeekCompletionRatio } from '../activityHandler';
+import { getWeekProgressString, getWeekActivityCompletionRatio, getGoalWeekCompletionRatio } from '../activityHandler';
 import { useTranslation } from 'react-i18next';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { CalendarColor, GeneralColor } from '../styles/Colors';
 import { useNavigation } from '@react-navigation/native';
 import { DateTime } from 'luxon'
 
+//TODO: Fix frequency traduction.
+      //Fix activity name and activity frequency to show both
 const ActivityWeekView = ({ activityId, date }) => {
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   const { t, i18n } = useTranslation()
   const WeekProgress = useSelector((state) => getWeekProgressString(state, activityId, date, t))
 
+  const navigation = useNavigation()
+
   return(
     <View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, paddingVertical: 10 }}>
-        <Text style={{ fontWeight: 'bold' }}>{activity.name}</Text>
-        <Text>{WeekProgress}</Text>
+        <Text style={{ flex: 1, fontWeight: 'bold' }}>{activity.name}</Text>
+        <Text style={{paddingLeft: 10}}>{WeekProgress}</Text>
       </View>
       <View style={{ paddingHorizontal: 20 }}>
         <CalendarWeekItem  
-          activityId={activityId} date={date} showDayNumbers={false} showWeekProgress={true} softTodayHighlight={true} />
+          activityId={activityId} date={date} showDayNumbers={false} showWeekProgress={true} softTodayHighlight={true} onDayPress={dayDate => navigation.navigate('ActivityDetail', {activityId, date: dayDate.toISO()})}/>
       </View>
     </View>
   )
@@ -45,11 +49,12 @@ const GoalWeekView = ({ goalId, date }) => {
 
   goalActivities.sort((a, b) => activityCompletionRatios[b.id] - activityCompletionRatios[a.id])
 
-  const goalCompletionRatio = useSelector(state => getWeekCompletionRatio(state, date, goalId))
+  const goalCompletionRatio = useSelector(state => getGoalWeekCompletionRatio(state, date, goalId))
   
   return (
     <View>
       <List.Accordion title={goal.name} 
+        titleNumberOfLines={2}
         style={{ backgroundColor: GeneralColor.screenBackground, borderBottomWidth: 0.2, borderBottomColor: CalendarColor.goalDivider, borderTopWidth: 0.2, borderTopColor: CalendarColor.goalDivider,paddingLeft: 10 }} 
         left={() => (
           <AnimatedCircularProgress
@@ -69,7 +74,7 @@ function headerTitle(date, t){
   const weekStart = date.startOf("week")
   const weekEnd = date.endOf("week")
 
-  return t('calendar.weekView.header', {weekStartDate: dayLabel(weekStart, t), weekEndDate: dayLabel(weekEnd, t) })
+  return t('calendar.weekView.header', {weekStartDate: dayLabel(weekStart, t), weekEndDate: dayLabel(weekEnd, t), year: date.toFormat('yyyy') })
 }
 
 function dayLabel(date, t){
@@ -95,7 +100,7 @@ const CalendarWeekViewScreen = ({ route }) => {
 
   const goalsCompletionRatios = {}
   goals.forEach(goal => {
-    goalsCompletionRatios[goal.id] = getWeekCompletionRatio(state, date, goal.id)
+    goalsCompletionRatios[goal.id] = getGoalWeekCompletionRatio(state, date, goal.id)
   })
 
   goals.sort((a, b) => goalsCompletionRatios[b.id] - goalsCompletionRatios[a.id])

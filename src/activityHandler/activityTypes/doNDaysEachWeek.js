@@ -1,7 +1,11 @@
 import React from 'react';
 import { Text } from 'react-native-paper'
 import { useSelector } from 'react-redux'
-import { selectActivityById, selectActivityByIdAndDate, getWeeklyStats, selectEntryByActivityIdAndDate } from '../../redux'
+import { 
+  selectActivityById, selectActivityByIdAndDate, getWeeklyStats, 
+  selectEntryByActivityIdAndDate, isActiveSelector, archiveOrDeleteEntry,
+  getPeriodStats,
+} from '../../redux'
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import dailyGoals from './dailyGoals'
 import { useTranslation } from 'react-i18next';
@@ -16,12 +20,23 @@ const TodayScreenItem = ({ activityId, date }) => {
   return <DailyGoalTodayScreenItem activityId={activityId} date={date} />
 }
 
+function usesRepetitions(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
+
+  if(dailyGoal.usesRepetitions){
+    return dailyGoal.usesRepetitions(state, activityId, date)
+  }else{
+    return false
+  }
+}
+
 function getWeekProgressString(state, activityId, date, t){
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
-  const { daysDoneCount } = useSelector((state) => getWeeklyStats(state, date, activityId))
-
+  const { daysDoneCount } = getPeriodStats(state, date.startOf('week'), date, activity.id)
+  
   const daysLeft = activity.params.days - daysDoneCount
-  return t('weeklyActivities.daysLeft', {daysLeft})
+  return (daysLeft == 0 ? t('activityHandler.activityTypes.doNDaysEachWeek.completed') : t('activityHandler.activityTypes.doNDaysEachWeek.daysLeft', {daysLeft}))
 }
 
 function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){
@@ -83,31 +98,6 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
   )
 }
 
-const WeekView = ({ activityId, date, todayChecked }) => {
-  // selectors
-  const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, date, activityId))
-  const activity = useSelector( state => selectActivityById(state, activityId) )
-
-  // calculations
-  const daysLeft = activity.params.days - daysDoneCount - (todayChecked=='checked'?1:0)
-  
-  let daysLeftList = []
-  for(let i = date.weekday+1; i < date.weekday+1 + daysLeft && i < 8; i++){
-    daysLeftList.push(i)
-  }
-  
-  const daysDone = (
-    todayChecked=='checked'?
-      [ ...daysDoneList, date.weekday ]
-    : 
-      daysDoneList
-  )
-
-  return (
-    <BaseWeekView dayOfWeek={date.weekday} daysDone={daysDone} daysLeft={daysLeftList} />
-  )
-}
-
 function getFrequencyString(state, activityId, t, date=null){
     const activity = selectActivityByIdAndDate(state, activityId, date)
 
@@ -126,10 +116,30 @@ function getFrequencyString(state, activityId, t, date=null){
   )
 }
 
+function updateEntryThunk( activityId, date ){
+  return function(dispatch, getState){
+    const state = getState()
+    const isActive = isActiveSelector(state, activityId, date)
+      
+    // if activity is active and this day is one of the selected days of the week
+    if( !isActive ){
+      dispatch( archiveOrDeleteEntry(date, activityId) )
+    }
+  }
+}
+
 function getDayActivityCompletionRatio(state, activityId, date){
   const activity = selectActivityByIdAndDate(state, activityId, date)
+  
+  // getWeekActivityCompletionRatio can call this function on an activity
+  // that is not of type 'doFixedDays', so we need to check if the activity
+  // has a dailyGoal
+  if(!activity.params.dailyGoal){
+    return 0
+  }
+  
   const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
-
+  
   return dailyGoal.getDayActivityCompletionRatio(state, activityId, date)
 }
 
@@ -155,16 +165,30 @@ function getWeekActivityCompletionRatio(state, activityId, date){
   }
 }
 
+function getTimeGoal(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  if( !activity?.params.dailyGoal ) return null
+
+  const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
+  
+  if( !dailyGoal?.getTimeGoal ) return null
+  
+  return dailyGoal.getTimeGoal(state, activityId, date)
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
   TodayScreenItem,
-  WeekView,
   isWeekCompleted,
   getFrequencyString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
   getWeekProgressString,
+  usesRepetitions,
+  updateEntryThunk,
+  getTimeGoal,
 }
 
 function isWeekCompleted( state, activityId, date ){

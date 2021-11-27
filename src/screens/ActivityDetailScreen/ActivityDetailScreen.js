@@ -1,20 +1,49 @@
 import React from 'react';
-import { View, KeyboardAvoidingView, ScrollView } from 'react-native'
-import { connect } from 'react-redux';
-import { Paragraph, Menu, Title, Divider, List } from 'react-native-paper';
+import { View } from 'react-native'
+import { connect, useDispatch } from 'react-redux';
+import { Paragraph, Menu, Title, Divider, List, Card, Button } from 'react-native-paper';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon, ActivityBarChartPicker, ActivityCalendarHeatmap } from '../../components';
+import { 
+  Header, ThreeDotsMenu, DeleteDialog, HelpIcon, DeleteActivityDialog,
+  BottomScreenPadding,
+} from '../../components';
+import { useNavigation } from '@react-navigation/native';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTodayTimer, 
-  stopTodayTimer, upsertEntry, archiveActivity 
+  stopTodayTimer, upsertEntry, archiveActivity, restoreActivity
 } from '../../redux'
 import { isToday, isFuture } from '../../util'
 import { GeneralColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { StatsPannel, MoveToGoalDialog } from '../../components'
 
-import { GenericStats, StatsPannel } from '../../components'
+const ArchivedWarning = ({ activity }) => {
+  const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+  const navigation = useNavigation()
+
+  return (
+    activity.archived?
+      <>
+      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
+        <Card.Content>
+          <Title>{t("activityDetail.archivedWarning")}</Title>
+        </Card.Content>
+        <Card.Actions style={{alignSelf: 'center'}}>
+          <Button onPress={ () => {
+            dispatch(restoreActivity(activity.id))
+            navigation.goBack()
+          }}>{t("activityDetail.restoreButton")}</Button>
+        </Card.Actions>
+      </Card>
+      <Divider />
+      </>
+    : null
+  )
+}
 
 // TODO: use selectActivityByIdAndDate instead of selectActivityById
 const ActivityDetailScreen = ({ 
@@ -30,14 +59,21 @@ const ActivityDetailScreen = ({
   date,
   dayStartHour,
 }) => {
+  const { t, i18n } = useTranslation()
+
   const dateIsToday = date?isToday(date, dayStartHour):false
   const dateIsFuture = date?isFuture(date, dayStartHour):false
-  const dateTitle = date?date.toFormat('d MMMM yyyy'):null
+  const monthLabel = date?t('units.monthNames.' + date.toFormat('MMMM').toLowerCase()):null
+  const dateTitle = ( date ? 
+    t('calendar.dayView.header', 
+      {month: monthLabel, day: date.toFormat('d'), year: date.toFormat('yyyy')}) 
+    : null
+  )
 
   const [menuVisible, setMenuVisible] = React.useState(false);  // sets the visibility of the threeDotsMenu
   const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
+  const [moveToGoalDialogVisible, setMoveToGoalDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
 
-  const { t, i18n } = useTranslation()
 
   // items that appear in the three dots menu
   const menuItems = (
@@ -52,11 +88,15 @@ const ActivityDetailScreen = ({
       setDeleteDialogVisible(true)
       setMenuVisible(false)
     }} title={t('activityDetail.threeDotsMenu.deleteActivity')}  />
+    <Menu.Item onPress={() => {
+      setMoveToGoalDialogVisible(true)
+      setMenuVisible(false)
+    }} title={t('activityDetail.threeDotsMenu.changeGoal')}  />
     </>
   )
 
   const headerButtons =  (
-    date && !dateIsToday?
+    date && !dateIsToday || activity.archived ?
     null
     :
     <ThreeDotsMenu 
@@ -68,9 +108,10 @@ const ActivityDetailScreen = ({
   )
 
   return(
-    <KeyboardAvoidingView style={{flex:1,backgroundColor: GeneralColor.screenBackground}} >
+    <View style={{flex:1,backgroundColor: GeneralColor.screenBackground}} >
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
-      <ScrollView style={{ backgroundColor: GeneralColor.background, flex: 1 }}>
+      <KeyboardAwareScrollView style={{ backgroundColor: GeneralColor.background, flex: 1 }}>
+        <ArchivedWarning activity={activity} />
         {date && !dateIsToday? 
         <>
         <List.Item 
@@ -96,7 +137,8 @@ const ActivityDetailScreen = ({
           stopTodayTimer={stopTodayTimer} 
           upsertEntry={upsertEntry} 
           date={date} 
-          dayStartHour={dayStartHour} 
+          dayStartHour={dayStartHour}
+          activity={activity}
         /> 
         : 
           entry?
@@ -114,20 +156,25 @@ const ActivityDetailScreen = ({
         }
 
         <StatsPannel activityId={activity.id} />
-      </ScrollView>
 
-      <DeleteDialog 
-        visible={deleteDialogVisible} 
-        setVisible={setDeleteDialogVisible}
+        <BottomScreenPadding />
+      </KeyboardAwareScrollView>
+
+      <DeleteActivityDialog
+        visible={deleteDialogVisible}
+        onDismiss={() => setDeleteDialogVisible(false)}
         onDelete={() => {
-          archiveActivity(activity.id)
-          setDeleteDialogVisible(false)
           navigation.goBack()
         }}
-        title={t('activityDetail.deleteDialog.title')}
-        body={t('activityDetail.deleteDialog.body')}
+        activityId={activity.id}
       />
-    </KeyboardAvoidingView>
+
+      <MoveToGoalDialog 
+        visible={moveToGoalDialogVisible} 
+        setVisible={setMoveToGoalDialogVisible} 
+        activityId={activity.id} 
+      />
+    </View>
   )
 }
 
