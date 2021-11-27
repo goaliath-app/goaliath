@@ -4,7 +4,11 @@ const en = {
       description: {
         todayTimeGoal: 'Goal: {{expressionValue}} {{expressionUnit}}',
         weekTimeGoal: 'This week: Done {{weeklyTimeNumber}} of {{expressionValue}} {{expressionUnit}}'
-      }
+      },
+      longPressMenu: {
+        edit: 'Edit activity',
+        viewGoal: 'View goal'
+      },
     },
 
     dayContent: {
@@ -74,12 +78,24 @@ const en = {
         timeDedicated: '{{expressionValue}} total {{expressionUnit}} dedicated',
         daysCompleted: ' activities completed',
         repetitions: ' repetitions done',
+        filterByGoal: 'Filter by goal',
+        allGoals: 'All goals'
       },
       weekStats: {
         title: 'This week',
         hoursDedicated: ' total hours dedicated',
         daysCompleted: ' activities completed'
       }
+    },
+
+    barchart: {
+      time: 'Time',
+      repetitions: 'Repetitions',
+      completed: 'Completed',
+      month: 'Month',
+      week: 'Week',
+      date: 'Date',
+      minutes: 'Minutes',
     },
 
     statsScreen: {
@@ -124,7 +140,11 @@ const en = {
         freeDescription: 'Choose when to do it on the fly',
         weeklyTitle: 'Weekly Total',
         weeklyDescription: 'Reach a certain goal each week'
-      }
+      },
+      snackbar: {
+        activityCreated: 'Activity created',
+        activityUpdated: 'Activity updated',
+      },
     },
     
     calendar: {
@@ -182,6 +202,7 @@ const en = {
         viewArchived: "View archived goals",
       },
       longPressMenu: {
+        add: "Add new activity",
         edit: "Edit",
         archive: "Archive",
         viewArchivedActivities: "View archived activities",
@@ -226,7 +247,7 @@ const en = {
       selectWeekliesDescription: '{{weekActivitiesNumber}} activities, {{weekProgress}}% completed this week',
       selectTasksTitle: 'Add one time tasks for today',
       selectTasksDescription: 'Tap here to add',
-      oneTimeTaskDescription: 'One Time Task',
+      oneTimeTaskDescription: 'One time task',
       dayChangeDialogTitle: "A new day begins!",
       dayChangeDialogBody: "The day has changed to {{date}} while the app was open.\n\nIf you need to be able to do a day's activities until a later hour, you can change the Day Start Hour in the settings screen.",
       dayChangeDialogConfirmLabel: "Go to new day",
@@ -235,6 +256,14 @@ const en = {
     addTasks: {
       title: 'Add One Time Tasks',
       description: 'The tasks will be added to this day as "do once" activities.',
+    },
+
+    taskList: {
+      longPressMenu: {
+        paragraph: 'This is a one time task',
+        delete: 'Delete Task',
+        deleteSnackbar: 'Task deleted',
+      }
     },
 
     weeklyActivities: {
@@ -273,6 +302,8 @@ const en = {
         },
         doNTimesEachWeek: {
           frequencyString: '{{repetitions}} repetitions each week',
+          listItemDescription: '{{todayReps}} done today - {{repsLeft}} of {{weeklyRepsGoal}} left this week',
+          weeklyCompletedDescription: '{{repetitionsGoal}} repetitions goal met this week',
           timesLeft: '{{repetitionsLeft}} repetitions left',
           completed: 'Completed'
         },
@@ -294,6 +325,7 @@ const en = {
         },
         doNTimes: {
           frequencyString: '{{repetitions}} times',
+          listItemDescription: '{{todayReps}} of {{repsGoal}} reps done today',
         },
         doOneTime: {
           frequencyString: 'Do',

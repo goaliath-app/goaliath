@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View, useWindowDimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, IconButton, Text } from 'react-native-paper'
+import { List, IconButton, Text, Portal, Dialog, Divider } from 'react-native-paper'
 import * as Progress from 'react-native-progress';
 import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue } from '../util'
 import { toggleCompleted, startTodayTimer, stopTodayTimer, selectAllActivities } from '../redux'
@@ -20,6 +20,9 @@ import { usesSelectWeekliesScreen, getFreeActivitiesWeekCompletionRatio } from '
 
 
 export const ActivityListItem = ({ activity, entry, date, left, description }) => {
+  const { t, i18n } = useTranslation()
+
+  const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
 
   function update(){
     const currentTime = getTodayTime(entry.intervals)
@@ -55,10 +58,31 @@ export const ActivityListItem = ({ activity, entry, date, left, description }) =
         title={activity.name}
         titleNumberOfLines={2}
         description={description}
+        onLongPress={()=>setLongPressDialogVisible(true)}
         onPress={() => {
           navigation.navigate('ActivityDetail', {activityId: activity.id, date: date.toISO()})
         }}
       />
+
+      {/* Long press menu */}
+      <Portal>
+        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+          <Dialog.Title>{activity.name}</Dialog.Title>
+            <Dialog.Content>
+              <Divider />
+              <List.Item title={t("activityListItem.longPressMenu.edit")} onPress={() => {
+                setLongPressDialogVisible(false)
+                navigation.navigate('ActivityForm', { activityId: activity.id } )
+              }} />
+              <Divider />
+              <List.Item title={t("activityListItem.longPressMenu.viewGoal")} onPress={() => {
+                setLongPressDialogVisible(false)
+                navigation.navigate('Goal', { goalId: activity.goalId } )
+              }} />
+              <Divider />
+            </Dialog.Content>
+        </Dialog>
+      </Portal>
     </View>
   )
 }

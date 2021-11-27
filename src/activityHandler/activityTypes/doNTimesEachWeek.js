@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { 
   selectEntryByActivityIdAndDate, createOrUnarchiveEntry, toggleCompleted, 
   selectActivityByIdAndDate, getWeeklyStats, getTodaySelector, setRepetitions,
-  isActiveSelector, archiveOrDeleteEntry,
+  isActiveSelector, archiveOrDeleteEntry, getPeriodStats,
 } from '../../redux'
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
@@ -48,7 +48,10 @@ const TodayScreenItem = ({ activityId, date }) => {
     leftSlot = <IconButton icon={() => <CheckboxMultipleBlankOutline />} onPress={addOne} />
   }
   
-  const description = `${todayReps} done today - ${repsLeft} of ${weeklyRepsGoal} left this week`
+  const description = t(
+    'activityHandler.activityTypes.doNTimesEachWeek.listItemDescription', 
+    { todayReps, repsLeft, weeklyRepsGoal }
+  )
   
   React.useEffect(() => {
     if( totalReps >= weeklyRepsGoal && !entry.completed ){
@@ -106,7 +109,11 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
   
   const weekCompleted = useSelector(state => isWeekCompleted(state, activity.id, today))
 
-  const description = `${activity.params.repetitions} repetitions goal met this week`
+  const description = t(
+    'activityHandler.activityTypes.doNTimesEachWeek.weeklyCompletedDescription',
+    { repetitionsGoal: activity.params.repetitions }
+  )
+  
 
   return(
     weekCompleted?
@@ -125,25 +132,6 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
       null
   )
 }
-
-
-// TODO
-// const WeekView = ({ activityId, date, todayChecked }) => {
-//   // selectors
-//   const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, date, activityId))
-//   const activity = useSelector( state => selectActivityById(state, activityId) )
-
-//   const daysDone = (
-//     todayChecked=='checked'?
-//       [ ...daysDoneList, date.weekday ]
-//     : 
-//       daysDoneList
-//   )
-
-//   return (
-//     <BaseWeekView dayOfWeek={date.weekday} daysDone={daysDone} daysLeft={[]} />
-//   )
-// }
 
 // addEntryThunk to add the repetitions field to entries of this activity type
 function addEntryThunk( activityId, date ){
@@ -165,7 +153,7 @@ function getWeekProgressString(state, activityId, date, t){
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   
   // selectors
-  const { repetitionsCount } = useSelector((state) => getWeeklyStats(state, date, activity.id))
+  const { repetitionsCount } = getPeriodStats(state, date.startOf('week'), date, activity.id)
   
  // alias values
  const weeklyRepsGoal = activity.params.repetitions
@@ -242,7 +230,6 @@ export default {
   getWeekActivityCompletionRatio,
   usesRepetitions,
   updateEntryThunk,
-  // WeekView,
 }
 
 function isWeekCompleted( state, activityId, date ){

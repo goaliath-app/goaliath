@@ -1,56 +1,79 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import { View } from 'react-native'
-import { List } from 'react-native-paper'
+import { List, Portal, Dialog, Divider, Paragraph, Title } from 'react-native-paper'
 import { getToday } from '../util'
-import { toggleTask } from '../redux'
+import { toggleTask, getTodaySelector, deleteTask, selectAllTasksByDate } from '../redux'
 import { useTranslation } from 'react-i18next'
 import { ActivityListItemColors } from '../styles/Colors'
 import Checkbox from './Checkbox'
 import { FlatList } from 'react-native';
+import { DeleteDialog } from '../components'
+import { Context } from '../../App'
 
-const TaskList = ({ tasks, onTaskPress }) => (
+
+const TaskList = ({ date, show="all" }) => {
+  const allTasks   = useSelector(state => selectAllTasksByDate(state, date))
+  const completedTasks = allTasks.filter(task => task.completed)
+  const pendingTasks = allTasks.filter(task => !task.completed)
+
+  const filteredtasks = (
+    show == "completed" ? completedTasks :
+    show == "pending" ? pendingTasks :
+    allTasks
+  )
+
+  return (
     <FlatList
-      data={tasks}
-      renderItem={({ item }) => <TaskListItem task={item} onPress={onTaskPress} />}
+      data={filteredtasks}
+      renderItem={({ item }) => <TaskListItem date={date} task={item} />}
     />
   )
+}
 
 export default TaskList
 
-const PureTaskListItem = ({ task, today, toggleTask, onPress }) => {
-    const { t, i18n } = useTranslation()
-  
-    return(
-      <View style={{ backgroundColor: ActivityListItemColors.listItemBackground }}>
-        <List.Item
-          left={() => (
-            <View>
-              <Checkbox 
-                color='black'
-                uncheckedColor='black'
-                status={task.completed? 'checked' : 'unchecked'}
-                onPress={() => {toggleTask(today, task.id)}}
-              />
-            </View>
-          )}
-          title={task.name}
-          // description={t('today.oneTimeTaskDescription')}
-          onPress={() => onPress(task)}
-        />
-      </View>
-    )
-  }
-  
-  const taskListItemActionsToProps = {
-    toggleTask,
-  }
-  
-  const taskListItemMapStateToProps = (state) => {
-    const dayStartHour = state.settings.dayStartHour
-    const today = getToday(dayStartHour)
-  
-    return { today }
-  }
-  
-  const TaskListItem = connect(taskListItemMapStateToProps, taskListItemActionsToProps)(PureTaskListItem)
+const TaskListItem = ({ date, task }) => {
+  const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
+  const dispatch = useDispatch()
+  const { t, i18n } = useTranslation()
+  const { showSnackbar } = React.useContext(Context);
+
+  return(
+    <View style={{ backgroundColor: ActivityListItemColors.listItemBackground }}>
+      <List.Item
+        left={() => (
+          <View>
+            <Checkbox 
+              color='black'
+              uncheckedColor='black'
+              status={task.completed? 'checked' : 'unchecked'}
+              onPress={() => {dispatch(toggleTask(date, task.id))}}
+            />
+          </View>
+        )}
+        title={task.name}
+        description={t('today.oneTimeTaskDescription')}
+        onPress={()=>{}}
+        onLongPress={() => setLongPressDialogVisible(true)}
+      />
+
+      {/* Long press menu */}
+      <Portal>
+        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+            <Dialog.Content>
+              <Title>{task.name}</Title>
+              <Paragraph style={{marginBottom: 15}}>{t("taskList.longPressMenu.paragraph")}</Paragraph>
+              <Divider />
+              <List.Item title={t("taskList.longPressMenu.delete")} onPress={() => {
+                setLongPressDialogVisible(false)
+                showSnackbar(t("taskList.longPressMenu.deleteSnackbar"))
+                dispatch(deleteTask(date, task.id))
+              }} />
+              <Divider />
+            </Dialog.Content>
+        </Dialog>
+      </Portal>
+    </View>
+  )
+}

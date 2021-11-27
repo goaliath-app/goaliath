@@ -2,15 +2,14 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View, FlatList } from 'react-native';
 import { GeneralColor, SelectWeekliesColor } from '../styles/Colors';
-import { Header, Checkbox } from '../components';
+import { Header, Checkbox, CalendarWeekItem } from '../components';
 import { useTranslation } from 'react-i18next';
-import { Appbar, List, Text } from 'react-native-paper';
+import { Appbar, List, Text, Divider } from 'react-native-paper';
 import { 
   selectAllActivities, selectEntriesByDay, weekliesSelectedToday, 
   getTodaySelector 
 } from '../redux';
-import { WeekView } from '../components';
-import { SelectWeekliesItemDue, addEntryThunk, removeEntryThunk, WeekView as ActivityHandlerWeekView, SelectWeekliesItemCompleted } from './../activityHandler'
+import { SelectWeekliesItemDue, addEntryThunk, removeEntryThunk, SelectWeekliesItemCompleted } from './../activityHandler'
 
 
 const SelectWeeklyActivitiesScreen = ({ navigation }) => {
@@ -61,14 +60,6 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
     />
   )
 
-  // computations for the selected activity
-  let weekView
-  if(selectedActivity !== null){
-    weekView = <ActivityHandlerWeekView activityId={selectedActivity} date={today} todayChecked={checkboxesState[selectedActivity]} />
-  }else{
-    weekView = <WeekView dayOfWeek={today.weekday} daysDone={[]} daysLeft={[]} />
-  }
-
   function onCheckboxPress(activityId, status){
     setCheckboxesState({...checkboxesState, [activityId]: status})
     onActivityPress(activityId)
@@ -86,7 +77,15 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
         navigation={navigation}
         buttons={headerButtons}
       />
-      { weekView }
+      <View style={{ marginHorizontal: 16, marginTop: 8 }}>
+        <CalendarWeekItem 
+          date={today}
+          activityId={selectedActivity}
+          showDayNumbers={false}
+          softTodayHighlight={false}  
+        />
+      </View>
+      <Divider />
       { activities.map( (activity) => (
           <SelectWeekliesItemDue 
             activity={activity} today={today} isChecked={checkboxesState[activity.id]} 

@@ -4,7 +4,11 @@ const es= {
         description: {
           todayTimeGoal: 'Objetivo: {{expressionValue}} {{expressionUnit}}',
           weekTimeGoal: 'Esta semana: dedicado {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
-        }
+        },
+        longPressMenu: {
+          edit: 'Editar actividad',
+          viewGoal: 'Ver meta'
+        },
     },
 
     dayContent: {
@@ -74,7 +78,8 @@ const es= {
           timeDedicated: '{{expressionValue}} {{expressionUnit}} dedicados en total',
           daysCompleted: ' actividades completadas',
           repetitions: ' repeticiones realizadas',
-
+          filterByGoal: 'Filtrar por meta',
+          allGoals: 'Todas las metas'
         },
         weekStats: {
           title: 'Esta semana',
@@ -82,6 +87,16 @@ const es= {
           daysCompleted: ' actividades completadas'
   
         }
+    },
+
+    barchart: {
+      time: 'Tiempo',
+      repetitions: 'Repeticiones',
+      completed: 'Completadas',
+      month: 'Mes',
+      week: 'Semana',
+      date: 'Fecha',
+      minutes: 'Minutos',
     },
 
     statsScreen: {
@@ -126,7 +141,11 @@ const es= {
           freeDescription: 'Elige cuando hacerlas sobre la marcha.',
           weeklyTitle: 'Total semanal',
           weeklyDescription: 'Cumple con un objetivo cada semana.'
-        }
+        },
+        snackbar: {
+          activityCreated: 'Actividad creada',
+          activityUpdated: 'Actividad editada',
+        },
       },
       
     calendar: {
@@ -184,6 +203,7 @@ const es= {
           viewArchived: "View archived goals",
         },
         longPressMenu: {
+          add: "Añadir nueva actividad",
           edit: "Editar",
           archive: "Archivar",
           viewArchivedActivities: "Ver actividades archivadas",
@@ -238,6 +258,14 @@ const es= {
       title: 'Añade Tareas Puntuales',
       description: 'Las tareas aparencerán en este día como actividades que hacer solo una vez.',
     },
+
+    taskList: {
+      longPressMenu: {
+        paragraph: 'Tarea puntual',
+        delete: 'Eliminar tarea',
+        deleteSnackbar: 'Tarea eliminada',
+      }
+    },
     
     weeklyActivities: {
       headerTitle: 'Selecciona las actividades semanales',
@@ -275,6 +303,8 @@ const es= {
         },
         doNTimesEachWeek: {
           frequencyString: '{{repetitions}} repeticiones a la semana',
+          listItemDescription: '{{todayReps}} reps hoy - {{repsLeft}} de {{weeklyRepsGoal}} esta semana',
+          weeklyCompletedDescription: '{{repetitionsGoal}} repeticiones completadas',
           timesLeft: 'Quedan {{repetitionsLeft}} repeticiones',
           completed: 'Completada'
         },
@@ -296,6 +326,7 @@ const es= {
         },
         doNTimes: {
           frequencyString: '{{repetitions}} veces',
+          listItemDescription: '{{todayReps}} de {{repsGoal}} reps hechas hoy',
         },
         doOneTime: {
           frequencyString: 'Hacer',

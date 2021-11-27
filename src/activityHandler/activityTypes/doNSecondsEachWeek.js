@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { 
   selectActivityById, selectEntryByActivityIdAndDate, toggleCompleted, 
   stopTodayTimer, startTodayTimer, selectActivityByIdAndDate, getWeeklyStats, 
-  getTodaySelector, isActiveSelector, archiveOrDeleteEntry,
+  getTodaySelector, isActiveSelector, archiveOrDeleteEntry, getPeriodStats,
 } from '../../redux'
 import { isActivityRunning, getPreferedExpression, getTodayTime, roundValue } from '../../util'
-import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
+import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import Duration from 'luxon/src/duration.js'
 import { View } from 'react-native'
@@ -183,26 +183,6 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
   )
 }
 
-
-// TODO: atm it just shows as done days with a entry that has completed==true
-// intended: show as done days that has tracked time > 0 
-const WeekView = ({ activityId, date, todayChecked }) => {
-  // selectors
-  const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, date, activityId))
-  const activity = useSelector( state => selectActivityById(state, activityId) )
-
-  const daysDone = (
-    todayChecked=='checked'?
-      [ ...daysDoneList, date.weekday ]
-    : 
-      daysDoneList
-  )
-
-  return (
-    <BaseWeekView dayOfWeek={date.weekday} daysDone={daysDone} daysLeft={[]} />
-  )
-}
-
 function getFrequencyString(state, activityId, t, date=null){
   const activity = selectActivityByIdAndDate(state, activityId, date)
   const seconds = activity.params.seconds
@@ -213,12 +193,12 @@ function getFrequencyString(state, activityId, t, date=null){
 function getWeekProgressString(state, activityId, date, t){
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   //selectors
-  const { weeklyTime} = useSelector((state) => getWeeklyStats(state, date, activity.id))
+  const { loggedTime } = getPeriodStats(state, date.startOf('week'), date, activity.id)
   
   // calculations
   const secondsTarget = activity.params.seconds
   const timeTarget = Duration.fromObject({seconds: secondsTarget}).shiftTo('hours', 'minutes', 'seconds')
-  let timeLeft = timeTarget.minus(weeklyTime)
+  let timeLeft = timeTarget.minus(loggedTime)
   timeLeft = timeLeft.as('seconds') >= 0? timeLeft : Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')
   const timeExpr = getPreferedExpression(timeLeft, t)
   return (timeExpr.value==0? t('activityHandler.activityTypes.doNSecondsEachWeek.completed') : t('activityHandler.activityTypes.doNSecondsEachWeek.secondsLeft', {timeExprValue: timeExpr.value, timeExprLocaleUnit: timeExpr.localeUnit}))
@@ -289,7 +269,6 @@ export default {
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
   TodayScreenItem,
-  WeekView,
   isWeekCompleted,
   getFrequencyString,
   getWeekProgressString,

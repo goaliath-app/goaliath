@@ -4,7 +4,10 @@ import { connect, useDispatch } from 'react-redux';
 import { Paragraph, Menu, Title, Divider, List, Card, Button } from 'react-native-paper';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import { Header, ThreeDotsMenu, DeleteDialog, HelpIcon, DeleteActivityDialog } from '../../components';
+import { 
+  Header, ThreeDotsMenu, DeleteDialog, HelpIcon, DeleteActivityDialog,
+  BottomScreenPadding,
+} from '../../components';
 import { useNavigation } from '@react-navigation/native';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTodayTimer, 
@@ -56,15 +59,21 @@ const ActivityDetailScreen = ({
   date,
   dayStartHour,
 }) => {
+  const { t, i18n } = useTranslation()
+
   const dateIsToday = date?isToday(date, dayStartHour):false
   const dateIsFuture = date?isFuture(date, dayStartHour):false
-  const dateTitle = date?date.toFormat('d MMMM yyyy'):null
+  const monthLabel = date?t('units.monthNames.' + date.toFormat('MMMM').toLowerCase()):null
+  const dateTitle = ( date ? 
+    t('calendar.dayView.header', 
+      {month: monthLabel, day: date.toFormat('d'), year: date.toFormat('yyyy')}) 
+    : null
+  )
 
   const [menuVisible, setMenuVisible] = React.useState(false);  // sets the visibility of the threeDotsMenu
   const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
   const [moveToGoalDialogVisible, setMoveToGoalDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
 
-  const { t, i18n } = useTranslation()
 
   // items that appear in the three dots menu
   const menuItems = (
@@ -147,6 +156,8 @@ const ActivityDetailScreen = ({
         }
 
         <StatsPannel activityId={activity.id} />
+
+        <BottomScreenPadding />
       </KeyboardAwareScrollView>
 
       <DeleteActivityDialog

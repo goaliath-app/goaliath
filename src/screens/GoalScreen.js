@@ -6,7 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
-import { Header, ThreeDotsMenu, DeleteGoalDialog, InfoCard, DeleteActivityDialog, MoveToGoalDialog } from '../components';
+import { 
+  Header, ThreeDotsMenu, DeleteGoalDialog, InfoCard, DeleteActivityDialog, 
+  MoveToGoalDialog, BottomScreenPadding 
+} from '../components';
 import { selectAllActivities, selectGoalById, toggleActivity, restoreGoal } from '../redux'
 import { hasSomethingToShow } from '../util'
 import { GeneralColor, GoalColor, HeaderColor } from '../styles/Colors';
@@ -167,7 +170,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
         <View style={{ flex: 1 }}>
           <View style={{flexShrink: 1}}>
             {hasSomethingToShow(activities)?
-              <FlatList data={activities} renderItem={renderItem} />
+              <FlatList data={activities} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
               :
               <InfoCard content={t('goal.infoContent')} />
             } 

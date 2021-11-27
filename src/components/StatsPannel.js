@@ -14,7 +14,6 @@ const StatsPannel = ({ activityId, goalId }) => (
     <Divider style={{marginTop: 20}}/>
     <List.Item title={'Stats'} />
     <ActivityBarChartPicker activityId={activityId} goalId={goalId} />
-    <View style={{height:100}} />
   </View>
 )
 

@@ -3,15 +3,18 @@ import { connect, useSelector, useDispatch } from 'react-redux'
 import { Keyboard, Pressable, View, StyleSheet } from 'react-native';
 import { Appbar, TextInput, HelperText, Subheading, Portal, Dialog, Divider, List, Switch, Text } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
-import { Header, TimeInput } from '../../components';
+import { Header, TimeInput, BottomScreenPadding } from '../../components';
 import { setActivity, selectActivityById } from '../../redux'
 import { GeneralColor, ActivityFormColor } from '../../styles/Colors';
 import NumberOfWeeklyDaysInput from './NumberOfWeeklyDaysInput'
 import WeekdaySelector from './WeekdaySelector'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Context } from '../../../App'
 
 
 const ActivityFormScreen = ({ route, navigation }) => {
+
+  const { showSnackbar } = React.useContext(Context);
 
   // extract data from route params and redux
   const activityId = route.params.activityId
@@ -215,8 +218,10 @@ const ActivityFormScreen = ({ route, navigation }) => {
         if(validate()){
           if(activityId !== undefined){
             dispatch(setActivity({ ...activity, ...newActivity }))
+            showSnackbar(t("activityForm.snackbar.activityUpdated"))
           }else{
             dispatch(setActivity({ ...newActivity, archived: false, active: true }))
+            showSnackbar(t("activityForm.snackbar.activityCreated"))
           }
           navigation.goBack()
         }
@@ -453,6 +458,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
               </Dialog.Content>
           </Dialog>
         </Portal>
+        <BottomScreenPadding />
       </KeyboardAwareScrollView>
     </View>
   )

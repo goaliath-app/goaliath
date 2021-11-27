@@ -20,6 +20,7 @@ const WeeklyListItem = ({name, description, id, checkboxStatus, onCheckboxPress,
     <List.Item 
       left={() => leftSlot}
       title={name}
+      titleNumberOfLines={2}
       description={description}
       style={{
         backgroundColor: selected?GeneralColor.selectedSurface:'white'
