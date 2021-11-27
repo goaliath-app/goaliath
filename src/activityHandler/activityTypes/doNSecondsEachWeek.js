@@ -1,4 +1,3 @@
-import * as Notifications from 'expo-notifications';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { 
@@ -18,7 +17,7 @@ import PauseFilledIcon from '../../../assets/pause-filled'
 import PauseOutlinedIcon from '../../../assets/pause-outlined'
 import { ActivityListItemColors } from '../../styles/Colors'
 import { ActivityListItem, DoubleProgressBar } from '../../components'
-import { completeScheduleNotification, timerNotification } from '../../notifications';
+import Notifications from '../../notifications';
 
 const TodayScreenItem = ({ activityId, date }) => {
   const dispatch = useDispatch()
@@ -48,8 +47,7 @@ const TodayScreenItem = ({ activityId, date }) => {
       dispatch(stopTodayTimer( activityId ))
     }
     //Dismiss notifications
-    Notifications.dismissNotificationAsync('timer')
-    Notifications.cancelScheduledNotificationAsync('complete' + activityId)
+    Notifications.timerStoped(activityId)
   }
 
   function onPressStart(){
@@ -57,12 +55,8 @@ const TodayScreenItem = ({ activityId, date }) => {
     if(date.toISO() == todayDate.toISO()){
      dispatch(startTodayTimer( activityId ))
     }
-    //Send timer notification
-    timerNotification(activity, t)
-    //Schedule complete notification
-    if(!entry.completed){
-      completeScheduleNotification(activity, activityId, secondsRemaining, t)
-    }
+    //Send timer notifications
+    Notifications.timerStarted(activity, entry, secondsRemaining, t)
   }
 
   function update(){

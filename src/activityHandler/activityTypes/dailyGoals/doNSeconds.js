@@ -1,4 +1,3 @@
-import * as Notifications from 'expo-notifications';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { View } from 'react-native'
@@ -12,7 +11,7 @@ import PauseOutlinedIcon from '../../../../assets/pause-outlined'
 import { ActivityListItemColors } from '../../../styles/Colors'
 import { ActivityListItem, DoubleProgressBar } from '../../../components'
 import { useTranslation } from 'react-i18next'
-import { completeScheduleNotification, timerNotification } from '../../../notifications';
+import Notifications from '../../../notifications';
 
 // addEntryThunk to add the repetitions field to entries of this activity type
 function addEntryThunk( activityId, date ){
@@ -48,8 +47,7 @@ const TodayScreenItem = ({ activityId, date }) => {
       dispatch(stopTodayTimer( activityId ))
     }
     //Dismiss notifications
-    Notifications.dismissNotificationAsync('timer')
-    Notifications.cancelScheduledNotificationAsync('complete' + activityId)
+    Notifications.timerStoped(activityId)
   }
 
   function onPressStart(){
@@ -57,12 +55,8 @@ const TodayScreenItem = ({ activityId, date }) => {
     if(date.toISO() == todayDate.toISO()){
      dispatch(startTodayTimer( activityId ))
     }
-    //Send timer notification
-    timerNotification(activity, t)
-    //Schedule complete notification
-    if(!entry.completed){
-      completeScheduleNotification(activity, activityId, secondsRemaining, t)
-    }
+    //Send timer notifications
+    Notifications.timerStarted(activity, entry, secondsRemaining, t)
   }
 
   function update(){

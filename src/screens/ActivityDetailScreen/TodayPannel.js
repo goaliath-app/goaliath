@@ -1,4 +1,3 @@
-import * as Notifications from 'expo-notifications';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { View } from 'react-native'
@@ -10,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { TodayPannelColor } from '../../styles/Colors';
 import { setRepetitions } from './../../redux'
 import { usesRepetitions } from '../../activityHandler'
-import { completeScheduleNotification, timerNotification } from '../../notifications';
+import Notifications from '../../notifications';
 
 const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour, activity }) => {
   React.useEffect(() => {
@@ -33,21 +32,15 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
   function onPressPlay(){
     //Start timer
     startTodayTimer(entry.id)
-    //Send timer notification
-    timerNotification(activity, t)
-    //Schedule complete notification
-    if(!entry.completed){
-      completeScheduleNotification(activity, activity.id, secondsRemaining, t)
-    }
+    //Send timer notifications
+    Notifications.timerStarted(activity, entry, secondsRemaining, t)
   }
 
   function onPressPause(){
     //Stop timer
     stopTodayTimer(entry.id)
     //Dismiss notifications
-    Notifications.dismissNotificationAsync('timer')
-    Notifications.cancelScheduledNotificationAsync('complete' + activity.id)
-
+    Notifications.timerStoped(activity.id)
   }
 
   const dispatch = useDispatch()
