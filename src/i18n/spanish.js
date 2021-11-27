@@ -394,12 +394,12 @@ const es= {
 
     notifications: {
       timer: {
-        title: '¡Dale caña! Puedes hacerlo',
-        body: 'Estás trabajando en {{activityName}}'
+        title: 'Estás trabajando en: ',
+        body: '{{activityName}}'
       },
       complete: {
-        title: '¡Bien hecho!',
-        body: 'Has completado la actividad {{activityName}}'
+        title: 'Has completado la actividad: ',
+        body: '{{activityName}}'
       }
     }
   }

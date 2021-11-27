@@ -392,12 +392,12 @@ const en = {
 
     notifications: {
       timer: {
-        title: 'Go for it! You can do it',
-        body: 'You are working in {{activityName}}'
+        title: 'You are working on: ',
+        body: '{{activityName}}'
       },
       complete: {
-        title: 'Good job!',
-        body: 'You have completed the activity {{activityName}}'
+        title: 'Yoy have completed the activity: ',
+        body: '{{activityName}}'
       }
     }
   }
