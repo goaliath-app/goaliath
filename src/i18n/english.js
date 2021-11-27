@@ -396,7 +396,7 @@ const en = {
         body: '{{activityName}}'
       },
       complete: {
-        title: 'Yoy have completed the activity: ',
+        title: 'You have completed the activity: ',
         body: '{{activityName}}'
       }
     }
