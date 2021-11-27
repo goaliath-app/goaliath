@@ -149,4 +149,19 @@ function getDayActivityCompletionRatio(state, activityId, date){
   }
 }
 
-export default { TodayScreenItem, getFrequencyString, getDayActivityCompletionRatio }
+function getTimeGoal(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  return (
+    activity?.params.dailyGoal?.params.seconds != null ? 
+      activity.params.dailyGoal.params.seconds 
+      : null
+  )
+}
+
+export default { 
+  TodayScreenItem, 
+  getFrequencyString, 
+  getDayActivityCompletionRatio,
+  getTimeGoal, 
+}

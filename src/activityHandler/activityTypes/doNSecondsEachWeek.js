@@ -279,6 +279,12 @@ function getWeekActivityCompletionRatio(state, activityId, date){
   }
 }
 
+function getTimeGoal(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  return activity?.params.seconds != null ? activity.params.seconds : null
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
@@ -290,6 +296,7 @@ export default {
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
   updateEntryThunk,
+  getTimeGoal,
 }
 
 function isWeekCompleted( state, activityId, date ){

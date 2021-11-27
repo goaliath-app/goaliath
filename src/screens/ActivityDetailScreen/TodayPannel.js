@@ -8,7 +8,7 @@ import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
 import { TodayPannelColor } from '../../styles/Colors';
 import { setRepetitions } from './../../redux'
-import { usesRepetitions } from '../../activityHandler'
+import { usesRepetitions, getTimeGoal } from '../../activityHandler'
 import Notifications from '../../notifications';
 
 const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour, activity }) => {
@@ -25,8 +25,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
   
   const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
 
-  const secondsGoal = activity.type=='doFixedDays'||activity.type=='doNDaysEachWeek'? activity.params.dailyGoal.params.seconds : 
-                      activity.type=='doNSecondsEachWeek'? activity.params.seconds : null
+  const secondsGoal = useSelector( state => getTimeGoal(state, activity.id, date) )
   const secondsRemaining = secondsGoal - todayTime.as('seconds')
 
   function onPressPlay(){

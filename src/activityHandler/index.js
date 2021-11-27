@@ -355,3 +355,21 @@ export function usesRepetitions(state, activityId, date){
     return false
   }
 }
+
+// returns the number of seconds of the time goal or null if the activity
+// doesn't have a time goal
+export function getTimeGoal(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+  
+  if(!activity){
+    return null
+  }
+
+  const activityType = activityTypes[activity.type]
+    
+  if(activityType.getTimeGoal){
+    return activityType.getTimeGoal(state, activityId, date)
+  }else{
+    return null
+  }
+}
