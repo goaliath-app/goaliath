@@ -68,16 +68,19 @@ const TodayScreenItem = ({ activityId, date }) => {
       trigger: null,
     });
     //Schedule complete notification
-    Notifications.scheduleNotificationAsync({
-      identifier: 'complete' + activityId,
-      content: {
-        title: t('notifications.complete.title'),
-        body: t('notifications.complete.body', {activityName: activity.name})
-      },
-      trigger: {
-        seconds: secondsRemaining
-      }
-    })
+    {entry.completed?
+      null :
+      Notifications.scheduleNotificationAsync({
+        identifier: 'complete' + activityId,
+        content: {
+          title: t('notifications.complete.title'),
+          body: t('notifications.complete.body', {activityName: activity.name})
+        },
+        trigger: {
+          seconds: secondsRemaining
+        }
+      })
+    }
   }
 
   function update(){

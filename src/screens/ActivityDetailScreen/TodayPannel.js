@@ -44,16 +44,19 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
       trigger: null,
     });
     //Schedule complete notification
-    Notifications.scheduleNotificationAsync({
-      identifier: 'complete' + activity.id,
-      content: {
-        title: t('notifications.complete.title'),
-        body: t('notifications.complete.body', {activityName: activity.name})
-      },
-      trigger: {
-        seconds: secondsRemaining
-      }
-    })
+    {entry.completed?
+      null: 
+      Notifications.scheduleNotificationAsync({
+        identifier: 'complete' + activity.id,
+        content: {
+          title: t('notifications.complete.title'),
+          body: t('notifications.complete.body', {activityName: activity.name})
+        },
+        trigger: {
+          seconds: secondsRemaining
+        }
+      })
+    }
   }
 
   function onPressPause(){
