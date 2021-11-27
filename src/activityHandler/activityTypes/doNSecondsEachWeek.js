@@ -17,6 +17,7 @@ import PauseFilledIcon from '../../../assets/pause-filled'
 import PauseOutlinedIcon from '../../../assets/pause-outlined'
 import { ActivityListItemColors } from '../../styles/Colors'
 import { ActivityListItem, DoubleProgressBar } from '../../components'
+import Notifications from '../../notifications';
 
 const TodayScreenItem = ({ activityId, date }) => {
   const dispatch = useDispatch()
@@ -37,18 +38,25 @@ const TodayScreenItem = ({ activityId, date }) => {
   const weeklyProgress = Math.min(weeklyTime.as('seconds') / secondsGoal, 1)
   const totalProgress = Math.min(totalTime.as('seconds') / secondsGoal, 1) 
   const timerIsRunning = isActivityRunning(entry.intervals)
+  const secondsRemaining = secondsGoal - totalTime.as('seconds')
 
   // function definitions
   function onPressPause(){
+    //Stop Timer
     if(date.toISO() == todayDate.toISO()){
       dispatch(stopTodayTimer( activityId ))
     }
+    //Dismiss notifications
+    Notifications.timerStoped(activityId)
   }
 
   function onPressStart(){
+    //Start Timer
     if(date.toISO() == todayDate.toISO()){
      dispatch(startTodayTimer( activityId ))
     }
+    //Send timer notifications
+    Notifications.timerStarted(activity, entry, secondsRemaining, t)
   }
 
   function update(){
@@ -251,6 +259,12 @@ function getWeekActivityCompletionRatio(state, activityId, date){
   }
 }
 
+function getTimeGoal(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  return activity?.params.seconds != null ? activity.params.seconds : null
+}
+
 export default { 
   SelectWeekliesItemDue,
   SelectWeekliesItemCompleted,
@@ -261,6 +275,7 @@ export default {
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
   updateEntryThunk,
+  getTimeGoal,
 }
 
 function isWeekCompleted( state, activityId, date ){
