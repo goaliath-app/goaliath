@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { TodayPannelColor } from '../../styles/Colors';
 import { setRepetitions } from './../../redux'
 import { usesRepetitions } from '../../activityHandler'
+import { completeScheduleNotification, timerNotification } from '../../notifications';
 
 const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour, activity }) => {
   React.useEffect(() => {
@@ -32,30 +33,11 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
   function onPressPlay(){
     //Start timer
     startTodayTimer(entry.id)
-    //Send notification
-    Notifications.scheduleNotificationAsync({
-      identifier: 'timer',
-      content: {
-        title: t('notifications.timer.title'),
-        body: t('notifications.timer.body', {activityName: activity.name}),
-        priority: 'max',
-        sticky: true
-      },
-      trigger: null,
-    });
+    //Send timer notification
+    timerNotification(activity, t)
     //Schedule complete notification
-    {entry.completed?
-      null: 
-      Notifications.scheduleNotificationAsync({
-        identifier: 'complete' + activity.id,
-        content: {
-          title: t('notifications.complete.title'),
-          body: t('notifications.complete.body', {activityName: activity.name})
-        },
-        trigger: {
-          seconds: secondsRemaining
-        }
-      })
+    if(!entry.completed){
+      completeScheduleNotification(activity, activity.id, secondsRemaining, t)
     }
   }
 

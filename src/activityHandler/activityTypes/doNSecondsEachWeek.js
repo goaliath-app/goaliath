@@ -18,6 +18,7 @@ import PauseFilledIcon from '../../../assets/pause-filled'
 import PauseOutlinedIcon from '../../../assets/pause-outlined'
 import { ActivityListItemColors } from '../../styles/Colors'
 import { ActivityListItem, DoubleProgressBar } from '../../components'
+import { completeScheduleNotification, timerNotification } from '../../notifications';
 
 const TodayScreenItem = ({ activityId, date }) => {
   const dispatch = useDispatch()
@@ -56,30 +57,11 @@ const TodayScreenItem = ({ activityId, date }) => {
     if(date.toISO() == todayDate.toISO()){
      dispatch(startTodayTimer( activityId ))
     }
-    //Send notification
-    Notifications.scheduleNotificationAsync({
-      identifier: 'timer' ,
-      content: {
-        title: t('notifications.timer.title'),
-        body: t('notifications.timer.body', {activityName: activity.name}),
-        priority: 'max',
-        sticky: true
-      },
-      trigger: null,
-    });
+    //Send timer notification
+    timerNotification(activity, t)
     //Schedule complete notification
-    {entry.completed?
-      null :
-      Notifications.scheduleNotificationAsync({
-        identifier: 'complete' + activityId,
-        content: {
-          title: t('notifications.complete.title'),
-          body: t('notifications.complete.body', {activityName: activity.name})
-        },
-        trigger: {
-          seconds: secondsRemaining
-        }
-      })
+    if(!entry.completed){
+      completeScheduleNotification(activity, activityId, secondsRemaining, t)
     }
   }
 

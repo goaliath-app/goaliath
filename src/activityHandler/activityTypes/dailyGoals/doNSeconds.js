@@ -12,6 +12,7 @@ import PauseOutlinedIcon from '../../../../assets/pause-outlined'
 import { ActivityListItemColors } from '../../../styles/Colors'
 import { ActivityListItem, DoubleProgressBar } from '../../../components'
 import { useTranslation } from 'react-i18next'
+import { completeScheduleNotification, timerNotification } from '../../../notifications';
 
 // addEntryThunk to add the repetitions field to entries of this activity type
 function addEntryThunk( activityId, date ){
@@ -57,30 +58,10 @@ const TodayScreenItem = ({ activityId, date }) => {
      dispatch(startTodayTimer( activityId ))
     }
     //Send timer notification
-    Notifications.scheduleNotificationAsync({
-      identifier: 'timer' ,
-      content: {
-        title: t('notifications.timer.title'),
-        body: t('notifications.timer.body', {activityName: activity.name}),
-        priority: 'max',
-        autoDismiss: false,
-        sticky: true
-      },        
-      trigger: null,
-    });
+    timerNotification(activity, t)
     //Schedule complete notification
-    {entry.completed? 
-      null :
-      Notifications.scheduleNotificationAsync({
-        identifier: 'complete' + activityId,
-        content: {
-          title: t('notifications.complete.title'),
-          body: t('notifications.complete.body', {activityName: activity.name})
-        },
-        trigger: {
-          seconds: secondsRemaining
-        }
-      })
+    if(!entry.completed){
+      completeScheduleNotification(activity, activityId, secondsRemaining, t)
     }
   }
 
