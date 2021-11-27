@@ -153,6 +153,18 @@ function dueToday(state, activityId, date){
   }
 }
 
+function getTimeGoal(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  if( !activity?.params.dailyGoal ) return null
+
+  const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
+  
+  if( !dailyGoal?.getTimeGoal ) return null
+  
+  return dailyGoal.getTimeGoal(state, activityId, date)
+}
+
 export default {
   dueToday,
   updateEntryThunk,
@@ -161,5 +173,6 @@ export default {
   getWeekProgressString,
   getDayActivityCompletionRatio,
   getWeekActivityCompletionRatio,
-  usesRepetitions
+  usesRepetitions,
+  getTimeGoal,
 }

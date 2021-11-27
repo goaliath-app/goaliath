@@ -137,7 +137,8 @@ const ActivityDetailScreen = ({
           stopTodayTimer={stopTodayTimer} 
           upsertEntry={upsertEntry} 
           date={date} 
-          dayStartHour={dayStartHour} 
+          dayStartHour={dayStartHour}
+          activity={activity}
         /> 
         : 
           entry?
