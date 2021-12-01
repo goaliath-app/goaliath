@@ -43,8 +43,8 @@ const GoalSelector = ({onGoalSelection}) => {
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(
     [ 
+      {label: t("stats.genericStats.allGoals"), value: 'all'},
       ...goals.map( goal => ({label: goal.name, value: goal.id}) ),
-      {label: t("stats.genericStats.allGoals"), value: 'all'}
     ]
   );
 
@@ -59,6 +59,10 @@ const GoalSelector = ({onGoalSelection}) => {
           setOpen={setOpen}
           setValue={innerOnGoalSelection}
           setItems={setItems}
+          listMode="SCROLLVIEW"
+          scrollViewProps={{
+            nestedScrollEnabled: true,
+          }}  
         />
       </View>
     </View>
