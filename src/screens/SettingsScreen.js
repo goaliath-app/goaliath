@@ -61,7 +61,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
 
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
-      <Header title={t('settings.headerTitle')} left='hamburger' navigation={navigation}/>
+      <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
       <List.Item 
         title={t('settings.startHour')}
         description={t('settings.startHourDescription')}

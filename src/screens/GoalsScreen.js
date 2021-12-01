@@ -110,7 +110,7 @@ const GoalsScreen = ({ navigation, goals }) => {
   return(
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header 
-        title={t('goals.headerTitle')} left='hamburger' navigation={navigation} 
+        title={t('goals.headerTitle')} navigation={navigation} 
         buttons={
         <>
           <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color="white"/>

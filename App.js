@@ -22,47 +22,39 @@ import { Drawer as CustomDrawer } from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
 import { generateDummyData } from './src/redux/Thunks'
 import Notifications from './src/notifications'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { faTrophy, faCalendarAlt, faChartBar, faTasks } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+
 
 Notifications.initNotifications()
 
-const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
 const persistor = persistStore(store)
 // persistor.purge()
 
+/* The three stacks below are inside the BottomTabnavigator.
+   If we want to navigate to a new screen without hiding the bottom navigation
+   bar, it should be moved from the root stack of the app to the corresponding
+   of these stacks
+*/
 const TodayStack = () => (
   <Stack.Navigator initialRouteName='Today' headerMode='none'>
     <Stack.Screen name='Today' component={TodayScreen} />
-    <Stack.Screen name='AddTasks' component={AddTasksScreen} />
-    <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
-    <Stack.Screen name='ActivityForm' component={ActivityFormScreen} />
-    <Stack.Screen name='SelectWeeklyActivities' component={SelectWeeklyActivitiesScreen} />
-    <Stack.Screen name='Goal' component={GoalScreen} />
-    <Stack.Screen name='GoalForm' component={GoalFormScreen} />
-    <Stack.Screen name='ArchivedGoals' component={ArchivedGoalsScreen} />
-    <Stack.Screen name='ArchivedActivities' component={ArchivedActivitiesScreen} />
   </Stack.Navigator>
 )
 
 const GoalsStack = () => (
   <Stack.Navigator initialRouteName='Goals' headerMode='none' >
     <Stack.Screen name='Goals' component={GoalsScreen} />
-    <Stack.Screen name='Goal' component={GoalScreen} />
-    <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
-    <Stack.Screen name='ActivityForm' component={ActivityFormScreen} />
-    <Stack.Screen name='GoalForm' component={GoalFormScreen} />
-    <Stack.Screen name='ArchivedGoals' component={ArchivedGoalsScreen} />
-    <Stack.Screen name='ArchivedActivities' component={ArchivedActivitiesScreen} />
   </Stack.Navigator>
 )
 
 const CalendarStack = () => (
   <Stack.Navigator initialRouteName='Calendar' headerMode='none' >
     <Stack.Screen name='Calendar' component={CalendarScreen} />
-    <Stack.Screen name='CalendarDayView' component={CalendarDayViewScreen} />
-    <Stack.Screen name='CalendarWeekView' component={CalendarWeekViewScreen} />
-    <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
   </Stack.Navigator>
 )
 
@@ -88,6 +80,40 @@ export default function App() {
 
   const { t, i18 } = useTranslation()
 
+  const BottomTab = () => (
+    <Tab.Navigator labeled={false} showLabel={false} screenOptions={{
+      headerShown: false,
+      tabBarLabel: () => null,
+    }}>
+      <Tab.Screen name='Today' component={TodayStack} 
+        options={{ 
+          tabBarIcon: ({ focused, color, size }) => (
+            <FontAwesomeIcon icon={faTasks} size={size} color={color} />
+          ) 
+      }} />
+      <Tab.Screen name='Goals' component={GoalsStack} 
+        options={{ 
+          tabBarIcon: ({ focused, color, size }) => (
+            <FontAwesomeIcon icon={faTrophy} size={size} color={color} />
+          )
+      }} />
+      <Tab.Screen name='Calendar' component={CalendarStack} 
+        options={{ 
+          title: t('app.drawer.calendar'),
+          tabBarIcon: ({ focused, color, size }) => (
+            <FontAwesomeIcon icon={faCalendarAlt} size={size} color={color} />
+          )
+      }} />
+      <Tab.Screen name='Stats' component={StatsScreen} 
+        options={{ 
+          title: t('app.drawer.stats'),
+          tabBarIcon: ({ focused, color, size }) => (
+            <FontAwesomeIcon icon={faChartBar} size={size} color={color} />
+            )  
+      }} />
+    </Tab.Navigator>
+  )
+
   return (
     <ReduxProvider store={store}>
       <PersistGate 
@@ -106,21 +132,24 @@ export default function App() {
               {newUser?
               <OnboardingScreen finishOnboarding={finishOnboarding} />
               : 
-              <Drawer.Navigator 
-                initialRouteName='Today' 
-                drawerContent={(props) => <CustomDrawer {...props} />}
-              >
-                <Drawer.Screen name='Today' component={TodayStack} 
-                  options={{ title: t('app.drawer.today') }} />
-                <Drawer.Screen name='Goals' component={GoalsStack} 
-                  options={{ title: t('app.drawer.goals') }} />
-                <Drawer.Screen name='Calendar' component={CalendarStack} 
-                  options={{ title: t('app.drawer.calendar') }} />
-                <Drawer.Screen name='Settings' component={SettingsScreen} 
-                  options={{ title: t('app.drawer.settings') }} />
-                <Drawer.Screen name='Stats' component={StatsScreen} 
-                  options={{ title: t('app.drawer.stats') }} />
-              </Drawer.Navigator>
+              <Stack.Navigator initialRouteName='bottomTab' headerMode='none'>
+                {/* Bottom tab navigator containing the root screens */}
+                <Stack.Screen name='bottomTab' component={BottomTab} />
+
+                {/* Rest of screens, that hide the bottom bar navigation
+                    when focused */}
+                <Stack.Screen name='AddTasks' component={AddTasksScreen} />
+                <Stack.Screen name='ActivityDetail' component={ActivityDetailScreen} />
+                <Stack.Screen name='ActivityForm' component={ActivityFormScreen} />
+                <Stack.Screen name='SelectWeeklyActivities' component={SelectWeeklyActivitiesScreen} />
+                <Stack.Screen name='Goal' component={GoalScreen} />
+                <Stack.Screen name='GoalForm' component={GoalFormScreen} />
+                <Stack.Screen name='ArchivedGoals' component={ArchivedGoalsScreen} />
+                <Stack.Screen name='ArchivedActivities' component={ArchivedActivitiesScreen} />
+                <Stack.Screen name='CalendarDayView' component={CalendarDayViewScreen} />
+                <Stack.Screen name='CalendarWeekView' component={CalendarWeekViewScreen} />
+                <Stack.Screen name='Settings' component={SettingsScreen} />
+              </Stack.Navigator>
               }
               <Snackbar
                 visible={snackbarMessage != ""}

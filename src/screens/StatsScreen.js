@@ -20,7 +20,7 @@ const StatsScreen = ({ navigation }) => {
 
   return (
     <ScrollView style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
-      <Header title={t('statsScreen.headerTitle')} left='hamburger' navigation={navigation} />
+      <Header title={t('statsScreen.headerTitle')} navigation={navigation} />
       <GoalSelector onGoalSelection={setSelectedGoal}/>
       <Divider style={{marginHorizontal: 8}}/>
       <StatsPannel goalId={selectedGoal == "all"? null : selectedGoal} />
