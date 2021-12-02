@@ -1,13 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next'
 import { getTodaySelector } from '../redux'
-import { useNavigation } from '@react-navigation/native';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import ProgressBar from 'react-native-progress/Bar';
 import { CalendarColor } from '../styles/Colors';
-import { LongPressGestureHandler, State } from 'react-native-gesture-handler';
 import { dueToday, getWeekCompletionRatio, getDayCompletionRatio, getDayActivityCompletionRatio, getWeekActivityCompletionRatio } from '../activityHandler'
 
 const CalendarDayItem = ({ 
@@ -49,17 +47,18 @@ const CalendarDayItem = ({
   return(
     <View style={{...styles.dayComponent, ...dayBackground}}>
       <Pressable onLongPress={() => onLongPress(day)} style={{flex: 1}} onPress={() => onPress(day)}>
-        <View style={{ flex: 1, justifyContent: 'center', margin: 2 }}>
+        <View style={{ flex: 1, justifyContent: 'center' }}>
           {/* Day ProgressBar */}
           <ProgressBar 
           progress={dayProgress} 
           height='100%' 
-          color={CalendarColor.dayProgress} 
+          color={CalendarColor.dayProgress}
           borderWidth={0} 
           borderRadius={0} 
           width={null} 
           style={{ transform: [{ rotate: '-90deg' }]}}
           />
+          {/* Today Highlight */}
           <View style={{ position: 'absolute', flex: 1, alignSelf: 'center' }}>
             {today.day===day.day && today.month===day.month && today.year===day.year? 
               (softTodayHighlight?
@@ -100,9 +99,7 @@ const CalendarWeekItem = ({
 }) => {
   // const dayPosition = ((date.weekday % 7) - startOfWeek) % 7
   date = date.startOf("week")
-  
-  const navigation = useNavigation()
-
+ 
   let weekProgress
   if(activityId != null){
     weekProgress = useSelector((state) => getWeekActivityCompletionRatio(state, activityId, date))
@@ -129,11 +126,12 @@ const CalendarWeekItem = ({
         {/* Week ProgressBar */}
         {
         showWeekProgress?
-        <View style={{ marginHorizontal: 2, marginBottom: 10 }}>
+        <View style={{ marginBottom: 10 }}>
           <ProgressBar 
             progress={weekProgress} 
             height={7} 
             color={CalendarColor.progressBarColor} 
+            unfilledColor={CalendarColor.progressBarBackground}
             borderWidth={0} 
             borderRadius={0} 
             width={null} 
@@ -149,6 +147,7 @@ const styles = StyleSheet.create({
   weekComponent: {
     justifyContent: 'space-around',
     flexDirection: 'row',
+    backgroundColor: CalendarColor.weekBackgroundColor
   },
 
   dayComponent: {
