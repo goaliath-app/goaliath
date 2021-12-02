@@ -46,19 +46,19 @@ const ActivityFormScreen = ({ route, navigation }) => {
   )
 
   const initialDailySeconds = (
-    activity && activity.type == "doFixedDays" && activity.params.dailyGoal == "doNSeconds"?
+    activity && activity.type == "doFixedDays" && activity.params.dailyGoal.type == "doNSeconds"?
       activity.params.dailyGoal.params.seconds
       : 0
   )
 
   const initialFreeSeconds = (
-    activity && activity.type == "doNDaysEachWeek" && activity.params.dailyGoal == "doNSeconds"?
+    activity && activity.type == "doNDaysEachWeek" && activity.params.dailyGoal.type == "doNSeconds"?
     activity.params.dailyGoal.params.seconds
     : 0
   )
 
   const initialWeeklySeconds = (
-    activity && activity.type == "doNSecondsEachWeek" & activity.params.seconds?
+    activity && activity.type == "doNSecondsEachWeek" && activity.params.seconds?
     activity.params.seconds
     : 0
   )
