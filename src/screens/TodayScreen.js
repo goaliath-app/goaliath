@@ -8,7 +8,7 @@ import { getToday } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 import { useFocusEffect } from '@react-navigation/native';
-import { Button, Text } from 'react-native-paper'
+import { Appbar } from 'react-native-paper'
 import { updateLogs } from '../redux'
 
 const TodayScreen = ({ navigation }) => {
@@ -51,7 +51,9 @@ const TodayScreen = ({ navigation }) => {
 
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
-      <Header title={t('today.headerTitle')} left='hamburger' navigation={navigation} />
+      <Header title={t('today.headerTitle')} navigation={navigation} buttons={
+        <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color="white" />
+      }/>
       <DayContent date={date} />
       <Dialog 
         visible={dayChangeDialogVisible} 
