@@ -120,6 +120,7 @@ const es= {
         nameInputLabel: 'Nombre de la actividad',
         descriptionInputLabel: 'Descripción (opcional)',
         weeklyDaysLabel: 'Días a la semana',
+        weekdaysTitle: 'Días de la semana',
         errors: {
           noName: 'Es necesario un nombre para tu actividad',
           noDaysSelected: 'Selecciona al menos un día',
@@ -129,20 +130,20 @@ const es= {
         frequencyTitle: 'Frecuencia',
         frequencyLabel: 'Selecciona el tipo de actividad',
         switch: {
-          multipleTimes: 'Varias veces',
-          repetitionsGoal: 'Objetivo de repeticiones',
+          multipleTimes: 'Objetivo de repeticiones',
+          repetitionsGoal: 'Repeticiones diarias',
           timeGoal: 'Objetivo de tiempo'
         },
         dailyRepetitions: 'Repeticiones diarias',
         weeklyRepetitions: 'Repeticiones semanales',
         dialog: {
           title: 'Selecciona la frecuencia',
-          dailyTitle: 'Actividades diarias',
-          dailyDescription: 'Se hacen en días concretos de la semana',
-          freeTitle: 'Actividades libres',
-          freeDescription: 'Elige cuando hacerlas sobre la marcha.',
+          dailyTitle: 'Actividad diaria',
+          dailyDescription: 'Selecciona qué días de la semana quieres hacerla',
+          freeTitle: 'Actividad libre',
+          freeDescription: 'Hazla un cierto número de días a la semana, puedes decidir cuales sobre la marcha.',
           weeklyTitle: 'Total semanal',
-          weeklyDescription: 'Cumple con un objetivo cada semana.'
+          weeklyDescription: 'Alcanza un total de tiempo o repeticiones cada semana'
         },
         snackbar: {
           activityCreated: 'Actividad creada',

@@ -119,16 +119,17 @@ const en = {
       nameInputLabel: 'Activity\'s name',
       descriptionInputLabel: 'Description (optional)',
       weeklyDaysLabel: 'Days each week',
+      weekdaysTitle: 'Weekdays',
       errors: {
         noName: 'A name is required',
-        noDaysSelected: 'At least select one day',
+        noDaysSelected: 'Select at least one day',
         noTime: 'Please enter a time',
         noFrequency: 'Please select a frequency'
       },
       frequencyTitle: 'Frequency',
       frequencyLabel: 'Select activity type',
       switch: {
-        multipleTimes: 'Multiple Times',
+        multipleTimes: 'Repetitions Goal',
         repetitionsGoal: 'Repetitions Goal',
         timeGoal: 'Time Goal'
       },
@@ -136,12 +137,12 @@ const en = {
       weeklyRepetitions: 'Weekly Repetitions',
       dialog: {
         title: 'Select your frequency',
-        dailyTitle: 'Daily Activities',
+        dailyTitle: 'Daily Activity',
         dailyDescription: 'Do on fixed days of the week',
-        freeTitle: 'Free Activities',
-        freeDescription: 'Choose when to do it on the fly',
+        freeTitle: 'Free Activity',
+        freeDescription: 'Do N days each week. Choose which on the fly.',
         weeklyTitle: 'Weekly Total',
-        weeklyDescription: 'Reach a certain goal each week'
+        weeklyDescription: 'Reach a target time or repetitions total each week.'
       },
       snackbar: {
         activityCreated: 'Activity created',
@@ -169,7 +170,7 @@ const en = {
       nameAlert: "Please enter a name for your goal",
       headerTitle: 'New goal',
       goalNameSubheading: 'What do you want to achieve?',
-      nameTextInputLabel: 'Your Goal',
+      nameTextInputLabel: 'Goal Name',
       goalMotivationSubheading: 'Why do you want to achieve this goal?',
       motivationTextInputLabel: 'Your Motivation (optional)',
 

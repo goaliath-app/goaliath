@@ -266,7 +266,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
         />
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
-        <Pressable style={{borderWidth: 1, margin: 20, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {
+        <Pressable style={{borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {
           Keyboard.dismiss()
           setFrequencyVisible(true)
           setNoFrequencyError(false)
@@ -284,6 +284,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
 
         {frequencySelector=='daily'?
           <View> 
+            <Subheading style={{marginLeft: 10, marginBottom: 10}}>{t('activityForm.weekdaysTitle')}</Subheading>
             <WeekdaySelector 
               state='select'
               weekDays={daysOfWeek} 
@@ -443,11 +444,11 @@ const ActivityFormScreen = ({ route, navigation }) => {
             <Dialog.Title>{t('activityForm.dialog.title')}</Dialog.Title>
               <Dialog.Content>
                 <Divider />
-                <List.Item title={t('activityForm.dialog.dailyTitle')} description={t('activityForm.dialog.dailyDescription')} onPress={() => {setFrequencySelector('daily'), setFrequencyVisible(false)}} />
+                <List.Item title={t('activityForm.dialog.dailyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.dailyDescription')} onPress={() => {setFrequencySelector('daily'), setFrequencyVisible(false)}} />
                 <Divider />
-                <List.Item title={t('activityForm.dialog.freeTitle')} description={t('activityForm.dialog.freeDescription')} onPress={() => {setFrequencySelector('free'), setFrequencyVisible(false)}} />
+                <List.Item title={t('activityForm.dialog.freeTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.freeDescription')} onPress={() => {setFrequencySelector('free'), setFrequencyVisible(false)}} />
                 <Divider />
-                <List.Item title={t('activityForm.dialog.weeklyTitle')} description={t('activityForm.dialog.weeklyDescription')} onPress={() => {
+                <List.Item title={t('activityForm.dialog.weeklyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.weeklyDescription')} onPress={() => {
                   setFrequencySelector('weekly')
                   setFrequencyVisible(false)
                   if (!repetitionsGoalSwitch && !timeGoalSwitch) {
