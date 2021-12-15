@@ -64,24 +64,51 @@ function getFrequencyString(state, activityId, t, date=null){
     return dailyGoalString + ' ' + t('activityHandler.activityTypes.doFixedDays.everyDayFrequencyString')
   }
   
-  let daysOfWeek = ''
-  const labels = {
-    1: t('units.dayNamesShort2.monday'), 
-    2: t('units.dayNamesShort2.tuesday'), 
-    3: t('units.dayNamesShort2.wednesday'), 
-    4: t('units.dayNamesShort2.thursday'), 
-    5: t('units.dayNamesShort2.friday'), 
-    6: t('units.dayNamesShort2.saturday'), 
-    7: t('units.dayNamesShort2.sunday')
+  let daysOfWeekShort = ''
+  const labelsShort = {
+    1: t('units.dayNamesShort3.monday'), 
+    2: t('units.dayNamesShort3.tuesday'), 
+    3: t('units.dayNamesShort3.wednesday'), 
+    4: t('units.dayNamesShort3.thursday'), 
+    5: t('units.dayNamesShort3.friday'), 
+    6: t('units.dayNamesShort3.saturday'), 
+    7: t('units.dayNamesShort3.sunday')
   }
   for (let day in activity.params.daysOfWeek){
     if (activity.params.daysOfWeek[day]){
-      daysOfWeek = `${daysOfWeek} ${labels[day]}`
+      if(daysOfWeekShort == ""){
+        daysOfWeekShort = labelsShort[day]
+      }else{
+        daysOfWeekShort = `${daysOfWeekShort}, ${labelsShort[day]}`
+      }
     }
   }
 
+  let daysOfWeekLong = ''
+  const labelsLong = {
+    1: t('units.dayNames.monday'), 
+    2: t('units.dayNames.tuesday'), 
+    3: t('units.dayNames.wednesday'), 
+    4: t('units.dayNames.thursday'), 
+    5: t('units.dayNames.friday'), 
+    6: t('units.dayNames.saturday'), 
+    7: t('units.dayNames.sunday')
+  }
+  for (let day in activity.params.daysOfWeek){
+    if (activity.params.daysOfWeek[day]){
+      if(daysOfWeekLong == ""){
+        daysOfWeekLong = labelsLong[day]
+      }else{
+        daysOfWeekLong = `${daysOfWeekLong}, ${labelsLong[day]}`
+      }
+    }
+  }
+
+  const shortString = dailyGoalString + ' ' + t('activityHandler.activityTypes.doFixedDays.frequencyString', { daysOfWeek: daysOfWeekShort })
+  const longString = dailyGoalString + ' ' + t('activityHandler.activityTypes.doFixedDays.frequencyString', { daysOfWeek: daysOfWeekLong })
+
   return(
-    dailyGoalString + ' ' + t('activityHandler.activityTypes.doFixedDays.frequencyString', { daysOfWeek })
+    longString.length < 40 ? longString : shortString
   )
 }
 
