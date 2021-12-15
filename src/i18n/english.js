@@ -14,6 +14,8 @@ const en = {
     dayContent: {
       futureWarningTitle: 'This is a future day',
       futureWarningSubtitle: 'Tomorrow is tomorrow.\nFuture cares have future cures,\nAnd we must mind today.\n — Sofocles',
+      emptyPastWarningTitle: 'This day was empty',
+      emptyPastWarningSubtitle: "You didn't have any activity scheduled for today.",
     },
 
     dateWheelPicker: {

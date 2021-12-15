@@ -26,6 +26,19 @@ const FutureWarning = () => {
   )
 }
 
+const EmptyPastWarning = () => {
+  const { t, i18n } = useTranslation()
+
+  return (
+      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
+        <Card.Content>
+          <Title>{t("dayContent.emptyPastWarningTitle")}</Title>
+          <Paragraph>{t("dayContent.emptyPastWarningSubtitle")}</Paragraph>
+        </Card.Content>
+      </Card>
+  )
+}
+
 const DayContent = ({ date }) => {
   
   // setup hooks
@@ -63,12 +76,13 @@ const DayContent = ({ date }) => {
     'unchecked'
   )
   
-  const completedActivities = entryList.filter(entry => entry.completed)
-  const pendingActivities   = entryList.filter(entry => !entry.completed)
+  const completedActivities = entryList.filter(entry => !entry.archived && entry.completed)
+  const pendingActivities   = entryList.filter(entry => !entry.archived && !entry.completed)
 
   return (
     <ScrollView style={{flex: 1}}>
-      { timeStatus == 'future' ? <FutureWarning /> : null }
+      { timeStatus == 'past' && completedActivities.length == 0 && pendingActivities.length == 0 ? <EmptyPastWarning /> : null }
+      { timeStatus == 'future' ? <EmptyPastWarning /> : null }
       <ActivityList data={pendingActivities} date={date} />
       <TaskList date={date} show='pending' />
       { weekliesSelector=='unchecked' ?
