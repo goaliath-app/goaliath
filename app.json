@@ -26,15 +26,12 @@
       "bundleIdentifier": "app.goaliath"
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
       "useNextNotificationsApi": true,
       "package": "app.goaliath"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "jsEngine": "hermes"
   }
 }
