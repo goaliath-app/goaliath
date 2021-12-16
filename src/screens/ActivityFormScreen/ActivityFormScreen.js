@@ -10,7 +10,10 @@ import NumberOfWeeklyDaysInput from './NumberOfWeeklyDaysInput'
 import WeekdaySelector from './WeekdaySelector'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Context } from '../../../App'
-
+import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 const ActivityFormScreen = ({ route, navigation }) => {
 
@@ -266,11 +269,15 @@ const ActivityFormScreen = ({ route, navigation }) => {
         />
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
-        <Pressable style={{borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {
+        <Pressable style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {
           Keyboard.dismiss()
           setFrequencyVisible(true)
           setNoFrequencyError(false)
         }}>
+          { frequencySelector=='daily'? <FontAwesomeIcon style={{alignSelf: 'center', marginRight: 10}} size={28}  icon={faCalendarCheck}/> :
+            frequencySelector=='free'? <FeatherIcon style={{alignSelf: 'center', marginRight: 10}} name={"feather"} size={28} /> :
+            frequencySelector=='weekly'? <EntypoIcon style={{alignSelf: 'center', marginRight: 10}} size={30} name={"bar-graph"}/> :
+            null }
           <Text style={{ fontSize: 16 }}>{!frequencySelector? t('activityForm.frequencyLabel')
             :frequencySelector=='daily'? t('activityForm.dialog.dailyTitle')
             :frequencySelector=='free'? t('activityForm.dialog.freeTitle')
@@ -440,15 +447,15 @@ const ActivityFormScreen = ({ route, navigation }) => {
         
 
         <Portal>
-          <Dialog visible={isFrecuencyVisible} onDismiss={() => {setFrequencyVisible(false)}}>
+          <Dialog style={{marginHorizontal: 12}} visible={isFrecuencyVisible} onDismiss={() => {setFrequencyVisible(false)}}>
             <Dialog.Title>{t('activityForm.dialog.title')}</Dialog.Title>
               <Dialog.Content>
                 <Divider />
-                <List.Item title={t('activityForm.dialog.dailyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.dailyDescription')} onPress={() => {setFrequencySelector('daily'), setFrequencyVisible(false)}} />
+                <List.Item left={() => <FontAwesomeIcon style={{alignSelf: 'center'}} size={30} icon={faCalendarCheck}/>} title={t('activityForm.dialog.dailyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.dailyDescription')} onPress={() => {setFrequencySelector('daily'), setFrequencyVisible(false)}} />
                 <Divider />
-                <List.Item title={t('activityForm.dialog.freeTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.freeDescription')} onPress={() => {setFrequencySelector('free'), setFrequencyVisible(false)}} />
+                <List.Item left={() => <FeatherIcon style={{alignSelf: 'center'}} name={"feather"} size={32}/>} title={t('activityForm.dialog.freeTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.freeDescription')} onPress={() => {setFrequencySelector('free'), setFrequencyVisible(false)}} />
                 <Divider />
-                <List.Item title={t('activityForm.dialog.weeklyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.weeklyDescription')} onPress={() => {
+                <List.Item left={() => <EntypoIcon style={{alignSelf: 'center'}} size={30} name={"bar-graph"}/>} title={t('activityForm.dialog.weeklyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.weeklyDescription')} onPress={() => {
                   setFrequencySelector('weekly')
                   setFrequencyVisible(false)
                   if (!repetitionsGoalSwitch && !timeGoalSwitch) {
