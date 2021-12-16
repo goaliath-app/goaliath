@@ -51,12 +51,16 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
   function importStateFromText(text){
     // TODO: dont break if file is bad formatted
     setImportDialogVisible(false)
+    let state
     try {
-      const state = JSON.parse(text)
+      state = JSON.parse(text)
     } catch(e) {
       setSnackbarMessage("Import failed: wrong file format")
+      return
     }
+    if(state){
     importState(state)
+  }
   }
 
   return (
