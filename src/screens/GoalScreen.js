@@ -119,12 +119,6 @@ const GoalScreen = ({ activities, goal, navigation }) => {
 
   const menuItems = (
     <>
-      <Menu.Item title={t('goal.threeDotsMenu.editGoal')} 
-        onPress={() => {
-          setMenuVisible(false)
-          navigation.navigate('GoalForm', { id: goal.id } )
-        }}
-      />
       <Menu.Item onPress={() => {
         setMenuVisible(false)
         setDeleteDialogVisible(true)
@@ -141,6 +135,11 @@ const GoalScreen = ({ activities, goal, navigation }) => {
     <>
       <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
           navigation.navigate('ActivityForm', { goalId: goal.id })
+        }}
+      />
+      <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
+          setMenuVisible(false)
+          navigation.navigate('GoalForm', { id: goal.id } )
         }}
       />
       <ThreeDotsMenu 

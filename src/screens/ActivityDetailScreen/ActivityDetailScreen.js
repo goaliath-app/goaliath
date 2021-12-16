@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native'
 import { connect, useDispatch } from 'react-redux';
-import { Paragraph, Menu, Title, Divider, List, Card, Button } from 'react-native-paper';
+import { Appbar, Paragraph, Menu, Title, Divider, List, Card, Button } from 'react-native-paper';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { 
@@ -14,7 +14,7 @@ import {
   stopTodayTimer, upsertEntry, archiveActivity, restoreActivity
 } from '../../redux'
 import { isToday, isFuture } from '../../util'
-import { GeneralColor } from '../../styles/Colors';
+import { GeneralColor, HeaderColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -78,20 +78,14 @@ const ActivityDetailScreen = ({
   // items that appear in the three dots menu
   const menuItems = (
     <>
-    <Menu.Item title={t('activityDetail.threeDotsMenu.editActivity')} 
-      onPress={() => {
+      <Menu.Item onPress={() => {
+        setDeleteDialogVisible(true)
         setMenuVisible(false)
-        navigation.navigate('ActivityForm', { activityId: activity.id })
-      }} 
-    />
-    <Menu.Item onPress={() => {
-      setDeleteDialogVisible(true)
-      setMenuVisible(false)
-    }} title={t('activityDetail.threeDotsMenu.deleteActivity')}  />
-    <Menu.Item onPress={() => {
-      setMoveToGoalDialogVisible(true)
-      setMenuVisible(false)
-    }} title={t('activityDetail.threeDotsMenu.changeGoal')}  />
+      }} title={t('activityDetail.threeDotsMenu.deleteActivity')}  />
+      <Menu.Item onPress={() => {
+        setMoveToGoalDialogVisible(true)
+        setMenuVisible(false)
+      }} title={t('activityDetail.threeDotsMenu.changeGoal')}  />
     </>
   )
 
@@ -99,12 +93,18 @@ const ActivityDetailScreen = ({
     date && !dateIsToday || activity.archived ?
     null
     :
-    <ThreeDotsMenu 
-      menuItems={menuItems} 
-      openMenu={() => setMenuVisible(true)} 
-      closeMenu={() => setMenuVisible(false)} 
-      visible={menuVisible} 
-    />
+    <>
+      <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
+        navigation.navigate('ActivityForm', { activityId: activity.id })
+      }}
+      />
+      <ThreeDotsMenu 
+        menuItems={menuItems} 
+        openMenu={() => setMenuVisible(true)} 
+        closeMenu={() => setMenuVisible(false)} 
+        visible={menuVisible} 
+      />
+    </>
   )
 
   return(
