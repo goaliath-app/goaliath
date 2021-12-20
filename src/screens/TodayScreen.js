@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View } from 'react-native'
-import { DayContent, Dialog } from '../components'
+import { DayContent, Dialog, SpeechBubble } from '../components'
 import { Header } from '../components';
 import { getToday } from '../util'
 import { useTranslation } from 'react-i18next'
@@ -54,6 +54,16 @@ const TodayScreen = ({ navigation }) => {
       <Header title={t('today.headerTitle')} navigation={navigation} buttons={
         <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color="white" />
       }/>
+      <SpeechBubble
+        speeches={[
+          {id: 0, text: "hola"},
+          {id: 1, text: "buenos dias"},
+          {id: 2, text: "buenos dias me llamo como me llamo y tu te llamas patata frita"},
+          {id: 3, text: "y tu te llamas patata frita"},
+          {id: 4, text: "y tu te llamas patata frita"},
+          {id: 5, text: "y tu te llamas patata frita"},
+        ]}
+      />
       <DayContent date={date} />
       <Dialog 
         visible={dayChangeDialogVisible} 
