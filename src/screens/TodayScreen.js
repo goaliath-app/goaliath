@@ -57,7 +57,7 @@ const TodayScreen = ({ navigation }) => {
       <SpeechBubble
         speeches={[
           {id: 0, text: "hola"},
-          {id: 1, text: "buenos dias"},
+          {id: 1, text: " asdas buenosadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsa adas adadas"},
           {id: 2, text: "buenos dias me llamo como me llamo y tu te llamas patata frita"},
           {id: 3, text: "y tu te llamas patata frita"},
           {id: 4, text: "y tu te llamas patata frita"},

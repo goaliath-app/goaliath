@@ -16,6 +16,14 @@ import {
 } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
+/* Caveats: 
+ - You may have trailing or leading whitespaces at the start or end of each line.
+ - Long words will be wrapped properly, but the next word will be on the next line.
+
+ These are present because we need to apply a different style to each character.
+ Because of Reanimated 2 limitations we can't use nested text, so to avoid 
+ breaking of words in multiple lines we wrapped each word in a View.
+*/
 const SpeechBubble = ({
   /* An array of objects defining each text to be displayed
   Each object has the properties:
@@ -73,15 +81,37 @@ export const TypeWriter = ({
   return (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}} >
       {
-      Array.from(speech.text).map((char, index) => (
-        <TypeWriterChar 
-          fadeInAnimationValue={fadeInAnimationValue} 
-          char={char} 
-          index={index} 
-          fadeInOffset={fadeInOffset}
-          fadeIn={fadeIn}/>
-      )) 
+        speech.text.split(/(\s+)/).map((word, index, array) => {
+          const previousWords = array.slice(0, index)
+          const wordIndex = previousWords.reduce((acc, word) => acc + word.length, 0)
+          return(
+            <TypeWriterWord
+              word={word}
+              index={wordIndex}
+              fadeInAnimationValue={fadeInAnimationValue}
+              fadeInOffset={fadeInOffset}
+              fadeIn={fadeIn}
+            />
+          )
+        })
       }
+    </View>
+  )
+}
+
+const TypeWriterWord = ({word, index: wordIndex, fadeInAnimationValue, fadeInOffset, fadeIn}) => {
+  return (
+    <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+      {
+        Array.from(word).map((char, index) => (
+          <TypeWriterChar
+            fadeInAnimationValue={fadeInAnimationValue}
+            char={char}
+            index={wordIndex + index}
+            fadeInOffset={fadeInOffset}
+            fadeIn={fadeIn}/>
+        ))    
+     }
     </View>
   )
 }
