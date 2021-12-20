@@ -1,11 +1,13 @@
 import React from 'react';
-import { View } from 'react-native'
+import { View, Pressable } from 'react-native'
 import { Button } from 'react-native-paper'
 import Animated, {
   useSharedValue,
   withTiming,
+  withRepeat,
   useAnimatedStyle,
   Easing,
+  withSequence,
 } from 'react-native-reanimated';
 
 import {
@@ -36,6 +38,8 @@ const SpeechBubble = ({
   */
   speeches,
 }) => {
+  const touchIconSrc = require('./../../assets/ic_touch_app.png')
+
   const [ speechIndex, setSpeechIndex ] = React.useState(0)
 
   function onPressNext(){
@@ -46,11 +50,33 @@ const SpeechBubble = ({
     }
   }
 
+  const nextButtonBounce = useSharedValue(0)
+  const bounceStyle = useAnimatedStyle (() => { 
+    return {
+      transform: [
+        { translateY: nextButtonBounce.value },
+      ],
+    }
+  })
+
+  React.useEffect(() => {
+    nextButtonBounce.value = withRepeat(
+      withSequence(
+        withTiming(5, { duration: 1000 }),
+        withTiming(-5, { duration: 1000 }),
+      ), -1, true
+    )
+  }, [])
+
   return (
-    <Animated.View style={[styles.speechBubble]}>
-      <TypeWriter speech={speeches[speechIndex]} />
-      <Button onPress={onPressNext}>NEXT</Button>
-    </Animated.View>
+    <Pressable onPress={onPressNext}>
+      <Animated.View style={[styles.speechBubble]}>
+        <TypeWriter speech={speeches[speechIndex]} />
+        <Animated.View style={[bounceStyle]}>
+          <Image source={touchIconSrc} />
+        </Animated.View>
+      </Animated.View>
+    </Pressable>
   )
 }
 
@@ -144,6 +170,7 @@ const TypeWriterChar = ({char, index, fadeInAnimationValue, fadeInOffset, fadeIn
 const styles = StyleSheet.create({
   speechBubble: {
     flexDirection: 'row',
+    alignItems: 'center',
     borderRadius: 50,
     backgroundColor: 'aliceblue',
     marginLeft: 20,
