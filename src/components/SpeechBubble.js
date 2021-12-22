@@ -46,13 +46,17 @@ const SpeechBubble = ({
   const [ speechIndex, setSpeechIndex ] = React.useState(0)
 
   function onPressNext(){
+    if(!isAnimationRunning){
+      setIsAnimationRunning(true)
     if(speechIndex < speeches.length-1){
       setSpeechIndex(speechIndex+1)
     }else{
       setSpeechIndex(0)
     }
   }
+  }
 
+  const [ isAnimationRunning, setIsAnimationRunning ] = React.useState(true)
   
   const nextButtonBounce = useSharedValue(0)
   const nextButtonOpacity = useSharedValue(0) 
@@ -103,6 +107,7 @@ const SpeechBubble = ({
   function onAnimationEndWorklet(){
     'worklet';
     nextButtonOpacity.value = 1
+    runOnJS(setIsAnimationRunning)(false)
   }
 
   function onNextWorklet(){
