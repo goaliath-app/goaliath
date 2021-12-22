@@ -25,6 +25,7 @@ import Notifications from './src/notifications'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { faTrophy, faCalendarAlt, faChartBar, faTasks } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { Pressable } from 'react-native';
 
 
 Notifications.initNotifications()
@@ -67,6 +68,9 @@ export default function App() {
 
   const [newUser, setNewUser] = React.useState()
   const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
+  //Tutorial States: TodayScreenIntroduction, GoalsScreenIntroduction, FirstGoalCreation, AfterFirstGoalCreation, GoalScreenIntroduction,
+  //        ActivitiesInTodayScreen, ChooseWeekliesIntroduction, OneTimeTasksIntroduction, TutorialEnding, Finished
+  const [ tutorialState, setTutorialState ] = React.useState("TodayScreenIntroduction") 
 
   function finishOnboarding(){
     store.dispatch(finishOnboardingAction())
@@ -92,24 +96,33 @@ export default function App() {
           ) 
       }} />
       <Tab.Screen name='Goals' component={GoalsStack} 
-        options={{ 
+        options={{
           tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesomeIcon icon={faTrophy} size={size} color={color} />
-          )
+            <FontAwesomeIcon icon={faTrophy} 
+              size={size} 
+              color={tutorialState=="TodayScreenIntroduction"? '#EBEBE4' : color} />
+          ),
+          tabBarButton: (props) => tutorialState=="TodayScreenIntroduction"? <Pressable {...props} disabled={true} /> : <Pressable {...props} />
       }} />
       <Tab.Screen name='Calendar' component={CalendarStack} 
         options={{ 
           title: t('app.drawer.calendar'),
           tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesomeIcon icon={faCalendarAlt} size={size} color={color} />
-          )
+            <FontAwesomeIcon icon={faCalendarAlt} 
+              size={size} 
+              color={tutorialState!="Finished"? '#EBEBE4' : color} />
+          ),
+          tabBarButton: (props) => tutorialState!="Finished"? <Pressable {...props} disabled={true} /> : <Pressable {...props} />
       }} />
       <Tab.Screen name='Stats' component={StatsScreen} 
         options={{ 
           title: t('app.drawer.stats'),
           tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesomeIcon icon={faChartBar} size={size} color={color} />
-            )  
+            <FontAwesomeIcon icon={faChartBar} 
+              size={size} 
+              color={tutorialState!="Finished"? '#EBEBE4' : color} />
+            ),
+            tabBarButton: (props) => tutorialState!="Finished"? <Pressable {...props} disabled={true} /> : <Pressable {...props} />
       }} />
     </Tab.Navigator>
   )
