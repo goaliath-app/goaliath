@@ -63,6 +63,7 @@ const TodayScreen = ({ navigation }) => {
           {id: 4, text: "y tu te llamas patata frita", onTextEnd: () => console.log("5")},
           {id: 5, text: "y tu te llamas patata frita", onTextEnd: () => console.log("6")},
         ]}
+        bubbleStyle={{height: 80}}
       />
       <DayContent date={date} />
       <Dialog 

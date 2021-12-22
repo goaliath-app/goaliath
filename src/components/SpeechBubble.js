@@ -40,44 +40,49 @@ const SpeechBubble = ({
     onTextEnd: a function to be called when the text is finished being displayed
   */
   speeches,
+  // Style of the containter bubble component
+  bubbleStyle={},
 }) => {
+  // Assets
   const touchIconSrc = require('./../../assets/ic_touch_app.png')
 
+  // State
   const [ speechIndex, setSpeechIndex ] = React.useState(0)
-
-  function onPressNext(){
-    if(!isAnimationRunning){
-      setIsAnimationRunning(true)
-    if(speechIndex < speeches.length-1){
-      setSpeechIndex(speechIndex+1)
-    }else{
-      setSpeechIndex(0)
-    }
-  }
-  }
-
   const [ isAnimationRunning, setIsAnimationRunning ] = React.useState(true)
-  
+
+  // Animation's shared values
   const nextButtonBounce = useSharedValue(0)
   const nextButtonOpacity = useSharedValue(0) 
   const bubbleOpacity = useSharedValue(1)
   const bubbleScale = useSharedValue(1) 
-  
+
+  // On press handlers (worklets)
   const onPressHandler = useAnimatedGestureHandler({
     onStart: (event, ctx) => {
       bubbleOpacity.value = 0.5
       bubbleScale.value = 0.9
-      console.log("PRESS")
     },
-    onEnd: (event, ctx) => {
+    onFinish: (event, ctx) => {
       nextButtonOpacity.value = 0
       bubbleOpacity.value = 1
       bubbleScale.value = 1
       runOnJS(onPressNext)()
-      console.log("RELEASE")
     }
   })
+
+  // JS onPress handler (called by worklet handler)
+  function onPressNext(){
+    if(!isAnimationRunning){
+      setIsAnimationRunning(true)
+      if(speechIndex < speeches.length-1){
+        setSpeechIndex(speechIndex+1)
+      }else{
+        setSpeechIndex(0)
+      }
+    }
+  }
   
+  // Animated Styles
   const bounceStyle = useAnimatedStyle (() => { 
     return {
       opacity: nextButtonOpacity.value,
@@ -96,6 +101,7 @@ const SpeechBubble = ({
     }
   })
 
+  // Start next button's bounce animation
   React.useEffect(() => {
     nextButtonBounce.value = withRepeat(
       withSequence(
@@ -104,25 +110,26 @@ const SpeechBubble = ({
       ), -1, true )
   }, [])
 
+  // Text animation state callbacks
   function onAnimationEndWorklet(){
     'worklet';
     nextButtonOpacity.value = 1
     runOnJS(setIsAnimationRunning)(false)
   }
 
-  function onNextWorklet(){
+  function onAnimationStartWorklet(){
     'worklet';
     nextButtonOpacity.value = 0
   }
 
   return (
     <TapGestureHandler onGestureEvent={onPressHandler} maxDurationMs={10000}>
-      <Animated.View style={[styles.speechBubble, bubbleAnimatedStyle]}>
+      <Animated.View style={[styles.speechBubble, bubbleAnimatedStyle, bubbleStyle]}>
         <TypeWriter 
           speech={speeches[speechIndex]} 
-            onAnimationEnd={onAnimationEndWorklet} 
-            onAnimationStart={onNextWorklet}
-          />
+          onAnimationEnd={onAnimationEndWorklet} 
+          onAnimationStart={onAnimationStartWorklet}
+        />
         <Animated.View style={[bounceStyle]}>
           <Image source={touchIconSrc} />
         </Animated.View>
@@ -140,18 +147,35 @@ export const TypeWriter = ({
   onAnimationEnd: onAnimationEndProp=()=>{},  // worklet. Executed when text animation is finished
   onAnimationStart=()=>{},  // executed when text animation is started
 }) => {
+  // State to check if speech has changed since last render
   const [ lastSpeechId, setLastSpeechId ] = React.useState()
   
+  // Animation's shared values
   const fadeInAnimationValue = useSharedValue(0)
   
+  // Animation calculations
   const targetValue = fadeIn ? speech.text.length + fadeInOffset : speech.text.length
   duration = durationProp ? durationProp : targetValue*charDelay
   
+  // Start fade in animation whenever we have a new speech
+  React.useEffect(() => {
+    onAnimationStart()
+    fadeInAnimationValue.value = withTiming(
+      targetValue, 
+      {duration, easing: Easing.linear},
+      onAnimationEnd  // see below
+    )
+  }, [speech.id])
+
+  // If speech id is different from last speech id, hide text before render
+  // to avoid showing the new text for one frame prior to its animation
   if(speech.id != lastSpeechId) {
     fadeInAnimationValue.value = 0
     setLastSpeechId(speech.id)
   }
 
+  // JS onAnimationEnd callback
+  // Just runs onAnimationEnd global and speech functions passed by parent
   function onAnimationEnd(){
     'worklet';
     onAnimationEndProp()
@@ -160,18 +184,10 @@ export const TypeWriter = ({
     }
   }
 
-  React.useEffect(() => {
-    onAnimationStart()
-    fadeInAnimationValue.value = withTiming(
-      targetValue, 
-      {duration, easing: Easing.linear},
-      onAnimationEnd
-    )
-  }, [speech.id])
-
   return (
     <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}} >
       {
+        // split speech into words, preserving whitespaces
         speech.text.split(/(\s+)/).map((word, index, array) => {
           const previousWords = array.slice(0, index)
           const wordIndex = previousWords.reduce((acc, word) => acc + word.length, 0)
@@ -190,7 +206,13 @@ export const TypeWriter = ({
   )
 }
 
-const TypeWriterWord = ({word, index: wordIndex, fadeInAnimationValue, fadeInOffset, fadeIn}) => {
+const TypeWriterWord = ({
+  word,  // text this word will show
+  index: wordIndex,  // index of this word in the whole text
+  fadeInAnimationValue,  // animation shared value
+  fadeInOffset,  // see TypeWriter prop with same name
+  fadeIn  // see TypeWriter prop with same name
+}) => {
   return (
     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
       {
@@ -207,7 +229,13 @@ const TypeWriterWord = ({word, index: wordIndex, fadeInAnimationValue, fadeInOff
   )
 }
 
-const TypeWriterChar = ({char, index, fadeInAnimationValue, fadeInOffset, fadeIn}) => {  
+const TypeWriterChar = ({
+  char,  // character to show, as a string
+  index,  // index of this character in the full text
+  fadeInAnimationValue,  // animation shared value
+  fadeInOffset,  // see TypeWriter prop with same name
+  fadeIn  // see TypeWriter prop with same name
+}) => {  
 
   const style = useAnimatedStyle(() => {
     const opacity = fadeIn ? 
