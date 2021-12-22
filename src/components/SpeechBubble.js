@@ -76,8 +76,6 @@ const SpeechBubble = ({
       setIsAnimationRunning(true)
       if(speechIndex < speeches.length-1){
         setSpeechIndex(speechIndex+1)
-      }else{
-        setSpeechIndex(0)
       }
     }
   }
@@ -113,7 +111,9 @@ const SpeechBubble = ({
   // Text animation state callbacks
   function onAnimationEndWorklet(){
     'worklet';
-    nextButtonOpacity.value = 1
+    if(speechIndex < speeches.length-1){
+      nextButtonOpacity.value = 1
+    }
     runOnJS(setIsAnimationRunning)(false)
   }
 
