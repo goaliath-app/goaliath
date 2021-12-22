@@ -56,12 +56,12 @@ const TodayScreen = ({ navigation }) => {
       }/>
       <SpeechBubble
         speeches={[
-          {id: 0, text: "hola"},
-          {id: 1, text: " asdas buenosadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsa adas adadas"},
-          {id: 2, text: "buenos dias me llamo como me llamo y tu te llamas patata frita"},
-          {id: 3, text: "y tu te llamas patata frita"},
-          {id: 4, text: "y tu te llamas patata frita"},
-          {id: 5, text: "y tu te llamas patata frita"},
+          {id: 0, text: "hola", onTextEnd: () => console.log("1")},
+          {id: 1, text: " asdas buenosadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsa adas adadas", onTextEnd: () => console.log("2")},
+          {id: 2, text: "buenos dias me llamo como me llamo y tu te llamas patata frita", onTextEnd: () => console.log("3")},
+          {id: 3, text: "y tu te llamas patata frita", onTextEnd: () => console.log("4")},
+          {id: 4, text: "y tu te llamas patata frita", onTextEnd: () => console.log("5")},
+          {id: 5, text: "y tu te llamas patata frita", onTextEnd: () => console.log("6")},
         ]}
       />
       <DayContent date={date} />

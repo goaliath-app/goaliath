@@ -8,6 +8,8 @@ import Animated, {
   useAnimatedStyle,
   Easing,
   withSequence,
+  useAnimatedGestureHandler,
+  runOnJS,
 } from 'react-native-reanimated';
 
 import {
@@ -17,6 +19,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { TapGestureHandler } from 'react-native-gesture-handler';
 
 /* Caveats: 
  - You may have trailing or leading whitespaces at the start or end of each line.
@@ -27,13 +30,13 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
  breaking of words in multiple lines we wrapped each word in a View.
 */
 const SpeechBubble = ({
-  /* An array of objects defining each text to be displayed
+  /* 
+  PROPS:
+
+  An array of objects defining each text to be displayed
   Each object has the properties:
     id: a unique id for this speech.
     text: the text to be shown.
-    
-  Planned properties (not yet implemented):  
-    onTextStart: a function to be called when the text starts to be displayed
     onTextEnd: a function to be called when the text is finished being displayed
   */
   speeches,
@@ -50,11 +53,41 @@ const SpeechBubble = ({
     }
   }
 
+  
   const nextButtonBounce = useSharedValue(0)
+  const nextButtonOpacity = useSharedValue(0) 
+  const bubbleOpacity = useSharedValue(1)
+  const bubbleScale = useSharedValue(1) 
+  
+  const onPressHandler = useAnimatedGestureHandler({
+    onStart: (event, ctx) => {
+      bubbleOpacity.value = 0.5
+      bubbleScale.value = 0.9
+      console.log("PRESS")
+    },
+    onEnd: (event, ctx) => {
+      nextButtonOpacity.value = 0
+      bubbleOpacity.value = 1
+      bubbleScale.value = 1
+      runOnJS(onPressNext)()
+      console.log("RELEASE")
+    }
+  })
+  
   const bounceStyle = useAnimatedStyle (() => { 
     return {
+      opacity: nextButtonOpacity.value,
       transform: [
         { translateY: nextButtonBounce.value },
+      ],
+    }
+  })
+
+  const bubbleAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: bubbleOpacity.value,
+      transform: [
+        { scale: bubbleScale.value },
       ],
     }
   })
@@ -64,19 +97,32 @@ const SpeechBubble = ({
       withSequence(
         withTiming(5, { duration: 1000 }),
         withTiming(-5, { duration: 1000 }),
-      ), -1, true
-    )
+      ), -1, true )
   }, [])
 
+  function onAnimationEndWorklet(){
+    'worklet';
+    nextButtonOpacity.value = 1
+  }
+
+  function onNextWorklet(){
+    'worklet';
+    nextButtonOpacity.value = 0
+  }
+
   return (
-    <Pressable onPress={onPressNext}>
-      <Animated.View style={[styles.speechBubble]}>
-        <TypeWriter speech={speeches[speechIndex]} />
+    <TapGestureHandler onGestureEvent={onPressHandler} maxDurationMs={10000}>
+      <Animated.View style={[styles.speechBubble, bubbleAnimatedStyle]}>
+        <TypeWriter 
+          speech={speeches[speechIndex]} 
+            onAnimationEnd={onAnimationEndWorklet} 
+            onAnimationStart={onNextWorklet}
+          />
         <Animated.View style={[bounceStyle]}>
           <Image source={touchIconSrc} />
         </Animated.View>
       </Animated.View>
-    </Pressable>
+    </TapGestureHandler>
   )
 }
 
@@ -85,7 +131,9 @@ export const TypeWriter = ({
   fadeIn=false,  // if true, the text will fade in 
   fadeInOffset=10,  // the number of characters that will fade in at the same time
   charDelay=50,  // time between characters
-  duration: durationProp  // total animation time. Overrides charDelay
+  duration: durationProp,  // total animation time. Overrides charDelay
+  onAnimationEnd: onAnimationEndProp=()=>{},  // worklet. Executed when text animation is finished
+  onAnimationStart=()=>{},  // executed when text animation is started
 }) => {
   const [ lastSpeechId, setLastSpeechId ] = React.useState()
   
@@ -93,15 +141,27 @@ export const TypeWriter = ({
   
   const targetValue = fadeIn ? speech.text.length + fadeInOffset : speech.text.length
   duration = durationProp ? durationProp : targetValue*charDelay
-
   
   if(speech.id != lastSpeechId) {
     fadeInAnimationValue.value = 0
     setLastSpeechId(speech.id)
   }
 
+  function onAnimationEnd(){
+    'worklet';
+    onAnimationEndProp()
+    if(speech.onTextEnd){
+      runOnJS(speech.onTextEnd)()
+    }
+  }
+
   React.useEffect(() => {
-    fadeInAnimationValue.value = withTiming(targetValue, {duration, easing: Easing.linear})
+    onAnimationStart()
+    fadeInAnimationValue.value = withTiming(
+      targetValue, 
+      {duration, easing: Easing.linear},
+      onAnimationEnd
+    )
   }, [speech.id])
 
   return (
