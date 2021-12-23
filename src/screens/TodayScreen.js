@@ -68,7 +68,32 @@ const TodayScreen = ({ navigation }) => {
           ]}
           bubbleStyle={{height: 80}}
         />
-        : null}
+        : null
+      }
+      {['ActivitiesInTodayScreen', 'OneTimeTasksIntroduction', 'TutorialEnding'].includes(tutorialState)?
+        <SpeechBubble
+          speeches={[
+            {id: 0, text: t('tutorial.ActivitiesInTodayScreen.2')},
+            {id: 1, text: t('tutorial.ActivitiesInTodayScreen.3')},
+            {id: 2, text: t('tutorial.ActivitiesInTodayScreen.4'), 
+              onTextEnd: () => {
+                dispatch(setTutorialState('OneTimeTasksIntroduction'))
+              }
+            },
+            //TODO: show OneTimeTasks component when the text starts, no when the previous text ends
+            {id: 3, text: t('tutorial.OneTimeTasksIntroduction.1'), 
+              onTextEnd: () => dispatch(setTutorialState('TutorialEnding'))},
+            {id: 4, text: t('tutorial.TutorialEnding.1')},
+            {id: 5, text: t('tutorial.TutorialEnding.2')},
+            {id: 6, text: t('tutorial.TutorialEnding.3')},
+            {id: 7, text: t('tutorial.TutorialEnding.4')},
+            {id: 8, text: t('tutorial.TutorialEnding.5')},
+            {id: 9, text: ' ', onTextEnd: () => dispatch(setTutorialState('Finished'))}
+          ]}
+          bubbleStyle={{height: 80}}
+        />
+        : null
+      }
       <DayContent date={date} />
       <Dialog 
         visible={dayChangeDialogVisible} 

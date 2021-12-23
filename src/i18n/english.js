@@ -467,7 +467,20 @@ const en = {
         8: 'You can add your own activities using the + icon'
       },
       ActivitiesInTodayScreen: {
-        1: 'When you are ready, return to the today screen'
+        1: 'When you are ready, return to the today screen',
+        2: 'Here you can see what you want to do today, according to your goals.',
+        3: 'This means that if you complete the activities listed here, you can be proud of yourself.',
+        4: 'And even if you only do some of them, you’ll be advancing towards your goals.'
+      },
+      OneTimeTasksIntroduction: {
+        1: 'You can also add one time tasks as reminders, that will only appear today.'
+      },
+      TutorialEnding: {
+        1: 'Now I’ll let you explore the rest of the app!',
+        2: 'I recommend you to go to the goals screen and create all of your important goals.',
+        3: 'Then fill each of them with the activities you think will make you feel proud of your efforts.',
+        4: 'If you don’t know which activities you need, only create a time activity to search how to accomplish your goal.',
+        5: 'I’ll be here to give you some tips along the way. Good luck!'
       }
     }
   }

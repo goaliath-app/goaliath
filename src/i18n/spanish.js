@@ -468,7 +468,20 @@ const es= {
         8: 'Puedes añadir tus propias actividades usando el icono +'
       },
       ActivitiesInTodayScreen: {
-        1: 'Cuando estés listo, vuelve a la pantalla de hoy'
+        1: 'Cuando estés listo, vuelve a la pantalla de hoy',
+        2: 'Aquí puedes ver lo que quieres hacer hoy, de acuerdo con tus metas.',
+        3: 'Eso quiere decir que si completas éstas actividades, podrás estar orgulloso de ti.',
+        4: 'E icluso si sólo haces algunas, estarás avanzando hacia tus metas.'
+      },
+      OneTimeTasksIntroduction: {
+        1: 'También puedes crear tareas sólo para hoy, que no aparecerán el resto de días.'
+      },
+      TutorialEnding: {
+        1: '¡Te dejo que explores el resto de la aplicación!',
+        2: 'Te recomiendo que vayas a la pantalla de las metas y crees todas tus metas importantes.',
+        3: 'Después llénalas de actividades que te vayan a hacer sentir orgulloso de tus esfuerzos.',
+        4: 'Si no sabes qué actividades necesitas, crea sólo una actividad de tiempo para investigar cómo lograr tu meta.',
+        5: 'Estaré por aquí dándote consejos sobre la marcha. ¡Buena suerte!'
       }
       
     }

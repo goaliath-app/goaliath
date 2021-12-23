@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ActivityList, BottomScreenPadding } from '../components'
 import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog } from '../components';
 import { 
-  areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay 
+  areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay, selectTutorialState
 } from '../redux'
 import { areThereWeeklyActivities, areTherePendingWeeklyActivities } from '../activityHandler'
 import { useTranslation } from 'react-i18next'
@@ -53,7 +53,8 @@ const DayContent = ({ date }) => {
   const tasksAdded = useSelector(state => areTasksAdded(state, date))
   const areWeekliesSelectedTodayResult = useSelector(areWeekliesSelectedToday)
   const areTherePendingWeeklyActivitiesResult = useSelector((state) => areTherePendingWeeklyActivities(state, date))
-  const areThereWeeklyActivitiesResult = useSelector(areThereWeeklyActivities) 
+  const areThereWeeklyActivitiesResult = useSelector(areThereWeeklyActivities)
+  const tutorialState = useSelector(selectTutorialState)
 
   // compute values
   const timeStatus = (
@@ -88,13 +89,13 @@ const DayContent = ({ date }) => {
       { weekliesSelector=='unchecked' ?
       <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
       : <></> }
-      { tasksSelector == 'unchecked' ?
+      { tasksSelector == 'unchecked' && ['OneTimeTasksIntroduction', 'TutorialEnding','Finished'].includes(tutorialState)?
         <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
         : <></> 
       }
       <ActivityList data={completedActivities} date={date} />
       <TaskList date={date} show='completed' />
-      { weekliesSelector == 'checked' ?
+      { weekliesSelector == 'checked' && ['OneTimeTasksIntroduction', 'TutorialEnding','Finished'].includes(tutorialState)?
       <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
       : <></> }
       { weekliesSelector == 'allcompleted' ?
