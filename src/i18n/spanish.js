@@ -435,6 +435,16 @@ const es= {
         title: 'Has completado la actividad: ',
         body: '{{activityName}}'
       }
+    },
+
+    tutorial: {
+      TodayScreenIntroduction: {
+        1: 'Bienvenido a la mejor parte de mi, ¡la pantalla de hoy!',
+        2: 'Aquí encontrarás lo que tienes que hacer para que hoy sea un buen día.',
+        3: 'Ahora está vacía, ¡arreglémoslo!',
+        4: 'Vayamos a la pantalla de las metas'
+      },
+      
     }
   }
 }

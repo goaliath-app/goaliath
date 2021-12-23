@@ -135,7 +135,7 @@ export default function App() {
         onBeforeLift={()=>onStoreRehydration()}
       >
         <PaperProvider>
-          <Context.Provider value={ {showSnackbar: setSnackbarMessage} } >
+          <Context.Provider value={ {showSnackbar: setSnackbarMessage, showTutorial: setTutorialState, tutorialState} } >
             <NavigationContainer>
               <StatusBar 
                 style={StatusBarColor.style} 

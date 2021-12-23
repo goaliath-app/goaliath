@@ -2,14 +2,14 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View } from 'react-native'
-import { DayContent, Dialog, SpeechBubble } from '../components'
-import { Header } from '../components';
+import { DayContent, Dialog, Header, SpeechBubble } from '../components'
 import { getToday } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 import { useFocusEffect } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper'
 import { updateLogs } from '../redux'
+import { Context } from '../../App'
 
 const TodayScreen = ({ navigation }) => {
   const dispatch = useDispatch()
@@ -23,6 +23,9 @@ const TodayScreen = ({ navigation }) => {
   }
 
   const { t, i18n } = useTranslation()
+
+  const { showTutorial, tutorialState } = React.useContext(Context);
+
 
   // selectors
   const dayStartHour = useSelector(state => state.settings.dayStartHour)
@@ -54,17 +57,17 @@ const TodayScreen = ({ navigation }) => {
       <Header title={t('today.headerTitle')} navigation={navigation} buttons={
         <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color="white" />
       }/>
-      <SpeechBubble
-        speeches={[
-          {id: 0, text: "hola", onTextEnd: () => console.log("1")},
-          {id: 1, text: " asdas buenosadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsa adas adadas", onTextEnd: () => console.log("2")},
-          {id: 2, text: "buenos dias me llamo como me llamo y tu te llamas patata frita", onTextEnd: () => console.log("3")},
-          {id: 3, text: "y tu te llamas patata frita", onTextEnd: () => console.log("4")},
-          {id: 4, text: "y tu te llamas patata frita", onTextEnd: () => console.log("5")},
-          {id: 5, text: "y tu te llamas patata frita", onTextEnd: () => console.log("6")},
-        ]}
-        bubbleStyle={{height: 80}}
-      />
+      {tutorialState=='TodayScreenIntroduction'?
+        <SpeechBubble
+          speeches={[
+            {id: 0, text: t('tutorial.TodayScreenIntroduction.1')},
+            {id: 1, text: t('tutorial.TodayScreenIntroduction.2')},
+            {id: 2, text: t('tutorial.TodayScreenIntroduction.3')},
+            {id: 3, text: t('tutorial.TodayScreenIntroduction.4'), onTextEnd: () => showTutorial('GoalsScreenIntroduction')},
+          ]}
+          bubbleStyle={{height: 80}}
+        />
+        : null}
       <DayContent date={date} />
       <Dialog 
         visible={dayChangeDialogVisible} 
