@@ -7,6 +7,20 @@ const initialState = {
     dayStartHour: DateTime.fromObject({hour:0, minute:0}).toISO(),
     newUser: true,
     language: Localization.locale,
+    /* 
+    Tutorial States: 
+        TodayScreenIntroduction 
+        GoalsScreenIntroduction 
+        FirstGoalCreation 
+        AfterFirstGoalCreation 
+        GoalScreenIntroduction
+        ActivitiesInTodayScreen 
+        ChooseWeekliesIntroduction 
+        OneTimeTasksIntroduction 
+        TutorialEnding 
+        Finished 
+    */
+    tutorialState: 'TodayScreenIntroduction',
 }
 
 const settingsSlice = createSlice({
@@ -15,6 +29,9 @@ const settingsSlice = createSlice({
     reducers: {
         setDayStartHour(state, action){
             state.dayStartHour = action.payload
+        },
+        setTutorialState(state, action){
+            state.tutorialState = action.payload
         },
         setState(state, action){
             const { newState } = action.payload
@@ -29,6 +46,12 @@ const settingsSlice = createSlice({
     }
 })
 
-export const { setDayStartHour, setState, finishOnboarding, setLanguage } = settingsSlice.actions
+export const { 
+    setDayStartHour, setState, finishOnboarding, setLanguage, setTutorialState 
+} = settingsSlice.actions
+
+export function selectTutorialState(state){
+    return state.settings.tutorialState
+}
 
 export default settingsSlice.reducer

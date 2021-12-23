@@ -8,8 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 import { useFocusEffect } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper'
-import { updateLogs } from '../redux'
-import { Context } from '../../App'
+import { updateLogs, setTutorialState, selectTutorialState } from '../redux'
 
 const TodayScreen = ({ navigation }) => {
   const dispatch = useDispatch()
@@ -24,10 +23,8 @@ const TodayScreen = ({ navigation }) => {
 
   const { t, i18n } = useTranslation()
 
-  const { showTutorial, tutorialState } = React.useContext(Context);
-
-
   // selectors
+  const tutorialState = useSelector(selectTutorialState)
   const dayStartHour = useSelector(state => state.settings.dayStartHour)
   const today = getToday(dayStartHour)
 
@@ -57,13 +54,14 @@ const TodayScreen = ({ navigation }) => {
       <Header title={t('today.headerTitle')} navigation={navigation} buttons={
         <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color="white" />
       }/>
-      {tutorialState=='TodayScreenIntroduction'?
+      {tutorialState=='TodayScreenIntroduction' || tutorialState=='GoalsScreenIntroduction'?
         <SpeechBubble
           speeches={[
             {id: 0, text: t('tutorial.TodayScreenIntroduction.1')},
             {id: 1, text: t('tutorial.TodayScreenIntroduction.2')},
             {id: 2, text: t('tutorial.TodayScreenIntroduction.3')},
-            {id: 3, text: t('tutorial.TodayScreenIntroduction.4'), onTextEnd: () => showTutorial('GoalsScreenIntroduction')},
+            {id: 3, text: t('tutorial.TodayScreenIntroduction.4'), 
+              onTextEnd: () => dispatch(setTutorialState('GoalsScreenIntroduction'))},
           ]}
           bubbleStyle={{height: 80}}
         />

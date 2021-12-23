@@ -7,8 +7,10 @@ import { Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog, BottomScreenPadding,
 import { hasSomethingToShow } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
-import { selectAllActiveActivitiesByGoalIdAndDate, getTodaySelector, selectAllGoals, toggleGoal } from '../redux';
-import { Context } from '../../App'
+import { 
+  selectAllActiveActivitiesByGoalIdAndDate, getTodaySelector, selectAllGoals, 
+  toggleGoal, selectTutorialState, setTutorialState,
+} from '../redux';
 
 
 const GoalListItem = ({ name, active, id }) => {
@@ -83,7 +85,8 @@ const GoalsScreen = ({ navigation, goals }) => {
   const { t, i18n } = useTranslation()
   const [menuVisible, setMenuVisible] = React.useState(false);
 
-  const { tutorialState, showTutorial } = React.useContext(Context)
+  const dispatch = useDispatch();
+  const tutorialState = useSelector(selectTutorialState)
   
   const renderItem = ({ item }) => (
     <GoalListItem
@@ -126,7 +129,8 @@ const GoalsScreen = ({ navigation, goals }) => {
           {id: 0, text: t('tutorial.GoalsScreenIntroduction.1')},
           {id: 1, text: t('tutorial.GoalsScreenIntroduction.2')},
           {id: 2, text: t('tutorial.GoalsScreenIntroduction.3')},
-          {id: 3, text: t('tutorial.GoalsScreenIntroduction.4'), onTextEnd: () => showTutorial('FirstGoalCreation')},
+          {id: 3, text: t('tutorial.GoalsScreenIntroduction.4'), 
+            onTextEnd: () => dispatch(setTutorialState('FirstGoalCreation'))},
         ]}
         bubbleStyle={{height: 80}}
       />
@@ -142,7 +146,8 @@ const GoalsScreen = ({ navigation, goals }) => {
       {tutorialState=='AfterFirstGoalCreation'?
       <SpeechBubble
         speeches={[
-          {id: 0, text: t('tutorial.AfterFirstGoalCreation.1'), onTextEnd: () => showTutorial('GoalScreenIntroduction')},
+          {id: 0, text: t('tutorial.AfterFirstGoalCreation.1'), 
+            onTextEnd: () => dispatch(setTutorialState('GoalScreenIntroduction'))},
         ]}
         bubbleStyle={{height: 80}}
       />

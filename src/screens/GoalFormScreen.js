@@ -1,13 +1,12 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { View, StyleSheet } from 'react-native'
 import { Appbar, TextInput, Subheading, Paragraph, HelperText, Title } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { Header, HelpIcon, SpeechBubble } from '../components'
-import { setGoal, selectGoalById } from '../redux';
+import { setGoal, selectGoalById, selectTutorialState, setTutorialState } from '../redux';
 import { GeneralColor } from '../styles/Colors';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Context } from '../../App'
 
 const GoalFormScreen = ({ navigation, goal=null }) => {
   const { t, i18n } = useTranslation()
@@ -19,7 +18,7 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
 
   const [nameInputError, setNameInputError] = React.useState(false)
 
-  const { tutorialState, showTutorial } = React.useContext(Context)
+  const tutorialState = useSelector(selectTutorialState)
   
   function validate(newGoal){
     if(!newGoal.name){
@@ -76,7 +75,8 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
         {tutorialState=='FirstGoalCreation'?
           <SpeechBubble
             speeches={[
-              {id: 0, text: t('tutorial.FirstGoalCreation.2'), onTextEnd: () => showTutorial('AfterFirstGoalCreation')},
+              {id: 0, text: t('tutorial.FirstGoalCreation.2'), 
+                onTextEnd: () => dispatch(setTutorialState('AfterFirstGoalCreation'))},
             ]}
             bubbleStyle={{height: 80}}
           />

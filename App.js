@@ -18,7 +18,7 @@ import {
   AddTasksScreen, CalendarDayViewScreen, CalendarWeekViewScreen,
   StatsScreen, ArchivedGoalsScreen, ArchivedActivitiesScreen
 } from './src/screens'
-import { Drawer as CustomDrawer } from './src/components'
+import { Drawer as CustomDrawer, GoalsScreenIcon, GoalsScreenButton } from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
 import { generateDummyData } from './src/redux/Thunks'
 import Notifications from './src/notifications'
@@ -68,9 +68,6 @@ export default function App() {
 
   const [newUser, setNewUser] = React.useState()
   const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
-  //Tutorial States: TodayScreenIntroduction, GoalsScreenIntroduction, FirstGoalCreation, AfterFirstGoalCreation, GoalScreenIntroduction,
-  //        ActivitiesInTodayScreen, ChooseWeekliesIntroduction, OneTimeTasksIntroduction, TutorialEnding, Finished
-  const [ tutorialState, setTutorialState ] = React.useState("TodayScreenIntroduction") 
 
   function finishOnboarding(){
     store.dispatch(finishOnboardingAction())
@@ -98,11 +95,9 @@ export default function App() {
       <Tab.Screen name='Goals' component={GoalsStack} 
         options={{
           tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesomeIcon icon={faTrophy} 
-              size={size} 
-              color={tutorialState=="TodayScreenIntroduction"? '#EBEBE4' : color} />
+            <GoalsScreenIcon color={color} size={size} />
           ),
-          tabBarButton: (props) => tutorialState=="TodayScreenIntroduction"? <Pressable {...props} disabled={true} /> : <Pressable {...props} />
+          tabBarButton: (props) => <GoalsScreenButton {...props} />
       }} />
       <Tab.Screen name='Calendar' component={CalendarStack} 
         options={{ 
@@ -110,9 +105,9 @@ export default function App() {
           tabBarIcon: ({ focused, color, size }) => (
             <FontAwesomeIcon icon={faCalendarAlt} 
               size={size} 
-              color={tutorialState!="Finished"? '#EBEBE4' : color} />
+              color={"placeholder"!="Finished"? '#EBEBE4' : color} />
           ),
-          tabBarButton: (props) => tutorialState!="Finished"? <Pressable {...props} disabled={true} /> : <Pressable {...props} />
+          tabBarButton: (props) => "placeholder"!="Finished"? <Pressable {...props} disabled={true} /> : <Pressable {...props} />
       }} />
       <Tab.Screen name='Stats' component={StatsScreen} 
         options={{ 
@@ -120,9 +115,9 @@ export default function App() {
           tabBarIcon: ({ focused, color, size }) => (
             <FontAwesomeIcon icon={faChartBar} 
               size={size} 
-              color={tutorialState!="Finished"? '#EBEBE4' : color} />
+              color={"placeholder"!="Finished"? '#EBEBE4' : color} />
             ),
-            tabBarButton: (props) => tutorialState!="Finished"? <Pressable {...props} disabled={true} /> : <Pressable {...props} />
+            tabBarButton: (props) => "placeholder"!="Finished"? <Pressable {...props} disabled={true} /> : <Pressable {...props} />
       }} />
     </Tab.Navigator>
   )
@@ -135,7 +130,7 @@ export default function App() {
         onBeforeLift={()=>onStoreRehydration()}
       >
         <PaperProvider>
-          <Context.Provider value={ {showSnackbar: setSnackbarMessage, showTutorial: setTutorialState, tutorialState} } >
+          <Context.Provider value={ { showSnackbar: setSnackbarMessage } } >
             <NavigationContainer>
               <StatusBar 
                 style={StatusBarColor.style} 
