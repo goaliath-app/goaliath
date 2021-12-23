@@ -114,13 +114,25 @@ const GoalsScreen = ({ navigation, goals }) => {
         title={t('goals.headerTitle')} navigation={navigation} 
         buttons={
         <>
+        {
+          [ 'FirstGoalCreation', 'AfterFirstGoalCreation', 
+          'GoalScreenIntroduction', 'ActivitiesInTodayScreen', 
+          'ChooseWeekliesIntroduction', 'OneTimeTasksIntroduction', 
+          'TutorialEnding', 'Finished' ].includes(tutorialState) ?
           <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color="white"/>
+          :
+          <Appbar.Action icon='plus' color="white" style={{opacity: 0.5}} />
+        }
+        { tutorialState == 'Finished' ?
           <ThreeDotsMenu 
             menuItems={menuItems} 
             openMenu= {() => setMenuVisible(true)} 
             closeMenu= {() => setMenuVisible(false)} 
             visible={menuVisible} 
           />
+          :
+          <Appbar.Action icon='dots-vertical' color={'white'} style={{opacity: 0.5}} />
+        }
         </>
         }/>
       {tutorialState=='GoalsScreenIntroduction'?

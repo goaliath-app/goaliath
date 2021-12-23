@@ -52,7 +52,10 @@ const TodayScreen = ({ navigation }) => {
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('today.headerTitle')} navigation={navigation} buttons={
-        <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color="white" />
+        tutorialState == 'Finished' ? 
+          <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color="white" />
+          :
+          <Appbar.Action icon='cog' color="white" style={{opacity: 0.5}} />
       }/>
       {tutorialState=='TodayScreenIntroduction' || tutorialState=='GoalsScreenIntroduction'?
         <SpeechBubble
