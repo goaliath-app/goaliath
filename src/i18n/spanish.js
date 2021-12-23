@@ -444,6 +444,25 @@ const es= {
         3: 'Ahora está vacía, ¡arreglémoslo!',
         4: 'Vayamos a la pantalla de las metas'
       },
+      GoalsScreenIntroduction: {
+        1: 'Las metas son la base de Goaliath',
+        2: 'Son esas cosas importantes que te hacen sentir bien cuando las dedicas tiempo.',
+        3: 'Y también aquellas que te hacen sentir mal cuando las pospones.',
+        4: 'Cosas como "Ponerme en forma", "Aprender inglés" o "Estar con mi familia" son buenos ejemplos de metas.'
+      },
+      FirstGoalCreation: {
+        1: 'Vamos a crear tu primera meta usando el icono +',
+        2: 'Puede que tu motivación te parezca obvia para escribirla, pero en los días difíciles te vendrá bien leerla.'
+      },
+      AfterFirstGoalCreation: {
+        1: '¡Mira, tu primera meta!'
+      },
+      GoalScreenIntroduction: {
+        1: 'Pulsa en ella para ver sus detalles',
+      },
+      ActivitiesInTodayScreen: {
+        1: 'Cuando estés listo, vuelve a la pantalla de hoy'
+      }
       
     }
   }

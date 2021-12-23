@@ -442,6 +442,25 @@ const en = {
         2: 'Here you will find what you have to do to make this day a good day.',
         3: 'Now it’s empty, but lets fix that!',
         4: 'Let’s go to the Goals screen'
+      },
+      GoalsScreenIntroduction: {
+        1: 'Goals are the base of Goaliath',
+        2: 'They are those meaningful things you feel good dedicating time to.',
+        3: 'And also the ones that make you feel bad when you neglect them.',
+        4: 'Things like "Fitness", "Learn Spanish" or "Be with my family" are good examples of goals.'
+      },
+      FirstGoalCreation: {
+        1: 'Let’s create your first goal using the + icon',
+        2: 'Your motivation may seem obvious to write down, but on hard days it’s a really good thing to read.'
+      },
+      AfterFirstGoalCreation: {
+        1: 'Behold! Your first goal is here!'
+      },
+      GoalScreenIntroduction: {
+        1: 'Tap on it to view it’s details',
+      },
+      ActivitiesInTodayScreen: {
+        1: 'When you are ready, return to the today screen'
       }
     }
   }

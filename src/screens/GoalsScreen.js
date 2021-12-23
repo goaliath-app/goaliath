@@ -1,18 +1,14 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Appbar, Divider, Switch, Menu } from 'react-native-paper';
-import { Text, Paragraph, Portal, Snackbar, Dialog, Button } from 'react-native-paper'
-
-import { Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog, BottomScreenPadding } from '../components'
-
-import { selectAllGoals, toggleGoal } from '../redux'
+import { List, Appbar, Divider, Switch, Menu, Portal, Dialog } from 'react-native-paper';
+import { Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog, BottomScreenPadding, SpeechBubble } from '../components'
 import { hasSomethingToShow } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
-import { useSelector } from 'react-redux'
-import { selectAllActiveActivitiesByGoalIdAndDate, getTodaySelector } from '../redux';
+import { selectAllActiveActivitiesByGoalIdAndDate, getTodaySelector, selectAllGoals, toggleGoal } from '../redux';
+import { Context } from '../../App'
 
 
 const GoalListItem = ({ name, active, id }) => {
@@ -86,6 +82,8 @@ const GoalListItem = ({ name, active, id }) => {
 const GoalsScreen = ({ navigation, goals }) => {
   const { t, i18n } = useTranslation()
   const [menuVisible, setMenuVisible] = React.useState(false);
+
+  const { tutorialState, showTutorial } = React.useContext(Context)
   
   const renderItem = ({ item }) => (
     <GoalListItem
@@ -122,6 +120,50 @@ const GoalsScreen = ({ navigation, goals }) => {
           />
         </>
         }/>
+      {tutorialState=='GoalsScreenIntroduction'?
+      <SpeechBubble
+        speeches={[
+          {id: 0, text: t('tutorial.GoalsScreenIntroduction.1')},
+          {id: 1, text: t('tutorial.GoalsScreenIntroduction.2')},
+          {id: 2, text: t('tutorial.GoalsScreenIntroduction.3')},
+          {id: 3, text: t('tutorial.GoalsScreenIntroduction.4'), onTextEnd: () => showTutorial('FirstGoalCreation')},
+        ]}
+        bubbleStyle={{height: 80}}
+      />
+      : null}
+      {tutorialState=='FirstGoalCreation'?
+      <SpeechBubble
+        speeches={[
+          {id: 0, text: t('tutorial.FirstGoalCreation.1')},
+        ]}
+        bubbleStyle={{height: 80}}
+      />
+      : null}
+      {tutorialState=='AfterFirstGoalCreation'?
+      <SpeechBubble
+        speeches={[
+          {id: 0, text: t('tutorial.AfterFirstGoalCreation.1'), onTextEnd: () => showTutorial('GoalScreenIntroduction')},
+        ]}
+        bubbleStyle={{height: 80}}
+      />
+      : null} 
+      {tutorialState=='GoalScreenIntroduction'?
+      <SpeechBubble
+        speeches={[
+          {id: 0, text: t('tutorial.GoalScreenIntroduction.1')},
+        ]}
+        bubbleStyle={{height: 80}}
+      />
+      : null}
+      {tutorialState=='ActivitiesInTodayScreen'?
+      <SpeechBubble
+        speeches={[
+          {id: 0, text: t('tutorial.ActivitiesInTodayScreen.1')},
+        ]}
+        bubbleStyle={{height: 80}}
+      />
+      : null}
+
       {hasSomethingToShow(goals)?
         <FlatList data={goals} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
       :
