@@ -459,6 +459,13 @@ const es= {
       },
       GoalScreenIntroduction: {
         1: 'Pulsa en ella para ver sus detalles',
+        2: 'Aquí es donde definirás cómo quieres avanzar hacia tu meta.',
+        3: 'Siempre pensaremos en actividades para hacer a menudo, no en sus resultados',
+        4: 'Las actividades son tareas recurrentes que haces cada semana.',
+        5: 'Al dedicar tiempo constantemente a tus metas, llegarás a lograrlas.',
+        6: 'Voy a crear una actividad para ti.',
+        7: '¡¡Tachán!!',
+        8: 'Puedes añadir tus propias actividades usando el icono +'
       },
       ActivitiesInTodayScreen: {
         1: 'Cuando estés listo, vuelve a la pantalla de hoy'

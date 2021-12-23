@@ -458,6 +458,13 @@ const en = {
       },
       GoalScreenIntroduction: {
         1: 'Tap on it to view it’s details',
+        2: 'Here is where you’ll define how do you want to advance towards the goal.',
+        3: 'We’ll always think about activities you’ll do often, and not it’s outcomes.',
+        4: 'Activities are recurring tasks you do each week',
+        5: 'By consistently dedicating time to your goals you will grow to accomplish them.',
+        6: 'I’m going to create an easy activity for you.',
+        7: 'Ta-da!!',
+        8: 'You can add your own activities using the + icon'
       },
       ActivitiesInTodayScreen: {
         1: 'When you are ready, return to the today screen'

@@ -8,9 +8,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { 
   Header, ThreeDotsMenu, DeleteGoalDialog, InfoCard, DeleteActivityDialog, 
-  MoveToGoalDialog, BottomScreenPadding 
+  MoveToGoalDialog, BottomScreenPadding, SpeechBubble
 } from '../components';
-import { selectAllActivities, selectGoalById, toggleActivity, restoreGoal } from '../redux'
+import { selectAllActivities, selectGoalById, toggleActivity, restoreGoal, 
+  setActivity, selectTutorialState, setTutorialState } from '../redux'
 import { hasSomethingToShow } from '../util'
 import { GeneralColor, GoalColor, HeaderColor } from '../styles/Colors';
 import { getFrequencyString } from '../activityHandler'
@@ -114,6 +115,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
 
   const dispatch = useDispatch()
 
+  const tutorialState = useSelector(selectTutorialState)
 
   const { t, i18n } = useTranslation()
 
@@ -168,6 +170,42 @@ const GoalScreen = ({ activities, goal, navigation }) => {
         <ArchivedWarning goal={goal}/>
         <View style={{ flex: 1 }}>
           <View style={{flexShrink: 1}}>
+            {tutorialState=='GoalScreenIntroduction' || tutorialState=='ActivitiesInTodayScreen'?
+              <SpeechBubble
+                speeches={[
+                  {id:0, text: t('tutorial.GoalScreenIntroduction.2')},
+                  {id:1, text: t('tutorial.GoalScreenIntroduction.3')},
+                  {id:2, text: t('tutorial.GoalScreenIntroduction.4')},
+                  {id:3, text: t('tutorial.GoalScreenIntroduction.5')},
+                  {id:4, text: t('tutorial.GoalScreenIntroduction.6'), 
+                    onTextEnd:() => {
+                      dispatch(setActivity({
+                        archived: false,
+                        active: true,
+                        name: `Work on ${goal.name}`, 
+                        goalId: goal.id, 
+                        type: 'doFixedDays', 
+                        params: { 
+                          daysOfWeek: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true },
+                          dailyGoal: {
+                            type: 'doNSeconds',
+                            params: { 
+                              seconds: 600
+                            }
+                          }
+                        }
+                      }))
+                    }
+                  },
+                  {id:5, text: t('tutorial.GoalScreenIntroduction.7')},
+                  {id:6, text: t('tutorial.GoalScreenIntroduction.8'),
+                    onTextEnd: () => dispatch(setTutorialState('ActivitiesInTodayScreen'))},
+                  {id:7, text: t('tutorial.ActivitiesInTodayScreen.1')},
+                ]}
+                bubbleStyle={{height: 80}}
+              />
+              : null
+            }
             {hasSomethingToShow(activities)?
               <FlatList data={activities} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
               :
