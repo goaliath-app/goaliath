@@ -135,43 +135,29 @@ const GoalsScreen = ({ navigation, goals }) => {
         }
         </>
         }/>
-      {tutorialState=='GoalsScreenIntroduction'?
+      {tutorialState=='GoalsScreenIntroduction' || tutorialState=='FirstGoalCreation'?
       <SpeechBubble
         speeches={[
           {id: 0, text: t('tutorial.GoalsScreenIntroduction.1')},
           {id: 1, text: t('tutorial.GoalsScreenIntroduction.2')},
           {id: 2, text: t('tutorial.GoalsScreenIntroduction.3')},
-          {id: 3, text: t('tutorial.GoalsScreenIntroduction.4'), 
+          {id: 3, text: t('tutorial.GoalsScreenIntroduction.4'),
             onTextEnd: () => dispatch(setTutorialState('FirstGoalCreation'))},
+          {id: 0, text: t('tutorial.FirstGoalCreation.1')}
         ]}
         bubbleStyle={{height: 80}}
       />
       : null}
-      {tutorialState=='FirstGoalCreation'?
-      <SpeechBubble
-        speeches={[
-          {id: 0, text: t('tutorial.FirstGoalCreation.1')},
-        ]}
-        bubbleStyle={{height: 80}}
-      />
-      : null}
-      {tutorialState=='AfterFirstGoalCreation'?
+      {tutorialState=='AfterFirstGoalCreation' || tutorialState=='GoalScreenIntroduction'?
       <SpeechBubble
         speeches={[
           {id: 0, text: t('tutorial.AfterFirstGoalCreation.1'), 
             onTextEnd: () => dispatch(setTutorialState('GoalScreenIntroduction'))},
+          {id: 1, text: t('tutorial.GoalScreenIntroduction.1')}
         ]}
         bubbleStyle={{height: 80}}
       />
       : null} 
-      {tutorialState=='GoalScreenIntroduction'?
-      <SpeechBubble
-        speeches={[
-          {id: 0, text: t('tutorial.GoalScreenIntroduction.1')},
-        ]}
-        bubbleStyle={{height: 80}}
-      />
-      : null}
       {tutorialState=='ActivitiesInTodayScreen'?
       <SpeechBubble
         speeches={[

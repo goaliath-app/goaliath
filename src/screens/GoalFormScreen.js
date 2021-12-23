@@ -72,7 +72,7 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
         <HelperText style={{paddingLeft:15}} type="error" visible={nameInputError}>
           {t('goalForm.nameError')}
         </HelperText>
-        {tutorialState=='FirstGoalCreation'?
+        {tutorialState=='FirstGoalCreation' || tutorialState=='AfterFirstGoalCreation'?
           <SpeechBubble
             speeches={[
               {id: 0, text: t('tutorial.FirstGoalCreation.2'), 
