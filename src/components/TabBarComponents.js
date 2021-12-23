@@ -7,6 +7,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 const disabledColor = '#EBEBE4'
 
+export const TodayScreenIcon = ({ color, size }) => {
+  return (
+    <FontAwesomeIcon 
+      icon={faTasks} 
+      size={size} 
+      color={color} 
+    />
+  )
+}
+
 export const GoalsScreenIcon = ({ color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
@@ -24,8 +34,55 @@ export const GoalsScreenIcon = ({ color, size }) => {
 export const GoalsScreenButton = ( props ) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  // const tutorialAwareProps = tutorialState == "TodayScreenIntroduction" ? { ...props, disabled: true, style: { ...props.style, opacity: 0.5 } } : props
   const tutorialAwareProps = tutorialState == "TodayScreenIntroduction" ? { ...props, disabled: true } : props
+
+  return (
+    <Pressable {...tutorialAwareProps} />
+  )
+}
+
+export const CalendarScreenIcon = ({ color, size }) => {
+  const tutorialState = useSelector(selectTutorialState)
+
+  const tutorialAwareColor = tutorialState != "Finished" ? disabledColor : color
+
+  return (
+    <FontAwesomeIcon 
+      icon={faCalendarAlt} 
+      size={size} 
+      color={tutorialAwareColor} 
+    />
+  )
+}
+
+export const CalendarScreenButton = ( props ) => {
+  const tutorialState = useSelector(selectTutorialState)
+
+  const tutorialAwareProps = tutorialState != "Finished" ? { ...props, disabled: true } : props
+
+  return (
+    <Pressable {...tutorialAwareProps} />
+  )
+}
+
+export const StatsScreenIcon = ({ color, size }) => {
+  const tutorialState = useSelector(selectTutorialState)
+
+  const tutorialAwareColor = tutorialState != "Finished" ? disabledColor : color
+
+  return (
+    <FontAwesomeIcon 
+      icon={faChartBar} 
+      size={size} 
+      color={tutorialAwareColor} 
+    />
+  )
+}
+
+export const StatsScreenButton = ( props ) => {
+  const tutorialState = useSelector(selectTutorialState)
+
+  const tutorialAwareProps = tutorialState != "Finished" ? { ...props, disabled: true } : props
 
   return (
     <Pressable {...tutorialAwareProps} />

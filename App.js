@@ -3,7 +3,6 @@ import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Provider as PaperProvider, Snackbar } from  'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
@@ -18,14 +17,14 @@ import {
   AddTasksScreen, CalendarDayViewScreen, CalendarWeekViewScreen,
   StatsScreen, ArchivedGoalsScreen, ArchivedActivitiesScreen
 } from './src/screens'
-import { Drawer as CustomDrawer, GoalsScreenIcon, GoalsScreenButton } from './src/components'
+import { 
+  TodayScreenIcon, GoalsScreenIcon, GoalsScreenButton, CalendarScreenIcon, 
+  CalendarScreenButton, StatsScreenIcon, StatsScreenButton,
+} from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
 import { generateDummyData } from './src/redux/Thunks'
 import Notifications from './src/notifications'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { faTrophy, faCalendarAlt, faChartBar, faTasks } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { Pressable } from 'react-native';
 
 
 Notifications.initNotifications()
@@ -34,7 +33,7 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const persistor = persistStore(store)
-// persistor.purge()
+persistor.purge()
 
 /* The three stacks below are inside the BottomTabnavigator.
    If we want to navigate to a new screen without hiding the bottom navigation
@@ -89,7 +88,7 @@ export default function App() {
       <Tab.Screen name='Today' component={TodayStack} 
         options={{ 
           tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesomeIcon icon={faTasks} size={size} color={color} />
+            <TodayScreenIcon size={size} color={color} />
           ) 
       }} />
       <Tab.Screen name='Goals' component={GoalsStack} 
@@ -97,27 +96,25 @@ export default function App() {
           tabBarIcon: ({ focused, color, size }) => (
             <GoalsScreenIcon color={color} size={size} />
           ),
-          tabBarButton: (props) => <GoalsScreenButton {...props} />
+          tabBarButton: (props) => {
+            return <GoalsScreenButton {...props} />
+          }
       }} />
       <Tab.Screen name='Calendar' component={CalendarStack} 
         options={{ 
           title: t('app.drawer.calendar'),
           tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesomeIcon icon={faCalendarAlt} 
-              size={size} 
-              color={"placeholder"!="Finished"? '#EBEBE4' : color} />
+            <CalendarScreenIcon color={color} size={size} />
           ),
-          tabBarButton: (props) => "placeholder"!="Finished"? <Pressable {...props} disabled={true} /> : <Pressable {...props} />
+          tabBarButton: (props) => <CalendarScreenButton {...props} />
       }} />
       <Tab.Screen name='Stats' component={StatsScreen} 
         options={{ 
           title: t('app.drawer.stats'),
           tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesomeIcon icon={faChartBar} 
-              size={size} 
-              color={"placeholder"!="Finished"? '#EBEBE4' : color} />
-            ),
-            tabBarButton: (props) => "placeholder"!="Finished"? <Pressable {...props} disabled={true} /> : <Pressable {...props} />
+            <StatsScreenIcon color={color} size={size} />
+          ),
+          tabBarButton: (props) => <StatsScreenButton {...props} />
       }} />
     </Tab.Navigator>
   )
