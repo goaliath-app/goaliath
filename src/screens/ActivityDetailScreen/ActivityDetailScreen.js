@@ -18,7 +18,7 @@ import { GeneralColor, HeaderColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { StatsPannel, MoveToGoalDialog } from '../../components'
+import { StatsPannel, MoveToGoalDialog, InfoCard } from '../../components'
 
 const ArchivedWarning = ({ activity }) => {
   const { t, i18n } = useTranslation()
@@ -28,17 +28,16 @@ const ArchivedWarning = ({ activity }) => {
   return (
     activity.archived?
       <>
-      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
-        <Card.Content>
-          <Title>{t("activityDetail.archivedWarning")}</Title>
-        </Card.Content>
-        <Card.Actions style={{alignSelf: 'center'}}>
-          <Button onPress={ () => {
+      <InfoCard 
+        title={t("activityDetail.archivedWarning")} 
+        extraContent={
+          <Button style={{marginTop: 10}} onPress={ () => {
             dispatch(restoreActivity(activity.id))
             navigation.goBack()
           }}>{t("activityDetail.restoreButton")}</Button>
-        </Card.Actions>
-      </Card>
+        }
+        style={{alignItems: 'center'}}
+      />
       <Divider />
       </>
     : null

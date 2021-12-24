@@ -93,17 +93,17 @@ const ArchivedWarning = ({ goal }) => {
 
   return (
     goal.archived?
-      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
-        <Card.Content>
-          <Title>{t("goal.archivedWarning")}</Title>
-        </Card.Content>
-        <Card.Actions style={{alignSelf: 'center'}}>
-          <Button onPress={ () => {
+      <InfoCard
+        title={t("goal.archivedWarning")}
+        extraContent={
+          <Button style={{marginTop: 10}} onPress={ () => {
             dispatch(restoreGoal(goal.id))
             navigation.goBack()
           }}>{t("goal.restoreButton")}</Button>
-        </Card.Actions>
-      </Card>
+        }
+        style={{alignItems: 'center'}}
+        />
+
     : null
   )
 }
@@ -209,7 +209,8 @@ const GoalScreen = ({ activities, goal, navigation }) => {
             {hasSomethingToShow(activities)?
               <FlatList data={activities} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
               :
-              <InfoCard content={t('goal.infoContent')} />
+              tutorialState=='Finished' && !goal.archived?
+                <InfoCard title={t('goal.infoTitle')} paragraph={t('goal.infoContent')} /> : null
             } 
           </View>
           {goal.motivation?

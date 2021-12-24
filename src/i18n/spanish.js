@@ -188,7 +188,8 @@ const es= {
         title: '¿Archivar meta?',
         body: "Podrás ver la meta y restaurarla más adelante desde el menú de la pantalla de metas.",
       },
-      infoContent: "Esta meta no tiene ninguna actividad todavía.\n\nUna actividad es una tarea recurrente que puede tener o no un requisito de tiempo.\n\nPara cada meta deberías crear las actividades que vayan a ayudarte a completar la meta si las realizas con constancia.\n\nDiseñar tus actividades de esta forma te permitirán irte a la cama pensando: \"Hoy he hecho todo lo que tenía que hacer\".",
+      infoTitle: "Esta meta está vacía",
+      infoContent: "Puedes añadir nuevas actividades pulsando el icono +",
       archivedWarning: "Esta meta está archivada",
       restoreButton: "RESTAURAR META",
       longPressMenu: {
@@ -201,7 +202,8 @@ const es= {
     goals: {
         headerTitle: 'Metas',
         goalDescription: '{{activitiesNumber}} actividades activas',
-        infoContent: "No tienes metas todavía.\n\nLas metas son la base de Goaliath, son las cosas que quieres conseguir, dedicar tiempo o trabajar en ellas.\n\nPuedes crear una nueva meta pulsando el icono +.",
+        infoTitle: 'No hay metas',
+        infoContent: "Crea una nueva meta pulsando el icono +",
         menu: {
           viewArchived: "View archived goals",
         },

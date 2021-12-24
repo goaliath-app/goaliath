@@ -5,7 +5,7 @@ import { View, ScrollView } from 'react-native'
 import { Card, Title, Paragraph } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native';
 import { ActivityList, BottomScreenPadding } from '../components'
-import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog } from '../components';
+import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog, InfoCard } from '../components';
 import { 
   areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay, selectTutorialState
 } from '../redux'
@@ -17,12 +17,10 @@ const FutureWarning = () => {
   const { t, i18n } = useTranslation()
 
   return (
-      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
-        <Card.Content>
-          <Title>{t("dayContent.futureWarningTitle")}</Title>
-          <Paragraph>{t("dayContent.futureWarningSubtitle")}</Paragraph>
-        </Card.Content>
-      </Card>
+      <InfoCard 
+        title={t("dayContent.futureWarningTitle")}
+        paragraph={t("dayContent.futureWarningSubtitle")} 
+      />
   )
 }
 
@@ -30,12 +28,10 @@ const EmptyPastWarning = () => {
   const { t, i18n } = useTranslation()
 
   return (
-      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
-        <Card.Content>
-          <Title>{t("dayContent.emptyPastWarningTitle")}</Title>
-          <Paragraph>{t("dayContent.emptyPastWarningSubtitle")}</Paragraph>
-        </Card.Content>
-      </Card>
+    <InfoCard 
+      title={t("dayContent.emptyPastWarningTitle")}
+      paragraph={t("dayContent.emptyPastWarningSubtitle")} 
+    />
   )
 }
 

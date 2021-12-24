@@ -72,7 +72,7 @@ const ArchivedGoalsScreen = ({ navigation }) => {
       {archivedGoals.length > 0?
         <FlatList data={archivedGoals} renderItem={renderItem} />
       :
-        <InfoCard content={t("archivedGoalsScreen.empty")} />
+        <InfoCard title={t("archivedGoalsScreen.empty")} />
       }
     </View>
   )

@@ -170,7 +170,8 @@ const GoalsScreen = ({ navigation, goals }) => {
       {hasSomethingToShow(goals)?
         <FlatList data={goals} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
       :
-        <InfoCard content={t('goals.infoContent')} />
+        tutorialState=='Finished'?
+          <InfoCard title={t('goals.infoTitle')} paragraph={t('goals.infoContent')} /> : null
       }
     </View>
   )
