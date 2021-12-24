@@ -281,23 +281,12 @@ const es= {
     },
 
     onboarding: {
-      slideOne: {
-        title: 'Bienvenido',
-        text: 'Goaliath es una herramienta para gestionar tu tiempo cuyo objetivo es hacerte sentir orgulloso de tus acciones de cada día.',
-      },
-      slideTwo: {
-        title: 'Cómo funciona',
-        text: 'Introduces en Goaliath tus metas. Después añades a cada meta las acciones que quieres realizar para cumplirla. Goaliath te recordará lo que quieres hacer cada día.',
-      },
-      slideThree: {
-        title: '¡Hay más!',
-        text: 'El método de Goaliath tiene más herramientas que pueden ayudarte. Te recomendamos echar un vistazo a la guía rápida en ',
-        linkText: 'nuestra página web.',
-        linkURL: 'https://goaliath-app.github.io/es/guide'
-      },
-      next: 'Siguiente',
-      begin: 'Vamos'
+      1: 'Hola, ¡soy Goaliath!',
+      2: 'He sido creado para hacerte sentir orgulloso de tus acciones diarias.',
+      3: 'Mola, ¿eh? ¡Empecemos!',
+      skip: 'Saltar tutorial'
     },
+
 
     activityHandler: {
       activityTypes: {

@@ -1,9 +1,12 @@
 import { View, StyleSheet, Linking } from 'react-native';
 import { Title, Paragraph, Subheading } from 'react-native-paper'
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { useTranslation } from 'react-i18next'
 import { OnboardingColor } from '../styles/Colors';
+import { SpeechBubble } from '../components'
+import { setTutorialState } from '../redux'
 
 const styles = StyleSheet.create({
     slide: {
@@ -25,28 +28,18 @@ const styles = StyleSheet.create({
 
 const OnboardingScreen = ({ finishOnboarding }) => {
   const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
 
   const slides = [
     {
-      key: 'one',
-      title: t('onboarding.slideOne.title'),
-      text: t('onboarding.slideOne.text'),
-    },
-    {
-      key: 'two',
-      title: t('onboarding.slideTwo.title'),
-      text: t('onboarding.slideTwo.text'),
-    },
-    {
-      key: 'three',
-      title: t('onboarding.slideThree.title'),
       text: (<>
-        {t('onboarding.slideThree.text')}
-        <Paragraph 
-          style={{color: 'blue'}} 
-          onPress={() => Linking.openURL(t('onboarding.slideThree.linkURL'))}>
-            {t('onboarding.slideThree.linkText')}
-        </Paragraph>
+        <SpeechBubble speeches={[
+          {id: 0, text: t('onboarding.1')},
+          {id: 1, text: t('onboarding.2')},
+          {id: 2, text: t('onboarding.3'), onTextEnd: finishOnboarding},
+          {id: 3, text: ''}
+          ]} 
+          bubbleStyle={{height: 80}} />
       </>),
     }
   ];
@@ -55,16 +48,15 @@ const OnboardingScreen = ({ finishOnboarding }) => {
     <AppIntroSlider 
         renderItem={renderItem} 
         data={slides} 
-        onDone={finishOnboarding}
+        onDone={() => {
+          dispatch(setTutorialState('Finished'))
+          finishOnboarding()
+          }
+        }
         activeDotStyle={{ backgroundColor: OnboardingColor.activeDot }}
-        renderNextButton={() => (
-          <Subheading style={{ marginRight: 12, color: OnboardingColor.buttonTextColor }}>
-            {t('onboarding.next')}
-          </Subheading>
-        )}
         renderDoneButton={() => (
           <Subheading style={{ marginRight: 12, color: OnboardingColor.buttonTextColor }}>
-            {t('onboarding.begin')}
+            {t('onboarding.skip')}
           </Subheading>
         )}
     />

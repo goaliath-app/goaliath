@@ -280,22 +280,10 @@ const en = {
     },
 
     onboarding: {
-      slideOne: {
-        title: 'Welcome to Goaliath',
-        text: 'Goaliath is a time and goal management tool that seeks to make you feel proud of your daily actions.',
-      }, 
-      slideTwo: {
-        title: 'How it works',
-        text: 'In Goaliath you describe your goals. Then you fill each of them with the actions you want to take about it. Goaliath will remember you of what you aim to do each day.',
-      },
-      slideThree: {
-        title: 'Learn More',
-        text: 'There is more to the Goaliath\'s time management method. We encourage you to learn more about it ',
-        linkText: 'in our quick guide.',
-        linkURL: 'https://goaliath-app.github.io/guide'
-      },
-      next: 'Next',
-      begin: 'Begin'
+      1: 'Hi, I’m Goaliath!',
+      2: 'I’ve been created to help you be proud of your daily actions.',
+      3: 'Cool, uh? Let’s begin!',
+      skip: 'Skip tutorial'
     },
 
     activityHandler: {
