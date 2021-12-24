@@ -35,6 +35,9 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
       onPress={() => {
         const newGoal = {name: name, motivation: motivation}
         if(validate(newGoal)){
+          if(tutorialState=='FirstGoalCreation'){
+            dispatch(setTutorialState('AfterFirstGoalCreation'))
+          }
           if(goal){
             dispatch(setGoal({...goal, ...newGoal, id: goal.id}))
           }else{
@@ -72,13 +75,12 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
         <HelperText style={{paddingLeft:15}} type="error" visible={nameInputError}>
           {t('goalForm.nameError')}
         </HelperText>
-        {tutorialState=='FirstGoalCreation' || tutorialState=='AfterFirstGoalCreation'?
-          <SpeechBubble
+        {tutorialState=='FirstGoalCreation'?
+          <SpeechBubble 
             speeches={[
-              {id: 0, text: t('tutorial.FirstGoalCreation.2'), 
-                onTextEnd: () => dispatch(setTutorialState('AfterFirstGoalCreation'))},
+              {id: 0, text: t('tutorial.FirstGoalCreation.2')},
             ]}
-            bubbleStyle={{height: 80}}
+            bubbleStyle={{height: 80, marginLeft: 0, marginRight: 0}}
           />
           : null}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
