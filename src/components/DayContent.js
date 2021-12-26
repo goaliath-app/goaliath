@@ -91,13 +91,13 @@ const DayContent = ({ date }) => {
       }
       <ActivityList data={completedActivities} date={date} />
       <TaskList date={date} show='completed' />
-      { weekliesSelector == 'checked' && ['OneTimeTasksIntroduction', 'TutorialEnding','Finished'].includes(tutorialState)?
+      { weekliesSelector == 'checked'?
       <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
       : <></> }
       { weekliesSelector == 'allcompleted' ?
       <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color='grey'/>
       : <></> }
-      { tasksSelector == 'checked' ?
+      { tasksSelector == 'checked' && ['OneTimeTasksIntroduction', 'TutorialEnding','Finished'].includes(tutorialState)?
         <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
         : <></> }
       <BottomScreenPadding />  
