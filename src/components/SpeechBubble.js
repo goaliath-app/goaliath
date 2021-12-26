@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Pressable } from 'react-native'
-import { Button } from 'react-native-paper'
+import { Paragraph } from 'react-native-paper'
 import Animated, {
   useSharedValue,
   withTiming,
@@ -10,6 +10,8 @@ import Animated, {
   withSequence,
   useAnimatedGestureHandler,
   runOnJS,
+  withDelay,
+  cancelAnimation
 } from 'react-native-reanimated';
 
 import {
@@ -42,13 +44,30 @@ const SpeechBubble = ({
   speeches,
   // Style of the containter bubble component
   bubbleStyle={},
+  // Whether the text should be animated
+  animation="fadeIn",  // Valid: "typeWriter", "fadeIn", "faerie" and "fastFaerie"
 }) => {
   // Assets
   const touchIconSrc = require('./../../assets/ic_touch_app.png')
 
   // State
   const [ speechIndex, setSpeechIndex ] = React.useState(0)
-  const [ isAnimationRunning, setIsAnimationRunning ] = React.useState(true)
+
+  // Set options based on selected animation
+  let AnimatedTextComponent, configProps={}, nextButtonDelay = 300
+  if(animation == "typeWriter"){
+    AnimatedTextComponent = TypeWriter
+    configProps={ fadeIn: false, charDelay: 40 }
+  }else if(animation == "fastFaerie"){
+    AnimatedTextComponent = TypeWriter 
+    configProps={ fadeIn: true, fadeInOffset: 8, charDelay: 30}
+  }else if(animation == "faerie"){
+    AnimatedTextComponent = TypeWriter 
+    configProps={ fadeIn: true, fadeInOffset: 15, charDelay: 40}
+  }else{  // default: "fadeIn"
+    AnimatedTextComponent = FadeInSpeech
+    nextButtonDelay = 2000
+  }
 
   // Animation's shared values
   const nextButtonBounce = useSharedValue(0)
@@ -63,23 +82,37 @@ const SpeechBubble = ({
       bubbleScale.value = 0.9
     },
     onFinish: (event, ctx) => {
-      nextButtonOpacity.value = 0
       bubbleOpacity.value = 1
       bubbleScale.value = 1
-      runOnJS(onPressNext)()
-    }
-  })
-
-  // JS onPress handler (called by worklet handler)
-  function onPressNext(){
-    if(!isAnimationRunning){
-      setIsAnimationRunning(true)
-      if(speechIndex < speeches.length-1){
-        setSpeechIndex(speechIndex+1)
+      nextButtonOpacity.value = 0
+      if(speechIndex < speeches.length-1) {
+        runOnJS(setSpeechIndex)(speechIndex+1)
       }
     }
-  }
+  })
   
+  // First render animations
+  React.useEffect(() => {
+    // Start next button bounce
+    nextButtonBounce.value = withRepeat(
+      withSequence(
+        withTiming(5, { duration: 1000 }),
+        withTiming(-5, { duration: 1000 }),
+      ), -1, true )
+
+  }, [])
+
+  function onTextEnd(){
+    'worklet';
+    if(speeches[speechIndex]?.onTextEnd){
+      runOnJS(speeches[speechIndex].onTextEnd)()
+    }
+    // Make next button appear after delay if there are more speeches
+    if(speechIndex < speeches.length-1) {
+      nextButtonOpacity.value = withDelay(nextButtonDelay, withTiming(1, {duration: 500}))
+    }
+  }
+
   // Animated Styles
   const bounceStyle = useAnimatedStyle (() => { 
     return {
@@ -99,53 +132,51 @@ const SpeechBubble = ({
     }
   })
 
-  // Start next button's bounce animation
-  React.useEffect(() => {
-    nextButtonBounce.value = withRepeat(
-      withSequence(
-        withTiming(5, { duration: 1000 }),
-        withTiming(-5, { duration: 1000 }),
-      ), -1, true )
-  }, [])
-
-  // Text animation state callbacks
-  function onAnimationEndWorklet(){
-    'worklet';
-    if(speechIndex < speeches.length-1){
-      nextButtonOpacity.value = 1
-    }
-    runOnJS(setIsAnimationRunning)(false)
-  }
-
-  function onAnimationStartWorklet(){
-    'worklet';
-    nextButtonOpacity.value = 0
-  }
-
   return (
     <TapGestureHandler onGestureEvent={onPressHandler} maxDurationMs={10000}>
       <Animated.View style={[styles.speechBubble, bubbleAnimatedStyle, bubbleStyle]}>
-        <TypeWriter 
-          speech={speeches[speechIndex]} 
-          onAnimationEnd={onAnimationEndWorklet} 
-          onAnimationStart={onAnimationStartWorklet}
-        />
-        <Animated.View style={[bounceStyle]}>
-          <Image source={touchIconSrc} />
-        </Animated.View>
+        <AnimatedTextComponent {...configProps} speech={speeches[speechIndex]} 
+          onAnimationEnd={onTextEnd} />
+        <Animated.Image style={bounceStyle} source={touchIconSrc} />
       </Animated.View>
     </TapGestureHandler>
   )
 }
 
-export const TypeWriter = ({
+const FadeInSpeech = ({ speech, onAnimationEnd }) => {
+  const [ lastSpeechId, setLastSpeechId ] = React.useState(speech.id)
+  const fadeIn = useSharedValue(0)
+
+  if(lastSpeechId != speech.id){
+    fadeIn.value = 0
+    setLastSpeechId(speech.id)
+  }
+
+  React.useEffect(() => {
+    fadeIn.value = withTiming(1, {duration: 500}, onAnimationEnd)
+  }, [speech.id])
+
+  const fadeInStyle = useAnimatedStyle(() => {
+    return {
+      opacity: fadeIn.value,
+    }
+  })
+
+  return (
+    <Animated.Text style={[{flex: 1}, fadeInStyle]}>
+      {speech.text}
+    </Animated.Text>
+  )
+}
+
+const TypeWriter = ({
   speech,
-  fadeIn=false,  // if true, the text will fade in 
-  fadeInOffset=10,  // the number of characters that will fade in at the same time
-  charDelay=50,  // time between characters
-  duration: durationProp,  // total animation time. Overrides charDelay
-  onAnimationEnd: onAnimationEndProp=()=>{},  // worklet. Executed when text animation is finished
-  onAnimationStart=()=>{},  // executed when text animation is started
+  fadeIn=true,  // if true, the text will fade in 
+  fadeInOffset=8,  // the number of characters that will fade in at the same time
+  charDelay=30,  // time between characters
+  duration: durationProp=null,  // total animation time. Overrides charDelay
+  onAnimationEnd: onAnimationEndProp=()=>{},  // Reanimated worklet. Executed when text animation is finished.
+  onAnimationStart=()=>{},  // Regular JS function. Executed when text animation is started.
 }) => {
   // State to check if speech has changed since last render
   const [ lastSpeechId, setLastSpeechId ] = React.useState()
@@ -271,8 +302,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingLeft: 20,
     paddingRight: 10,
-    paddingTop: 20,
-    paddingBottom: 20,
   }
 })
 
