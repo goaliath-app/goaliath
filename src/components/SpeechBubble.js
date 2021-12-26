@@ -52,6 +52,8 @@ const SpeechBubble = ({
 
   // State
   const [ speechIndex, setSpeechIndex ] = React.useState(0)
+  const [ isAnimationRunning, setIsAnimationRunning ] = React.useState(true)
+  const [ bypassAnimation, setBypassAnimation ] = React.useState(false)
 
   // Set options based on selected animation
   let AnimatedTextComponent, configProps={}, nextButtonDelay = 300
@@ -84,9 +86,16 @@ const SpeechBubble = ({
     onFinish: (event, ctx) => {
       bubbleOpacity.value = 1
       bubbleScale.value = 1
-      nextButtonOpacity.value = 0
-      if(speechIndex < speeches.length-1) {
-        runOnJS(setSpeechIndex)(speechIndex+1)
+      if(isAnimationRunning){
+        // cancel the animation
+        runOnJS(setBypassAnimation)(true)
+      }else{
+        // proceed to the next speech
+        nextButtonOpacity.value = 0
+        if(speechIndex < speeches.length-1) {
+          runOnJS(setSpeechIndex)(speechIndex+1)
+          runOnJS(setIsAnimationRunning)(true)
+        }
       }
     }
   })
@@ -111,6 +120,8 @@ const SpeechBubble = ({
     if(speechIndex < speeches.length-1) {
       nextButtonOpacity.value = withDelay(nextButtonDelay, withTiming(1, {duration: 500}))
     }
+    runOnJS(setIsAnimationRunning)(false)
+    runOnJS(setBypassAnimation)(false)
   }
 
   // Animated Styles
@@ -136,7 +147,7 @@ const SpeechBubble = ({
     <TapGestureHandler onGestureEvent={onPressHandler} maxDurationMs={10000}>
       <Animated.View style={[styles.speechBubble, bubbleAnimatedStyle, bubbleStyle]}>
         <AnimatedTextComponent {...configProps} speech={speeches[speechIndex]} 
-          onAnimationEnd={onTextEnd} />
+          onAnimationEnd={onTextEnd} bypassAnimation={bypassAnimation} />
         <Animated.Image style={bounceStyle} source={touchIconSrc} />
       </Animated.View>
     </TapGestureHandler>
@@ -176,10 +187,11 @@ const TypeWriter = ({
   charDelay=30,  // time between characters
   duration: durationProp=null,  // total animation time. Overrides charDelay
   onAnimationEnd: onAnimationEndProp=()=>{},  // Reanimated worklet. Executed when text animation is finished.
-  onAnimationStart=()=>{},  // Regular JS function. Executed when text animation is started.
+  bypassAnimation=false,  // set to true to bypass animation, even if it has already started
 }) => {
   // State to check if speech has changed since last render
   const [ lastSpeechId, setLastSpeechId ] = React.useState()
+  const [ animationStarted, setAnimationStarted ] = React.useState(false)
   
   // Animation's shared values
   const fadeInAnimationValue = useSharedValue(0)
@@ -190,13 +202,20 @@ const TypeWriter = ({
   
   // Start fade in animation whenever we have a new speech
   React.useEffect(() => {
-    onAnimationStart()
-    fadeInAnimationValue.value = withTiming(
-      targetValue, 
-      {duration, easing: Easing.linear},
-      onAnimationEnd  // see below
-    )
-  }, [speech.id])
+    if(!bypassAnimation){
+      fadeInAnimationValue.value = withTiming(
+        targetValue, 
+        {duration, easing: Easing.linear},
+        onAnimationEnd  // see below
+      )
+      setAnimationStarted(true)
+    }else{
+      fadeInAnimationValue.value = targetValue
+      if(!animationStarted){
+        onAnimationEnd()
+      }
+    }
+  }, [speech.id, bypassAnimation])
 
   // If speech id is different from last speech id, hide text before render
   // to avoid showing the new text for one frame prior to its animation
