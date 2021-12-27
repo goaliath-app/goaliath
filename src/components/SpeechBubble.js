@@ -318,7 +318,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'aliceblue',
     marginLeft: 20,
     marginRight: 20,
-    marginBottom: 20,
+    marginBottom: 10,
+    marginTop: 10,
     paddingLeft: 20,
     paddingRight: 10,
   }
