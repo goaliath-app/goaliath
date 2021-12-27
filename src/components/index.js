@@ -28,3 +28,4 @@ export {
   TodayScreenIcon, GoalsScreenIcon, GoalsScreenButton, CalendarScreenIcon, CalendarScreenButton,
   StatsScreenIcon, StatsScreenButton,
 } from './TabBarComponents'
+export { default as PulsatingHighlight, HighlightContainer } from './PulsatingHighlight'

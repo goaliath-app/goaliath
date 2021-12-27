@@ -3,7 +3,10 @@ import { connect, useDispatch, useSelector } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, Appbar, Divider, Switch, Menu, Portal, Dialog } from 'react-native-paper';
-import { Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog, BottomScreenPadding, SpeechBubble } from '../components'
+import { 
+  Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog, BottomScreenPadding, 
+  SpeechBubble, HighlightContainer,
+} from '../components'
 import { hasSomethingToShow } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
@@ -120,11 +123,15 @@ const GoalsScreen = ({ navigation, goals }) => {
         buttons={
         <>
         {
-          [ 'FirstGoalCreation', 'AfterFirstGoalCreation', 
+          [ 'AfterFirstGoalCreation', 
           'GoalScreenIntroduction', 'ActivitiesInTodayScreen', 
           'ChooseWeekliesIntroduction', 'OneTimeTasksIntroduction', 
           'TutorialEnding', 'Finished' ].includes(tutorialState) ?
           <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color="white"/>
+          : tutorialState == "FirstGoalCreation" ?
+          <HighlightContainer highlightStyle={{backgroundColor: 'white'}}>
+            <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color="white"/>
+          </HighlightContainer>
           :
           <Appbar.Action icon='plus' color="white" style={{opacity: 0.5}} />
         }

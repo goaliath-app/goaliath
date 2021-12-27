@@ -4,6 +4,7 @@ import { selectTutorialState } from '../redux'
 import { Pressable } from 'react-native';
 import { faTrophy, faCalendarAlt, faChartBar, faTasks } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { HighlightContainer } from '../components';
 
 const disabledColor = '#EBEBE4'
 
@@ -17,17 +18,29 @@ export const TodayScreenIcon = ({ color, size }) => {
   )
 }
 
-export const GoalsScreenIcon = ({ color, size }) => {
+export const GoalsScreenIcon = ({ focused, color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
   const tutorialAwareColor = tutorialState == "TodayScreenIntroduction" ? disabledColor : color
 
+  const [ isHighlightActive, setIsHighlightActive ] = React.useState(false)
+
+  React.useEffect(() => {
+    if( tutorialState == "GoalsScreenIntroduction" && !focused ){
+      setIsHighlightActive(true)
+    }else{
+      setIsHighlightActive(false)
+    }
+  }, [tutorialState, focused])
+
   return (
-    <FontAwesomeIcon 
-      icon={faTrophy} 
-      size={size} 
-      color={tutorialAwareColor} 
-    />
+    <HighlightContainer active={isHighlightActive}>
+      <FontAwesomeIcon 
+        icon={faTrophy} 
+        size={size} 
+        color={tutorialAwareColor} 
+      />
+    </HighlightContainer>
   )
 }
 

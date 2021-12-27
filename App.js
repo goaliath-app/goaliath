@@ -88,13 +88,13 @@ export default function App() {
       <Tab.Screen name='Today' component={TodayStack} 
         options={{ 
           tabBarIcon: ({ focused, color, size }) => (
-            <TodayScreenIcon size={size} color={color} />
+            <TodayScreenIcon {...{focused, color, size}} />
           ) 
       }} />
       <Tab.Screen name='Goals' component={GoalsStack} 
         options={{
           tabBarIcon: ({ focused, color, size }) => (
-            <GoalsScreenIcon color={color} size={size} />
+            <GoalsScreenIcon {...{focused, color, size}} />
           ),
           tabBarButton: (props) => {
             return <GoalsScreenButton {...props} />
@@ -104,7 +104,7 @@ export default function App() {
         options={{ 
           title: t('app.drawer.calendar'),
           tabBarIcon: ({ focused, color, size }) => (
-            <CalendarScreenIcon color={color} size={size} />
+            <CalendarScreenIcon {...{focused, color, size}} />
           ),
           tabBarButton: (props) => <CalendarScreenButton {...props} />
       }} />
@@ -112,7 +112,7 @@ export default function App() {
         options={{ 
           title: t('app.drawer.stats'),
           tabBarIcon: ({ focused, color, size }) => (
-            <StatsScreenIcon color={color} size={size} />
+            <StatsScreenIcon {...{focused, color, size}} />
           ),
           tabBarButton: (props) => <StatsScreenButton {...props} />
       }} />
