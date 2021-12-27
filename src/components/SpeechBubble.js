@@ -68,7 +68,7 @@ const SpeechBubble = ({
     configProps={ fadeIn: true, fadeInOffset: 15, charDelay: 40}
   }else{  // default: "fadeIn"
     AnimatedTextComponent = FadeInSpeech
-    nextButtonDelay = 2000
+    nextButtonDelay = 500
   }
 
   // Animation's shared values
