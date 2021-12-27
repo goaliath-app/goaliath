@@ -21,6 +21,8 @@ const Activity = ({ name, active, id, activity, goal }) => {
   const { t, i18 } = useTranslation();
   const dispatch = useDispatch();
 
+  const tutorialState = useSelector(selectTutorialState)
+
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
   const [ isDeleteDialogVisible, setDeleteDialogVisible ] = React.useState(false)
   const [ isMoveToGoalDialogVisible, setMoveToGoalDialogVisible ] = React.useState(false)
@@ -32,12 +34,14 @@ const Activity = ({ name, active, id, activity, goal }) => {
       <List.Item
         style={{paddingTop: 5}}
         onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
-        onLongPress={() => setLongPressDialogVisible(true)}
+        onLongPress={
+          tutorialState == 'Finished' ? () => setLongPressDialogVisible(true) : () => {}
+        }
         title={name}
         titleNumberOfLines={2}
         right={() => (
           <Switch
-            disabled={goal.archived}
+            disabled={ goal.archived || tutorialState != 'Finished' }
             onValueChange={() => dispatch(toggleActivity(id))} 
             value={active}
           />
@@ -134,23 +138,32 @@ const GoalScreen = ({ activities, goal, navigation }) => {
 
   const headerButtons = (
     goal.archived? null :
-    <>
-      <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
-          navigation.navigate('ActivityForm', { goalId: goal.id })
-        }}
-      />
-      <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
-          setMenuVisible(false)
-          navigation.navigate('GoalForm', { id: goal.id } )
-        }}
-      />
-      <ThreeDotsMenu 
-        menuItems={menuItems} 
-        openMenu= {() => setMenuVisible(true)} 
-        closeMenu= {() => setMenuVisible(false)} 
-        visible={menuVisible} 
-      />
-    </>
+      <>
+        <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
+            navigation.navigate('ActivityForm', { goalId: goal.id })
+          }}
+        />
+        { tutorialState == 'Finished' ?
+          <>
+            <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
+                setMenuVisible(false)
+                navigation.navigate('GoalForm', { id: goal.id } )
+              }}
+            />
+            <ThreeDotsMenu 
+              menuItems={menuItems} 
+              openMenu= {() => setMenuVisible(true)} 
+              closeMenu= {() => setMenuVisible(false)} 
+              visible={menuVisible} 
+            />
+          </>
+          :
+          <>
+            <Appbar.Action icon='pencil' color={HeaderColor.icon} style={{opacity: 0.5}} />
+            <Appbar.Action icon='dots-vertical' color={HeaderColor.icon} style={{opacity: 0.5}} />
+          </>
+        }
+      </>
   )
 
   const renderItem = ({ item }) => (

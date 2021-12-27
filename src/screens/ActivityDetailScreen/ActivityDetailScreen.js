@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native'
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { Appbar, Paragraph, Menu, Title, Divider, List, Card, Button } from 'react-native-paper';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
@@ -11,7 +11,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTodayTimer, 
-  stopTodayTimer, upsertEntry, archiveActivity, restoreActivity
+  stopTodayTimer, upsertEntry, archiveActivity, restoreActivity, selectTutorialState,
 } from '../../redux'
 import { isToday, isFuture } from '../../util'
 import { GeneralColor, HeaderColor } from '../../styles/Colors';
@@ -60,6 +60,8 @@ const ActivityDetailScreen = ({
 }) => {
   const { t, i18n } = useTranslation()
 
+  const tutorialState = useSelector(selectTutorialState)
+
   const dateIsToday = date?isToday(date, dayStartHour):false
   const dateIsFuture = date?isFuture(date, dayStartHour):false
   const monthLabel = date?t('units.monthNames.' + date.toFormat('MMMM').toLowerCase()):null
@@ -89,21 +91,26 @@ const ActivityDetailScreen = ({
   )
 
   const headerButtons =  (
-    date && !dateIsToday || activity.archived ?
-    null
-    :
-    <>
-      <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
-        navigation.navigate('ActivityForm', { activityId: activity.id })
-      }}
-      />
-      <ThreeDotsMenu 
-        menuItems={menuItems} 
-        openMenu={() => setMenuVisible(true)} 
-        closeMenu={() => setMenuVisible(false)} 
-        visible={menuVisible} 
-      />
-    </>
+    date && !dateIsToday || activity.archived ? null :
+    tutorialState == 'Finished' ? (
+      <>
+        <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
+          navigation.navigate('ActivityForm', { activityId: activity.id })
+        }}
+        />
+        <ThreeDotsMenu 
+          menuItems={menuItems} 
+          openMenu={() => setMenuVisible(true)} 
+          closeMenu={() => setMenuVisible(false)} 
+          visible={menuVisible} 
+        />
+      </>
+    ) : (
+      <>
+        <Appbar.Action icon='pencil' color={HeaderColor.icon} style={{opacity: 0.5}} />
+        <Appbar.Action icon='dots-vertical' color={HeaderColor.icon} style={{opacity: 0.5}} />
+      </> 
+    )
   )
 
   return(

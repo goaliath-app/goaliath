@@ -19,6 +19,8 @@ const GoalListItem = ({ name, active, id }) => {
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
   const [ isDeleteDialogVisible, setDeleteDialogVisible ] = React.useState(false)
 
+  const tutorialState = useSelector(selectTutorialState)
+
   const navigation = useNavigation();
 
   const today= useSelector(getTodaySelector)
@@ -30,11 +32,14 @@ const GoalListItem = ({ name, active, id }) => {
     <View>
       <List.Item 
         onPress={() => navigation.navigate('Goal', { goalId: id })}
-        onLongPress={() => setLongPressDialogVisible(true)}
+        onLongPress={
+          tutorialState == 'Finished' ? () => setLongPressDialogVisible(true) : () => {}
+        }
         title={name}
         titleNumberOfLines={2}
         right={() => (
           <Switch 
+            disabled={ tutorialState != 'Finished' }
             value={active} 
             onValueChange={ () => dispatch(toggleGoal(id)) }
           />
