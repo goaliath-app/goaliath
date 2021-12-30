@@ -1,4 +1,4 @@
-import 'react-native-gesture-handler';  // this import needs to be at the top.
+import { GestureHandlerRootView } from 'react-native-gesture-handler';  // this import needs to be at the top.
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Provider as PaperProvider, Snackbar } from  'react-native-paper'
@@ -129,6 +129,7 @@ export default function App() {
                 translucent={false} 
                 backgroundColor={StatusBarColor.backgroundColor}
               />
+              <GestureHandlerRootView style={{flex: 1}}>
               {newUser?
               <OnboardingScreen finishOnboarding={finishOnboarding} />
               : 
@@ -156,6 +157,7 @@ export default function App() {
                 onDismiss={()=>setSnackbarMessage("")}
                 duration={5000}
               >{snackbarMessage}</Snackbar>
+              </GestureHandlerRootView>
             </NavigationContainer>
           </Context.Provider>
         </PaperProvider>
