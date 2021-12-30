@@ -82,7 +82,7 @@ const DayContent = ({ date }) => {
       { timeStatus == 'future' ? <EmptyPastWarning /> : null }
       <ActivityList data={pendingActivities} date={date} />
       <TaskList date={date} show='pending' />
-      { weekliesSelector=='unchecked' ?
+      { weekliesSelector=='unchecked' || tutorialState=='ChooseWeekliesIntroduction'?
       <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
       : <></> }
       { tasksSelector == 'unchecked' && ['OneTimeTasksIntroduction', 'TutorialEnding','Finished'].includes(tutorialState)?
@@ -94,7 +94,7 @@ const DayContent = ({ date }) => {
       { weekliesSelector == 'checked'?
       <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
       : <></> }
-      { weekliesSelector == 'allcompleted' ?
+      { weekliesSelector == 'allcompleted'?
       <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color='grey'/>
       : <></> }
       { tasksSelector == 'checked' && ['OneTimeTasksIntroduction', 'TutorialEnding','Finished'].includes(tutorialState)?

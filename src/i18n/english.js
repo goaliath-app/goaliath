@@ -462,6 +462,9 @@ const en = {
         3: 'This means that if you complete the activities listed here, you can be proud of yourself.',
         4: 'And even if you only do some of them, you’ll be advancing towards your goals.'
       },
+      ChooseWeekliesIntroduction: {
+        1: 'If you create activities that are not necessarily done a fixed day of the week, you can select them here and they will appear in the today screen.'
+      },
       OneTimeTasksIntroduction: {
         1: 'You can also add one time tasks as reminders, that will only appear today.'
       },
