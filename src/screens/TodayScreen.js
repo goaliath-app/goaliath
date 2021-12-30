@@ -45,6 +45,7 @@ const TodayScreen = ({ navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       dispatch(updateLogs())
     })
   );
