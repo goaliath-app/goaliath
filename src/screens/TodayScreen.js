@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { View } from 'react-native'
+import { View, LayoutAnimation } from 'react-native'
 import { DayContent, Dialog, Header, SpeechBubble } from '../components'
 import { getToday } from '../util'
 import { useTranslation } from 'react-i18next'
@@ -93,7 +93,10 @@ const TodayScreen = ({ navigation }) => {
             {id: 7, text: t('tutorial.TutorialEnding.3')},
             {id: 8, text: t('tutorial.TutorialEnding.4')},
             {id: 9, text: t('tutorial.TutorialEnding.5')},
-            {id: 10, text: ' ', onTextEnd: () => dispatch(setTutorialState('Finished'))}
+            {id: 10, text: ' ', onTextEnd: () => {
+              LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+              dispatch(setTutorialState('Finished'))
+            }}
           ]}
           bubbleStyle={{height: 80}}
         />
