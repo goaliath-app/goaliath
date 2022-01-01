@@ -25,17 +25,12 @@ import { StatusBarColor } from './src/styles/Colors';
 import { generateDummyData } from './src/redux/Thunks'
 import Notifications from './src/notifications'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { UIManager, Platform } from 'react-native'
 
 
 Notifications.initNotifications()
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
 
 const persistor = persistStore(store)
 // persistor.purge()

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { View, LayoutAnimation } from 'react-native'
+import { View } from 'react-native'
 import { DayContent, Dialog, Header, SpeechBubble } from '../components'
 import { getToday } from '../util'
 import { useTranslation } from 'react-i18next'
@@ -45,7 +45,6 @@ const TodayScreen = ({ navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       dispatch(updateLogs())
     })
   );
@@ -95,7 +94,6 @@ const TodayScreen = ({ navigation }) => {
             {id: 8, text: t('tutorial.TutorialEnding.4')},
             {id: 9, text: t('tutorial.TutorialEnding.5')},
             {id: 10, text: ' ', onTextEnd: () => {
-              LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
               dispatch(setTutorialState('Finished'))
             }}
           ]}
