@@ -12,6 +12,7 @@ import {
 import { areThereWeeklyActivities, areTherePendingWeeklyActivities } from '../activityHandler'
 import { useTranslation } from 'react-i18next'
 import { getToday } from '../util'
+import tutorialStates from '../tutorialStates'
 
 const FutureWarning = () => {
   const { t, i18n } = useTranslation()
@@ -82,10 +83,10 @@ const DayContent = ({ date }) => {
       { timeStatus == 'future' ? <EmptyPastWarning /> : null }
       <ActivityList data={pendingActivities} date={date} />
       <TaskList date={date} show='pending' />
-      { weekliesSelector=='unchecked' || tutorialState=='ChooseWeekliesIntroduction'?
+      { weekliesSelector=='unchecked' || tutorialState == tutorialStates.ChooseWeekliesIntroduction ?
       <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
       : <></> }
-      { tasksSelector == 'unchecked' && ['OneTimeTasksIntroduction', 'TutorialEnding','Finished'].includes(tutorialState)?
+      { tasksSelector == 'unchecked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
         <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
         : <></> 
       }
@@ -97,7 +98,7 @@ const DayContent = ({ date }) => {
       { weekliesSelector == 'allcompleted'?
       <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color='grey'/>
       : <></> }
-      { tasksSelector == 'checked' && ['OneTimeTasksIntroduction', 'TutorialEnding','Finished'].includes(tutorialState)?
+      { tasksSelector == 'checked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
         <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
         : <></> }
       <BottomScreenPadding />  

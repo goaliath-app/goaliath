@@ -1,26 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import * as Localization from 'expo-localization'
+import tutorialStates from '../tutorialStates'
 
 
 const initialState = {
     dayStartHour: DateTime.fromObject({hour:0, minute:0}).toISO(),
     newUser: true,
     language: Localization.locale,
-    /* 
-    Tutorial States: 
-        TodayScreenIntroduction 
-        GoalsScreenIntroduction 
-        FirstGoalCreation 
-        AfterFirstGoalCreation 
-        GoalScreenIntroduction
-        ActivitiesInTodayScreen 
-        ChooseWeekliesIntroduction 
-        OneTimeTasksIntroduction 
-        TutorialEnding 
-        Finished 
-    */
-    tutorialState: 'TodayScreenIntroduction',
+    tutorialState: tutorialStates.TodayScreenIntroduction,
 }
 
 const settingsSlice = createSlice({

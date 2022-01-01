@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { OnboardingColor } from '../styles/Colors';
 import { SpeechBubble } from '../components'
 import { setTutorialState } from '../redux'
+import tutorialStates from '../tutorialStates'
 
 const styles = StyleSheet.create({
     slide: {
@@ -49,7 +50,7 @@ const OnboardingScreen = ({ finishOnboarding }) => {
         renderItem={renderItem} 
         data={slides} 
         onDone={() => {
-          dispatch(setTutorialState('Finished'))
+          dispatch(setTutorialState(tutorialStates.Finished))
           finishOnboarding()
           }
         }

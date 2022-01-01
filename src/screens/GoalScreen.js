@@ -12,9 +12,10 @@ import {
 } from '../components';
 import { selectAllActivities, selectGoalById, toggleActivity, restoreGoal, 
   setActivity, selectTutorialState, setTutorialState } from '../redux'
-import { hasSomethingToShow } from '../util'
+import { hasSomethingToShow, isBetween } from '../util'
 import { GeneralColor, GoalColor, HeaderColor } from '../styles/Colors';
 import { getFrequencyString } from '../activityHandler'
+import tutorialStates from '../tutorialStates'
 
 const Activity = ({ name, active, id, activity, goal }) => {
   const navigation = useNavigation();
@@ -35,13 +36,13 @@ const Activity = ({ name, active, id, activity, goal }) => {
         style={{paddingTop: 5}}
         onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
         onLongPress={
-          tutorialState == 'Finished' ? () => setLongPressDialogVisible(true) : () => {}
+          tutorialState == tutorialStates.Finished ? () => setLongPressDialogVisible(true) : () => {}
         }
         title={name}
         titleNumberOfLines={2}
         right={() => (
           <Switch
-            disabled={ goal.archived || tutorialState != 'Finished' }
+            disabled={ goal.archived || tutorialState != tutorialStates.Finished }
             onValueChange={() => dispatch(toggleActivity(id))} 
             value={active}
           />
@@ -143,7 +144,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
             navigation.navigate('ActivityForm', { goalId: goal.id })
           }}
         />
-        { tutorialState == 'Finished' ?
+        { tutorialState == tutorialStates.Finished ?
           <>
             <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
                 setMenuVisible(false)
@@ -183,7 +184,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
         <ArchivedWarning goal={goal}/>
         <View style={{ flex: 1 }}>
           <View style={{flexShrink: 1}}>
-            {tutorialState=='GoalScreenIntroduction' || tutorialState=='ActivitiesInTodayScreen'?
+            { isBetween(tutorialStates.GoalsScreenIntroduction, tutorialState, tutorialStates.ActivitiesInTodayScreen) ?
               <SpeechBubble
                 speeches={[
                   {id:0, text: t('tutorial.GoalScreenIntroduction.2')},
@@ -212,7 +213,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
                   },
                   {id:5, text: t('tutorial.GoalScreenIntroduction.7')},
                   {id:6, text: t('tutorial.GoalScreenIntroduction.8'),
-                    onTextEnd: () => dispatch(setTutorialState('ActivitiesInTodayScreen'))},
+                    onTextEnd: () => dispatch(setTutorialState(tutorialStates.ActivitiesInTodayScreen))},
                   {id:7, text: t('tutorial.ActivitiesInTodayScreen.1')},
                 ]}
                 bubbleStyle={{height: 80}}
@@ -222,7 +223,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
             {hasSomethingToShow(activities)?
               <FlatList data={activities} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
               :
-              tutorialState=='Finished' && !goal.archived?
+              tutorialState==tutorialStates.Finished && !goal.archived?
                 <InfoCard title={t('goal.infoTitle')} paragraph={t('goal.infoContent')} /> : null
             } 
           </View>

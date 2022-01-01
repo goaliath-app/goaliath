@@ -19,6 +19,7 @@ import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { StatsPannel, MoveToGoalDialog, InfoCard } from '../../components'
+import tutorialStates from '../../tutorialStates'
 
 const ArchivedWarning = ({ activity }) => {
   const { t, i18n } = useTranslation()
@@ -92,7 +93,7 @@ const ActivityDetailScreen = ({
 
   const headerButtons =  (
     date && !dateIsToday || activity.archived ? null :
-    tutorialState == 'Finished' ? (
+    tutorialState == tutorialStates.Finished ? (
       <>
         <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
           navigation.navigate('ActivityForm', { activityId: activity.id })

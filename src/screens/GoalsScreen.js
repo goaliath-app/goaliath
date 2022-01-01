@@ -7,13 +7,14 @@ import {
   Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog, BottomScreenPadding, 
   SpeechBubble, HighlightContainer,
 } from '../components'
-import { hasSomethingToShow } from '../util'
+import { hasSomethingToShow, isBetween } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 import { 
   selectAllActiveActivitiesByGoalIdAndDate, getTodaySelector, selectAllGoals, 
   toggleGoal, selectTutorialState, setTutorialState,
 } from '../redux';
+import tutorialStates from '../tutorialStates'
 
 
 const GoalListItem = ({ name, active, id }) => {
@@ -36,13 +37,13 @@ const GoalListItem = ({ name, active, id }) => {
       <List.Item 
         onPress={() => navigation.navigate('Goal', { goalId: id })}
         onLongPress={
-          tutorialState == 'Finished' ? () => setLongPressDialogVisible(true) : () => {}
+          tutorialState == tutorialStates.Finished ? () => setLongPressDialogVisible(true) : () => {}
         }
         title={name}
         titleNumberOfLines={2}
         right={() => (
           <Switch 
-            disabled={ tutorialState != 'Finished' }
+            disabled={ tutorialState != tutorialStates.Finished }
             value={active} 
             onValueChange={ () => dispatch(toggleGoal(id)) }
           />
@@ -123,19 +124,16 @@ const GoalsScreen = ({ navigation, goals }) => {
         buttons={
         <>
         {
-          [ 'AfterFirstGoalCreation', 
-          'GoalScreenIntroduction', 'ActivitiesInTodayScreen', 
-          'ChooseWeekliesIntroduction', 'OneTimeTasksIntroduction', 
-          'TutorialEnding', 'Finished' ].includes(tutorialState) ?
+          tutorialState >= tutorialStates.AfterFirstGoalCreation ?
           <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color="white"/>
-          : tutorialState == "FirstGoalCreation" ?
+          : tutorialState == tutorialStates.FirstGoalCreation ?
           <HighlightContainer highlightStyle={{backgroundColor: 'white'}}>
             <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color="white"/>
           </HighlightContainer>
           :
           <Appbar.Action icon='plus' color="white" style={{opacity: 0.5}} />
         }
-        { tutorialState == 'Finished' ?
+        { tutorialState == tutorialStates.Finished ?
           <ThreeDotsMenu 
             menuItems={menuItems} 
             openMenu= {() => setMenuVisible(true)} 
@@ -147,30 +145,30 @@ const GoalsScreen = ({ navigation, goals }) => {
         }
         </>
         }/>
-      {tutorialState=='GoalsScreenIntroduction' || tutorialState=='FirstGoalCreation'?
+      { isBetween(tutorialStates.GoalsScreenIntroduction, tutorialState, tutorialStates.FirstGoalCreation) ?
       <SpeechBubble
         speeches={[
           {id: 0, text: t('tutorial.GoalsScreenIntroduction.1')},
           {id: 1, text: t('tutorial.GoalsScreenIntroduction.2')},
           {id: 2, text: t('tutorial.GoalsScreenIntroduction.3')},
           {id: 3, text: t('tutorial.GoalsScreenIntroduction.4'),
-            onTextEnd: () => dispatch(setTutorialState('FirstGoalCreation'))},
+            onTextEnd: () => dispatch(setTutorialState(tutorialStates.FirstGoalCreation))},
           {id: 0, text: t('tutorial.FirstGoalCreation.1')}
         ]}
         bubbleStyle={{height: 80}}
       />
       : null}
-      {tutorialState=='AfterFirstGoalCreation' || tutorialState=='GoalScreenIntroduction'?
+      { isBetween(tutorialStates.AfterFirstGoalCreation, tutorialState, tutorialStates.GoalScreenIntroduction) ?
       <SpeechBubble
         speeches={[
           {id: 0, text: t('tutorial.AfterFirstGoalCreation.1'), 
-            onTextEnd: () => dispatch(setTutorialState('GoalScreenIntroduction'))},
+            onTextEnd: () => dispatch(setTutorialState(tutorialStates.GoalScreenIntroduction))},
           {id: 1, text: t('tutorial.GoalScreenIntroduction.1')}
         ]}
         bubbleStyle={{height: 80}}
       />
       : null} 
-      {tutorialState=='ActivitiesInTodayScreen'?
+      { tutorialState == tutorialStates.ActivitiesInTodayScreen ?
       <SpeechBubble
         speeches={[
           {id: 0, text: t('tutorial.ActivitiesInTodayScreen.1')},
@@ -182,7 +180,7 @@ const GoalsScreen = ({ navigation, goals }) => {
       {hasSomethingToShow(goals)?
         <FlatList data={goals} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
       :
-        tutorialState=='Finished'?
+        tutorialState == tutorialStates.Finished ?
           <InfoCard title={t('goals.infoTitle')} paragraph={t('goals.infoContent')} /> : null
       }
     </View>

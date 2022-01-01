@@ -5,6 +5,7 @@ import { Pressable } from 'react-native';
 import { faTrophy, faCalendarAlt, faChartBar, faTasks } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { HighlightContainer } from '../components';
+import tutorialStates from '../tutorialStates'
 
 const disabledColor = '#EBEBE4'
 
@@ -21,12 +22,12 @@ export const TodayScreenIcon = ({ color, size }) => {
 export const GoalsScreenIcon = ({ focused, color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  const tutorialAwareColor = tutorialState == "TodayScreenIntroduction" ? disabledColor : color
+  const tutorialAwareColor = tutorialState == tutorialStates.TodayScreenIntroduction ? disabledColor : color
 
   const [ isHighlightActive, setIsHighlightActive ] = React.useState(false)
 
   React.useEffect(() => {
-    if( tutorialState == "GoalsScreenIntroduction" && !focused ){
+    if( tutorialState == tutorialStates.GoalsScreenIntroduction && !focused ){
       setIsHighlightActive(true)
     }else{
       setIsHighlightActive(false)
@@ -47,7 +48,7 @@ export const GoalsScreenIcon = ({ focused, color, size }) => {
 export const GoalsScreenButton = ( props ) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  const tutorialAwareProps = tutorialState == "TodayScreenIntroduction" ? { ...props, disabled: true } : props
+  const tutorialAwareProps = tutorialState == tutorialStates.TodayScreenIntroduction ? { ...props, disabled: true } : props
 
   return (
     <Pressable {...tutorialAwareProps} />
@@ -57,7 +58,7 @@ export const GoalsScreenButton = ( props ) => {
 export const CalendarScreenIcon = ({ color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  const tutorialAwareColor = tutorialState != "Finished" ? disabledColor : color
+  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? disabledColor : color
 
   return (
     <FontAwesomeIcon 
@@ -71,7 +72,7 @@ export const CalendarScreenIcon = ({ color, size }) => {
 export const CalendarScreenButton = ( props ) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  const tutorialAwareProps = tutorialState != "Finished" ? { ...props, disabled: true } : props
+  const tutorialAwareProps = tutorialState != tutorialStates.Finished ? { ...props, disabled: true } : props
 
   return (
     <Pressable {...tutorialAwareProps} />
@@ -81,7 +82,7 @@ export const CalendarScreenButton = ( props ) => {
 export const StatsScreenIcon = ({ color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  const tutorialAwareColor = tutorialState != "Finished" ? disabledColor : color
+  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? disabledColor : color
 
   return (
     <FontAwesomeIcon 
@@ -95,7 +96,7 @@ export const StatsScreenIcon = ({ color, size }) => {
 export const StatsScreenButton = ( props ) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  const tutorialAwareProps = tutorialState != "Finished" ? { ...props, disabled: true } : props
+  const tutorialAwareProps = tutorialState != tutorialStates.Finished ? { ...props, disabled: true } : props
 
   return (
     <Pressable {...tutorialAwareProps} />

@@ -3,12 +3,13 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View } from 'react-native'
 import { DayContent, Dialog, Header, SpeechBubble } from '../components'
-import { getToday } from '../util'
+import { getToday, isBetween } from '../util'
 import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 import { useFocusEffect } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper'
 import { updateLogs, setTutorialState, selectTutorialState } from '../redux'
+import tutorialStates from '../tutorialStates'
 
 const TodayScreen = ({ navigation }) => {
   const dispatch = useDispatch()
@@ -52,49 +53,49 @@ const TodayScreen = ({ navigation }) => {
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('today.headerTitle')} navigation={navigation} buttons={
-        tutorialState == 'Finished' ? 
+        tutorialState == tutorialStates.Finished ? 
           <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color="white" />
           :
           <Appbar.Action icon='cog' color="white" style={{opacity: 0.5}} />
       }/>
-      {tutorialState=='TodayScreenIntroduction' || tutorialState=='GoalsScreenIntroduction'?
+      { isBetween(tutorialStates.TodayScreenIntroduction, tutorialState, tutorialStates.GoalsScreenIntroduction) ?
         <SpeechBubble
           speeches={[
             {id: 0, text: t('tutorial.TodayScreenIntroduction.1')},
             {id: 1, text: t('tutorial.TodayScreenIntroduction.2')},
             {id: 2, text: t('tutorial.TodayScreenIntroduction.3')},
             {id: 3, text: t('tutorial.TodayScreenIntroduction.4'), 
-              onTextEnd: () => dispatch(setTutorialState('GoalsScreenIntroduction'))},
+              onTextEnd: () => dispatch(setTutorialState(tutorialStates.GoalsScreenIntroduction))},
           ]}
           bubbleStyle={{height: 80}}
         />
         : null
       }
-      {['ActivitiesInTodayScreen', 'ChooseWeekliesIntroduction', 'OneTimeTasksIntroduction', 'TutorialEnding'].includes(tutorialState)?
+      { isBetween(tutorialStates.ActivitiesInTodayScreen, tutorialState, tutorialStates.TutorialEnding) ?
         <SpeechBubble
           speeches={[
             {id: 0, text: t('tutorial.ActivitiesInTodayScreen.2')},
             {id: 1, text: t('tutorial.ActivitiesInTodayScreen.3')},
             {id: 2, text: t('tutorial.ActivitiesInTodayScreen.4'), 
               onTextEnd: () => {
-                dispatch(setTutorialState('ChooseWeekliesIntroduction'))
+                dispatch(setTutorialState(tutorialStates.ChooseWeekliesIntroduction))
               }
             },
             {id: 3, text: t('tutorial.ChooseWeekliesIntroduction.1'), 
               onTextEnd: () => {
-                dispatch(setTutorialState('OneTimeTasksIntroduction'))
+                dispatch(setTutorialState(tutorialStates.OneTimeTasksIntroduction))
               }
             },
             //TODO: show OneTimeTasks component when the text starts, no when the previous text ends
             {id: 4, text: t('tutorial.OneTimeTasksIntroduction.1'), 
-              onTextEnd: () => dispatch(setTutorialState('TutorialEnding'))},
+              onTextEnd: () => dispatch(setTutorialState(tutorialStates.TutorialEnding))},
             {id: 5, text: t('tutorial.TutorialEnding.1')},
             {id: 6, text: t('tutorial.TutorialEnding.2')},
             {id: 7, text: t('tutorial.TutorialEnding.3')},
             {id: 8, text: t('tutorial.TutorialEnding.4')},
             {id: 9, text: t('tutorial.TutorialEnding.5')},
             {id: 10, text: ' ', onTextEnd: () => {
-              dispatch(setTutorialState('Finished'))
+              dispatch(setTutorialState(tutorialStates.Finished))
             }}
           ]}
           bubbleStyle={{height: 80}}

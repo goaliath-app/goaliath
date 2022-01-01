@@ -7,6 +7,7 @@ import { Header, HelpIcon, SpeechBubble } from '../components'
 import { setGoal, selectGoalById, selectTutorialState, setTutorialState } from '../redux';
 import { GeneralColor } from '../styles/Colors';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import tutorialStates from '../tutorialStates'
 
 const GoalFormScreen = ({ navigation, goal=null }) => {
   const { t, i18n } = useTranslation()
@@ -35,8 +36,8 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
       onPress={() => {
         const newGoal = {name: name, motivation: motivation}
         if(validate(newGoal)){
-          if(tutorialState=='FirstGoalCreation'){
-            dispatch(setTutorialState('AfterFirstGoalCreation'))
+          if(tutorialState == tutorialStates.FirstGoalCreation){
+            dispatch(setTutorialState(tutorialStates.AfterFirstGoalCreation))
           }
           if(goal){
             dispatch(setGoal({...goal, ...newGoal, id: goal.id}))
@@ -75,7 +76,7 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
         <HelperText style={{paddingLeft:15}} type="error" visible={nameInputError}>
           {t('goalForm.nameError')}
         </HelperText>
-        {tutorialState=='FirstGoalCreation'?
+        { tutorialState == tutorialStates.FirstGoalCreation ?
           <SpeechBubble 
             speeches={[
               {id: 0, text: t('tutorial.FirstGoalCreation.2')},
