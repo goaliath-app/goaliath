@@ -433,6 +433,7 @@ const en = {
         3: 'Now it’s empty, but lets fix that!',
         4: 'Let’s go to the Goals screen'
       },
+      ReturnToGoalsScreen: "Return to the Goals screen to continue",
       GoalsScreenIntroduction: {
         1: 'Goals are the base of Goaliath',
         2: 'They are those meaningful things you feel good dedicating time to.',
