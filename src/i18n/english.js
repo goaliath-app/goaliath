@@ -445,10 +445,9 @@ const en = {
         2: 'Your motivation may seem obvious to write down, but on hard days it’s a really good thing to read.'
       },
       AfterFirstGoalCreation: {
-        1: 'Behold! Your first goal is here!'
+        1: 'Behold! Your first goal is here! Tap on it to view it’s details.'
       },
       GoalScreenIntroduction: {
-        1: 'Tap on it to view it’s details',
         2: 'Here is where you’ll define how do you want to advance towards the goal.',
         3: 'We’ll always think about activities you’ll do often, and not it’s outcomes.',
         4: 'Activities are recurring tasks you do each week',

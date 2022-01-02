@@ -163,7 +163,6 @@ const GoalsScreen = ({ navigation, goals }) => {
         speeches={[
           {id: 0, text: t('tutorial.AfterFirstGoalCreation.1'), 
             onTextEnd: () => dispatch(setTutorialState(tutorialStates.GoalScreenIntroduction))},
-          {id: 1, text: t('tutorial.GoalScreenIntroduction.1')}
         ]}
         bubbleStyle={{height: 80}}
       />
