@@ -102,10 +102,9 @@ const TodayScreen = ({ navigation }) => {
             {id: 6, text: t('tutorial.TutorialEnding.2')},
             {id: 7, text: t('tutorial.TutorialEnding.3')},
             {id: 8, text: t('tutorial.TutorialEnding.4')},
-            {id: 9, text: t('tutorial.TutorialEnding.5')},
-            {id: 10, text: ' ', onTextEnd: () => {
+            {id: 9, text: t('tutorial.TutorialEnding.5'), onNextPress: () => {
               dispatch(setTutorialState(tutorialStates.Finished))
-            }}
+            }},
           ]}
           bubbleStyle={{height: 80}}
         />

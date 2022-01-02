@@ -17,8 +17,7 @@ const OnboardingScreen = ({ finishOnboarding }) => {
         <SpeechBubble speeches={[
           {id: 0, text: t('onboarding.1')},
           {id: 1, text: t('onboarding.2')},
-          {id: 2, text: t('onboarding.3'), onTextEnd: finishOnboarding},
-          {id: 3, text: ''}
+          {id: 2, text: t('onboarding.3'), onNextPress: finishOnboarding},
           ]} 
           bubbleStyle={{height: 80}} />
       </View>

@@ -196,15 +196,15 @@ const GoalScreen = ({ activities, goal, navigation }) => {
         <ArchivedWarning goal={goal}/>
         <View style={{ flex: 1 }}>
           <View style={{flexShrink: 1}}>
-            { isBetween(tutorialStates.GoalsScreenIntroduction, tutorialState, tutorialStates.ActivitiesInTodayScreen) ?
+            { tutorialState == tutorialStates.GoalScreenIntroduction ?
               <SpeechBubble
                 speeches={[
                   {id:0, text: t('tutorial.GoalScreenIntroduction.2')},
                   {id:1, text: t('tutorial.GoalScreenIntroduction.3')},
                   {id:2, text: t('tutorial.GoalScreenIntroduction.4')},
                   {id:3, text: t('tutorial.GoalScreenIntroduction.5')},
-                  {id:4, text: t('tutorial.GoalScreenIntroduction.6'), 
-                    onTextEnd:() => {
+                  {id:4, text: t('tutorial.GoalScreenIntroduction.6'),
+                    onNextPress: () => {
                       dispatch(setActivity({
                         archived: false,
                         active: true,
@@ -221,17 +221,34 @@ const GoalScreen = ({ activities, goal, navigation }) => {
                           }
                         }
                       }))
-                    }
+                      dispatch(setTutorialState(tutorialStates.SampleActivityCreated))
+                    },
                   },
-                  {id:5, text: t('tutorial.GoalScreenIntroduction.7')},
-                  {id:6, text: t('tutorial.GoalScreenIntroduction.8'),
-                    onTextEnd: () => dispatch(setTutorialState(tutorialStates.AddNewActivityHighlight))},
-                  {id:7, text: t('tutorial.ActivitiesInTodayScreen.1'),
-                    onTextEnd: () => dispatch(setTutorialState(tutorialStates.ActivitiesInTodayScreen))},
                 ]}
                 bubbleStyle={{height: 80}}
               />
               : null
+            }
+            {
+              isBetween( tutorialStates.SampleActivityCreated, tutorialState, tutorialStates.AddNewActivityHighlight) ?
+              <SpeechBubble
+                speeches={[
+                  {id:5, text: t('tutorial.GoalScreenIntroduction.7')},
+                  {id:6, text: t('tutorial.GoalScreenIntroduction.8'),
+                    onTextEnd: () => dispatch(setTutorialState(tutorialStates.AddNewActivityHighlight)),
+                    onNextPress: () => dispatch(setTutorialState(tutorialStates.ActivitiesInTodayScreen))},
+                ]}
+                bubbleStyle={{height: 80}}
+              /> : null
+            }
+            {
+              tutorialState == tutorialStates.ActivitiesInTodayScreen ?
+              <SpeechBubble
+                speeches={[
+                  {id:7, text: t('tutorial.ActivitiesInTodayScreen.1')},
+                ]}
+                bubbleStyle={{height: 80}}
+              /> : null
             }
             {hasSomethingToShow(activities)?
               <FlatList data={activities} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
