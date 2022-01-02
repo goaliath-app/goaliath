@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { 
   Header, ThreeDotsMenu, DeleteGoalDialog, InfoCard, DeleteActivityDialog, 
-  MoveToGoalDialog, BottomScreenPadding, SpeechBubble
+  MoveToGoalDialog, BottomScreenPadding, SpeechBubble, HighlightContainer,
 } from '../components';
 import { selectAllActivities, selectGoalById, toggleActivity, restoreGoal, 
   setActivity, selectTutorialState, setTutorialState } from '../redux'
@@ -150,10 +150,21 @@ const GoalScreen = ({ activities, goal, navigation }) => {
           <Appbar.Action icon='pencil' color={HeaderColor.icon} style={{opacity: 0.5}} />
         }
 
-        <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
+        { tutorialState <= tutorialStates.GoalScreenIntroduction ? 
+          <Appbar.Action icon='plus' color={HeaderColor.icon} style={{opacity: 0.5}} />
+          : tutorialState == tutorialStates.AddNewActivityHighlight ? 
+          <HighlightContainer highlightStyle={{backgroundColor: 'white'}}>
+            <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
+                navigation.navigate('ActivityForm', { goalId: goal.id })
+              }}
+            />   
+          </HighlightContainer>
+          : 
+          <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
             navigation.navigate('ActivityForm', { goalId: goal.id })
           }}
         />
+        }
         
         { tutorialState == tutorialStates.Finished ?
           <ThreeDotsMenu 
@@ -214,8 +225,9 @@ const GoalScreen = ({ activities, goal, navigation }) => {
                   },
                   {id:5, text: t('tutorial.GoalScreenIntroduction.7')},
                   {id:6, text: t('tutorial.GoalScreenIntroduction.8'),
+                    onTextEnd: () => dispatch(setTutorialState(tutorialStates.AddNewActivityHighlight))},
+                  {id:7, text: t('tutorial.ActivitiesInTodayScreen.1'),
                     onTextEnd: () => dispatch(setTutorialState(tutorialStates.ActivitiesInTodayScreen))},
-                  {id:7, text: t('tutorial.ActivitiesInTodayScreen.1')},
                 ]}
                 bubbleStyle={{height: 80}}
               />
