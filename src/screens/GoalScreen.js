@@ -140,29 +140,30 @@ const GoalScreen = ({ activities, goal, navigation }) => {
   const headerButtons = (
     goal.archived? null :
       <>
+        { tutorialState == tutorialStates.Finished ?
+          <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
+              setMenuVisible(false)
+              navigation.navigate('GoalForm', { id: goal.id } )
+            }}
+          />
+          :
+          <Appbar.Action icon='pencil' color={HeaderColor.icon} style={{opacity: 0.5}} />
+        }
+
         <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
             navigation.navigate('ActivityForm', { goalId: goal.id })
           }}
         />
+        
         { tutorialState == tutorialStates.Finished ?
-          <>
-            <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
-                setMenuVisible(false)
-                navigation.navigate('GoalForm', { id: goal.id } )
-              }}
-            />
-            <ThreeDotsMenu 
-              menuItems={menuItems} 
-              openMenu= {() => setMenuVisible(true)} 
-              closeMenu= {() => setMenuVisible(false)} 
-              visible={menuVisible} 
-            />
-          </>
+          <ThreeDotsMenu 
+            menuItems={menuItems} 
+            openMenu= {() => setMenuVisible(true)} 
+            closeMenu= {() => setMenuVisible(false)} 
+            visible={menuVisible} 
+          />
           :
-          <>
-            <Appbar.Action icon='pencil' color={HeaderColor.icon} style={{opacity: 0.5}} />
-            <Appbar.Action icon='dots-vertical' color={HeaderColor.icon} style={{opacity: 0.5}} />
-          </>
+          <Appbar.Action icon='dots-vertical' color={HeaderColor.icon} style={{opacity: 0.5}} />
         }
       </>
   )
