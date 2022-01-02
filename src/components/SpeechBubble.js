@@ -40,6 +40,9 @@ const SpeechBubble = ({
     id: a unique id for this speech.
     text: the text to be shown.
     onTextEnd: a function to be called when the text is finished being displayed
+    onNextPress: a function to be called when the bubble is pressed to display the next text.
+      the next button will be shown if this is present, even if there aren't any speeches
+      after this one.
   */
   speeches,
   // Style of the containter bubble component
@@ -92,6 +95,9 @@ const SpeechBubble = ({
       }else{
         // proceed to the next speech
         nextButtonOpacity.value = 0
+        if(speeches[speechIndex].onNextPress){
+          runOnJS(speeches[speechIndex].onNextPress)()
+        }
         if(speechIndex < speeches.length-1) {
           runOnJS(setSpeechIndex)(speechIndex+1)
           runOnJS(setIsAnimationRunning)(true)
@@ -117,7 +123,7 @@ const SpeechBubble = ({
       runOnJS(speeches[speechIndex].onTextEnd)()
     }
     // Make next button appear after delay if there are more speeches
-    if(speechIndex < speeches.length-1) {
+    if(speechIndex < speeches.length-1 || speeches[speechIndex].onNextPress) {
       nextButtonOpacity.value = withDelay(nextButtonDelay, withTiming(1, {duration: 500}))
     }
     runOnJS(setIsAnimationRunning)(false)
