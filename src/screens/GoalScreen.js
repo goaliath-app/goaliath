@@ -150,7 +150,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
           <Appbar.Action icon='pencil' color={HeaderColor.icon} style={{opacity: 0.5}} />
         }
 
-        { tutorialState <= tutorialStates.GoalScreenIntroduction ? 
+        { tutorialState <= tutorialStates.SampleActivityCreated ? 
           <Appbar.Action icon='plus' color={HeaderColor.icon} style={{opacity: 0.5}} />
           : tutorialState == tutorialStates.AddNewActivityHighlight ? 
           <HighlightContainer highlightStyle={{backgroundColor: 'white'}}>
