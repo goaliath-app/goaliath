@@ -37,7 +37,7 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
         const newGoal = {name: name, motivation: motivation}
         if(validate(newGoal)){
           if(tutorialState == tutorialStates.FirstGoalCreation){
-            dispatch(setTutorialState(tutorialStates.AfterFirstGoalCreation))
+            dispatch(setTutorialState(tutorialStates.GoalScreenIntroduction))
           }
           if(goal){
             dispatch(setGoal({...goal, ...newGoal, id: goal.id}))

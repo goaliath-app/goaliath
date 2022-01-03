@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { 
   Header, ThreeDotsMenu, DeleteGoalDialog, InfoCard, DeleteActivityDialog, 
-  MoveToGoalDialog, BottomScreenPadding, SpeechBubble, HighlightContainer,
+  MoveToGoalDialog, BottomScreenPadding, SpeechBubble, IconHighlighter,
 } from '../components';
 import { selectAllActivities, selectGoalById, toggleActivity, restoreGoal, 
   setActivity, selectTutorialState, setTutorialState } from '../redux'
@@ -153,12 +153,12 @@ const GoalScreen = ({ activities, goal, navigation }) => {
         { tutorialState <= tutorialStates.SampleActivityCreated ? 
           <Appbar.Action icon='plus' color={HeaderColor.icon} style={{opacity: 0.5}} />
           : tutorialState == tutorialStates.AddNewActivityHighlight ? 
-          <HighlightContainer highlightStyle={{backgroundColor: 'white'}}>
+          <IconHighlighter highlightStyle={{backgroundColor: 'white'}}>
             <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
                 navigation.navigate('ActivityForm', { goalId: goal.id })
               }}
             />   
-          </HighlightContainer>
+          </IconHighlighter>
           : 
           <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
             navigation.navigate('ActivityForm', { goalId: goal.id })

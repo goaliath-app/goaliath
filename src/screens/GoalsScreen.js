@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { List, Appbar, Divider, Switch, Menu, Portal, Dialog } from 'react-native-paper';
 import { 
   Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog, BottomScreenPadding, 
-  SpeechBubble, HighlightContainer,
+  SpeechBubble, IconHighlighter, ViewHighlighter,
 } from '../components'
 import { hasSomethingToShow, isBetween } from '../util'
 import { useTranslation } from 'react-i18next'
@@ -32,25 +32,33 @@ const GoalListItem = ({ name, active, id }) => {
 
   const dispatch = useDispatch();
 
+  const amIHighlighted = (
+    tutorialState >= tutorialStates.AfterFirstGoalCreation 
+    && tutorialState < tutorialStates.ActivitiesInTodayScreen 
+    && id == 0
+  )
+
   return (
     <View>
-      <List.Item 
-        onPress={() => navigation.navigate('Goal', { goalId: id })}
-        onLongPress={
-          tutorialState == tutorialStates.Finished ? () => setLongPressDialogVisible(true) : () => {}
-        }
-        title={name}
-        titleNumberOfLines={2}
-        right={() => (
-          <Switch 
-            disabled={ tutorialState != tutorialStates.Finished }
-            value={active} 
-            onValueChange={ () => dispatch(toggleGoal(id)) }
-          />
-        )}
-        description={t('goals.goalDescription', {activitiesNumber: activities.length})}
-      />
-      <Divider />
+      <ViewHighlighter active={amIHighlighted}>
+        <List.Item 
+          onPress={() => navigation.navigate('Goal', { goalId: id })}
+          onLongPress={
+            tutorialState == tutorialStates.Finished ? () => setLongPressDialogVisible(true) : () => {}
+          }
+          title={name}
+          titleNumberOfLines={2}
+          right={() => (
+            <Switch 
+              disabled={ tutorialState != tutorialStates.Finished }
+              value={active} 
+              onValueChange={ () => dispatch(toggleGoal(id)) }
+            />
+          )}
+          description={t('goals.goalDescription', {activitiesNumber: activities.length})}
+        />
+        <Divider />
+      </ViewHighlighter>
 
       {/* Long press menu */}
       <Portal>
@@ -124,14 +132,16 @@ const GoalsScreen = ({ navigation, goals }) => {
         buttons={
         <>
         {
-          tutorialState >= tutorialStates.AfterFirstGoalCreation ?
-          <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color="white"/>
+          tutorialState < tutorialStates.FirstGoalCreation ?
+            <Appbar.Action icon='plus' color="white" style={{opacity: 0.5}} />
           : tutorialState == tutorialStates.FirstGoalCreation ?
-          <HighlightContainer highlightStyle={{backgroundColor: 'white'}}>
+            <IconHighlighter highlightStyle={{backgroundColor: 'white'}}>
+              <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color="white"/>
+            </IconHighlighter>
+          : tutorialState > tutorialStates.FirstGoalCreation && tutorialState < tutorialStates.ActivitiesInTodayScreen ?
+            <Appbar.Action icon='plus' color="white" style={{opacity: 0.5}} />
+          : // tutorialState > ActivitiesInTodayScreen 
             <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color="white"/>
-          </HighlightContainer>
-          :
-          <Appbar.Action icon='plus' color="white" style={{opacity: 0.5}} />
         }
         { tutorialState == tutorialStates.Finished ?
           <ThreeDotsMenu 
@@ -158,11 +168,10 @@ const GoalsScreen = ({ navigation, goals }) => {
         bubbleStyle={{height: 80}}
       />
       : null}
-      { isBetween(tutorialStates.AfterFirstGoalCreation, tutorialState, tutorialStates.GoalScreenIntroduction) ?
+      { tutorialState >= tutorialStates.AfterFirstGoalCreation && tutorialState < tutorialStates.ActivitiesInTodayScreen ?
       <SpeechBubble
         speeches={[
-          {id: 0, text: t('tutorial.AfterFirstGoalCreation.1'), 
-            onTextEnd: () => dispatch(setTutorialState(tutorialStates.GoalScreenIntroduction))},
+          {id: 0, text: t('tutorial.AfterFirstGoalCreation.1')},
         ]}
         bubbleStyle={{height: 80}}
       />

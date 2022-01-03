@@ -7,12 +7,43 @@ import Animated, {
   useAnimatedStyle,
   withSequence,
   withDelay,
+  Easing,
 } from 'react-native-reanimated';
 
-export const HighlightContainer = ({ children, active=true, style={}, highlightStyle={} }) => {
+export const IconHighlighter = ({ children, active=true, style={}, highlightStyle={} }) => {
   return(
-    <View style={[styles.highlightContainer, style]}>
+    <View style={[styles.iconHighlighter, style]}>
       <PulsatingHighlight active={active}  style={highlightStyle}/>
+      {children}
+    </View>
+  )
+}
+
+export const ViewHighlighter = ({ children, active=true, style={}, highlightStyle={} }) => {
+  const pulseValue = useSharedValue(0)
+
+  React.useEffect(() => {
+    if( active ){
+      pulseValue.value = withRepeat(
+        withSequence(
+          withTiming(0.20, { duration: 1500, easing: Easing.in(Easing.exp) }),
+          withTiming(0, { duration: 2000, easing: Easing.out(Easing.ease) }),
+          withDelay(1000, withTiming(0, { duration: 1 })),
+        ), -1, true )
+    }else{
+      pulseValue.value = 0
+    }
+  }, [active])
+
+  const pulseStyle = useAnimatedStyle(() => {
+    return {
+      opacity: pulseValue.value,
+    }
+  })
+  
+  return(
+    <View>
+      <Animated.View style={[styles.viewHighlight, style, pulseStyle]} />
       {children}
     </View>
   )
@@ -57,10 +88,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'deepskyblue',
     borderRadius: 90,
   },
-  highlightContainer: {
+  iconHighlighter: {
     alignItems: 'center',
     justifyContent: 'center',
-  }
+  },
+  viewHighlight: {
+    alignSelf: 'center',
+    position: "absolute",
+    height: "100%",
+    width: "100%",
+    backgroundColor: 'deepskyblue',
+  },
 })
-
-export default PulsatingHighlight
