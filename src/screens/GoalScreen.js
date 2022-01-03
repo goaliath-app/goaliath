@@ -188,10 +188,17 @@ const GoalScreen = ({ activities, goal, navigation }) => {
       goal={goal} />
   )
 
+  const headerIcon = (
+    tutorialState >= tutorialStates.ActivitiesInTodayScreen
+    && tutorialState < tutorialStates.Finished ?
+      'highlightedBack'
+    : 'back'
+  )
+
   return (
     <>
       <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
-        <Header title={goal.name} left='back' navigation={navigation} buttons={headerButtons}/>
+        <Header title={goal.name} left={headerIcon} navigation={navigation} buttons={headerButtons}/>
         {/* ArchivedWarning only shows if the goal is archived */}
         <ArchivedWarning goal={goal}/>
         <View style={{ flex: 1 }}>
@@ -242,7 +249,8 @@ const GoalScreen = ({ activities, goal, navigation }) => {
               /> : null
             }
             {
-              tutorialState == tutorialStates.ActivitiesInTodayScreen ?
+              tutorialState >= tutorialStates.ActivitiesInTodayScreen
+              && tutorialState < tutorialStates.Finished ?
               <SpeechBubble
                 speeches={[
                   {id:7, text: t('tutorial.ActivitiesInTodayScreen.1')},

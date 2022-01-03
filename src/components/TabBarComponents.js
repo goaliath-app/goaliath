@@ -9,13 +9,23 @@ import tutorialStates from '../tutorialStates'
 
 const disabledColor = '#EBEBE4'
 
-export const TodayScreenIcon = ({ color, size }) => {
+export const TodayScreenIcon = ({ focused, color, size }) => {
+  const tutorialState = useSelector(selectTutorialState)
+
+  const isHighlightActive = (
+    tutorialState >= tutorialStates.ActivitiesInTodayScreen
+    && tutorialState < tutorialStates.Finished 
+    && !focused
+  )
+
   return (
-    <FontAwesomeIcon 
-      icon={faTasks} 
-      size={size} 
-      color={color} 
-    />
+    <IconHighlighter active={isHighlightActive}>
+      <FontAwesomeIcon 
+        icon={faTasks} 
+        size={size} 
+        color={color} 
+      />
+    </IconHighlighter>
   )
 }
 

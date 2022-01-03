@@ -176,7 +176,8 @@ const GoalsScreen = ({ navigation, goals }) => {
         bubbleStyle={{height: 80}}
       />
       : null} 
-      { tutorialState == tutorialStates.ActivitiesInTodayScreen ?
+      { tutorialState >= tutorialStates.ActivitiesInTodayScreen
+      && tutorialState < tutorialStates.Finished ?
       <SpeechBubble
         speeches={[
           {id: 0, text: t('tutorial.ActivitiesInTodayScreen.1')},
