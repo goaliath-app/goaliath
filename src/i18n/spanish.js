@@ -464,7 +464,8 @@ const es= {
         4: 'E icluso si sólo haces algunas, estarás avanzando hacia tus metas.'
       },
       ChooseWeekliesIntroduction: {
-        1: 'Si creas actividades que no se realizan un día concreto de la semana, podrás seleccionarlas aquí y aparecerán en la today screen.'
+        1: 'Si creas actividades que no se realizan un día concreto de la semana, podrás seleccionarlas aquí y aparecerán en la today screen.',
+        2: 'Esta opción desaparecerá si no hay actividades semanales activas.',
       },
       OneTimeTasksIntroduction: {
         1: 'También puedes crear tareas sólo para hoy, que no aparecerán el resto de días.'

@@ -85,9 +85,12 @@ const DayContent = ({ date }) => {
         <ActivityList data={pendingActivities} date={date} />
       </ViewHighlighter>
       <TaskList date={date} show='pending' />
-      { weekliesSelector=='unchecked' || tutorialState == tutorialStates.ChooseWeekliesIntroduction ?
+      { weekliesSelector=='unchecked' || 
+          tutorialState >= tutorialStates.ChooseWeekliesIntroduction 
+          && tutorialState < tutorialStates.Finished
+          && weekliesSelector!='checked' ?
       <ViewHighlighter animated={false} active={tutorialState == tutorialStates.ChooseWeekliesIntroduction}>
-        <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
+        <SelectWeekliesListItem date={date} checked={false} navigation={navigation} disabled={weekliesSelector=='hidden'}/>
       </ViewHighlighter>
       : <></> }
       { tasksSelector == 'unchecked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?

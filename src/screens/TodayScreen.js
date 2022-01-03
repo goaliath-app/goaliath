@@ -90,19 +90,20 @@ const TodayScreen = ({ navigation }) => {
                 dispatch(setTutorialState(tutorialStates.ChooseWeekliesIntroduction))
               }
             },
+            {id: 4, text: t('tutorial.ChooseWeekliesIntroduction.2')},
             //TODO: show OneTimeTasks component when the text starts, no when the previous text ends
-            {id: 4, text: t('tutorial.OneTimeTasksIntroduction.1'),
+            {id: 5, text: t('tutorial.OneTimeTasksIntroduction.1'),
               onTextEnd: () => {
                 dispatch(setTutorialState(tutorialStates.OneTimeTasksIntroduction))
               }
             }, 
-            {id: 5, text: t('tutorial.TutorialEnding.1'),
+            {id: 6, text: t('tutorial.TutorialEnding.1'),
               onTextEnd: () => dispatch(setTutorialState(tutorialStates.TutorialEnding))
             },
-            {id: 6, text: t('tutorial.TutorialEnding.2')},
-            {id: 7, text: t('tutorial.TutorialEnding.3')},
-            {id: 8, text: t('tutorial.TutorialEnding.4')},
-            {id: 9, text: t('tutorial.TutorialEnding.5'), onNextPress: () => {
+            {id: 7, text: t('tutorial.TutorialEnding.2')},
+            {id: 8, text: t('tutorial.TutorialEnding.3')},
+            {id: 9, text: t('tutorial.TutorialEnding.4')},
+            {id: 10, text: t('tutorial.TutorialEnding.5'), onNextPress: () => {
               dispatch(setTutorialState(tutorialStates.Finished))
             }},
           ]}
