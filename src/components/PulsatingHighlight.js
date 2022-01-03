@@ -19,19 +19,23 @@ export const IconHighlighter = ({ children, active=true, style={}, highlightStyl
   )
 }
 
-export const ViewHighlighter = ({ children, active=true, style={}, highlightStyle={} }) => {
+export const ViewHighlighter = ({ children, active=true, animated=true, style={}, highlightStyle={} }) => {
   const pulseValue = useSharedValue(0)
 
   React.useEffect(() => {
     if( active ){
-      pulseValue.value = withRepeat(
-        withSequence(
-          withTiming(0.20, { duration: 1500, easing: Easing.in(Easing.exp) }),
-          withTiming(0, { duration: 2000, easing: Easing.out(Easing.ease) }),
-          withDelay(1000, withTiming(0, { duration: 1 })),
-        ), -1, true )
+      if( animated ){
+        pulseValue.value = withRepeat(
+          withSequence(
+            withTiming(0.20, { duration: 1500, easing: Easing.in(Easing.exp) }),
+            withTiming(0, { duration: 2000, easing: Easing.out(Easing.ease) }),
+            withDelay(1000, withTiming(0, { duration: 1 })),
+          ), -1, true )
+      } else {
+        pulseValue.value = withTiming(0.2, {duration: 500})
+      }
     }else{
-      pulseValue.value = 0
+      pulseValue.value = withTiming(0, {duration: 300})
     }
   }, [active])
 

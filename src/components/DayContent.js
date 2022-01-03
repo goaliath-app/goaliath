@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { View, ScrollView } from 'react-native'
 import { Card, Title, Paragraph } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native';
-import { ActivityList, BottomScreenPadding } from '../components'
+import { ActivityList, BottomScreenPadding, ViewHighlighter } from '../components'
 import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog, InfoCard } from '../components';
 import { 
   areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay, selectTutorialState
@@ -81,13 +81,19 @@ const DayContent = ({ date }) => {
     <ScrollView style={{flex: 1}}>
       { timeStatus == 'past' && completedActivities.length == 0 && pendingActivities.length == 0 ? <EmptyPastWarning /> : null }
       { timeStatus == 'future' ? <EmptyPastWarning /> : null }
-      <ActivityList data={pendingActivities} date={date} />
+      <ViewHighlighter animated={false} active={tutorialState == tutorialStates.ActivitiesInTodayScreen}>
+        <ActivityList data={pendingActivities} date={date} />
+      </ViewHighlighter>
       <TaskList date={date} show='pending' />
       { weekliesSelector=='unchecked' || tutorialState == tutorialStates.ChooseWeekliesIntroduction ?
-      <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
+      <ViewHighlighter animated={false} active={tutorialState == tutorialStates.ChooseWeekliesIntroduction}>
+        <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
+      </ViewHighlighter>
       : <></> }
       { tasksSelector == 'unchecked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
+      <ViewHighlighter animated={false} active={tutorialState == tutorialStates.OneTimeTasksIntroduction}>
         <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
+      </ViewHighlighter>
         : <></> 
       }
       <ActivityList data={completedActivities} date={date} />
