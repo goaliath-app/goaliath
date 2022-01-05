@@ -152,13 +152,6 @@ const GoalScreen = ({ activities, goal, navigation }) => {
 
         { tutorialState <= tutorialStates.SampleActivityCreated ? 
           <Appbar.Action icon='plus' color={HeaderColor.icon} style={{opacity: 0.5}} />
-          : tutorialState == tutorialStates.AddNewActivityHighlight ? 
-          <IconHighlighter highlightStyle={{backgroundColor: 'white'}}>
-            <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
-                navigation.navigate('ActivityForm', { goalId: goal.id })
-              }}
-            />   
-          </IconHighlighter>
           : 
           <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
             navigation.navigate('ActivityForm', { goalId: goal.id })
