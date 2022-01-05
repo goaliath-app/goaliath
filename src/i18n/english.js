@@ -279,13 +279,6 @@ const en = {
       timedCompleted: 'Completed: {{unit}} {{expression}} dedicated',
     },
 
-    onboarding: {
-      1: 'Hi, I’m Goaliath!',
-      2: 'I’ve been created to help you be proud of your daily actions.',
-      3: 'Cool, uh? Let’s begin!',
-      skip: 'Skip tutorial'
-    },
-
     activityHandler: {
       activityTypes: {
         doNSecondsEachWeek: {
@@ -426,55 +419,64 @@ const en = {
       }
     },
 
+    onboarding: {
+      1: 'Hi, I’m Goaliath!',
+      2: 'I’ve been created to help you achieve your goals through your everyday actions.',
+      3: 'Cool, uh? Let’s begin!',
+      skip: 'Skip tutorial'
+    },
+
     tutorial: {
       TodayScreenIntroduction: {
-        1: 'Welcome to the best part of me, the today screen!',
-        2: 'Here you will find what you have to do to make this day a good day.',
-        3: 'Now it’s empty, but lets fix that!',
-        4: 'Let’s go to the Goals screen'
+        // "remind you OF the actions" or "remind you the actions"
+        1: 'Welcome! Here I will remind you of the actions you need to take to advance towards your goals.',
+        2: 'Go to the Goals list to create your first goal.'
       },
-      ReturnToGoalsScreen: "Return to the Goals screen to continue",
+      ReturnToGoalsScreen: "Return to the Goals section to continue.",
       GoalsScreenIntroduction: {
-        1: 'Goals are the base of Goaliath',
-        2: 'They are those meaningful things you feel good dedicating time to.',
-        3: 'And also the ones that make you feel bad when you neglect them.',
-        4: 'Things like "Fitness", "Learn Spanish" or "Be with my family" are good examples of goals.'
+        1: 'Goals are those meaningful things you feel good dedicating time to.',
+        2: 'And also the ones that make you feel bad when you neglect them.',
+        3: 'Things like "Fitness", "Learn Spanish" or "Be with my family" are good examples of goals.'
       },
       FirstGoalCreation: {
-        1: 'Let’s create your first goal using the + icon',
+        1: 'Let’s create your first goal using the + icon.',
         2: 'Your motivation may seem obvious to write down, but on hard days it’s a really good thing to read.'
       },
       AfterFirstGoalCreation: {
         1: 'Behold! Your first goal is here! Tap on it to view it’s details.'
       },
       GoalScreenIntroduction: {
-        2: 'Here is where you’ll define how do you want to advance towards the goal.',
-        3: 'We’ll always think about activities you’ll do often, and not it’s outcomes.',
-        4: 'Activities are recurring tasks you do each week',
-        5: 'By consistently dedicating time to your goals you will grow to accomplish them.',
-        6: 'I’m going to create an easy activity for you.',
-        7: 'Ta-da!!',
-        8: 'You can add your own activities using the + icon'
+        2: 'Here you’ll define the actions you will take to advance towards the goal.',
+        3: 'Those actions are recurring activities you’ll do often.',
+        4: 'For a "Learn Spanish" goal, example activities could be "Rewiew vocabulary each day" and "Have 1 hour of conversation per week".',
+        5: 'This way you commit to consistently dedicate time to achieve your goal.',
+        6: 'That is the only thing needed for progress.',
+        7: 'Now, I’m going to create an easy activity for you.',
+        8: 'Ta-daa!!',
+        9: 'You can add your own activities using the + icon.'
       },
       ActivitiesInTodayScreen: {
-        1: 'When you are ready, return to the today screen',
-        2: 'Here you can see what you want to do today, according to your goals.',
-        3: 'This means that if you complete the activities listed here, you can be proud of yourself.',
-        4: 'And even if you only do some of them, you’ll be advancing towards your goals.'
+        0: 'When you are ready, return to the today section.',
+        1: 'Return to the today section.',
+        2: 'Here you can see what you want to do today, according to your plan.',
+        3: 'Complete the activities listed here and you will be closer to your goals.',
+        4: 'And even if you only do some of them, you will be still going forward.'
       },
       ChooseWeekliesIntroduction: {
-        1: 'If you create activities that are not necessarily done a fixed day of the week, you can select them here and they will appear in the today screen.',
-        2: "This item will dissapear if you don't have any active weekly activities.",
+        1: 'If you create activities that are not necessarily done a fixed day of the week, you can select them here so they appear in today’s list.',
+        2: "This item will dissapear if you don't have any of those activities.",
       },
       OneTimeTasksIntroduction: {
-        1: 'You can also add one time tasks as reminders, that will only appear today.'
+        1: 'You can also add one time tasks as reminders that will only appear today.'
       },
       TutorialEnding: {
         1: 'Now I’ll let you explore the rest of the app!',
-        2: 'I recommend you to go to the goals screen and create all of your important goals.',
-        3: 'Then fill each of them with the activities you think will make you feel proud of your efforts.',
-        4: 'If you don’t know which activities you need, only create a time activity to search how to accomplish your goal.',
-        5: 'I’ll be here to give you some tips along the way. Good luck!'
+        2: 'I recommend you to go to the goals section and create all of your important goals.',
+        3: 'Then fill each of them with the activities that will make you progress.',
+        // "which are those activities" OR "which those activities are" ?
+        4: 'If you don’t know which are those activities, just try to dedicate 10 daily minutes to your goal.',
+        5: 'Even if you don’t know what to do at that time, taking action will help you find out.',
+        6: 'I’ll be here to give you some tips along the way. Good luck!'
       }
     }
   }

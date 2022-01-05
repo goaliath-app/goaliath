@@ -62,9 +62,7 @@ const TodayScreen = ({ navigation }) => {
         <SpeechBubble
           speeches={[
             {id: 0, text: t('tutorial.TodayScreenIntroduction.1')},
-            {id: 1, text: t('tutorial.TodayScreenIntroduction.2')},
-            {id: 2, text: t('tutorial.TodayScreenIntroduction.3')},
-            {id: 3, text: t('tutorial.TodayScreenIntroduction.4'), 
+            {id: 1, text: t('tutorial.TodayScreenIntroduction.2'),
               onTextEnd: () => dispatch(setTutorialState(tutorialStates.GoalsScreenIntroduction))},
           ]}
           bubbleStyle={{height: 80}}
@@ -103,7 +101,8 @@ const TodayScreen = ({ navigation }) => {
             {id: 7, text: t('tutorial.TutorialEnding.2')},
             {id: 8, text: t('tutorial.TutorialEnding.3')},
             {id: 9, text: t('tutorial.TutorialEnding.4')},
-            {id: 10, text: t('tutorial.TutorialEnding.5'), onNextPress: () => {
+            {id: 10, text: t('tutorial.TutorialEnding.5')},
+            {id: 11, text: t('tutorial.TutorialEnding.6'), onNextPress: () => {
               dispatch(setTutorialState(tutorialStates.Finished))
             }},
           ]}
