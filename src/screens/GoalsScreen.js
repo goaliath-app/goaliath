@@ -161,8 +161,7 @@ const GoalsScreen = ({ navigation, goals }) => {
           {id: 0, text: t('tutorial.GoalsScreenIntroduction.1')},
           {id: 1, text: t('tutorial.GoalsScreenIntroduction.2')},
           {id: 2, text: t('tutorial.GoalsScreenIntroduction.3')},
-          {id: 3, text: t('tutorial.GoalsScreenIntroduction.4')},
-          {id: 0, text: t('tutorial.FirstGoalCreation.1'), 
+          {id: 3, text: t('tutorial.FirstGoalCreation.1'), 
             onTextEnd: () => dispatch(setTutorialState(tutorialStates.FirstGoalCreation))}
         ]}
         bubbleStyle={{height: 80}}

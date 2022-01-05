@@ -280,14 +280,6 @@ const es= {
       timedCompleted: 'Hecho: {{unit}} {{expression}} dedicada/os',
     },
 
-    onboarding: {
-      1: 'Hola, ¡soy Goaliath!',
-      2: 'He sido creado para hacerte sentir orgulloso de tus acciones diarias.',
-      3: 'Mola, ¿eh? ¡Empecemos!',
-      skip: 'Saltar tutorial'
-    },
-
-
     activityHandler: {
       activityTypes: {
         doNSecondsEachWeek: {
@@ -428,54 +420,62 @@ const es= {
       }
     },
 
+    onboarding: {
+      1: 'Hola, ¡soy Goaliath!',
+      2: 'He sido creado para ayudarte a alcanzar tus metas a través del trabajo diario.',
+      3: 'Mola, ¿eh? ¡Empecemos!',
+      skip: 'Saltar tutorial'
+    },
+
     tutorial: {
       TodayScreenIntroduction: {
-        1: 'Bienvenido a la mejor parte de mi, ¡la pantalla de hoy!',
-        2: 'Aquí encontrarás lo que tienes que hacer para que hoy sea un buen día.',
-        3: 'Ahora está vacía, ¡arreglémoslo!',
-        4: 'Vayamos a la pantalla de las metas'
+        1: '¡Bienvenido! Cada día te recordaré aquí qué debes hacer para avanzar hacia tus metas.',
+        2: 'Vayamos a la lista de metas.'
       },
+      ReturnToGoalsScreen: "Vuelve a la lista de metas para continuar.",
       GoalsScreenIntroduction: {
-        1: 'Las metas son la base de Goaliath',
-        2: 'Son esas cosas importantes que te hacen sentir bien cuando las dedicas tiempo.',
-        3: 'Y también aquellas que te hacen sentir mal cuando las pospones.',
-        4: 'Cosas como "Ponerme en forma", "Aprender inglés" o "Estar con mi familia" son buenos ejemplos de metas.'
+        1: 'Las metas son aquellas cosas importantes que te hacen sentir bien cuando les dedicas tiempo.',
+        2: 'Y también las que te hacen sentir mal cuando las dejas de lado.',
+        3: 'Cosas como "Ponerme en forma", "Aprender inglés" o "Estar con mi familia" son buenos ejemplos de metas.'
       },
       FirstGoalCreation: {
-        1: 'Vamos a crear tu primera meta usando el icono +',
-        2: 'Puede que tu motivación te parezca obvia para escribirla, pero en los días difíciles te vendrá bien leerla.'
+        1: 'Vamos a crear tu primera meta pulsando el icono +.',
+        2: 'Puede que tu motivación parezca algo obvio, pero en los días difíciles te vendrá bien leerla.'
       },
       AfterFirstGoalCreation: {
-        1: '¡Mira, tu primera meta! Pulsa en ella para ver sus detalles.'
+        1: '¡Aquí está tu primera meta! Pulsa en ella para ver sus detalles.'
       },
       GoalScreenIntroduction: {
-        2: 'Aquí es donde definirás cómo quieres avanzar hacia tu meta.',
-        3: 'Siempre pensaremos en actividades para hacer a menudo, no en sus resultados',
-        4: 'Las actividades son tareas recurrentes que haces cada semana.',
-        5: 'Al dedicar tiempo constantemente a tus metas, llegarás a lograrlas.',
-        6: 'Voy a crear una actividad para ti.',
-        7: '¡¡Tachán!!',
-        8: 'Puedes añadir tus propias actividades usando el icono +'
+        2: 'Aquí definirás las acciones que tomarás para avanzar hacia tu objetivo.',
+        3: 'Estas acciones serán actividades que repetirás a lo largo del tiempo.',
+        4: 'Si tu objetivo es "Aprender inglés", buenos ejemplos de actividades son "Repasar vocabulario una vez al día" y "Conversar 1 hora a la semana".',
+        5: 'De este modo te comprometes a dedicar tiempo regularmente para alcanzar tu meta.',
+        6: 'Y eso es lo único que necesitas para progresar.',
+        7: 'Ahora voy a crear una actividad para ti.',
+        8: '¡¡Tachán!!',
+        9: 'Puedes añadir tus propias actividades usando el icono +'
       },
       ActivitiesInTodayScreen: {
-        1: 'Cuando estés listo, vuelve a la pantalla de hoy',
-        2: 'Aquí puedes ver lo que quieres hacer hoy, de acuerdo con tus metas.',
-        3: 'Eso quiere decir que si completas éstas actividades, podrás estar orgulloso de ti.',
-        4: 'E icluso si sólo haces algunas, estarás avanzando hacia tus metas.'
+        0: 'Cuando estés listo, vuelve a la sección de hoy.',
+        1: 'Vuelve a la sección de hoy.',
+        2: 'Aquí puedes ver lo que quieres hacer hoy, de acuerdo con tu plan.',
+        3: 'Completa estas actividades y estarás un paso más cerca de tus metas.',
+        4: 'Incluso si sólo haces algunas de ellas, estarás avanzando hacia delante.'
       },
       ChooseWeekliesIntroduction: {
-        1: 'Si creas actividades que no se realizan un día concreto de la semana, podrás seleccionarlas aquí y aparecerán en la today screen.',
-        2: 'Esta opción desaparecerá si no hay actividades semanales activas.',
+        1: 'Si creas actividades que no se realizan un día concreto de la semana, podrás seleccionarlas aquí y aparecerán en la lista.',
+        2: 'Esta opción desaparecerá si no hay ninguna de esas actividades.',
       },
       OneTimeTasksIntroduction: {
-        1: 'También puedes crear tareas sólo para hoy, que no aparecerán el resto de días.'
+        1: 'También puedes crear recordatorios de tareas, que solo aparecerán hoy.'
       },
       TutorialEnding: {
-        1: '¡Te dejo que explores el resto de la aplicación!',
-        2: 'Te recomiendo que vayas a la pantalla de las metas y crees todas tus metas importantes.',
-        3: 'Después llénalas de actividades que te vayan a hacer sentir orgulloso de tus esfuerzos.',
-        4: 'Si no sabes qué actividades necesitas, crea sólo una actividad de tiempo para investigar cómo lograr tu meta.',
-        5: 'Estaré por aquí dándote consejos sobre la marcha. ¡Buena suerte!'
+        1: '¡Es hora de que explores el resto de la aplicación por tu cuenta!',
+        2: 'Te recomiendo que vayas a la lista de metas y crees todas tus metas importantes.',
+        3: 'Después crea en cada una las actividades necesarias para progresar.',
+        4: 'Si no sabes cuáles son esas actividades, solo intenta dedicar 10 minutos diarios a tu meta.',
+        5: 'Incluso si no sabes qué hacer durante ese tiempo, tomar acción te ayudará a averiguarlo.',
+        6: 'Seguiré por aquí para darte algún que otro consejo. ¡Buena suerte!'
       }
       
     }

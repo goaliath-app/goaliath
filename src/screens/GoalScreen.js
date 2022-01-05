@@ -210,7 +210,8 @@ const GoalScreen = ({ activities, goal, navigation }) => {
                   {id:1, text: t('tutorial.GoalScreenIntroduction.3')},
                   {id:2, text: t('tutorial.GoalScreenIntroduction.4')},
                   {id:3, text: t('tutorial.GoalScreenIntroduction.5')},
-                  {id:4, text: t('tutorial.GoalScreenIntroduction.6'),
+                  {id:4, text: t('tutorial.GoalScreenIntroduction.6')},
+                  {id:5, text: t('tutorial.GoalScreenIntroduction.7'),
                     onNextPress: () => {
                       dispatch(setActivity({
                         archived: false,
@@ -240,8 +241,8 @@ const GoalScreen = ({ activities, goal, navigation }) => {
               isBetween( tutorialStates.SampleActivityCreated, tutorialState, tutorialStates.AddNewActivityHighlight) ?
               <SpeechBubble
                 speeches={[
-                  {id:5, text: t('tutorial.GoalScreenIntroduction.7')},
-                  {id:6, text: t('tutorial.GoalScreenIntroduction.8'),
+                  {id:6, text: t('tutorial.GoalScreenIntroduction.8')},
+                  {id:7, text: t('tutorial.GoalScreenIntroduction.9'),
                     onTextEnd: () => dispatch(setTutorialState(tutorialStates.AddNewActivityHighlight)),
                     onNextPress: () => dispatch(setTutorialState(tutorialStates.ActivitiesInTodayScreen))},
                 ]}
@@ -253,7 +254,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
               && tutorialState < tutorialStates.Finished ?
               <SpeechBubble
                 speeches={[
-                  {id:7, text: t('tutorial.ActivitiesInTodayScreen.1')},
+                  {id:7, text: t('tutorial.ActivitiesInTodayScreen.0')},
                 ]}
                 bubbleStyle={{height: 80}}
               /> : null
