@@ -157,7 +157,8 @@ export default function App() {
                 <Stack.Screen name='Settings' component={SettingsScreen} />
               </Stack.Navigator>
               }
-              <Snackbar
+              <Snackbar style={{backgroundColor: 'rgba(0, 0, 0, 0.85)'}}
+                action={{label: 'OK', action: () => setSnackbarMessage("")}}
                 visible={snackbarMessage != ""}
                 onDismiss={()=>setSnackbarMessage("")}
                 duration={5000}
