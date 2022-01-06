@@ -13,6 +13,7 @@ import { areThereWeeklyActivities, areTherePendingWeeklyActivities } from '../ac
 import { useTranslation } from 'react-i18next'
 import { getToday } from '../util'
 import tutorialStates from '../tutorialStates'
+import Animated, { Layout } from 'react-native-reanimated'
 
 const FutureWarning = () => {
   const { t, i18n } = useTranslation()
@@ -78,40 +79,42 @@ const DayContent = ({ date }) => {
   const pendingActivities   = entryList.filter(entry => !entry.archived && !entry.completed)
 
   return (
-    <ScrollView style={{flex: 1}}>
-      { timeStatus == 'past' && completedActivities.length == 0 && pendingActivities.length == 0 ? <EmptyPastWarning /> : null }
-      { timeStatus == 'future' ? <EmptyPastWarning /> : null }
-      <ViewHighlighter animated={false} active={tutorialState == tutorialStates.ActivitiesInTodayScreen}>
-        <ActivityList data={pendingActivities} date={date} />
-      </ViewHighlighter>
-      <TaskList date={date} show='pending' />
-      { weekliesSelector=='unchecked' || 
-          tutorialState >= tutorialStates.ChooseWeekliesIntroduction 
-          && tutorialState < tutorialStates.Finished
-          && weekliesSelector!='checked' ?
-      <ViewHighlighter animated={false} active={tutorialState == tutorialStates.ChooseWeekliesIntroduction}>
-        <SelectWeekliesListItem date={date} checked={false} navigation={navigation} disabled={weekliesSelector=='hidden'}/>
-      </ViewHighlighter>
-      : <></> }
-      { tasksSelector == 'unchecked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
-      <ViewHighlighter animated={false} active={tutorialState == tutorialStates.OneTimeTasksIntroduction}>
-        <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
-      </ViewHighlighter>
-        : <></> 
-      }
-      <ActivityList data={completedActivities} date={date} />
-      <TaskList date={date} show='completed' />
-      { weekliesSelector == 'checked'?
-      <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
-      : <></> }
-      { weekliesSelector == 'allcompleted'?
-      <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color='grey'/>
-      : <></> }
-      { tasksSelector == 'checked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
-        <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
+    <Animated.View style={{flex: 1}} layout={Layout.delay(100)}>
+      <ScrollView style={{flex: 1}}>
+        { timeStatus == 'past' && completedActivities.length == 0 && pendingActivities.length == 0 ? <EmptyPastWarning /> : null }
+        { timeStatus == 'future' ? <EmptyPastWarning /> : null }
+        <ViewHighlighter animated={false} active={tutorialState == tutorialStates.ActivitiesInTodayScreen}>
+          <ActivityList data={pendingActivities} date={date} />
+        </ViewHighlighter>
+        <TaskList date={date} show='pending' />
+        { weekliesSelector=='unchecked' || 
+            tutorialState >= tutorialStates.ChooseWeekliesIntroduction 
+            && tutorialState < tutorialStates.Finished
+            && weekliesSelector!='checked' ?
+        <ViewHighlighter animated={false} active={tutorialState == tutorialStates.ChooseWeekliesIntroduction}>
+          <SelectWeekliesListItem date={date} checked={false} navigation={navigation} disabled={weekliesSelector=='hidden'}/>
+        </ViewHighlighter>
         : <></> }
-      <BottomScreenPadding />  
-    </ScrollView>
+        { tasksSelector == 'unchecked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
+        <ViewHighlighter animated={false} active={tutorialState == tutorialStates.OneTimeTasksIntroduction}>
+          <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
+        </ViewHighlighter>
+          : <></> 
+        }
+        <ActivityList data={completedActivities} date={date} />
+        <TaskList date={date} show='completed' />
+        { weekliesSelector == 'checked'?
+        <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
+        : <></> }
+        { weekliesSelector == 'allcompleted'?
+        <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color='grey'/>
+        : <></> }
+        { tasksSelector == 'checked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
+          <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
+          : <></> }
+        <BottomScreenPadding />  
+      </ScrollView>
+    </Animated.View>
   );
 }
 
