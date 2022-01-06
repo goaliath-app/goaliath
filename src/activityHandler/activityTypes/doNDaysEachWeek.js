@@ -99,7 +99,7 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
 }
 
 function getFrequencyString(state, activityId, t, date=null){
-    const activity = selectActivityByIdAndDate(state, activityId, date)
+  const activity = selectActivityByIdAndDate(state, activityId, date)
 
   const dailyGoal = dailyGoals[activity.params.dailyGoal.type]
   
@@ -108,7 +108,7 @@ function getFrequencyString(state, activityId, t, date=null){
     dailyGoal.getFrequencyString(state, activityId, t) : '<NO DAILYGOAL STRING>'
   )
 
-  const days = 2
+  const days = activity.params.days
 
   return(
     dailyGoalString + ' ' +

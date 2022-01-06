@@ -3,7 +3,7 @@ const es= {
     activityListItem: {
         description: {
           todayTimeGoal: 'Objetivo: {{expressionValue}} {{expressionUnit}}',
-          weekTimeGoal: 'Esta semana: dedicado {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
+          weekTimeGoal: 'Esta semana: {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
         },
         longPressMenu: {
           edit: 'Editar actividad',
@@ -308,11 +308,12 @@ const es= {
         // frequencyStrings of dailygoals get prepended to the 
         // frequencyStrings of their corresponding activityType
         doNSeconds: {
-          frequencyString: '{{value}} {{unit}}'
+          frequencyString: '{{value}} {{unit}}',
+          listItemDescription: '{{currentTimeValue}} de {{timeGoalValue}} {{unit}}',
         },
         doNTimes: {
           frequencyString: '{{repetitions}} veces',
-          listItemDescription: '{{todayReps}} de {{repsGoal}} reps hechas hoy',
+          listItemDescription: '{{todayReps}} de {{repsGoal}} repeticiones',
         },
         doOneTime: {
           frequencyString: 'Hacer',
@@ -335,7 +336,10 @@ const es= {
       time: {
         hours: 'horas',
         minutes: 'minutos',
-        seconds: 'segundos'
+        seconds: 'segundos',
+        hour: 'hora',
+        minute: 'minuto',
+        second: 'segundo',
       },
       monthNames: {
         january: 'Enero',
