@@ -33,7 +33,7 @@ const GoalListItem = ({ name, active, id }) => {
   const dispatch = useDispatch();
 
   const amIHighlighted = (
-    tutorialState >= tutorialStates.AfterFirstGoalCreation 
+    tutorialState >= tutorialStates.GoalScreenIntroduction 
     && tutorialState < tutorialStates.ActivitiesInTodayScreen 
     && id == 0
   )
@@ -167,7 +167,7 @@ const GoalsScreen = ({ navigation, goals }) => {
         bubbleStyle={{height: 80}}
       />
       : null}
-      { tutorialState >= tutorialStates.AfterFirstGoalCreation && tutorialState < tutorialStates.ActivitiesInTodayScreen ?
+      { tutorialState >= tutorialStates.GoalScreenIntroduction && tutorialState < tutorialStates.ActivitiesInTodayScreen ?
       <SpeechBubble
         speeches={[
           {id: 0, text: t('tutorial.AfterFirstGoalCreation.1')},
