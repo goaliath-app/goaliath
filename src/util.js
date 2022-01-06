@@ -58,12 +58,26 @@ export function getPreferedExpression(duration, t){
   }
   const unit = getPreferedExpressionUnit(duration)
   const value = roundValue(duration.as(unit))
-  const unitStrings = {
+  
+  const pluralUnitStrings = {
     'seconds': t('units.time.seconds'),
     'minutes': t('units.time.minutes'),
     'hours': t('units.time.hours')
   }
-  return {value: value, unit, localeUnit: unitStrings[unit]}
+  const singularUnitStrings = {
+    'seconds': t('units.time.second'),
+    'minutes': t('units.time.minute'),
+    'hours': t('units.time.hour')
+  }
+  const localeUnit = value == 1 ? singularUnitStrings[unit] : pluralUnitStrings[unit]
+
+  return {value: value, unit, localeUnit}
+}
+
+export function secondsToUnit(seconds, unit){
+  const duration = Duration.fromObject({seconds}).shiftTo('hours', 'minutes', 'seconds')
+  const value = roundValue(duration.as(unit))
+  return value
 }
 
 export function newEntry(activity){

@@ -3,7 +3,7 @@ const en = {
     activityListItem: {
       description: {
         todayTimeGoal: 'Goal: {{expressionValue}} {{expressionUnit}}',
-        weekTimeGoal: 'This week: Done {{weeklyTimeNumber}} of {{expressionValue}} {{expressionUnit}}'
+        weekTimeGoal: 'This week: {{weeklyTimeNumber}} of {{expressionValue}} {{expressionUnit}}'
       },
       longPressMenu: {
         edit: 'Edit activity',
@@ -321,11 +321,12 @@ const en = {
         // frequencyStrings of dailygoals get prepended to the 
         // frequencyStrings of their corresponding activityType
         doNSeconds: {
-          frequencyString: '{{value}} {{unit}}'
+          frequencyString: '{{value}} {{unit}}',
+          listItemDescription: '{{currentTimeValue}} of {{timeGoalValue}} {{unit}}'
         },
         doNTimes: {
           frequencyString: '{{repetitions}} times',
-          listItemDescription: '{{todayReps}} of {{repsGoal}} reps done today',
+          listItemDescription: '{{todayReps}} of {{repsGoal}} repetitions',
         },
         doOneTime: {
           frequencyString: 'Do',
@@ -348,7 +349,10 @@ const en = {
       time: {
         hours: 'hours',
         minutes: 'minutes',
-        seconds: 'seconds'
+        seconds: 'seconds',
+        hour: 'hour',
+        minute: 'minute',
+        second: 'second',
       },
       monthNames: {
         january: 'January',
