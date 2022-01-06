@@ -9,7 +9,7 @@ import { persistStore } from 'redux-persist'
 import { StatusBar } from 'expo-status-bar'
 import i18n from './src/i18n'
 import { useTranslation } from 'react-i18next'
-import { store, finishOnboarding as finishOnboardingAction } from './src/redux'
+import { store, setTutorialState } from './src/redux'
 import { 
   TodayScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, 
   ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen,
@@ -25,7 +25,7 @@ import { StatusBarColor } from './src/styles/Colors';
 import { generateDummyData } from './src/redux/Thunks'
 import Notifications from './src/notifications'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
+import tutorialStates from './src/tutorialStates'
 
 Notifications.initNotifications()
 
@@ -65,16 +65,16 @@ export default function App() {
   //   store.dispatch(generateDummyData())
   // }, [])
 
-  const [newUser, setNewUser] = React.useState()
+  const [ newUser, setNewUser ] = React.useState()
   const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
 
   function finishOnboarding(){
-    store.dispatch(finishOnboardingAction())
+    store.dispatch(setTutorialState(tutorialStates.TodayScreenIntroduction))
     setNewUser(false)
   }
 
   function onStoreRehydration(){
-    setNewUser(store.getState().settings.newUser)
+    setNewUser(store.getState().settings.tutorialState == tutorialStates.NewUser)
     i18n.changeLanguage(store.getState().settings.language)
   }
 

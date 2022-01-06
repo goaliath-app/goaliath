@@ -6,9 +6,8 @@ import tutorialStates from '../tutorialStates'
 
 const initialState = {
     dayStartHour: DateTime.fromObject({hour:0, minute:0}).toISO(),
-    newUser: true,
     language: Localization.locale,
-    tutorialState: tutorialStates.TodayScreenIntroduction,
+    tutorialState: tutorialStates.NewUser,
 }
 
 const settingsSlice = createSlice({
@@ -25,9 +24,6 @@ const settingsSlice = createSlice({
             const { newState } = action.payload
             return { ...initialState, ...newState }
         },
-        finishOnboarding(state, action){
-            state.newUser = false
-        },
         setLanguage(state, action) {
             state.language = action.payload
         }
@@ -35,7 +31,7 @@ const settingsSlice = createSlice({
 })
 
 export const { 
-    setDayStartHour, setState, finishOnboarding, setLanguage, setTutorialState 
+    setDayStartHour, setState, setLanguage, setTutorialState 
 } = settingsSlice.actions
 
 export function selectTutorialState(state){

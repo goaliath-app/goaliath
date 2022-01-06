@@ -43,7 +43,7 @@ export {
 } from './Thunks'
 
 export { 
-    setDayStartHour, finishOnboarding, setLanguage, setTutorialState,
+    setDayStartHour, setLanguage, setTutorialState,
     selectTutorialState,
 } from './SettingsSlice'
 
