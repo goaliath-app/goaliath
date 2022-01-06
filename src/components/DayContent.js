@@ -4,25 +4,25 @@ import { useSelector, useDispatch } from 'react-redux';
 import { View, ScrollView } from 'react-native'
 import { Card, Title, Paragraph } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native';
-import { ActivityList, BottomScreenPadding } from '../components'
-import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog } from '../components';
+import { ActivityList, BottomScreenPadding, ViewHighlighter } from '../components'
+import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog, InfoCard } from '../components';
 import { 
-  areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay 
+  areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay, selectTutorialState
 } from '../redux'
 import { areThereWeeklyActivities, areTherePendingWeeklyActivities } from '../activityHandler'
 import { useTranslation } from 'react-i18next'
 import { getToday } from '../util'
+import tutorialStates from '../tutorialStates'
+import Animated, { Layout } from 'react-native-reanimated'
 
 const FutureWarning = () => {
   const { t, i18n } = useTranslation()
 
   return (
-      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
-        <Card.Content>
-          <Title>{t("dayContent.futureWarningTitle")}</Title>
-          <Paragraph>{t("dayContent.futureWarningSubtitle")}</Paragraph>
-        </Card.Content>
-      </Card>
+      <InfoCard 
+        title={t("dayContent.futureWarningTitle")}
+        paragraph={t("dayContent.futureWarningSubtitle")} 
+      />
   )
 }
 
@@ -30,12 +30,10 @@ const EmptyPastWarning = () => {
   const { t, i18n } = useTranslation()
 
   return (
-      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
-        <Card.Content>
-          <Title>{t("dayContent.emptyPastWarningTitle")}</Title>
-          <Paragraph>{t("dayContent.emptyPastWarningSubtitle")}</Paragraph>
-        </Card.Content>
-      </Card>
+    <InfoCard 
+      title={t("dayContent.emptyPastWarningTitle")}
+      paragraph={t("dayContent.emptyPastWarningSubtitle")} 
+    />
   )
 }
 
@@ -53,7 +51,8 @@ const DayContent = ({ date }) => {
   const tasksAdded = useSelector(state => areTasksAdded(state, date))
   const areWeekliesSelectedTodayResult = useSelector(areWeekliesSelectedToday)
   const areTherePendingWeeklyActivitiesResult = useSelector((state) => areTherePendingWeeklyActivities(state, date))
-  const areThereWeeklyActivitiesResult = useSelector(areThereWeeklyActivities) 
+  const areThereWeeklyActivitiesResult = useSelector(areThereWeeklyActivities)
+  const tutorialState = useSelector(selectTutorialState)
 
   // compute values
   const timeStatus = (
@@ -80,31 +79,42 @@ const DayContent = ({ date }) => {
   const pendingActivities   = entryList.filter(entry => !entry.archived && !entry.completed)
 
   return (
-    <ScrollView style={{flex: 1}}>
-      { timeStatus == 'past' && completedActivities.length == 0 && pendingActivities.length == 0 ? <EmptyPastWarning /> : null }
-      { timeStatus == 'future' ? <EmptyPastWarning /> : null }
-      <ActivityList data={pendingActivities} date={date} />
-      <TaskList date={date} show='pending' />
-      { weekliesSelector=='unchecked' ?
-      <SelectWeekliesListItem date={date} checked={false} navigation={navigation}/>
-      : <></> }
-      { tasksSelector == 'unchecked' ?
-        <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
-        : <></> 
-      }
-      <ActivityList data={completedActivities} date={date} />
-      <TaskList date={date} show='completed' />
-      { weekliesSelector == 'checked' ?
-      <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
-      : <></> }
-      { weekliesSelector == 'allcompleted' ?
-      <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color='grey'/>
-      : <></> }
-      { tasksSelector == 'checked' ?
-        <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
+    <Animated.View style={{flex: 1}} layout={Layout.delay(100)}>
+      <ScrollView style={{flex: 1}}>
+        { timeStatus == 'past' && completedActivities.length == 0 && pendingActivities.length == 0 ? <EmptyPastWarning /> : null }
+        { timeStatus == 'future' ? <EmptyPastWarning /> : null }
+        <ViewHighlighter animated={false} active={tutorialState == tutorialStates.ActivitiesInTodayScreen}>
+          <ActivityList data={pendingActivities} date={date} />
+        </ViewHighlighter>
+        <TaskList date={date} show='pending' />
+        { weekliesSelector=='unchecked' || 
+            tutorialState >= tutorialStates.ChooseWeekliesIntroduction 
+            && tutorialState < tutorialStates.Finished
+            && weekliesSelector!='checked' ?
+        <ViewHighlighter animated={false} active={tutorialState == tutorialStates.ChooseWeekliesIntroduction}>
+          <SelectWeekliesListItem date={date} checked={false} navigation={navigation} disabled={weekliesSelector=='hidden'}/>
+        </ViewHighlighter>
         : <></> }
-      <BottomScreenPadding />  
-    </ScrollView>
+        { tasksSelector == 'unchecked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
+        <ViewHighlighter animated={false} active={tutorialState == tutorialStates.OneTimeTasksIntroduction}>
+          <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
+        </ViewHighlighter>
+          : <></> 
+        }
+        <ActivityList data={completedActivities} date={date} />
+        <TaskList date={date} show='completed' />
+        { weekliesSelector == 'checked'?
+        <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
+        : <></> }
+        { weekliesSelector == 'allcompleted'?
+        <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color='grey'/>
+        : <></> }
+        { tasksSelector == 'checked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
+          <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
+          : <></> }
+        <BottomScreenPadding />  
+      </ScrollView>
+    </Animated.View>
   );
 }
 

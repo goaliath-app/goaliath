@@ -1,6 +1,6 @@
 export const ActivityListItemColors = {
     currentActivityBackground: '#E6FBF9',
-    listItemBackground: 'white',
+    listItemBackground: 'transparent',
     progressBarFirstColor: 'midnightblue',
     progressBarSecondColor: 'dodgerblue',
     progressBarBackground: 'mistyrose',

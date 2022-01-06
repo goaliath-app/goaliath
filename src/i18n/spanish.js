@@ -188,7 +188,8 @@ const es= {
         title: '¿Archivar meta?',
         body: "Podrás ver la meta y restaurarla más adelante desde el menú de la pantalla de metas.",
       },
-      infoContent: "Esta meta no tiene ninguna actividad todavía.\n\nUna actividad es una tarea recurrente que puede tener o no un requisito de tiempo.\n\nPara cada meta deberías crear las actividades que vayan a ayudarte a completar la meta si las realizas con constancia.\n\nDiseñar tus actividades de esta forma te permitirán irte a la cama pensando: \"Hoy he hecho todo lo que tenía que hacer\".",
+      infoTitle: "Esta meta está vacía",
+      infoContent: "Puedes añadir nuevas actividades pulsando el icono +",
       archivedWarning: "Esta meta está archivada",
       restoreButton: "RESTAURAR META",
       longPressMenu: {
@@ -201,7 +202,8 @@ const es= {
     goals: {
         headerTitle: 'Metas',
         goalDescription: '{{activitiesNumber}} actividades activas',
-        infoContent: "No tienes metas todavía.\n\nLas metas son la base de Goaliath, son las cosas que quieres conseguir, dedicar tiempo o trabajar en ellas.\n\nPuedes crear una nueva meta pulsando el icono +.",
+        infoTitle: 'No hay metas',
+        infoContent: "Crea una nueva meta pulsando el icono +",
         menu: {
           viewArchived: "View archived goals",
         },
@@ -276,25 +278,6 @@ const es= {
       timeLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}',
       checkCompleted: 'Hecho: {{weeklyTimes}} días completado',
       timedCompleted: 'Hecho: {{unit}} {{expression}} dedicada/os',
-    },
-
-    onboarding: {
-      slideOne: {
-        title: 'Bienvenido',
-        text: 'Goaliath es una herramienta para gestionar tu tiempo cuyo objetivo es hacerte sentir orgulloso de tus acciones de cada día.',
-      },
-      slideTwo: {
-        title: 'Cómo funciona',
-        text: 'Introduces en Goaliath tus metas. Después añades a cada meta las acciones que quieres realizar para cumplirla. Goaliath te recordará lo que quieres hacer cada día.',
-      },
-      slideThree: {
-        title: '¡Hay más!',
-        text: 'El método de Goaliath tiene más herramientas que pueden ayudarte. Te recomendamos echar un vistazo a la guía rápida en ',
-        linkText: 'nuestra página web.',
-        linkURL: 'https://goaliath-app.github.io/es/guide'
-      },
-      next: 'Siguiente',
-      begin: 'Vamos'
     },
 
     activityHandler: {
@@ -435,6 +418,66 @@ const es= {
         title: 'Has completado la actividad: ',
         body: '{{activityName}}'
       }
+    },
+
+    onboarding: {
+      1: 'Hola, ¡soy Goaliath!',
+      2: 'He sido creado para ayudarte a alcanzar tus metas a través del trabajo diario.',
+      3: 'Mola, ¿eh? ¡Empecemos!',
+      skip: 'Saltar tutorial'
+    },
+
+    tutorial: {
+      TodayScreenIntroduction: {
+        1: '¡Bienvenido! Cada día te recordaré aquí qué debes hacer para avanzar hacia tus metas.',
+        2: 'Vayamos a la lista de metas.'
+      },
+      ReturnToGoalsScreen: "Vuelve a la lista de metas para continuar.",
+      GoalsScreenIntroduction: {
+        1: 'Las metas son aquellas cosas importantes que te hacen sentir bien cuando les dedicas tiempo.',
+        2: 'Y también las que te hacen sentir mal cuando las dejas de lado.',
+        3: 'Cosas como "Ponerme en forma", "Aprender inglés" o "Estar con mi familia" son buenos ejemplos de metas.'
+      },
+      FirstGoalCreation: {
+        1: 'Vamos a crear tu primera meta pulsando el icono +.',
+        2: 'Puede que tu motivación parezca algo obvio, pero en los días difíciles te vendrá bien leerla.'
+      },
+      AfterFirstGoalCreation: {
+        1: '¡Aquí está tu primera meta! Pulsa en ella para ver sus detalles.'
+      },
+      GoalScreenIntroduction: {
+        2: 'Aquí definirás las acciones que tomarás para avanzar hacia tu objetivo.',
+        3: 'Estas acciones serán actividades que repetirás a lo largo del tiempo.',
+        4: 'Si tu objetivo es "Aprender inglés", buenos ejemplos de actividades son "Repasar vocabulario una vez al día" y "Conversar 1 hora a la semana".',
+        5: 'De este modo te comprometes a dedicar tiempo regularmente para alcanzar tu meta.',
+        6: 'Y eso es lo único que necesitas para progresar.',
+        7: 'Ahora voy a crear una actividad para ti.',
+        8: '¡¡Tachán!!',
+        9: 'Puedes añadir tus propias actividades usando el icono +'
+      },
+      ActivitiesInTodayScreen: {
+        0: 'Cuando estés listo, vuelve a la sección de hoy.',
+        1: 'Vuelve a la sección de hoy.',
+        2: 'Aquí puedes ver lo que quieres hacer hoy, de acuerdo con tu plan.',
+        3: 'Completa estas actividades y estarás un paso más cerca de tus metas.',
+        4: 'Incluso si sólo haces algunas de ellas, estarás avanzando hacia delante.'
+      },
+      ChooseWeekliesIntroduction: {
+        1: 'Si creas actividades que no se realizan un día concreto de la semana, podrás seleccionarlas aquí y aparecerán en la lista.',
+        2: 'Esta opción desaparecerá si no hay ninguna de esas actividades.',
+      },
+      OneTimeTasksIntroduction: {
+        1: 'También puedes crear recordatorios de tareas, que solo aparecerán hoy.'
+      },
+      TutorialEnding: {
+        1: '¡Es hora de que explores el resto de la aplicación por tu cuenta!',
+        2: 'Te recomiendo que vayas a la lista de metas y crees todas tus metas importantes.',
+        3: 'Después crea en cada una las actividades necesarias para progresar.',
+        4: 'Si no sabes cuáles son esas actividades, solo intenta dedicar 10 minutos diarios a tu meta.',
+        5: 'Incluso si no sabes qué hacer durante ese tiempo, tomar acción te ayudará a averiguarlo.',
+        6: 'Seguiré por aquí para darte algún que otro consejo. ¡Buena suerte!'
+      }
+      
     }
   }
 }

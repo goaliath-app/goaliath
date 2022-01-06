@@ -8,17 +8,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { 
   Header, ThreeDotsMenu, DeleteGoalDialog, InfoCard, DeleteActivityDialog, 
-  MoveToGoalDialog, BottomScreenPadding 
+  MoveToGoalDialog, BottomScreenPadding, SpeechBubble, IconHighlighter,
 } from '../components';
-import { selectAllActivities, selectGoalById, toggleActivity, restoreGoal } from '../redux'
-import { hasSomethingToShow } from '../util'
+import { selectAllActivities, selectGoalById, toggleActivity, restoreGoal, 
+  setActivity, selectTutorialState, setTutorialState } from '../redux'
+import { hasSomethingToShow, isBetween } from '../util'
 import { GeneralColor, GoalColor, HeaderColor } from '../styles/Colors';
 import { getFrequencyString } from '../activityHandler'
+import tutorialStates from '../tutorialStates'
 
 const Activity = ({ name, active, id, activity, goal }) => {
   const navigation = useNavigation();
   const { t, i18 } = useTranslation();
   const dispatch = useDispatch();
+
+  const tutorialState = useSelector(selectTutorialState)
 
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
   const [ isDeleteDialogVisible, setDeleteDialogVisible ] = React.useState(false)
@@ -31,12 +35,14 @@ const Activity = ({ name, active, id, activity, goal }) => {
       <List.Item
         style={{paddingTop: 5}}
         onPress={() => navigation.navigate('ActivityDetail', { activityId: id })}
-        onLongPress={() => setLongPressDialogVisible(true)}
+        onLongPress={
+          tutorialState == tutorialStates.Finished ? () => setLongPressDialogVisible(true) : () => {}
+        }
         title={name}
         titleNumberOfLines={2}
         right={() => (
           <Switch
-            disabled={goal.archived}
+            disabled={ goal.archived || tutorialState != tutorialStates.Finished }
             onValueChange={() => dispatch(toggleActivity(id))} 
             value={active}
           />
@@ -92,17 +98,17 @@ const ArchivedWarning = ({ goal }) => {
 
   return (
     goal.archived?
-      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
-        <Card.Content>
-          <Title>{t("goal.archivedWarning")}</Title>
-        </Card.Content>
-        <Card.Actions style={{alignSelf: 'center'}}>
-          <Button onPress={ () => {
+      <InfoCard
+        title={t("goal.archivedWarning")}
+        extraContent={
+          <Button style={{marginTop: 10}} onPress={ () => {
             dispatch(restoreGoal(goal.id))
             navigation.goBack()
           }}>{t("goal.restoreButton")}</Button>
-        </Card.Actions>
-      </Card>
+        }
+        style={{alignItems: 'center'}}
+        />
+
     : null
   )
 }
@@ -114,6 +120,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
 
   const dispatch = useDispatch()
 
+  const tutorialState = useSelector(selectTutorialState)
 
   const { t, i18n } = useTranslation()
 
@@ -132,23 +139,37 @@ const GoalScreen = ({ activities, goal, navigation }) => {
 
   const headerButtons = (
     goal.archived? null :
-    <>
-      <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
-          navigation.navigate('ActivityForm', { goalId: goal.id })
-        }}
-      />
-      <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
-          setMenuVisible(false)
-          navigation.navigate('GoalForm', { id: goal.id } )
-        }}
-      />
-      <ThreeDotsMenu 
-        menuItems={menuItems} 
-        openMenu= {() => setMenuVisible(true)} 
-        closeMenu= {() => setMenuVisible(false)} 
-        visible={menuVisible} 
-      />
-    </>
+      <>
+        { tutorialState == tutorialStates.Finished ?
+          <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
+              setMenuVisible(false)
+              navigation.navigate('GoalForm', { id: goal.id } )
+            }}
+          />
+          :
+          <Appbar.Action icon='pencil' color={HeaderColor.icon} style={{opacity: 0.5}} />
+        }
+
+        { tutorialState <= tutorialStates.SampleActivityCreated ? 
+          <Appbar.Action icon='plus' color={HeaderColor.icon} style={{opacity: 0.5}} />
+          : 
+          <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
+            navigation.navigate('ActivityForm', { goalId: goal.id })
+          }}
+        />
+        }
+        
+        { tutorialState == tutorialStates.Finished ?
+          <ThreeDotsMenu 
+            menuItems={menuItems} 
+            openMenu= {() => setMenuVisible(true)} 
+            closeMenu= {() => setMenuVisible(false)} 
+            visible={menuVisible} 
+          />
+          :
+          <Appbar.Action icon='dots-vertical' color={HeaderColor.icon} style={{opacity: 0.5}} />
+        }
+      </>
   )
 
   const renderItem = ({ item }) => (
@@ -160,18 +181,82 @@ const GoalScreen = ({ activities, goal, navigation }) => {
       goal={goal} />
   )
 
+  const headerIcon = (
+    tutorialState >= tutorialStates.ActivitiesInTodayScreen
+    && tutorialState < tutorialStates.Finished ?
+      'highlightedBack'
+    : 'back'
+  )
+
   return (
     <>
       <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
-        <Header title={goal.name} left='back' navigation={navigation} buttons={headerButtons}/>
+        <Header title={goal.name} left={headerIcon} navigation={navigation} buttons={headerButtons}/>
         {/* ArchivedWarning only shows if the goal is archived */}
         <ArchivedWarning goal={goal}/>
         <View style={{ flex: 1 }}>
           <View style={{flexShrink: 1}}>
+            { tutorialState == tutorialStates.GoalScreenIntroduction ?
+              <SpeechBubble
+                speeches={[
+                  {id:0, text: t('tutorial.GoalScreenIntroduction.2')},
+                  {id:1, text: t('tutorial.GoalScreenIntroduction.3')},
+                  {id:2, text: t('tutorial.GoalScreenIntroduction.4')},
+                  {id:3, text: t('tutorial.GoalScreenIntroduction.5')},
+                  {id:4, text: t('tutorial.GoalScreenIntroduction.6')},
+                  {id:5, text: t('tutorial.GoalScreenIntroduction.7'),
+                    onNextPress: () => {
+                      dispatch(setActivity({
+                        archived: false,
+                        active: true,
+                        name: `Work on ${goal.name}`, 
+                        goalId: goal.id, 
+                        type: 'doFixedDays', 
+                        params: { 
+                          daysOfWeek: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true },
+                          dailyGoal: {
+                            type: 'doNSeconds',
+                            params: { 
+                              seconds: 600
+                            }
+                          }
+                        }
+                      }))
+                      dispatch(setTutorialState(tutorialStates.SampleActivityCreated))
+                    },
+                  },
+                ]}
+                bubbleStyle={{height: 80}}
+              />
+              : null
+            }
+            {
+              isBetween( tutorialStates.SampleActivityCreated, tutorialState, tutorialStates.AddNewActivityHighlight) ?
+              <SpeechBubble
+                speeches={[
+                  {id:6, text: t('tutorial.GoalScreenIntroduction.8')},
+                  {id:7, text: t('tutorial.GoalScreenIntroduction.9'),
+                    onTextEnd: () => dispatch(setTutorialState(tutorialStates.AddNewActivityHighlight)),
+                    onNextPress: () => dispatch(setTutorialState(tutorialStates.ActivitiesInTodayScreen))},
+                ]}
+                bubbleStyle={{height: 80}}
+              /> : null
+            }
+            {
+              tutorialState >= tutorialStates.ActivitiesInTodayScreen
+              && tutorialState < tutorialStates.Finished ?
+              <SpeechBubble
+                speeches={[
+                  {id:7, text: t('tutorial.ActivitiesInTodayScreen.0')},
+                ]}
+                bubbleStyle={{height: 80}}
+              /> : null
+            }
             {hasSomethingToShow(activities)?
               <FlatList data={activities} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
               :
-              <InfoCard content={t('goal.infoContent')} />
+              tutorialState==tutorialStates.Finished && !goal.archived?
+                <InfoCard title={t('goal.infoTitle')} paragraph={t('goal.infoContent')} /> : null
             } 
           </View>
           {goal.motivation?

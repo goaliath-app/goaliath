@@ -80,7 +80,7 @@ const ArchivedActivitiesScreen = ({ route, navigation }) => {
         {thisGoalArchivedActivities.length > 0?
           <FlatList data={thisGoalArchivedActivities} renderItem={renderItem} />
           :
-          <InfoCard content={t("archivedActivitiesScreen.empty")} />
+          <InfoCard title={t("archivedActivitiesScreen.empty")} />
         } 
       </View>
     </View>
