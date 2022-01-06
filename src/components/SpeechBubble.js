@@ -11,7 +11,7 @@ import Animated, {
   useAnimatedGestureHandler,
   runOnJS,
   withDelay,
-  cancelAnimation
+  FadeOut,
 } from 'react-native-reanimated';
 
 import {
@@ -151,7 +151,7 @@ const SpeechBubble = ({
 
   return (
     <TapGestureHandler onGestureEvent={onPressHandler} maxDurationMs={10000}>
-      <Animated.View style={[styles.speechBubble, bubbleAnimatedStyle, bubbleStyle]}>
+      <Animated.View style={[styles.speechBubble, bubbleAnimatedStyle, bubbleStyle]} exiting={FadeOut}>
         <AnimatedTextComponent {...configProps} speech={speeches[speechIndex]} 
           onAnimationEnd={onTextEnd} bypassAnimation={bypassAnimation} />
         <Animated.Image style={bounceStyle} source={touchIconSrc} />
