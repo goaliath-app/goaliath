@@ -127,7 +127,7 @@ const en = {
         noFrequency: 'Please select a frequency'
       },
       frequencyTitle: 'Frequency',
-      frequencyLabel: 'Select activity type',
+      frequencyLabel: 'Select frequency',
       switch: {
         multipleTimes: 'Repetitions Goal',
         repetitionsGoal: 'Repetitions Goal',
@@ -166,7 +166,7 @@ const en = {
     goalForm: {
       nameError: "Enter a name",
       descriptionHelpDialogTitle: "Motivation",
-      descriptionHelpDialog: "Your answer will be visible in the goal's screen. Use it to remember and mantain your motivation over time.",
+      descriptionHelpDialog: "Your answer will be visible in the goal's details. Use it to remember and mantain your motivation over time.",
       nameAlert: "Please enter a name for your goal",
       headerTitle: 'New goal',
       goalNameSubheading: 'What do you want to achieve?',
@@ -254,7 +254,7 @@ const en = {
       selectTasksDescription: 'Tap here to add',
       oneTimeTaskDescription: 'One time task',
       dayChangeDialogTitle: "A new day begins!",
-      dayChangeDialogBody: "The day has changed to {{date}} while the app was open.\n\nIf you need to be able to do a day's activities until a later hour, you can change the Day Start Hour in the settings screen.",
+      dayChangeDialogBody: "The day has changed to {{date}} while the app was open.\n\nIf you need to be able to do a day's activities until a later hour, you can change the Day Start Hour in the settings.",
       dayChangeDialogConfirmLabel: "Go to new day",
     },
 
