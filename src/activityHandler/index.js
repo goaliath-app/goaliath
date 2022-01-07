@@ -139,7 +139,7 @@ export function getFrequencyString(state, activityId, t, date=null){
   const activityType = activityTypes[activity.type]
 
   return activityType.getFrequencyString?
-  activityType.getFrequencyString(state, activityId, t)
+  activityType.getFrequencyString(state, activityId, t, date)
     :
     'ERROR: no frequency string'
 }

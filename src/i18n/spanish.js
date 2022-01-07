@@ -275,6 +275,7 @@ const es= {
     weeklyActivities: {
       headerTitle: 'Selecciona las actividades semanales',
       daysLeft: 'Quedan {{daysLeft}} días',
+      daysLeftSingular: 'Queda {{daysLeft}} día',
       timeLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}',
       checkCompleted: 'Hecho: {{weeklyTimes}} días completado',
       timedCompleted: 'Hecho: {{unit}} {{expression}} dedicada/os',
@@ -300,6 +301,7 @@ const es= {
         },
         doNDaysEachWeek: {
           frequencyString: '{{days}} días a la semana',
+          frequencyStringSingular: '{{days}} día a la semana',
           completed: 'Completada',
           daysLeft: 'Quedan {{daysLeft}} días'
         }
