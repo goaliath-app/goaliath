@@ -237,7 +237,10 @@ const en = {
         english: 'English',
         spanish: 'Spanish'
       },
-      languageLocale: 'English'
+      languageLocale: 'English',
+      dailyNotificationHour: 'Daily notification hour',
+      dailyNotificationHourDescription: 'At this time you\'ll receive a reminder to use Goaliath',
+
     },
     
     today: {
@@ -427,6 +430,10 @@ const en = {
     },
 
     notifications: {
+      reminder: {
+        title: 'Let\'s work on your goals',
+        body: 'Tap to open Goaliath',
+      },
       timer: {
         title: 'You are working on: ',
         body: '{{activityName}}'

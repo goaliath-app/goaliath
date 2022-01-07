@@ -42,7 +42,7 @@ export {
     generateDummyData, updateLogs, importState, archiveOrDeleteEntry, createOrUnarchiveEntry
 } from './Thunks'
 
-export { setDayStartHour, finishOnboarding, setLanguage } from './SettingsSlice'
+export { setDayStartHour, finishOnboarding, setLanguage, setDailyNotificationHour } from './SettingsSlice'
 
 export { 
     selectAllActiveActivities, getWeeklyStats, getTodaySelector,

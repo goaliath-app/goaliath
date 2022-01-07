@@ -33,7 +33,7 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const persistor = persistStore(store)
-// persistor.purge()
+//persistor.purge()
 
 /* The three stacks below are inside the BottomTabnavigator.
    If we want to navigate to a new screen without hiding the bottom navigation

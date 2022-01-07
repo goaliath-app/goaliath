@@ -12,6 +12,21 @@ export function initNotifications(){
   });
 }
 
+export function reminderScheduleNotification( dateTime, t){
+  Notifications.scheduleNotificationAsync({
+    identifier: 'reminder',
+    content: {
+      title: t('notifications.reminder.title'),
+      body: t('notifications.reminder.body')
+    },
+    trigger: {
+      hour: dateTime.hour,
+      minute: dateTime.minute,
+      repeats: true
+    },
+  })
+}
+
 function completeScheduleNotification(activity, activityId, secondsRemaining, t){
   Notifications.scheduleNotificationAsync({
     identifier: 'complete' + activityId,
@@ -52,4 +67,4 @@ export function timerStoped(activityId){
   Notifications.cancelScheduledNotificationAsync('complete' + activityId)
 }
 
-export default { initNotifications, timerStarted, timerStoped}
+export default { initNotifications, reminderScheduleNotification, timerStarted, timerStoped}
