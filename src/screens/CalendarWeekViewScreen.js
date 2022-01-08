@@ -116,7 +116,7 @@ const CalendarWeekViewScreen = ({ route }) => {
       <ScrollView >
         {/*WeekViewComponent*/}
         <View style={{ paddingVertical: 15, paddingHorizontal: 20 }}>
-          <CalendarWeekItem date={date} showDayNumbers={true} onDayPress={dayDate => navigation.navigate('CalendarDayView', {date: dayDate.toISO()})}/>
+          <CalendarWeekItem animate='day' date={date} showDayNumbers={true} onDayPress={dayDate => navigation.navigate('CalendarDayView', {date: dayDate.toISO()})}/>
         </View>
 
         {/*Options selectors*/}
