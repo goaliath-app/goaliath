@@ -30,7 +30,10 @@ const ActivityWeekView = ({ activityId, date }) => {
       </View>
       <View style={{ paddingHorizontal: 20 }}>
         <CalendarWeekItem  
-          activityId={activityId} date={date} showDayNumbers={false} showWeekProgress={true} softTodayHighlight={true} onDayPress={dayDate => navigation.navigate('ActivityDetail', {activityId, date: dayDate.toISO()})}/>
+          activityId={activityId} date={date} showDayNumbers={false} 
+          showWeekProgress={true} softTodayHighlight={true} 
+          onDayPress={dayDate => navigation.navigate('ActivityDetail', {activityId, date: dayDate.toISO()})}
+          animate='day' />
       </View>
     </View>
   )
