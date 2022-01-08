@@ -27,6 +27,10 @@ export function reminderScheduleNotification( dateTime, t){
   })
 }
 
+export function cancelReminderScheduleNotification(){
+  Notifications.cancelScheduledNotificationAsync('reminder')
+}
+
 function completeScheduleNotification(activity, activityId, secondsRemaining, t){
   Notifications.scheduleNotificationAsync({
     identifier: 'complete' + activityId,
@@ -67,4 +71,5 @@ export function timerStoped(activityId){
   Notifications.cancelScheduledNotificationAsync('complete' + activityId)
 }
 
-export default { initNotifications, reminderScheduleNotification, timerStarted, timerStoped}
+export default { initNotifications, reminderScheduleNotification, cancelReminderScheduleNotification,
+   timerStarted, timerStoped}

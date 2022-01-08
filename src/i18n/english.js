@@ -238,8 +238,9 @@ const en = {
         spanish: 'Spanish'
       },
       languageLocale: 'English',
+      dailyNotification: 'Daily notification',
+      dailyNotificationDescription: 'Receive a reminder to use Goaliath',
       dailyNotificationHour: 'Daily notification hour',
-      dailyNotificationHourDescription: 'At this time you\'ll receive a reminder to use Goaliath',
 
     },
     

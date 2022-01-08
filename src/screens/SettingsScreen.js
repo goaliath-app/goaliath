@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Share } from 'react-native'
-import { connect, useDispatch } from 'react-redux';
-import { Text, List, Divider, Paragraph, Portal, Snackbar, Dialog, Button } from 'react-native-paper'
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { Text, List, Divider, Paragraph, Portal, Snackbar, Switch, Dialog, Button } from 'react-native-paper'
 import { DateTime } from 'luxon'
 import DateTimePickerModal from "react-native-modal-datetime-picker"
 import email from 'react-native-email'
@@ -16,12 +16,13 @@ import Notifications from '../notifications';
 
 
 const SettingsScreen = ({ settings, setLanguage, navigation, state, importState }) => {
-  const [isStartHourPickerVisible, setStartHourPickerVisibility] = React.useState(false);
-  const [isNotificationHourPickerVisible, setNotificationHourPickerVisibility] = React.useState(false);
-  const [isLanguageDialogVisible, setLanguageDialogVisible] = React.useState(false);
-  const [isImportDialogVisible, setImportDialogVisible] = React.useState(false);
-  const [importedStateText, setImportedStateText] = React.useState('');
+  const [ isStartHourPickerVisible, setStartHourPickerVisibility ] = React.useState(false);
+  const [ isNotificationHourPickerVisible, setNotificationHourPickerVisibility ] = React.useState(false);
+  const [ isLanguageDialogVisible, setLanguageDialogVisible ] = React.useState(false);
+  const [ isImportDialogVisible, setImportDialogVisible ] = React.useState(false);
+  const [ importedStateText, setImportedStateText ] = React.useState('');
   const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
+  const [ dailyNotificationSwitch, setDailyNotificationSwitch ] = React.useState(true)
 
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
@@ -38,13 +39,6 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
      t('settings.yesterdaySnackbar', {startHour: dateTime.toFormat('T').toString()}) 
      : t('settings.todaySnackbar', {startHour: dateTime.toFormat('T').toString()}))
   };
-
-  const changeDailyNotificationHour = (JSDate, t) => {
-    const dateTime = DateTime.fromJSDate(JSDate)
-    setNotificationHourPickerVisibility(false)
-    dispatch(setDailyNotificationHour(dateTime.toISO()))
-    Notifications.reminderScheduleNotification(dateTime, t)
-  }
 
   const readFile = () => {
     DocumentPicker.getDocumentAsync({type: 'application/oda'})
@@ -66,6 +60,27 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
       setSnackbarMessage("Import failed: wrong file format")
     }
     importState(state)
+  }
+
+  const changeDailyNotificationHour = (JSDate, t) => {
+    const dateTime = DateTime.fromJSDate(JSDate)
+    setNotificationHourPickerVisibility(false)
+    dispatch(setDailyNotificationHour(dateTime.toISO()))
+    Notifications.reminderScheduleNotification(dateTime, t)
+  }
+
+  const dailyNotificationHour = useSelector((state) => state.settings.dailyNotificationHour)
+
+  const changeDailyNotificationSwitch = ( t ) => {
+    if(dailyNotificationSwitch) {
+      setDailyNotificationSwitch(false)
+      Notifications.cancelReminderScheduleNotification()
+    }
+    else if(!dailyNotificationSwitch) {
+      setDailyNotificationSwitch(true)
+      Notifications.reminderScheduleNotification(DateTime.fromISO(dailyNotificationHour), t)
+      
+    }
   }
 
   return (
@@ -118,16 +133,34 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
           </Text>} />
       <Divider />
       <List.Item 
-        title={t('settings.dailyNotificationHour')}
-        description={t('settings.dailyNotificationHourDescription')}
-        onPress={() => setNotificationHourPickerVisibility(true)} 
-        right={() => 
-          <Text style={{marginRight: 10, marginTop: 10, color: SettingsColor.accentColor, fontSize: 17}}>
-            {DateTime.fromISO(settings.dailyNotificationHour).toFormat('HH:mm')}
-          </Text>} 
+        title={t('settings.dailyNotification')}
+        titleNumberOfLines={2}
+        right={() => (
+          <Switch 
+            value={dailyNotificationSwitch} 
+            onValueChange={ () => changeDailyNotificationSwitch( t ) }
+          />
+        )}
+        description={t('settings.dailyNotificationDescription')}
       />
       <Divider />
+      {dailyNotificationSwitch?
+        <View>
+          <List.Item 
+            title={t('settings.dailyNotificationHour')}
+            onPress={() => setNotificationHourPickerVisibility(true)} 
+            right={() => 
+              <Text style={{marginRight: 10, marginTop: 10, color: SettingsColor.accentColor, fontSize: 17, paddingBottom: 7}}>
+                {DateTime.fromISO(settings.dailyNotificationHour).toFormat('HH:mm')}
+              </Text>}
+            style={{paddingLeft: 20}} 
+          />
+          <Divider />
+        </View>
+        : null
+      }
       
+      {/*Start Hour Picker*/}
       <DateTimePickerModal
         isVisible={isStartHourPickerVisible}
         mode="time"
@@ -135,7 +168,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
         onCancel={() => setStartHourPickerVisibility(false)}
         date={DateTime.fromISO(settings.dayStartHour).toJSDate()}
       />
-
+      {/*Daily Notification Picker*/}
       <DateTimePickerModal
         isVisible={isNotificationHourPickerVisible}
         mode="time"
@@ -172,7 +205,9 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
         visible={snackbarMessage != ""}
         onDismiss={()=>setSnackbarMessage("")}
         duration={5000}
-      >{snackbarMessage}</Snackbar>
+      >
+        {snackbarMessage}
+      </Snackbar>
 
     </View>
     
