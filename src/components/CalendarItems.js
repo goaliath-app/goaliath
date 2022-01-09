@@ -11,8 +11,8 @@ import {
   getDayActivityCompletionRatio, getWeekActivityCompletionRatio 
 } from '../activityHandler'
 import Animated, {
-  useSharedValue, withTiming, useAnimatedStyle, useAnimatedGestureHandler,
-  runOnJS, withSequence, withDelay, interpolateColor,
+  useSharedValue, withTiming, useAnimatedStyle,
+  runOnJS, withDelay, interpolateColor, Easing
 } from 'react-native-reanimated'
 import { 
   GestureDetector, Gesture, State 
@@ -27,9 +27,13 @@ const CalendarDayItem = ({
   onLongPress=()=>{}, 
   onPress=()=>{}, 
   pressAnimationValue: weekAnimationValue,
-  animate // 'day' or 'week'
+  animate, // 'day' or 'week'
+  weekViewLayout
 }) => {
+  const [ myCurrentLayout, setMyCurrentLayout ] = React.useState()
+
   const dayAnimationValue = useSharedValue(0)
+  const weekFillAnimationValue = useSharedValue(0)
 
   const today = useSelector(getTodaySelector)
 
@@ -65,7 +69,9 @@ const CalendarDayItem = ({
       [dayBackground, '#6495ED']
     )
 
-    return { backgroundColor }
+    const zIndex = weekFillAnimationValue.value > 0? 1 : 0
+
+    return { backgroundColor, zIndex }
   })
 
   function onDayPress(){
@@ -101,13 +107,15 @@ const CalendarDayItem = ({
     .maxDistance(30)
     .onBegin(() => {
       if(animate=='day'){
-        dayAnimationValue.value = withTiming(1, {duration: 35})
+        dayAnimationValue.value = 1
       }else if(animate=='week'){
-        weekAnimationValue.value = withTiming(1, {duration: 35})
+        weekAnimationValue.value = 1
+        weekFillAnimationValue.value = withDelay(150, withTiming(1, {duration: 400}))
       }
     })
     .onStart(() => runOnJS(onDayLongPress)())
     .onFinalize(({ state }) => {
+      weekFillAnimationValue.value = withTiming(0, {duration: 500})
       if(state == State.END || state == State.CANCELLED){
         if(animate=='day'){
           dayAnimationValue.value = 0
@@ -119,10 +127,43 @@ const CalendarDayItem = ({
 
   const compoundGesture = Gesture.Exclusive(longPressGesture, tapGesture)
 
+  const weekFillAnimation = useAnimatedStyle(() => {
+    let left = 0, right = 0, opacity = 0
+
+    if(myCurrentLayout && weekViewLayout){
+      opacity = 0 + weekFillAnimationValue.value
+      left = (
+        myCurrentLayout.width/2  // initial value
+        - weekFillAnimationValue.value*(myCurrentLayout.width/2+myCurrentLayout.x)  // offset
+      )
+      right = (
+        myCurrentLayout.width/2  // initial value
+        - weekFillAnimationValue.value*(
+          myCurrentLayout.width/2 
+          + weekViewLayout.width - myCurrentLayout.x - myCurrentLayout.width
+        )  // offset
+      )
+    }
+
+
+    return {
+      opacity,
+      backgroundColor: '#6495ED',
+      position: 'absolute',
+      top: 0,
+      left,
+      right,
+      bottom: 0
+    }
+  })
+
   return(
-    <Animated.View style={[styles.dayComponent, pressAnimationStyle]}>
+    <Animated.View style={[styles.dayComponent, pressAnimationStyle]} onLayout={(layoutEvent) => {
+      setMyCurrentLayout(layoutEvent.nativeEvent.layout)
+    }}>
       <GestureDetector gesture={compoundGesture} >
         <View style={{ flex: 1, justifyContent: 'center' }}>
+          <Animated.View style={weekFillAnimation} zIndex={0}/>
           {/* Day ProgressBar */}
           <ProgressBar 
           progress={dayProgress} 
@@ -174,14 +215,26 @@ const CalendarWeekItem = ({
 }) => {
   const pressAnimationValue = useSharedValue(0)
 
-  const animatedStyle = useAnimatedStyle(() => {
+  const [myCurrentLayout, setMyCurrentLayout] = React.useState()
+
+  const animatedContainerStyle = useAnimatedStyle(() => {
     return {
-      opacity: 1 - 0.3*pressAnimationValue.value,
+      opacity: 1 /*- 0.3*pressAnimationValue.value*/,
       transform: [
         {
           scale: 1 - 0.03*pressAnimationValue.value,
         },
       ],
+    }
+  })
+
+  const animatedWeekStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: interpolateColor(
+        pressAnimationValue.value, 
+        [0, 1],
+        [CalendarColor.weekBackgroundColor, '#6495ED50'] 
+      )
     }
   })
 
@@ -196,9 +249,10 @@ const CalendarWeekItem = ({
   }
 
   return(
-    <Animated.View style={animatedStyle}>
-
-      <View style={styles.weekComponent}>
+    <Animated.View style={animatedContainerStyle} onLayout={(layoutEvent) => {
+      setMyCurrentLayout(layoutEvent.nativeEvent.layout)
+    }}>
+      <Animated.View style={[styles.weekComponent, animatedWeekStyle]}>
         { [0, 1, 2, 3, 4, 5, 6].map( dayNumber => (
           <CalendarDayItem  
             activityId={activityId} 
@@ -210,9 +264,10 @@ const CalendarWeekItem = ({
             onLongPress={onDayLongPress}
             onPress={onDayPress} 
             animate={animate}
+            weekViewLayout={myCurrentLayout}
           />
         ))}
-      </View>
+      </Animated.View>
 
       {/* Week ProgressBar */}
       {
