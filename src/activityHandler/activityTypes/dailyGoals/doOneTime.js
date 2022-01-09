@@ -32,7 +32,9 @@ const TodayScreenItem = ({ activityId, date }) => {
 }
 
 function getFrequencyString(state, activityId, t){
-  return t('activityHandler.dailyGoals.doOneTime.frequencyString')
+  return '' 
+  // I removed the previous string since it is obvious and unneccessary.
+  // t('activityHandler.dailyGoals.doOneTime.frequencyString')
 }
 
 export function getDayActivityCompletionRatio(state, activityId, date){

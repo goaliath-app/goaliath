@@ -36,7 +36,11 @@ function getWeekProgressString(state, activityId, date, t){
   const { daysDoneCount } = getPeriodStats(state, date.startOf('week'), date, activity.id)
   
   const daysLeft = activity.params.days - daysDoneCount
-  return (daysLeft == 0 ? t('activityHandler.activityTypes.doNDaysEachWeek.completed') : t('activityHandler.activityTypes.doNDaysEachWeek.daysLeft', {daysLeft}))
+  return ( 
+    daysLeft == 0 ? t('activityHandler.activityTypes.doNDaysEachWeek.completed') 
+    : daysLeft != 1 ? t('activityHandler.activityTypes.doNDaysEachWeek.daysLeft', {daysLeft})
+    : t('activityHandler.activityTypes.doNDaysEachWeek.daysLeftSingular', {daysLeft})
+  )
 }
 
 function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){
@@ -111,8 +115,10 @@ function getFrequencyString(state, activityId, t, date=null){
   const days = activity.params.days
 
   return(
-    dailyGoalString + ' ' +
-    t('activityHandler.activityTypes.doNDaysEachWeek.frequencyString', { days })
+    dailyGoalString + ' ' + (
+      days != 1 ? t('activityHandler.activityTypes.doNDaysEachWeek.frequencyString', { days })
+      : t('activityHandler.activityTypes.doNDaysEachWeek.frequencyStringSingular', { days })
+    )
   )
 }
 

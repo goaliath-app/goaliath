@@ -211,3 +211,8 @@ export function getNewestDate(isoDatesList){
 
   return newestLogDate
 }
+
+// checks if b is between a and c
+export function isBetween(a, b, c){
+  return a <= b && b <= c
+}

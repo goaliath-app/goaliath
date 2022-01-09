@@ -3,14 +3,13 @@ import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Provider as PaperProvider, Snackbar } from  'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
 import { StatusBar } from 'expo-status-bar'
 import i18n from './src/i18n'
 import { useTranslation } from 'react-i18next'
-import { store, finishOnboarding as finishOnboardingAction } from './src/redux'
+import { store, setTutorialState } from './src/redux'
 import { 
   TodayScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, 
   ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen,
@@ -18,14 +17,15 @@ import {
   AddTasksScreen, CalendarDayViewScreen, CalendarWeekViewScreen,
   StatsScreen, ArchivedGoalsScreen, ArchivedActivitiesScreen
 } from './src/screens'
-import { Drawer as CustomDrawer } from './src/components'
+import { 
+  TodayScreenIcon, GoalsScreenIcon, GoalsScreenButton, CalendarScreenIcon, 
+  CalendarScreenButton, StatsScreenIcon, StatsScreenButton,
+} from './src/components'
 import { StatusBarColor } from './src/styles/Colors';
 import { generateDummyData } from './src/redux/Thunks'
 import Notifications from './src/notifications'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { faTrophy, faCalendarAlt, faChartBar, faTasks } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-
+import tutorialStates from './src/tutorialStates'
 
 Notifications.initNotifications()
 
@@ -65,16 +65,16 @@ export default function App() {
   //   store.dispatch(generateDummyData())
   // }, [])
 
-  const [newUser, setNewUser] = React.useState()
+  const [ newUser, setNewUser ] = React.useState()
   const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
 
   function finishOnboarding(){
-    store.dispatch(finishOnboardingAction())
+    store.dispatch(setTutorialState(tutorialStates.TodayScreenIntroduction))
     setNewUser(false)
   }
 
   function onStoreRehydration(){
-    setNewUser(store.getState().settings.newUser)
+    setNewUser(store.getState().settings.tutorialState == tutorialStates.NewUser)
     i18n.changeLanguage(store.getState().settings.language)
   }
 
@@ -88,28 +88,33 @@ export default function App() {
       <Tab.Screen name='Today' component={TodayStack} 
         options={{ 
           tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesomeIcon icon={faTasks} size={size} color={color} />
+            <TodayScreenIcon {...{focused, color, size}} />
           ) 
       }} />
       <Tab.Screen name='Goals' component={GoalsStack} 
-        options={{ 
+        options={{
           tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesomeIcon icon={faTrophy} size={size} color={color} />
-          )
+            <GoalsScreenIcon {...{focused, color, size}} />
+          ),
+          tabBarButton: (props) => {
+            return <GoalsScreenButton {...props} />
+          }
       }} />
       <Tab.Screen name='Calendar' component={CalendarStack} 
         options={{ 
           title: t('app.drawer.calendar'),
           tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesomeIcon icon={faCalendarAlt} size={size} color={color} />
-          )
+            <CalendarScreenIcon {...{focused, color, size}} />
+          ),
+          tabBarButton: (props) => <CalendarScreenButton {...props} />
       }} />
       <Tab.Screen name='Stats' component={StatsScreen} 
         options={{ 
           title: t('app.drawer.stats'),
           tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesomeIcon icon={faChartBar} size={size} color={color} />
-            )  
+            <StatsScreenIcon {...{focused, color, size}} />
+          ),
+          tabBarButton: (props) => <StatsScreenButton {...props} />
       }} />
     </Tab.Navigator>
   )
@@ -122,7 +127,7 @@ export default function App() {
         onBeforeLift={()=>onStoreRehydration()}
       >
         <PaperProvider>
-          <Context.Provider value={ {showSnackbar: setSnackbarMessage} } >
+          <Context.Provider value={ { showSnackbar: setSnackbarMessage } } >
             <NavigationContainer>
               <StatusBar 
                 style={StatusBarColor.style} 
@@ -152,7 +157,8 @@ export default function App() {
                 <Stack.Screen name='Settings' component={SettingsScreen} />
               </Stack.Navigator>
               }
-              <Snackbar
+              <Snackbar style={{backgroundColor: 'rgba(0, 0, 0, 0.85)'}}
+                action={{label: 'OK', action: () => setSnackbarMessage("")}}
                 visible={snackbarMessage != ""}
                 onDismiss={()=>setSnackbarMessage("")}
                 duration={5000}

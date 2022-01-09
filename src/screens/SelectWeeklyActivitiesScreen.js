@@ -83,6 +83,7 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
           activityId={selectedActivity}
           showDayNumbers={false}
           softTodayHighlight={false}  
+          animate='none'
         />
       </View>
       <Divider />

@@ -26,6 +26,10 @@
       "bundleIdentifier": "app.goaliath"
     },
     "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/sling-adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
       "useNextNotificationsApi": true,
       "package": "app.goaliath"
     },

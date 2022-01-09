@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native'
-import { connect, useDispatch } from 'react-redux';
-import { Paragraph, Menu, Title, Divider, List, Card, Button } from 'react-native-paper';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { Appbar, Paragraph, Menu, Title, Divider, List, Card, Button } from 'react-native-paper';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { 
@@ -11,15 +11,17 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
-  toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, archiveActivity, 
-  restoreActivity, selectGoalByIdAndDate, selectActivityByIdAndDate
+  toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, 
+  archiveActivity, restoreActivity, selectTutorialState, selectGoalByIdAndDate, 
+  selectActivityByIdAndDate
 } from '../../redux'
 import { isToday, isFuture } from '../../util'
-import { GeneralColor } from '../../styles/Colors';
+import { GeneralColor, HeaderColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { StatsPannel, MoveToGoalDialog } from '../../components'
+import { StatsPannel, MoveToGoalDialog, InfoCard } from '../../components'
+import tutorialStates from '../../tutorialStates'
 
 const ArchivedWarning = ({ activity }) => {
   const { t, i18n } = useTranslation()
@@ -29,17 +31,16 @@ const ArchivedWarning = ({ activity }) => {
   return (
     activity.archived?
       <>
-      <Card style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: 'aliceblue', alignItems: 'center' }}>
-        <Card.Content>
-          <Title>{t("activityDetail.archivedWarning")}</Title>
-        </Card.Content>
-        <Card.Actions style={{alignSelf: 'center'}}>
-          <Button onPress={ () => {
+      <InfoCard 
+        title={t("activityDetail.archivedWarning")} 
+        extraContent={
+          <Button style={{marginTop: 10}} onPress={ () => {
             dispatch(restoreActivity(activity.id))
             navigation.goBack()
           }}>{t("activityDetail.restoreButton")}</Button>
-        </Card.Actions>
-      </Card>
+        }
+        style={{alignItems: 'center'}}
+      />
       <Divider />
       </>
     : null
@@ -62,6 +63,8 @@ const ActivityDetailScreen = ({
 }) => {
   const { t, i18n } = useTranslation()
 
+  const tutorialState = useSelector(selectTutorialState)
+
   const dateIsToday = date?isToday(date, dayStartHour):false
   const dateIsFuture = date?isFuture(date, dayStartHour):false
   const monthLabel = date?t('units.monthNames.' + date.toFormat('MMMM').toLowerCase()):null
@@ -79,33 +82,38 @@ const ActivityDetailScreen = ({
   // items that appear in the three dots menu
   const menuItems = (
     <>
-    <Menu.Item title={t('activityDetail.threeDotsMenu.editActivity')} 
-      onPress={() => {
+      <Menu.Item onPress={() => {
+        setDeleteDialogVisible(true)
         setMenuVisible(false)
-        navigation.navigate('ActivityForm', { activityId: activity.id })
-      }} 
-    />
-    <Menu.Item onPress={() => {
-      setDeleteDialogVisible(true)
-      setMenuVisible(false)
-    }} title={t('activityDetail.threeDotsMenu.deleteActivity')}  />
-    <Menu.Item onPress={() => {
-      setMoveToGoalDialogVisible(true)
-      setMenuVisible(false)
-    }} title={t('activityDetail.threeDotsMenu.changeGoal')}  />
+      }} title={t('activityDetail.threeDotsMenu.deleteActivity')}  />
+      <Menu.Item onPress={() => {
+        setMoveToGoalDialogVisible(true)
+        setMenuVisible(false)
+      }} title={t('activityDetail.threeDotsMenu.changeGoal')}  />
     </>
   )
 
   const headerButtons =  (
-    date && !dateIsToday || activity.archived ?
-    null
-    :
-    <ThreeDotsMenu 
-      menuItems={menuItems} 
-      openMenu={() => setMenuVisible(true)} 
-      closeMenu={() => setMenuVisible(false)} 
-      visible={menuVisible} 
-    />
+    date && !dateIsToday || activity.archived ? null :
+    tutorialState == tutorialStates.Finished ? (
+      <>
+        <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
+          navigation.navigate('ActivityForm', { activityId: activity.id })
+        }}
+        />
+        <ThreeDotsMenu 
+          menuItems={menuItems} 
+          openMenu={() => setMenuVisible(true)} 
+          closeMenu={() => setMenuVisible(false)} 
+          visible={menuVisible} 
+        />
+      </>
+    ) : (
+      <>
+        <Appbar.Action icon='pencil' color={HeaderColor.icon} style={{opacity: 0.5}} />
+        <Appbar.Action icon='dots-vertical' color={HeaderColor.icon} style={{opacity: 0.5}} />
+      </> 
+    )
   )
 
   return(

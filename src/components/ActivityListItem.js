@@ -231,7 +231,7 @@ const legacy_ActivityListItem = ({
   );
 }
 
-export const SelectWeekliesListItem = ({ date, checked, color='black', navigation}) => {
+export const SelectWeekliesListItem = ({ date, checked, color='black', navigation, disabled=false}) => {
   const { t, i18n } = useTranslation()
 
   const state = useSelector((state) => state)
@@ -257,7 +257,7 @@ export const SelectWeekliesListItem = ({ date, checked, color='black', navigatio
         title={t('today.selectWeekliesTitle')}
         titleNumberOfLines={2}
         description={t('today.selectWeekliesDescription', {weekActivitiesNumber: weekActivitiesNumber, weekProgress: Math.round(weekProgress * 100)})}
-        onPress={() => {navigation.navigate('SelectWeeklyActivities')}}
+        onPress={() => {disabled ? ()=>{} : navigation.navigate('SelectWeeklyActivities')}}
       />
     </View>
   )

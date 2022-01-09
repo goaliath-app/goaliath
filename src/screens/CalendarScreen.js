@@ -18,7 +18,6 @@ const CalendarScreen = ({ navigation }) => {
       <View>
         <Header title={t('calendar.headerTitle')} navigation={navigation}/>
         <Calendar 
-          onWeekPress={weekDate => navigation.navigate('CalendarWeekView', {date: weekDate.toISO()})}
           onDayPress={weekDate => navigation.navigate('CalendarWeekView', {date: weekDate.toISO()})}
           onDayLongPress={dayDate => navigation.navigate('CalendarDayView', {date: dayDate.toISO()})} 
         />

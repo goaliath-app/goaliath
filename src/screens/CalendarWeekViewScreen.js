@@ -30,7 +30,10 @@ const ActivityWeekView = ({ activityId, date }) => {
       </View>
       <View style={{ paddingHorizontal: 20 }}>
         <CalendarWeekItem  
-          activityId={activityId} date={date} showDayNumbers={false} showWeekProgress={true} softTodayHighlight={true} onDayPress={dayDate => navigation.navigate('ActivityDetail', {activityId, date: dayDate.toISO()})}/>
+          activityId={activityId} date={date} showDayNumbers={false} 
+          showWeekProgress={true} softTodayHighlight={true} 
+          onDayPress={dayDate => navigation.navigate('ActivityDetail', {activityId, date: dayDate.toISO()})}
+          animate='day' />
       </View>
     </View>
   )
@@ -116,7 +119,7 @@ const CalendarWeekViewScreen = ({ route }) => {
       <ScrollView >
         {/*WeekViewComponent*/}
         <View style={{ paddingVertical: 15, paddingHorizontal: 20 }}>
-          <CalendarWeekItem date={date} showDayNumbers={true} onDayPress={dayDate => navigation.navigate('CalendarDayView', {date: dayDate.toISO()})}/>
+          <CalendarWeekItem animate='day' date={date} showDayNumbers={true} onDayPress={dayDate => navigation.navigate('CalendarDayView', {date: dayDate.toISO()})}/>
         </View>
 
         {/*Options selectors*/}
