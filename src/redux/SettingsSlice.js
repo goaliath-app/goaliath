@@ -8,6 +8,7 @@ const initialState = {
     dayStartHour: DateTime.fromObject({hour:0, minute:0}).toISO(),
     language: Localization.locale,
     tutorialState: tutorialStates.NewUser,
+    dailyNotificationHour: DateTime.fromObject({hour:9, minute:0}).toISO(),
 }
 
 const settingsSlice = createSlice({
@@ -26,12 +27,15 @@ const settingsSlice = createSlice({
         },
         setLanguage(state, action) {
             state.language = action.payload
+        },
+        setDailyNotificationHour(state, action){
+            state.dailyNotificationHour = action.payload
         }
     }
 })
 
 export const { 
-    setDayStartHour, setState, setLanguage, setTutorialState 
+    setDayStartHour, setState, setLanguage, setTutorialState, setDailyNotificationHour, 
 } = settingsSlice.actions
 
 export function selectTutorialState(state){

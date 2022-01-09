@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Share } from 'react-native'
-import { connect, useDispatch } from 'react-redux';
-import { Text, List, Divider, Paragraph, Portal, Snackbar, Dialog, Button } from 'react-native-paper'
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { Text, List, Divider, Paragraph, Portal, Snackbar, Switch, Dialog, Button } from 'react-native-paper'
 import { DateTime } from 'luxon'
 import DateTimePickerModal from "react-native-modal-datetime-picker"
 import email from 'react-native-email'
@@ -9,7 +9,7 @@ import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker'
 import { useTranslation } from 'react-i18next'
-import { setDayStartHour, importState, setLanguage, updateLogs } from '../redux'
+import { setDayStartHour, importState, setLanguage, setDailyNotificationHour, updateLogs } from '../redux'
 import { Header } from '../components'
 import { GeneralColor, SettingsColor } from '../styles/Colors';
 import { faClock, faEnvelope, faSave } from '@fortawesome/free-regular-svg-icons'
@@ -17,14 +17,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Notifications from '../notifications';
 
 
 const SettingsScreen = ({ settings, setLanguage, navigation, state, importState }) => {
-  const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
-  const [isLanguageDialogVisible, setLanguageDialogVisible] = React.useState(false);
-  const [isImportDialogVisible, setImportDialogVisible] = React.useState(false);
-  const [importedStateText, setImportedStateText] = React.useState('');
+  const [ isStartHourPickerVisible, setStartHourPickerVisibility ] = React.useState(false);
+  const [ isNotificationHourPickerVisible, setNotificationHourPickerVisibility ] = React.useState(false);
+  const [ isLanguageDialogVisible, setLanguageDialogVisible ] = React.useState(false);
+  const [ isImportDialogVisible, setImportDialogVisible ] = React.useState(false);
+  const [ importedStateText, setImportedStateText ] = React.useState('');
   const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
+  const [ dailyNotificationSwitch, setDailyNotificationSwitch ] = React.useState(true)
 
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
@@ -32,7 +35,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
 
   const changeDayStartHour = (JSDate) => {
     const dateTime = DateTime.fromJSDate(JSDate)
-    setDatePickerVisibility(false)
+    setStartHourPickerVisibility(false)
     dispatch(setDayStartHour(dateTime.toISO()))
     dispatch(updateLogs())
     
@@ -68,6 +71,27 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
   }
   }
 
+  const changeDailyNotificationHour = (JSDate, t) => {
+    const dateTime = DateTime.fromJSDate(JSDate)
+    setNotificationHourPickerVisibility(false)
+    dispatch(setDailyNotificationHour(dateTime.toISO()))
+    Notifications.reminderScheduleNotification(dateTime, t)
+  }
+
+  const dailyNotificationHour = useSelector((state) => state.settings.dailyNotificationHour)
+
+  const changeDailyNotificationSwitch = ( t ) => {
+    if(dailyNotificationSwitch) {
+      setDailyNotificationSwitch(false)
+      Notifications.cancelReminderScheduleNotification()
+    }
+    else if(!dailyNotificationSwitch) {
+      setDailyNotificationSwitch(true)
+      Notifications.reminderScheduleNotification(DateTime.fromISO(dailyNotificationHour), t)
+      
+    }
+  }
+
   return (
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
@@ -75,7 +99,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
         left={() => <FontAwesomeIcon style={{alignSelf: 'center', margin: 5}} size={25} icon={faClock} />}
         title={t('settings.startHour')}
         description={t('settings.startHourDescription')}
-        onPress={() => setDatePickerVisibility(true)} 
+        onPress={() => setStartHourPickerVisibility(true)} 
         right={() => 
           <Text style={{marginRight: 10, marginTop: 10, color: SettingsColor.accentColor, fontSize: 17}}>
             {DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}
@@ -122,13 +146,49 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
             {t('settings.languageLocale')}
           </Text>} />
       <Divider />
+      <List.Item 
+        title={t('settings.dailyNotification')}
+        titleNumberOfLines={2}
+        right={() => (
+          <Switch 
+            value={dailyNotificationSwitch} 
+            onValueChange={ () => changeDailyNotificationSwitch( t ) }
+          />
+        )}
+        description={t('settings.dailyNotificationDescription')}
+      />
+      <Divider />
+      {dailyNotificationSwitch?
+        <View>
+          <List.Item 
+            title={t('settings.dailyNotificationHour')}
+            onPress={() => setNotificationHourPickerVisibility(true)} 
+            right={() => 
+              <Text style={{marginRight: 10, marginTop: 10, color: SettingsColor.accentColor, fontSize: 17, paddingBottom: 7}}>
+                {DateTime.fromISO(settings.dailyNotificationHour).toFormat('HH:mm')}
+              </Text>}
+            style={{paddingLeft: 20}} 
+          />
+          <Divider />
+        </View>
+        : null
+      }
       
+      {/*Start Hour Picker*/}
       <DateTimePickerModal
-        isVisible={isDatePickerVisible}
+        isVisible={isStartHourPickerVisible}
         mode="time"
         onConfirm={(JSDate) => changeDayStartHour(JSDate)}
-        onCancel={() => setDatePickerVisibility(false)}
+        onCancel={() => setStartHourPickerVisibility(false)}
         date={DateTime.fromISO(settings.dayStartHour).toJSDate()}
+      />
+      {/*Daily Notification Picker*/}
+      <DateTimePickerModal
+        isVisible={isNotificationHourPickerVisible}
+        mode="time"
+        onConfirm={(JSDate) => changeDailyNotificationHour(JSDate, t)}
+        onCancel={() => setNotificationHourPickerVisibility(false)}
+        date={DateTime.fromISO(settings.dailyNotificationHour).toJSDate()}
       />
 
       <Portal>
@@ -159,7 +219,9 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
         visible={snackbarMessage != ""}
         onDismiss={()=>setSnackbarMessage("")}
         duration={5000}
-      >{snackbarMessage}</Snackbar>
+      >
+        {snackbarMessage}
+      </Snackbar>
 
     </View>
     
@@ -184,7 +246,8 @@ const mapStateToProps = (state) => {
 const actionToProps = {
   setDayStartHour,
   importState,
-  setLanguage
+  setLanguage,
+  setDailyNotificationHour
 }
 
 export default connect(mapStateToProps, actionToProps)(SettingsScreen);

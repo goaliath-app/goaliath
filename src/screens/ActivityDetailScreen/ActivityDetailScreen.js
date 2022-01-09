@@ -10,8 +10,10 @@ import {
 } from '../../components';
 import { useNavigation } from '@react-navigation/native';
 import { 
-  selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, toggleCompleted, startTodayTimer, 
-  stopTodayTimer, upsertEntry, archiveActivity, restoreActivity, selectTutorialState,
+  selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
+  toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, 
+  archiveActivity, restoreActivity, selectTutorialState, selectGoalByIdAndDate, 
+  selectActivityByIdAndDate
 } from '../../redux'
 import { isToday, isFuture } from '../../util'
 import { GeneralColor, HeaderColor } from '../../styles/Colors';
@@ -157,6 +159,7 @@ const ActivityDetailScreen = ({
             upsertEntry={upsertEntry} 
             date={date} 
             dayStartHour={dayStartHour} 
+            activity={activity}
           />
           :
           null
@@ -191,16 +194,21 @@ const mapStateToProps = (state, ownProps) => {
     activityId,  // id of the activity to show
     date         // (optional) iso string datetime of the log entry to show
   } = ownProps.route.params
-  const dateTime = date?DateTime.fromISO(date):null
-  let activity = selectActivityById(state, activityId)
-  const activityGoalId = activity.goalId
-  const goal = selectGoalById(state, activityGoalId)
-  let entry 
+
+  const dateTime = date ? DateTime.fromISO(date) : null
+  
+  let activity, goal, entry
   if(dateTime){
+    activity = selectActivityByIdAndDate(state, activityId, dateTime)
+    goal = selectGoalByIdAndDate(state, activity.goalId, dateTime)
     entry = selectEntryByActivityIdAndDate(state, activityId, dateTime)
-    activity = { ...activity, ...entry }  // use entry data to override possible overlapping values.
+  }else{
+    activity = selectActivityById(state, activityId)
+    goal = selectGoalById(state, activity.goalId)
   }
+  
   const { dayStartHour } = state.settings
+
   return { activity, goal, entry, date: dateTime, dayStartHour }
 }
 
