@@ -40,31 +40,34 @@ const GenericStats = ({ activityId, goalId }) => {
 
   return(
     <View>
-      <List.Item style={{height: 30}} title={t('stats.genericStats.title')} />
+      <List.Item  
+        title={t('stats.genericStats.title')} 
+      />
       <List.Item
-        style={{height: 40}}
+        style={{justifyContent: 'center', height: 40}}
         left={() => <List.Icon icon="check-circle-outline" />}
         title={ completions + t('stats.genericStats.daysCompleted')}
       />
       {
+        
         timeValue > 0 ?
           <List.Item
-            style={{height: 40}}
+            style={{justifyContent: 'center', height: 40}}
             left={() => <List.Icon icon="clock-outline" />}
             title={t('stats.genericStats.timeDedicated', {expressionValue: timeValue, expressionUnit: timeUnit})}
           /> 
-          : null 
+          : null
       }
       { 
         repetitions > 0 ? 
           <List.Item
-            style={{height: 40}}
+            style={{justifyContent: 'center', height: 40}}
             left={() => <List.Icon icon="restore" />}  // Other icon candidates: "alpha-r-circle-outline"
             title={ repetitions + t('stats.genericStats.repetitions')}
           />
           : null
       }
-      <Divider style={{marginTop: 30}}/>
+      <Divider style={{marginTop: 10}}/>
     </View>
   )
 }
