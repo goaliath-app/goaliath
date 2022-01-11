@@ -12,10 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { setDayStartHour, importState, setLanguage, setDailyNotificationHour, updateLogs } from '../redux'
 import { Header } from '../components'
 import { GeneralColor, SettingsColor } from '../styles/Colors';
-import { faClock, faEnvelope, faSave } from '@fortawesome/free-regular-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Notifications from '../notifications';
 
@@ -96,7 +93,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
     <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
       <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
       <List.Item
-        left={() => <FontAwesomeIcon style={{alignSelf: 'center', margin: 5}} size={25} icon={faClock} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} />}
         title={t('settings.startHour')}
         description={t('settings.startHourDescription')}
         onPress={() => setStartHourPickerVisibility(true)} 
@@ -107,7 +104,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
       />
       <Divider />
       <List.Item
-        left={() => <FontAwesomeIcon style={{alignSelf: 'center', margin: 5}} size={25} icon={faEnvelope} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"mail"} />}
         title={t('settings.feedback')}
         description={t('settings.feedbackDescription')}
         onPress={() => email('jimenaa971@gmail.com')}
@@ -121,21 +118,21 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
       />
       <Divider />
       <List.Item
-        left={() => <FontAwesomeIcon style={{alignSelf: 'center', margin: 5}} size={25} icon={faSave} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"save"} />}
         title={t('settings.export')}
         description={t('settings.exportDescription')}
         onPress={() => writeFile(state)}
       />
       <Divider />
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} name={"download-cloud"} size={25} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"download-cloud"} />}
         title={t('settings.import')}
         description={t('settings.importDescription')}
         onPress={() => readFile()}
       />
       <Divider />
       <List.Item
-        left={() => <EntypoIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"language"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"globe"} />}
         title={t('settings.language')}
         onPress={() => setLanguageDialogVisible(true)}
         right={() => 
@@ -146,7 +143,8 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
             {t('settings.languageLocale')}
           </Text>} />
       <Divider />
-      <List.Item 
+      <List.Item
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"bell"} />}
         title={t('settings.dailyNotification')}
         titleNumberOfLines={2}
         right={() => (
