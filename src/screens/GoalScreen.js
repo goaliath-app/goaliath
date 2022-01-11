@@ -209,7 +209,8 @@ const GoalScreen = ({ activities, goal, navigation }) => {
                       dispatch(setActivity({
                         archived: false,
                         active: true,
-                        name: `Work on ${goal.name}`, 
+                        name: t('tutorial.sampleActivity.name', {goalName: goal.name}), 
+                        description: t('tutorial.sampleActivity.description'),
                         goalId: goal.id, 
                         type: 'doFixedDays', 
                         params: { 

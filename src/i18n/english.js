@@ -441,6 +441,10 @@ const en = {
     },
 
     tutorial: {
+      sampleActivity: {
+        name: 'Work on {{goalName}}',
+        description: 'Dedicate 10 focused, uninterrupted minutes to your goal. Think of ways you can work on it, investigate and start taking action. \n\n If you do this for several days, you will start to find your own way. \n\n This is a good base activity if you don\'t know how to start. Feel free to replace this when you feel ready.',
+      },
       TodayScreenIntroduction: {
         // "remind you OF the actions" or "remind you the actions"
         1: 'Welcome! Here I will remind you of the actions you need to take to advance towards your goals.',

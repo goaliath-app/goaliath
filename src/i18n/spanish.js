@@ -441,6 +441,10 @@ const es= {
     },
 
     tutorial: {
+      sampleActivity: {
+        name: 'Trabajar en {{goalName}}',
+        description: 'Dedica 10 minutos ininterrumpidos a tu meta. Piensa en cómo puedes trabajar en ella, investiga y comienza a tomar acción. \n\nHaz esto durante varios días y verás que empiezan a surgir las ideas.\n\n Esta es una buena actividad cuando no sabes por donde empezar. Puedes sustituirla por otras cuando lo creas oportuno.',
+      },
       TodayScreenIntroduction: {
         1: '¡Bienvenido! Cada día te recordaré aquí qué debes hacer para avanzar hacia tus metas.',
         2: 'Vayamos a la lista de metas.'
