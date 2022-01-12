@@ -12,8 +12,7 @@ import PauseFilledIcon from '../../assets/pause-filled'
 import PauseOutlinedIcon from '../../assets/pause-outlined'
 import { useTranslation } from 'react-i18next'
 import { ActivityListItemColors } from '../styles/Colors'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import MaterialComunityIcons  from 'react-native-vector-icons/MaterialCommunityIcons'
 import Checkbox from './Checkbox'
 import { useSelector } from 'react-redux';
 import { usesSelectWeekliesScreen, getFreeActivitiesWeekCompletionRatio } from '../activityHandler'
@@ -244,16 +243,11 @@ export const SelectWeekliesListItem = ({ date, checked, color='black', navigatio
   return(
     <View style={{ backgroundColor: ActivityListItemColors.listItemBackground }}>
       <List.Item
-        left={() => (
-          <View>
-            <Checkbox 
-              color={color}
-              uncheckedColor={color}
-              status={checked? 'checked' : 'unchecked'}
-            />
-            {checked?<></>:<FontAwesomeIcon style={{color: color, position: 'absolute', alignSelf: 'center', marginTop: 17}} icon={faPlus} size={14} />}
-          </View>
-        )}
+        left={() => <IconButton icon={() => checked? 
+          <MaterialComunityIcons name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
+          : <MaterialComunityIcons name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
+          } />
+        }
         title={t('today.selectWeekliesTitle')}
         titleNumberOfLines={2}
         description={t('today.selectWeekliesDescription', {weekActivitiesNumber: weekActivitiesNumber, weekProgress: Math.round(weekProgress * 100)})}
@@ -269,16 +263,11 @@ export const SelectTasksListItem = ({checked, onPress}) => {
   return(
     <View style={{ backgroundColor: ActivityListItemColors.listItemBackground }}>
       <List.Item
-        left={() => (
-          <View>
-            <Checkbox 
-              color='black'
-              uncheckedColor='black'
-              status={checked? 'checked' : 'unchecked'}
-            />
-            {checked?<></>:<FontAwesomeIcon style={{position: 'absolute', alignSelf: 'center', marginTop: 17}} icon={faPlus} size={14} />}
-          </View>
-        )}
+        left={() => <IconButton icon={() => checked? 
+          <MaterialComunityIcons name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
+          : <MaterialComunityIcons name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
+          }
+          size={26} />}
         title={t('today.selectTasksTitle')}
         titleNumberOfLines={2}
         // description={t('today.selectTasksDescription')}
