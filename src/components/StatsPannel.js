@@ -5,6 +5,7 @@ import { Paragraph, Divider, List } from 'react-native-paper';
 import { ActivityBarChartPicker } from './BarCharts'
 import { default as ActivityCalendarHeatmap } from './CalendarHeatmap'
 import { default as GenericStats } from './GenericStats'
+import { loadedComponent } from '../components/Loading'
 
 const StatsPannel = ({ activityId, goalId }) => (
   <View>
@@ -17,4 +18,11 @@ const StatsPannel = ({ activityId, goalId }) => (
   </View>
 )
 
-export default StatsPannel
+/* TODO TRANSLATE */
+const Placeholder = () => {
+  return (
+    <List.Item title='Loading Stats...' />
+  )
+}
+
+export default loadedComponent(StatsPannel, Placeholder)

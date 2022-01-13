@@ -1,0 +1,34 @@
+import React from 'react';
+import { List } from 'react-native-paper'
+
+const LoadingContainer = ({ children, LoadingComponent=()=><List.Item title={'Loading...'} />, bypassLoading=false }) => {
+  if(children.length > 1){
+    throw 'Loading container can only have one child, wrap them in a View'
+  }
+
+
+  const [ isLoading, setLoading ] = React.useState(!bypassLoading)
+  
+  React.useEffect(() => {
+    // set Loading to false after small timeout to allow the rendered loading
+    // component to appear. Without the timeout it may be disposed and just
+    // the final component would be rendered.
+    setTimeout(() => setLoading(false), 1)
+  }, [])
+
+  return ( 
+    isLoading ? 
+      <LoadingComponent />
+    :
+      children
+  )
+}
+
+/* Higher order component that wraps the children in a LoadingContainer */
+export function loadedComponent(Component, LoadingComponent){
+  return ({ loading=LoadingComponent, bypassLoading=false, ...otherProps }) => (
+    <LoadingContainer LoadingComponent={loading}  bypassLoading={bypassLoading}>
+      <Component {...otherProps} />
+    </LoadingContainer>
+  )
+}
