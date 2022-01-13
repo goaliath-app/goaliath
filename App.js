@@ -69,7 +69,6 @@ export default function App() {
   const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
 
   function finishOnboarding(){
-    store.dispatch(setTutorialState(tutorialStates.TodayScreenIntroduction))
     setNewUser(false)
   }
 
