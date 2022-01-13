@@ -162,18 +162,15 @@ const CalendarDayItem = ({
       setMyCurrentLayout(layoutEvent.nativeEvent.layout)
     }}>
       <GestureDetector gesture={compoundGesture} >
-        <View style={{ flex: 1, justifyContent: 'center' }}>
+        <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row'}}>
           <Animated.View style={weekFillAnimation} zIndex={0}/>
           {/* Day ProgressBar */}
-          <ProgressBar 
-          progress={dayProgress} 
-          height='100%' 
-          color={CalendarColor.dayProgress}
-          borderWidth={0} 
-          borderRadius={0} 
-          width={null} 
-          style={{ transform: [{ rotate: '-90deg' }]}}
-          />
+          <View style={{
+            alignSelf: 'flex-end',
+            width: '100%',
+            height: `${dayProgress*100}%`,
+            backgroundColor: CalendarColor.dayProgress,
+          }} />
           {/* Today Highlight */}
           <View style={{ position: 'absolute', flex: 1, alignSelf: 'center' }}>
             {today.day===day.day && today.month===day.month && today.year===day.year? 
@@ -272,17 +269,13 @@ const CalendarWeekItem = ({
       {/* Week ProgressBar */}
       {
       showWeekProgress?
-      <View style={{ marginBottom: 10 }}>
-        <ProgressBar 
-          progress={weekProgress} 
-          height={7} 
-          color={CalendarColor.progressBarColor} 
-          unfilledColor={CalendarColor.progressBarBackground}
-          borderWidth={0} 
-          borderRadius={0} 
-          width={null} 
-        />
-      </View>
+        <View style={{marginBottom: 10, backgroundColor: CalendarColor.progressBarBackground}}>
+          <View style={{
+            height: 7,
+            width: `${weekProgress*100}%`,
+            backgroundColor: CalendarColor.progressBarColor,
+          }} />
+        </View>
       : null }
     </Animated.View>
   )
