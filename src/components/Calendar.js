@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, View, StyleSheet } from 'react-native';
-import { Text, Subheading } from 'react-native-paper';
+import { IconButton, Text, Subheading } from 'react-native-paper';
 import { CalendarWeekItem } from './index'
 import { useSelector } from 'react-redux';
 import { getTodaySelector } from '../redux/selectors'
@@ -42,9 +42,9 @@ const Calendar = ({
     <View style={{ padding: 15 }}>
       <View style={{flexDirection:'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20}}>
         {/* TODO: Add horizontal scroll. */}
-        <Pressable onPress={() => setSelectedDate(selectedDate.minus({month: 1}))} style={{paddingHorizontal: 10}}>
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </Pressable>
+        <IconButton icon={() => <FontAwesomeIcon icon={faChevronLeft} />} 
+          onPress={() => setSelectedDate(selectedDate.minus({month: 1}))} 
+          style={{paddingHorizontal: 10}} />
         <Pressable onPress={() => setwheelPickerVisible(true)}>
           <Subheading>{monthLabel} {year}</Subheading>
           {wheelPickerVisible?
@@ -52,9 +52,9 @@ const Calendar = ({
           :
           <></>}
         </Pressable>
-        <Pressable onPress={() => setSelectedDate(selectedDate.plus({month: 1})) } style={{paddingHorizontal: 10}}>
-          <FontAwesomeIcon icon={faChevronRight} />
-        </Pressable>
+        <IconButton icon={() => <FontAwesomeIcon icon={faChevronRight} />} 
+          onPress={() => setSelectedDate(selectedDate.plus({month: 1}))} 
+          style={{paddingHorizontal: 10}} />
       </View>
 
       <View style={{ flexDirection:'row', justifyContent:'space-around', marginBottom: 5 }}>
