@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList } from 'react-native';
+import { View } from 'react-native';
 import { TodayScreenItem } from '../activityHandler'
 
 const renderItem = (date, { item }) => {
@@ -7,10 +7,9 @@ const renderItem = (date, { item }) => {
 }
 
 const ActivityList = ({ data, date, disabled=false }) => (
-      <FlatList
-        data={data}
-        renderItem={({ item }) => renderItem(date, {item: {...item, disabled}})}
-      />
+  <View>
+    {data.map(item => renderItem(date, {item: {...item, disabled}}))}
+  </View>
 )
 
 export default ActivityList;
