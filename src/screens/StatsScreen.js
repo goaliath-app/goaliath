@@ -63,6 +63,7 @@ const GoalSelector = ({onGoalSelection}) => {
           scrollViewProps={{
             nestedScrollEnabled: true,
           }}  
+          dropDownContainerStyle={{position: 'relative', top : 0}}
         />
       </View>
     </View>
