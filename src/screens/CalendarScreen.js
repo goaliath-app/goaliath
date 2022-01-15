@@ -13,15 +13,12 @@ const CalendarScreen = ({ navigation }) => {
     <View style={{
       flex: 1, 
       backgroundColor: GeneralColor.screenBackground, 
-      justifyContent: 'space-between'
     }}>
-      <View>
-        <Header title={t('calendar.headerTitle')} navigation={navigation}/>
-        <Calendar 
-          onDayPress={weekDate => navigation.navigate('CalendarWeekView', {date: weekDate.toISO()})}
-          onDayLongPress={dayDate => navigation.navigate('CalendarDayView', {date: dayDate.toISO()})} 
-        />
-      </View>
+      <Header title={t('calendar.headerTitle')} navigation={navigation}/>
+      <Calendar
+        onDayPress={weekDate => navigation.navigate('CalendarWeekView', {date: weekDate.toISO()})}
+        onDayLongPress={dayDate => navigation.navigate('CalendarDayView', {date: dayDate.toISO()})}
+      />
     </View>
   );
 }

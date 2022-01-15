@@ -50,6 +50,8 @@ const es= {
         closeButton: 'OK'
     },
   
+    loadingStats: 'Cargando Estadísticas...',
+    
     activityDetail: {
       threeDotsMenu: {
         editActivity: 'Editar actividad',

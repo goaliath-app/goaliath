@@ -1,7 +1,7 @@
 import React from 'react';
-import { List } from 'react-native-paper'
+import { View, ActivityIndicator } from 'react-native'
 
-const LoadingContainer = ({ children, LoadingComponent=()=><List.Item title={'Loading...'} />, bypassLoading=false }) => {
+const LoadingContainer = ({ children, LoadingComponent=()=><View/>, bypassLoading=false }) => {
   if(children.length > 1){
     throw 'Loading container can only have one child, wrap them in a View'
   }
@@ -32,3 +32,11 @@ export function loadedComponent(Component, LoadingComponent){
     </LoadingContainer>
   )
 }
+
+export const FullScreenActivityIndicator = () => (
+  <View style={{flex: 1, justifyContent: "center"}}>
+    <ActivityIndicator style={{transform: [{scale: 2.5}]}} color="#0000ff" />
+  </View>
+)
+
+export const patata = 'PATATA'

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { DateWheelPicker } from '../components'
 import { CalendarColor } from '../styles/Colors';
-import { loadedComponent } from '../components/Loading'
+import { loadedComponent, FullScreenActivityIndicator } from '../components/Loading'
 
 // TODO: make startOfWeek prop functional
 const Calendar = ({ 
@@ -86,4 +86,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default loadedComponent(Calendar);
+export default loadedComponent(Calendar, FullScreenActivityIndicator);

@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { GeneralColor } from '../styles/Colors';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Subheading, Divider } from 'react-native-paper'
+import { loadedComponent, FullScreenActivityIndicator } from './../components/Loading'
 
 const StatsScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation()
@@ -23,7 +24,7 @@ const StatsScreen = ({ navigation }) => {
       <Header title={t('statsScreen.headerTitle')} navigation={navigation} />
       <GoalSelector onGoalSelection={setSelectedGoal}/>
       <Divider style={{marginHorizontal: 8}}/>
-      <StatsPannel goalId={selectedGoal == "all"? null : selectedGoal} />
+      <StatsPannel goalId={selectedGoal == "all"? null : selectedGoal} bypassLoading />
       <BottomScreenPadding />
     </ScrollView>
   );
@@ -70,4 +71,15 @@ const GoalSelector = ({onGoalSelection}) => {
   );
 }
 
-export default StatsScreen
+const LoadingStatsScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation()
+
+  return (
+    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+      <Header title={t('statsScreen.headerTitle')} navigation={navigation} />
+      <FullScreenActivityIndicator />
+    </View>
+  );
+}
+
+export default loadedComponent(StatsScreen, LoadingStatsScreen)

@@ -1,11 +1,12 @@
 import React from 'react';
-import { View } from 'react-native'
-import { Paragraph, Divider, List } from 'react-native-paper';
+import { View, ActivityIndicator } from 'react-native'
+import { Divider, List } from 'react-native-paper';
 
 import { ActivityBarChartPicker } from './BarCharts'
 import { default as ActivityCalendarHeatmap } from './CalendarHeatmap'
 import { default as GenericStats } from './GenericStats'
 import { loadedComponent } from '../components/Loading'
+import { useTranslation } from 'react-i18next'
 
 const StatsPannel = ({ activityId, goalId }) => (
   <View>
@@ -20,8 +21,13 @@ const StatsPannel = ({ activityId, goalId }) => (
 
 /* TODO TRANSLATE */
 const Placeholder = () => {
+  const { t, i18n } = useTranslation()
+
   return (
-    <List.Item title='Loading Stats...' />
+    <List.Item 
+      left={()=><ActivityIndicator style={{transform: [{scale: 1.2}], marginHorizontal: 6}} color='#0000ff' />} 
+      title={t('loadingStats')}
+    />
   )
 }
 
