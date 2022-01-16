@@ -2,7 +2,7 @@
   "expo": {
     "name": "Goaliath",
     "slug": "Goaliath",
-    "version": "1.0.1",
+    "version": "0.5.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "notification": {
