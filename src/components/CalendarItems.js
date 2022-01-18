@@ -2,10 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next'
 import { getTodaySelector } from '../redux'
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, withTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import ProgressBar from 'react-native-progress/Bar';
-import { CalendarColor } from '../styles/Colors';
 import { 
   dueToday, getWeekCompletionRatio, getDayCompletionRatio, 
   getDayActivityCompletionRatio, getWeekActivityCompletionRatio 
@@ -17,8 +16,10 @@ import Animated, {
 import { 
   GestureDetector, Gesture, State 
 } from 'react-native-gesture-handler';
+import Color from 'color';
 
-const CalendarDayItem = ({ 
+const CalendarDayItem = withTheme(({
+  theme,
   day, 
   currentMonth, 
   activityId, 
@@ -60,13 +61,13 @@ const CalendarDayItem = ({
 
   const isDueThisDay = useSelector(state => dueToday(state, activityId, day))
   const activityFailedThisDay = activityId != null && isDueThisDay && dayProgress == 0 && day < today
-  const dayBackground = activityFailedThisDay? '#DDDDDD' : '#6495ED00'
+  const dayBackground = activityFailedThisDay? theme.colors.disabled : 'transparent'
 
   const pressAnimationStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
       dayAnimationValue.value,
       [0, 1],
-      [dayBackground, '#6495ED']
+      [dayBackground, theme.colors.primary]
     )
 
     const zIndex = weekFillAnimationValue.value > 0? 1 : 0
@@ -148,13 +149,34 @@ const CalendarDayItem = ({
 
     return {
       opacity,
-      backgroundColor: '#6495ED',
+      backgroundColor: theme.colors.primary,
       position: 'absolute',
       top: 0,
       left,
       right,
       bottom: 0
     }
+  })
+
+  const styles = StyleSheet.create({
+    dayComponent: {
+      flex: 1, 
+      aspectRatio: 1,
+    },
+  
+    softTodayView: {
+      justifyContent: 'center', 
+      alignItems: 'center'
+    },
+  
+    todayView: {
+      backgroundColor: theme.colors.primaryDarkVariant, 
+      borderRadius: 30, 
+      width: 30, 
+      height: 30, 
+      justifyContent: 'center', 
+      alignItems: 'center'
+    },
   })
 
   return(
@@ -169,20 +191,20 @@ const CalendarDayItem = ({
             alignSelf: 'flex-end',
             width: '100%',
             height: `${dayProgress*100}%`,
-            backgroundColor: CalendarColor.dayProgress,
+            backgroundColor: theme.colors.primary,
           }} />
           {/* Today Highlight */}
           <View style={{ position: 'absolute', flex: 1, alignSelf: 'center' }}>
             {today.day===day.day && today.month===day.month && today.year===day.year? 
               (softTodayHighlight?
               <View style={styles.softTodayView}>
-                <Text style={{ color: CalendarColor.softTodayTextColor, fontWeight: 'bold', textDecorationLine: 'underline' }}>
+                <Text style={{ color: theme.colors.primaryDarkVariant, fontWeight: 'bold', textDecorationLine: 'underline' }}>
                   {dayLabel}
                 </Text>
               </View>
               :
               <View style={styles.todayView}>
-                <Text style={{ color: CalendarColor.todayTextColor }}>
+                <Text style={{ color: theme.colors.onPrimary }}>
                   {dayLabel}
                 </Text>
               </View> )
@@ -190,15 +212,16 @@ const CalendarDayItem = ({
             currentMonth == null || currentMonth.toFormat('L')==day.month?
             <Text>{dayLabel}</Text>
             :
-            <Text style={{color: CalendarColor.dayOtherMonth}}>{dayLabel}</Text>
+            <Text style={{color: theme.colors.placeholder}}>{dayLabel}</Text>
             }
           </View>
         </View>
     </GestureDetector>
   </Animated.View>
-)}
+)})
 
-const CalendarWeekItem = ({ 
+const CalendarWeekItem = withTheme(({
+  theme,
   date,                  // (required) day belonging to the week to be shown 
   currentMonth=null,     // used to gray out days that are not in the current month, null if not used
   startOfWeek=1,         // used to determine the first day of the week, 1=Monday, 2=Tuesday, etc.
@@ -225,12 +248,14 @@ const CalendarWeekItem = ({
     }
   })
 
+  const pressedColor = Color(theme.colors.primaryLightVariant).darken(0.1).string()
+
   const animatedWeekStyle = useAnimatedStyle(() => {
     return {
       backgroundColor: interpolateColor(
         pressAnimationValue.value, 
         [0, 1],
-        [CalendarColor.weekBackgroundColor, '#6495ED50'] 
+        [theme.colors.primaryLightVariant, pressedColor] 
       )
     }
   })
@@ -244,6 +269,14 @@ const CalendarWeekItem = ({
   }else{
     weekProgress = useSelector((state) => getWeekCompletionRatio(state, date))
   }
+
+  const styles = StyleSheet.create({
+    weekComponent: {
+      justifyContent: 'space-around',
+      flexDirection: 'row',
+      backgroundColor: theme.colors.primaryLightVariant
+    },
+  })
 
   return(
     <Animated.View style={animatedContainerStyle} onLayout={(layoutEvent) => {
@@ -269,43 +302,16 @@ const CalendarWeekItem = ({
       {/* Week ProgressBar */}
       {
       showWeekProgress?
-        <View style={{marginBottom: 10, backgroundColor: CalendarColor.progressBarBackground}}>
+        <View style={{marginBottom: 10, backgroundColor: Color(theme.colors.primaryLightVariant).darken(0.05).string()}}>
           <View style={{
             height: 7,
             width: `${weekProgress*100}%`,
-            backgroundColor: CalendarColor.progressBarColor,
+            backgroundColor: theme.colors.primary,
           }} />
         </View>
       : null }
     </Animated.View>
   )
-}
-
-const styles = StyleSheet.create({
-  weekComponent: {
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    backgroundColor: CalendarColor.weekBackgroundColor
-  },
-
-  dayComponent: {
-    flex: 1, 
-    aspectRatio: 1,
-  },
-
-  softTodayView: {
-    justifyContent: 'center', 
-    alignItems: 'center'
-  },
-
-  todayView: {
-    backgroundColor: CalendarColor.today, 
-    borderRadius: 30, 
-    width: 30, 
-    height: 30, 
-    justifyContent: 'center', 
-    alignItems: 'center'
-  },
 })
 
 export default CalendarWeekItem;

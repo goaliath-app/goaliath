@@ -1,12 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View, FlatList } from 'react-native';
-import { List, Switch, Divider, Portal, Dialog } from 'react-native-paper';
+import { List, Switch, Divider, Portal, Dialog, withTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next'
 import { Header, InfoCard } from '../components';
 import { selectAllActivities, selectGoalById, restoreActivity } from '../redux'
-import { GeneralColor } from '../styles/Colors';
 import { getFrequencyString } from '../activityHandler'
 
 const Activity = ({ name, active, id, activity, goal }) => {
@@ -53,7 +52,7 @@ const Activity = ({ name, active, id, activity, goal }) => {
   );
 }
 
-const ArchivedActivitiesScreen = ({ route, navigation }) => {
+const ArchivedActivitiesScreen = withTheme(({ theme, route, navigation }) => {
   const { t, i18n } = useTranslation()
 
   const { goalId } = route.params
@@ -74,7 +73,7 @@ const ArchivedActivitiesScreen = ({ route, navigation }) => {
   )
 
   return (
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
       <Header title={t("archivedActivitiesScreen.title", {goalName: goal.name})} left='back' navigation={navigation} />
       <View style={{ flex: 1 }}>
         {thisGoalArchivedActivities.length > 0?
@@ -85,6 +84,6 @@ const ArchivedActivitiesScreen = ({ route, navigation }) => {
       </View>
     </View>
   )
-}
+})
 
-export default ArchivedActivitiesScreen
+export default ArchivedActivitiesScreen;

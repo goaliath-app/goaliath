@@ -1,13 +1,17 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { withTheme } from 'react-native-paper'
 import { selectTutorialState } from '../redux'
 import { Pressable } from 'react-native';
 import { faTrophy, faCalendarAlt, faChartBar, faTasks } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { IconHighlighter } from '../components';
 import tutorialStates from '../tutorialStates'
+import Color from 'color'
 
-const disabledColor = '#EBEBE4'
+function disabledColor(color){
+  return Color(color).alpha(0.5).rgb().string()
+}
 
 export const TodayScreenIcon = ({ focused, color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
@@ -33,7 +37,7 @@ export const GoalsScreenIcon = ({ focused, color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
   const tutorialAwareColor = (
-    tutorialState == tutorialStates.TodayScreenIntroduction ? disabledColor : color
+    tutorialState == tutorialStates.TodayScreenIntroduction ? disabledColor(color) : color
   )
 
   const [ isHighlightActive, setIsHighlightActive ] = React.useState(false)
@@ -74,7 +78,7 @@ export const GoalsScreenButton = ( props ) => {
 export const CalendarScreenIcon = ({ color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? disabledColor : color
+  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? disabledColor(color) : color
 
   return (
     <FontAwesomeIcon 
@@ -98,7 +102,7 @@ export const CalendarScreenButton = ( props ) => {
 export const StatsScreenIcon = ({ color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? disabledColor : color
+  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? disabledColor(color) : color
 
   return (
     <FontAwesomeIcon 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native'
+import { withTheme } from 'react-native-paper'
 
 const LoadingContainer = ({ children, LoadingComponent=()=><View/>, bypassLoading=false }) => {
   if(children.length > 1){
@@ -33,10 +34,10 @@ export function loadedComponent(Component, LoadingComponent){
   )
 }
 
-export const FullScreenActivityIndicator = () => (
+export const FullScreenActivityIndicator = withTheme(({ theme }) => (
   <View style={{flex: 1, justifyContent: "center"}}>
-    <ActivityIndicator style={{transform: [{scale: 2.5}]}} color="#0000ff" />
+    <ActivityIndicator style={{transform: [{scale: 2.5}]}} color={theme.colors.primary} />
   </View>
-)
+))
 
 export const patata = 'PATATA'

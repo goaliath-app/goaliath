@@ -1,9 +1,9 @@
 import React from 'react';
 import { View } from 'react-native'
-import { Paragraph, Card, Title } from 'react-native-paper'
-import { InfoCardColor } from '../styles/Colors';
+import { Paragraph, Card, Title, withTheme } from 'react-native-paper'
 
-const InfoCard = ({
+const InfoCard = withTheme(({
+  theme,
   title, 
   paragraph, 
   extraContent, 
@@ -13,7 +13,7 @@ const InfoCard = ({
   paragraphStyle={}
 }) => (
   <View style={{ margin: 24 }}>
-    <Card style={[{backgroundColor: 'aliceblue'}, cardStyle]}>
+    <Card style={[{backgroundColor: theme.colors.primaryLightVariant}, cardStyle]}>
       <Card.Content style={style}>
         { title? <Title style={titleStyle}>{title}</Title> : null }
         { paragraph ? <Paragraph style={paragraphStyle}>{paragraph}</Paragraph> : null }
@@ -21,6 +21,6 @@ const InfoCard = ({
       </Card.Content>
     </Card>
   </View>
-)
+))
 
 export default InfoCard

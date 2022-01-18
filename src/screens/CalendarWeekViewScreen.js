@@ -4,12 +4,11 @@ import {
   selectActivityByIdAndDate, selectAllActiveActivitiesByDate, selectAllActiveGoalsByDate, selectGoalByIdAndDate, selectAllActiveActivitiesByGoalIdAndDate 
 } from '../redux'
 import { ScrollView, View } from 'react-native';
-import { List, Text } from 'react-native-paper';
+import { List, Text, withTheme } from 'react-native-paper';
 import { CalendarWeekItem, Checkbox, Header } from '../components';
 import { getWeekProgressString, getWeekActivityCompletionRatio, getGoalWeekCompletionRatio } from '../activityHandler';
 import { useTranslation } from 'react-i18next';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import { CalendarColor, GeneralColor } from '../styles/Colors';
 import { useNavigation } from '@react-navigation/native';
 import { DateTime } from 'luxon'
 
@@ -39,7 +38,7 @@ const ActivityWeekView = ({ activityId, date }) => {
   )
 }
 
-const GoalWeekView = ({ goalId, date }) => {
+const GoalWeekView = ({ theme, goalId, date }) => {
   const goal = useSelector((state) => selectGoalByIdAndDate(state, goalId, date))
   const goalActivities = useSelector((state) => selectAllActiveActivitiesByGoalIdAndDate(state, goalId, date))
 
@@ -58,14 +57,14 @@ const GoalWeekView = ({ goalId, date }) => {
     <View>
       <List.Accordion title={goal.name} 
         titleNumberOfLines={2}
-        style={{ backgroundColor: GeneralColor.screenBackground, borderBottomWidth: 0.2, borderBottomColor: CalendarColor.goalDivider, borderTopWidth: 0.2, borderTopColor: CalendarColor.goalDivider,paddingLeft: 10 }} 
+        style={{ backgroundColor: theme.colors.surface, borderBottomWidth: 0.2, borderBottomColor: '#CCCCCC', borderTopWidth: 0.2, borderTopColor: '#CCCCCC',paddingLeft: 10 }} 
         left={() => (
           <AnimatedCircularProgress
             size={25}
             width={5}
             fill={goalCompletionRatio * 100}
-            tintColor={CalendarColor.goalProgress}
-            backgroundColor={CalendarColor.goalProgressBackground} />
+            tintColor={theme.colors.primary}
+            backgroundColor={theme.colors.primaryLightVariant} />
       )}>
         {goalActivities.map(activity => <ActivityWeekView activityId={activity.id} date={date} />)}
       </List.Accordion>
@@ -84,7 +83,7 @@ function dayLabel(date, t){
   return date.toFormat("d") + ' ' + t('units.monthNamesShort.' + date.toFormat('LLLL').toLowerCase())
 }
 
-const CalendarWeekViewScreen = ({ route }) => {
+const CalendarWeekViewScreen = withTheme(({ route, theme }) => {
   const { t, i18n } = useTranslation()
 
   const date = DateTime.fromISO(route.params.date).endOf("week")
@@ -114,7 +113,7 @@ const CalendarWeekViewScreen = ({ route }) => {
   const navigation = useNavigation()
 
   return(
-    <View style={{ backgroundColor: GeneralColor.screenBackground, flex: 1 }}>
+    <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
       <Header title={headerTitle(date, t)} left='back' navigation={navigation} />
       <ScrollView >
         {/*WeekViewComponent*/}
@@ -154,7 +153,7 @@ const CalendarWeekViewScreen = ({ route }) => {
 
         {/*GoalWeekView*/}
         {activeGoalCheckbox?
-          goals.map((goal) => <GoalWeekView goalId={goal.id} date={date} />)
+          goals.map((goal) => <GoalWeekView goalId={goal.id} date={date} theme={theme} />)
           : null}
 
         {/*ActivityWeekView*/}
@@ -166,6 +165,6 @@ const CalendarWeekViewScreen = ({ route }) => {
       </ScrollView>
     </View>
   )
-}
+})
 
 export default CalendarWeekViewScreen;

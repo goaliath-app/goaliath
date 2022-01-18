@@ -1,17 +1,16 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { View } from 'react-native'
-import { Button, List, Checkbox, Divider, Paragraph, TextInput } from 'react-native-paper';
+import { Button, List, Checkbox, Divider, Paragraph, TextInput, withTheme } from 'react-native-paper';
 import { TimeInput } from '../../components';
 import { getTodayTime, isActivityRunning, isToday, startOfDay } from '../../util'
 import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
-import { TodayPannelColor } from '../../styles/Colors';
 import { setRepetitions } from './../../redux'
 import { usesRepetitions, getTimeGoal } from '../../activityHandler'
 import Notifications from '../../notifications';
 
-const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour, activity }) => {
+const TodayPannel = withTheme(({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour, activity, theme }) => {
   React.useEffect(() => {
     if (isActivityRunning(entry.intervals)) {
       const intervalId = setInterval(() => {
@@ -84,7 +83,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
           <List.Item title={t('todayPannel.repetitions')} />
           <View style={{ alignItems:'center' }}>
             <TextInput
-            style={{fontSize: 50, textAlign: 'center', margin: 10, width: '30%', backgroundColor: TodayPannelColor.textInputBackground}} 
+            style={{fontSize: 50, textAlign: 'center', margin: 10, width: '30%', backgroundColor: 'transparent'}} 
             value={String(entry.repetitions.length)} 
             onChangeText={(value) => {
               parseInt(value)
@@ -99,7 +98,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
         </View>
       : null }
       <TimeInput 
-        regularColor={activityRunning? TodayPannelColor.activityRunning : TodayPannelColor.regularColor}
+        regularColor={activityRunning? theme.colors.primary : theme.colors.onSurface}
         value={todayTime.as('seconds')} 
         onValueChange={(value) => { 
           setTodayTime(
@@ -123,6 +122,6 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
       <Divider />
     </View>
   )
-}
+})
 
-  export default TodayPannel
+  export default TodayPannel;

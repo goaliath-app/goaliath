@@ -1,16 +1,16 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { View } from 'react-native'
-import { IconButton } from 'react-native-paper'
+import { IconButton, withTheme } from 'react-native-paper'
 import { 
   getTodayTime, isActivityRunning, getPreferedExpression, secondsToUnit,
  } from '../../../util'
-import { toggleCompleted, stopTodayTimer, startTodayTimer, selectEntryByActivityIdAndDate, selectActivityByIdAndDate, getTodaySelector } from '../../../redux'
+import { toggleCompleted, stopTodayTimer, startTodayTimer, selectEntryByActivityIdAndDate, 
+  selectActivityByIdAndDate, getTodaySelector } from '../../../redux'
 import PlayFilledIcon from '../../../../assets/play-filled'
 import PlayOutlinedIcon from '../../../../assets/play-outlined'
 import PauseFilledIcon from '../../../../assets/pause-filled'
 import PauseOutlinedIcon from '../../../../assets/pause-outlined'
-import { ActivityListItemColors } from '../../../styles/Colors'
 import { ActivityListItem, DoubleProgressBar } from '../../../components'
 import { useTranslation } from 'react-i18next'
 import Notifications from '../../../notifications';
@@ -22,7 +22,7 @@ function addEntryThunk( activityId, date ){
   }
 }
 
-const TodayScreenItem = ({ activityId, date }) => {
+const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
   const dispatch = useDispatch()
 
   const { t, i18n } = useTranslation()
@@ -121,14 +121,14 @@ const TodayScreenItem = ({ activityId, date }) => {
       { timerIsRunning? 
         <DoubleProgressBar 
           height={4}
-          firstColor={ActivityListItemColors.progressBarSecondColor} 
-          backgroundColor={ActivityListItemColors.progressBarBackground} 
+          firstColor={theme.colors.primary} 
+          backgroundColor={theme.colors.primaryLightVariant} 
           firstProgress={progress} 
         />
         : null }
     </View>
   )
-}
+})
 
 function getFrequencyString(state, activityId, t, date=null){
   const activity = selectActivityByIdAndDate(state, activityId, date)

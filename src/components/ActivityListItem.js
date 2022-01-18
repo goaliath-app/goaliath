@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View, useWindowDimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, IconButton, Text, Portal, Dialog, Divider } from 'react-native-paper'
+import { List, IconButton, Text, Portal, Dialog, Divider, withTheme } from 'react-native-paper'
 import * as Progress from 'react-native-progress';
 import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue } from '../util'
 import { toggleCompleted, startTodayTimer, stopTodayTimer, selectAllActivities } from '../redux'
@@ -11,14 +11,13 @@ import PlayOutlinedIcon from '../../assets/play-outlined'
 import PauseFilledIcon from '../../assets/pause-filled'
 import PauseOutlinedIcon from '../../assets/pause-outlined'
 import { useTranslation } from 'react-i18next'
-import { ActivityListItemColors } from '../styles/Colors'
 import MaterialComunityIcons  from 'react-native-vector-icons/MaterialCommunityIcons'
 import Checkbox from './Checkbox'
 import { useSelector } from 'react-redux';
 import { usesSelectWeekliesScreen, getFreeActivitiesWeekCompletionRatio } from '../activityHandler'
 
 
-export const ActivityListItem = ({ activity, entry, date, left, description }) => {
+export const ActivityListItem = withTheme(({ theme, activity, entry, date, left, description }) => {
   const { t, i18n } = useTranslation()
 
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
@@ -41,12 +40,10 @@ export const ActivityListItem = ({ activity, entry, date, left, description }) =
   const navigation = useNavigation()
   const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
 
-
-
   return(
     entry.archived?
     null :
-    <View style={{ backgroundColor: isActivityRunning(entry.intervals)? ActivityListItemColors.currentActivityBackground : ActivityListItemColors.listItemBackground }}>
+    <View style={{ backgroundColor: isActivityRunning(entry.intervals)? theme.colors.primaryLightVariant : 'transparent' }}>
       <List.Item
         left={left}
         right={() => ( 
@@ -84,7 +81,7 @@ export const ActivityListItem = ({ activity, entry, date, left, description }) =
       </Portal>
     </View>
   )
-}
+})
 
 const legacy_ActivityListItem = ({ 
   timeGoal,    // number of seconds of the time goal for this activity or null if it is not a timed activity
@@ -241,7 +238,7 @@ export const SelectWeekliesListItem = ({ date, checked, color='black', navigatio
   const weekProgress = getFreeActivitiesWeekCompletionRatio(state, date)
 
   return(
-    <View style={{ backgroundColor: ActivityListItemColors.listItemBackground }}>
+    <View style={{ backgroundColor: 'transparent' }}>
       <List.Item
         left={() => <IconButton icon={() => checked? 
           <MaterialComunityIcons name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
@@ -261,7 +258,7 @@ export const SelectTasksListItem = ({checked, onPress}) => {
   const { t, i18n } = useTranslation()
 
   return(
-    <View style={{ backgroundColor: ActivityListItemColors.listItemBackground }}>
+    <View style={{ backgroundColor: 'transparent' }}>
       <List.Item
         left={() => <IconButton icon={() => checked? 
           <MaterialComunityIcons name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
@@ -280,7 +277,7 @@ export const SelectTasksListItem = ({checked, onPress}) => {
 export const DoubleProgressBar = ({firstColor, secondColor, backgroundColor, firstProgress, secondProgress, height}) => (
   <View >
     <Progress.Bar progress={secondProgress} width={null} height={height} unfilledColor={backgroundColor} borderRadius={0} borderWidth={0} color={secondColor} />
-    <Progress.Bar style={{position: 'absolute'}} progress={firstProgress} height={height} color={firstColor} unfilledColor={ActivityListItemColors.progressBarUnfilledColor} borderWidth={0} width={useWindowDimensions().width} borderRadius={0} />
+    <Progress.Bar style={{position: 'absolute'}} progress={firstProgress} height={height} color={firstColor} unfilledColor={'transparent'} borderWidth={0} width={useWindowDimensions().width} borderRadius={0} />
   </View>
 )
 
@@ -294,11 +291,3 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 })
-
-const actionsToProps = {
-  toggleCompleted,
-  startTodayTimer,
-  stopTodayTimer
-}
-
-export default connect(null, actionsToProps)(ActivityListItem);

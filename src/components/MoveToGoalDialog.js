@@ -1,11 +1,11 @@
 import React from 'react';
 import { ScrollView, View } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
-import { Paragraph, Portal, Dialog as PaperDialog, Button, Snackbar } from 'react-native-paper';
+import { Paragraph, Portal, Dialog as PaperDialog, Button, Snackbar, withTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { selectAllGoals, changeActivityGoal, selectActivityById, selectGoalById } from '../redux'
 
-const Dialog = ({visible, setVisible, activityId}) => {
+const Dialog = withTheme(({ theme, visible, setVisible, activityId }) => {
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
 
@@ -24,7 +24,7 @@ const Dialog = ({visible, setVisible, activityId}) => {
           <View style={{marginHorizontal: 24}}>
             <Paragraph>{t("activityDetail.changeGoalDialogBody", {currentGoal: currentGoal.name})}</Paragraph>
             <View style={{height: 16}} />
-            <ScrollView style={{maxHeight: "80%", backgroundColor: "white"}}>
+            <ScrollView style={{maxHeight: "80%", backgroundColor: theme.colors.background}}>
             {
               goals.map(goal => {
                 return (
@@ -57,6 +57,6 @@ const Dialog = ({visible, setVisible, activityId}) => {
 
     </Portal>
   )
-  }
+  })
 
-export default Dialog
+export default Dialog;

@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { View, ScrollView } from 'react-native'
-import { Card, Title, Paragraph } from 'react-native-paper'
+import { Card, Title, Paragraph, withTheme } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native';
 import { ActivityList, BottomScreenPadding, ViewHighlighter } from '../components'
 import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog, InfoCard } from '../components';
@@ -37,7 +37,7 @@ const EmptyPastWarning = () => {
   )
 }
 
-const DayContent = ({ date }) => {
+const DayContent = withTheme(({ theme, date }) => {
   
   // setup hooks
   const navigation = useNavigation()
@@ -107,7 +107,7 @@ const DayContent = ({ date }) => {
         <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
         : <></> }
         { weekliesSelector == 'allcompleted'?
-        <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color='grey'/>
+        <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color={theme.colors.placeholder}/>
         : <></> }
         { tasksSelector == 'checked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
           <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
@@ -116,6 +116,6 @@ const DayContent = ({ date }) => {
       </ScrollView>
     </Animated.View>
   );
-}
+})
 
 export default DayContent

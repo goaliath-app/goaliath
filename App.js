@@ -1,7 +1,7 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';  // this import needs to be at the top.
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import { Provider as PaperProvider, Snackbar } from  'react-native-paper'
+import { DefaultTheme, Provider as PaperProvider, Snackbar } from  'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { PersistGate } from 'redux-persist/integration/react'
@@ -21,11 +21,12 @@ import {
   TodayScreenIcon, GoalsScreenIcon, GoalsScreenButton, CalendarScreenIcon, 
   CalendarScreenButton, StatsScreenIcon, StatsScreenButton,
 } from './src/components'
-import { StatusBarColor } from './src/styles/Colors';
 import { generateDummyData } from './src/redux/Thunks'
 import Notifications from './src/notifications'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import tutorialStates from './src/tutorialStates'
+import { lightTheme, darkTheme } from './src/theme';
+import Color from 'color'
 
 Notifications.initNotifications()
 
@@ -33,7 +34,7 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const persistor = persistStore(store)
-//persistor.purge()
+// persistor.purge()
 
 /* The three stacks below are inside the BottomTabnavigator.
    If we want to navigate to a new screen without hiding the bottom navigation
@@ -67,6 +68,9 @@ export default function App() {
 
   const [ newUser, setNewUser ] = React.useState()
   const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
+  const [ darkMode, setDarkMode ] = React.useState(false)
+
+  const currentTheme = darkMode? {...DefaultTheme, ...darkTheme} : {...DefaultTheme, ...lightTheme}
 
   function finishOnboarding(){
     setNewUser(false)
@@ -125,13 +129,13 @@ export default function App() {
         persistor={persistor} 
         onBeforeLift={()=>onStoreRehydration()}
       >
-        <PaperProvider>
+        <PaperProvider theme={currentTheme}>
           <Context.Provider value={ { showSnackbar: setSnackbarMessage } } >
             <NavigationContainer>
               <StatusBar 
-                style={StatusBarColor.style} 
+                style={'light'}
                 translucent={false} 
-                backgroundColor={StatusBarColor.backgroundColor}
+                backgroundColor={currentTheme.colors.primaryDarkVariant}
               />
               <GestureHandlerRootView style={{flex: 1}}>
               {newUser?
@@ -156,7 +160,7 @@ export default function App() {
                 <Stack.Screen name='Settings' component={SettingsScreen} />
               </Stack.Navigator>
               }
-              <Snackbar style={{backgroundColor: 'rgba(0, 0, 0, 0.85)'}}
+              <Snackbar style={{backgroundColor: Color(currentTheme.onSurface).alpha(0.9).string()}}
                 action={{label: 'OK', action: () => setSnackbarMessage("")}}
                 visible={snackbarMessage != ""}
                 onDismiss={()=>setSnackbarMessage("")}

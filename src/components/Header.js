@@ -1,9 +1,8 @@
 import React from 'react';
-import { Appbar, IconButton } from 'react-native-paper';
-import { HeaderColor } from '../styles/Colors';
+import { Appbar, IconButton, withTheme } from 'react-native-paper';
 import { IconHighlighter } from '../components';
 
-const Header = ({ title, subtitle, left, navigation, buttons }) => {
+const Header = withTheme(({ theme, title, subtitle, left, navigation, buttons }) => {
     let leftComponent;
 
     if(left === 'back'){
@@ -12,13 +11,13 @@ const Header = ({ title, subtitle, left, navigation, buttons }) => {
         )
     }else if( left == 'highlightedBack'){
         leftComponent = (
-            <IconHighlighter highlightStyle={{backgroundColor: 'white'}}>
-                <Appbar.BackAction color={HeaderColor.icon} onPress={navigation.goBack} />
+            <IconHighlighter highlightStyle={{backgroundColor: theme.colors.onPrimary}}>
+                <Appbar.BackAction color={theme.colors.onPrimary} onPress={navigation.goBack} />
             </IconHighlighter>
         )
     }else if(left == 'hamburger'){
         leftComponent = (
-            <IconButton icon='menu' color={HeaderColor.icon} onPress={navigation.openDrawer}/>
+            <IconButton icon='menu' color={theme.colors.onPrimary} onPress={navigation.openDrawer}/>
         )
     }
 
@@ -29,6 +28,6 @@ const Header = ({ title, subtitle, left, navigation, buttons }) => {
             {buttons}
         </Appbar>
     )
-}
+})
 
 export default Header;

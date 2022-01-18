@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Pressable } from 'react-native'
-import { Portal, Button, Dialog, Text } from 'react-native-paper';
+import { Portal, Button, Dialog, Text, withTheme } from 'react-native-paper';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import  { faQuestionCircle } from '@fortawesome/free-regular-svg-icons'
 import { useTranslation } from 'react-i18next'
-import { HelpIconColor } from '../styles/Colors';
 
-const HelpIcon = ({
+const HelpIcon = withTheme(({
+  theme,
   dialogContent
 }) => {
   const [ visible, setVisible ] = React.useState(false)
@@ -16,7 +16,7 @@ const HelpIcon = ({
   return(
     <View>
       <Pressable onPress={() => setVisible(true)} >
-        <FontAwesomeIcon icon={faQuestionCircle} size={20} color={HelpIconColor.helpIcon}/>
+        <FontAwesomeIcon icon={faQuestionCircle} size={20} color={theme.colors.primary} />
       </Pressable>
       <Portal>
         <Dialog 
@@ -33,6 +33,6 @@ const HelpIcon = ({
       </Portal>
     </View>
   )
-}
+})
 
-export default HelpIcon
+export default HelpIcon;

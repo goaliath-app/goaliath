@@ -5,7 +5,6 @@ import { List, Portal, Dialog, Divider, Paragraph, Title } from 'react-native-pa
 import { getToday } from '../util'
 import { toggleTask, getTodaySelector, deleteTask, selectAllTasksByDate } from '../redux'
 import { useTranslation } from 'react-i18next'
-import { ActivityListItemColors } from '../styles/Colors'
 import Checkbox from './Checkbox'
 import { FlatList } from 'react-native';
 import { DeleteDialog } from '../components'
@@ -40,7 +39,7 @@ const TaskListItem = ({ date, task }) => {
   const { showSnackbar } = React.useContext(Context);
 
   return(
-    <View style={{ backgroundColor: ActivityListItemColors.listItemBackground }}>
+    <View style={{ backgroundColor: 'transparent' }}>
       <List.Item
         left={() => (
           <View>
@@ -61,17 +60,17 @@ const TaskListItem = ({ date, task }) => {
       {/* Long press menu */}
       <Portal>
         <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
-            <Dialog.Content>
-              <Title>{task.name}</Title>
-              <Paragraph style={{marginBottom: 15}}>{t("taskList.longPressMenu.paragraph")}</Paragraph>
-              <Divider />
-              <List.Item title={t("taskList.longPressMenu.delete")} onPress={() => {
-                setLongPressDialogVisible(false)
-                showSnackbar(t("taskList.longPressMenu.deleteSnackbar"))
-                dispatch(deleteTask(date, task.id))
-              }} />
-              <Divider />
-            </Dialog.Content>
+          <Dialog.Content>
+            <Title>{task.name}</Title>
+            <Paragraph style={{marginBottom: 15}}>{t("taskList.longPressMenu.paragraph")}</Paragraph>
+            <Divider />
+            <List.Item title={t("taskList.longPressMenu.delete")} onPress={() => {
+              setLongPressDialogVisible(false)
+              showSnackbar(t("taskList.longPressMenu.deleteSnackbar"))
+              dispatch(deleteTask(date, task.id))
+            }} />
+            <Divider />
+          </Dialog.Content>
         </Dialog>
       </Portal>
     </View>

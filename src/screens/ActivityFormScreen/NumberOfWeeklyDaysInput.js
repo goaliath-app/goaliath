@@ -2,7 +2,6 @@ import React from 'react';
 import { View } from 'react-native';
 import { Subheading, TextInput } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
-import { ActivityFormColor } from '../../styles/Colors';
 
 const NumberOfWeeklyDaysInput = ({ daysPerWeek, setDaysPerWeek }) => {
   const { t, i18n } = useTranslation()
@@ -15,10 +14,10 @@ const NumberOfWeeklyDaysInput = ({ daysPerWeek, setDaysPerWeek }) => {
           marginLeft: 20,
           fontSize: 40,
           textAlign: 'center',
-          backgroundColor: ActivityFormColor.weeklyDaysTextInputBackground
+          backgroundColor: 'transparent'
         }} 
         selectTextOnFocus={true}
-        selectionColor= {ActivityFormColor.weeklyDaysTextInputSelectionColor}
+        selectionColor= {'transparent'}
         value={daysPerWeek} 
         selection={{start:0, end:1}}
         onChangeText={(value) => {

@@ -1,10 +1,9 @@
 import React from 'react';
-import { GeneralColor } from '../styles/Colors';
 import { Checkbox } from '../components';
-import { List } from 'react-native-paper';
+import { List, withTheme } from 'react-native-paper';
 
 
-const WeeklyListItem = ({name, description, id, checkboxStatus, onCheckboxPress, checkboxColor, selected, onPress, date}) => {
+const WeeklyListItem = withTheme(({ theme, name, description, id, checkboxStatus, onCheckboxPress, checkboxColor, selected, onPress, date }) => {
   // if checkboxStatus is null, check if there is already a log for this activity and day
 
   const leftSlot = (
@@ -23,11 +22,11 @@ const WeeklyListItem = ({name, description, id, checkboxStatus, onCheckboxPress,
       titleNumberOfLines={2}
       description={description}
       style={{
-        backgroundColor: selected?GeneralColor.selectedSurface:'white'
+        backgroundColor: selected? theme.colors.primaryLightVariant : theme.colors.surface
       }}
       onPress={onPress}
     />
   )
-}
+})
 
-export default WeeklyListItem
+export default WeeklyListItem;

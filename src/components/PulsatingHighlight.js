@@ -9,8 +9,17 @@ import Animated, {
   withDelay,
   Easing,
 } from 'react-native-reanimated';
+import { withTheme } from 'react-native-paper'
 
 export const IconHighlighter = ({ children, active=true, style={}, highlightStyle={} }) => {
+  
+  const styles = StyleSheet.create({
+    iconHighlighter: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  })
+
   return(
     <View style={[styles.iconHighlighter, style]}>
       <PulsatingHighlight active={active}  style={highlightStyle}/>
@@ -19,8 +28,19 @@ export const IconHighlighter = ({ children, active=true, style={}, highlightStyl
   )
 }
 
-export const ViewHighlighter = ({ children, active=true, animated=true, style={}, highlightStyle={} }) => {
+export const ViewHighlighter = withTheme(({ theme, children, active=true, animated=true, style={}, highlightStyle={} }) => {
   const pulseValue = useSharedValue(0)
+
+  const styles = StyleSheet.create({
+    viewHighlight: {
+      alignSelf: 'center',
+      position: "absolute",
+      height: "100%",
+      width: "100%",
+      backgroundColor: theme.colors.primary,
+    },
+  })
+  
 
   React.useEffect(() => {
     if( active ){
@@ -51,10 +71,20 @@ export const ViewHighlighter = ({ children, active=true, animated=true, style={}
       {children}
     </View>
   )
-}
+})
 
-const PulsatingHighlight = ({ active=true, style={} }) => {
+const PulsatingHighlight = withTheme(({ theme, active=true, style={} }) => {
   const pulseValue = useSharedValue(0)
+
+  const styles = StyleSheet.create({
+    highlight: {
+      position: "absolute", 
+      height: 120, 
+      width: 120, 
+      backgroundColor: theme.colors.primary,
+      borderRadius: 90,
+    },
+  })
 
   React.useEffect(() => {
     if( active ){
@@ -82,25 +112,5 @@ const PulsatingHighlight = ({ active=true, style={} }) => {
   return (
     <Animated.View style={[styles.highlight, style, pulseStyle]} />
   )
-}
-
-const styles = StyleSheet.create({
-  highlight: {
-    position: "absolute", 
-    height: 120, 
-    width: 120, 
-    backgroundColor: 'deepskyblue',
-    borderRadius: 90,
-  },
-  iconHighlighter: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  viewHighlight: {
-    alignSelf: 'center',
-    position: "absolute",
-    height: "100%",
-    width: "100%",
-    backgroundColor: 'deepskyblue',
-  },
 })
+

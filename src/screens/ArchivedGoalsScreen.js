@@ -2,10 +2,9 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Switch, Divider, Portal, Dialog } from 'react-native-paper';
+import { List, Switch, Divider, Portal, Dialog, withTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { selectAllGoals, toggleGoal, restoreGoal } from '../redux'
-import { GeneralColor } from '../styles/Colors';
 import { Header, InfoCard, } from '../components'
 
 
@@ -50,7 +49,7 @@ const ArchivedGoalListItem = ({ name, active, id }) => {
   );
 }
 
-const ArchivedGoalsScreen = ({ navigation }) => {
+const ArchivedGoalsScreen = withTheme(({ theme, navigation }) => {
   const { t, i18n } = useTranslation()
 
   const goals = useSelector(selectAllGoals)
@@ -65,7 +64,7 @@ const ArchivedGoalsScreen = ({ navigation }) => {
   )
       
   return(
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
       <Header 
         title={t("archivedGoalsScreen.title")} left='back' navigation={navigation} 
       />
@@ -76,6 +75,6 @@ const ArchivedGoalsScreen = ({ navigation }) => {
       }
     </View>
   )
-}
+})
 
-export default ArchivedGoalsScreen
+export default ArchivedGoalsScreen;

@@ -8,19 +8,18 @@ import {
 } from '../components'
 import { getTodaySelector, selectAllGoals } from '../redux'
 import { useTranslation } from 'react-i18next'
-import { GeneralColor } from '../styles/Colors';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { Subheading, Divider } from 'react-native-paper'
+import { Subheading, Divider, withTheme } from 'react-native-paper'
 import { loadedComponent, FullScreenActivityIndicator } from './../components/Loading'
 
-const StatsScreen = ({ navigation }) => {
+const StatsScreen = withTheme(({ navigation, theme }) => {
   const { t, i18n } = useTranslation()
 
   // the id of the goal selected by the user
   const [ selectedGoal, setSelectedGoal ] = useState(null)
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <ScrollView style={{flex: 1, backgroundColor: theme.colors.background}}>
       <Header title={t('statsScreen.headerTitle')} navigation={navigation} />
       <GoalSelector onGoalSelection={setSelectedGoal}/>
       <Divider style={{marginHorizontal: 8}}/>
@@ -28,7 +27,7 @@ const StatsScreen = ({ navigation }) => {
       <BottomScreenPadding />
     </ScrollView>
   );
-}
+})
 
 const GoalSelector = ({onGoalSelection}) => {
   const { t, i18n } = useTranslation()
@@ -71,15 +70,15 @@ const GoalSelector = ({onGoalSelection}) => {
   );
 }
 
-const LoadingStatsScreen = ({ navigation }) => {
+const LoadingStatsScreen = withTheme(({ navigation, theme }) => {
   const { t, i18n } = useTranslation()
 
   return (
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
       <Header title={t('statsScreen.headerTitle')} navigation={navigation} />
       <FullScreenActivityIndicator />
     </View>
   );
-}
+})
 
-export default loadedComponent(StatsScreen, LoadingStatsScreen)
+export default loadedComponent(StatsScreen, LoadingStatsScreen);

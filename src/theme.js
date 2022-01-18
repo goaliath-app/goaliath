@@ -1,12 +1,10 @@
 const palette = {
-  blue: '#7BA6ED',
-  blueLight: '#9EC3FF',
-  blueDark: '#4367A1',
-  blueSoft: '#F0F8FF',
-  green: '#9BE9A8',
-  amber: '#EDC87B',
-  amberLight: '#FFE09E',
-  amberDark: '#A18343',
+  blue: '#4D75C5',
+  blueLight: '#E3EEFF',
+  blueDark: '#4365AB',
+  amber: '#FFC34A',
+  amberLight: '#FFCB63',
+  amberDark: '#B38222',
   white: '#ffffff',
   black: '#000000',
   red: '#CE0A24',
@@ -16,55 +14,59 @@ const palette = {
   grayDark: '#121212',
 }
 
-export const theme = {
+export const lightTheme = adaptToPaperTheme({
   colors: {
-    //MaterialDesign
     primary: palette.blue,
     primaryLightVariant: palette.blueLight,
     primaryDarkVariant: palette.blueDark,
-    accent: palette.green,
-    secondary: palette.amber,
-    secondaryLightVariant: palette.amberLight,
-    secondaryDarkVariant: palette.amberDark,
+    accent: palette.amberLight,
+    accentLightVariant: palette.amberLight,
+    accentDarkVariant: palette.amberDark,
     background: palette.white,
     surface: palette.white,
     error: palette.red,
-    onPrimary: palette.black,
+    onPrimary: palette.white,
     onSecondary: palette.black,
     onBackground: palette.black,
     onSurface: palette.black,
     onError: palette.white,
-    /*ReactNativePaper
-    text: '',
-    disabled: '',
-    placeholder: '',
-    backdrop: '',
-    notification: '',*/
-    //Custom
-    gray: palette.gray,
-    grayLight: palette.grayLight,
-    grayDark: palette.grayDark
-
+    disabled: palette.grayLight,
+    placeholder: palette.gray,
   }
-}
+})
 
-export const darkTheme = {
+export const darkTheme = adaptToPaperTheme({
   colors: {
-    //MaterialDesign
     primary: palette.blue,
     primaryLightVariant: palette.blueLight,
     primaryDarkVariant: palette.blueDark,
-    accent: palette.green,
-    secondary: palette.amber,
-    secondaryLightVariant: palette.amberLight,
-    secondaryDarkVariant: palette.amberDark,
+    accent: palette.amber,
+    accentLightVariant: palette.amberLight,
+    accentDarkVariant: palette.amberDark,
     background: palette.grayDark,
     surface: palette.grayDark,
     error: palette.redLight,
-    onPrimary: palette.black,
+    onPrimary: palette.white,
     onSecondary: palette.black,
     onBackground: palette.white,
     onSurface: palette.white,
     onError: palette.black,
+    disabled: palette.grayLight,
+    placeholder: palette.gray,
+  }
+})
+
+/* This function adds extra keys that paper theme needs to work properly,
+with duplicate values of the theme.
+At the moment it adds the text color. Other colors that are not added:
+- backdrop
+- notification*/
+function adaptToPaperTheme(theme){
+  return {
+    ...theme,
+    colors: {
+      ...theme.colors,
+      text: theme.colors.onSurface
+    }
   }
 }

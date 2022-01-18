@@ -3,12 +3,11 @@ import { connect, useSelector, useDispatch } from 'react-redux'
 import { Keyboard, Pressable, View, StyleSheet } from 'react-native';
 import { 
   Appbar, TextInput, HelperText, Subheading, Portal, Dialog, Divider, List, 
-  Switch, Text, Paragraph 
+  Switch, Text, Paragraph, withTheme 
 } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { Header, TimeInput, BottomScreenPadding, InfoCard } from '../../components';
 import { setActivity, selectActivityById } from '../../redux'
-import { GeneralColor, ActivityFormColor } from '../../styles/Colors';
 import NumberOfWeeklyDaysInput from './NumberOfWeeklyDaysInput'
 import WeekdaySelector from './WeekdaySelector'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -53,7 +52,7 @@ function previewFrequencyString(activity, t){
   return getFrequencyString(state, id, t, date)
 }
 
-const ActivityFormScreen = ({ route, navigation }) => {
+const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
 
   const { showSnackbar } = React.useContext(Context);
 
@@ -280,7 +279,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
   )
 
   return(
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
       <Header 
         title={activity?.name?activity.name:t('activityForm.headerTitle')} 
         left='back' navigation={navigation} 
@@ -289,7 +288,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
       <KeyboardAwareScrollView style={{flexGrow: 0}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
         <TextInput 
           error={nameInputError} 
-          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, height: 55, backgroundColor: GeneralColor.textInputBackground}} 
+          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, height: 55, backgroundColor: theme.colors.surface}} 
           mode= 'outlined' 
           label={t('activityForm.nameInputLabel')}
           value={name} 
@@ -305,7 +304,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
             </HelperText> : null
         }
         <TextInput 
-          style={{paddingHorizontal: 15, paddingTop: 10, paddingBottom: 10, fontSize: 16, backgroundColor: GeneralColor.textInputBackground}} 
+          style={{paddingHorizontal: 15, paddingTop: 10, paddingBottom: 10, fontSize: 16, backgroundColor: theme.colors.surface}} 
           mode= 'outlined' 
           multiline={true}
           label={t('activityForm.descriptionInputLabel')}
@@ -359,7 +358,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
               style={{
                 textAlign: 'center', 
                 borderTopWidth: 1, 
-                borderTopColor: GeneralColor.helperTextBorderTopColor, 
+                borderTopColor: theme.colors.error, 
                 marginHorizontal: 25 
               }} 
               type="error" 
@@ -384,10 +383,10 @@ const ActivityFormScreen = ({ route, navigation }) => {
                     marginLeft: 20,
                     fontSize: 40,
                     textAlign: 'center',
-                    backgroundColor: ActivityFormColor.weeklyDaysTextInputBackground
+                    backgroundColor: 'transparent'
                   }} 
                   selectTextOnFocus={true}
-                  selectionColor= {ActivityFormColor.weeklyDaysTextInputSelectionColor}
+                  selectionColor= {'transparent'}
                   value={repetitions}
                   onChangeText={(value) => {
                     value = value<1000?value:'999'
@@ -433,10 +432,10 @@ const ActivityFormScreen = ({ route, navigation }) => {
                     marginLeft: 20,
                     fontSize: 40,
                     textAlign: 'center',
-                    backgroundColor: ActivityFormColor.weeklyDaysTextInputBackground
+                    backgroundColor: 'transparent'
                   }} 
                   selectTextOnFocus={true}
-                  selectionColor= {ActivityFormColor.weeklyDaysTextInputSelectionColor}
+                  selectionColor= {'transparent'}
                   value={repetitions}
                   onChangeText={(value) => {
                     value = value<1000?value:'999'
@@ -489,7 +488,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
                   style={{
                     textAlign: 'center', 
                     borderTopWidth: 1, 
-                    borderTopColor: GeneralColor.helperTextBorderTopColor, 
+                    borderTopColor: theme.colors.error, 
                     marginHorizontal: 35
                   }} 
                   type="error" 
@@ -527,14 +526,14 @@ const ActivityFormScreen = ({ route, navigation }) => {
       </KeyboardAwareScrollView>
     </View>
   )
-}
+})
 
 const styles = StyleSheet.create({
   textInput: {
     fontSize: 40,
     textAlign: 'center',
-    backgroundColor: ActivityFormColor.weeklyDaysTextInputBackground
+    backgroundColor: 'transparent'
   }
 })
 
-export default ActivityFormScreen
+export default ActivityFormScreen;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, View, StyleSheet } from 'react-native';
-import { IconButton, Text, Subheading } from 'react-native-paper';
+import { IconButton, Text, Subheading, withTheme } from 'react-native-paper';
 import { CalendarWeekItem } from './index'
 import { useSelector } from 'react-redux';
 import { getTodaySelector } from '../redux/selectors'
@@ -8,11 +8,11 @@ import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { DateWheelPicker } from '../components'
-import { CalendarColor } from '../styles/Colors';
 import { loadedComponent, FullScreenActivityIndicator } from '../components/Loading'
 
 // TODO: make startOfWeek prop functional
-const Calendar = ({ 
+const Calendar = withTheme(({
+  theme,
   startOfWeek=1,
   onDayPress=()=>{},      // this function will receive a date of that day as argument, as a Luxon DateTime
   onDayLongPress=()=>{},  // this function will receive a date of that day as argument, as a Luxon DateTime
@@ -59,13 +59,13 @@ const Calendar = ({
       </View>
 
       <View style={{ flexDirection:'row', justifyContent:'space-around', marginBottom: 5 }}>
-        <Text style={styles.daysName}>{t('units.dayNamesShort2.monday')}</Text>
-        <Text style={styles.daysName}>{t('units.dayNamesShort2.tuesday')}</Text>
-        <Text style={styles.daysName}>{t('units.dayNamesShort2.wednesday')}</Text>
-        <Text style={styles.daysName}>{t('units.dayNamesShort2.thursday')}</Text>
-        <Text style={styles.daysName}>{t('units.dayNamesShort2.friday')}</Text>
-        <Text style={styles.daysName}>{t('units.dayNamesShort2.saturday')}</Text>
-        <Text style={styles.daysName}>{t('units.dayNamesShort2.sunday')}</Text>
+        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.monday')}</Text>
+        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.tuesday')}</Text>
+        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.wednesday')}</Text>
+        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.thursday')}</Text>
+        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.friday')}</Text>
+        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.saturday')}</Text>
+        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.sunday')}</Text>
       </View>
       
       {weekData.map( date => 
@@ -78,12 +78,6 @@ const Calendar = ({
      
     </View>
   )
-}
-
-const styles = StyleSheet.create({
-  daysName: {
-    color: CalendarColor.daysNameColor
-  }
 })
 
 export default loadedComponent(Calendar, FullScreenActivityIndicator);

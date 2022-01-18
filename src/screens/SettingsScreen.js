@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Share } from 'react-native'
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { Text, List, Divider, Paragraph, Portal, Snackbar, Switch, Dialog, Button } from 'react-native-paper'
+import { Text, List, Divider, Paragraph, Portal, Snackbar, Switch, Dialog,
+  Button, withTheme } from 'react-native-paper'
 import { DateTime } from 'luxon'
 import DateTimePickerModal from "react-native-modal-datetime-picker"
 import email from 'react-native-email'
@@ -11,13 +12,12 @@ import * as DocumentPicker from 'expo-document-picker'
 import { useTranslation } from 'react-i18next'
 import { setDayStartHour, importState, setLanguage, setDailyNotificationHour, updateLogs } from '../redux'
 import { Header } from '../components'
-import { GeneralColor, SettingsColor } from '../styles/Colors';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Notifications from '../notifications';
 
 
-const SettingsScreen = ({ settings, setLanguage, navigation, state, importState }) => {
+const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, state, importState }) => {
   const [ isStartHourPickerVisible, setStartHourPickerVisibility ] = React.useState(false);
   const [ isNotificationHourPickerVisible, setNotificationHourPickerVisibility ] = React.useState(false);
   const [ isLanguageDialogVisible, setLanguageDialogVisible ] = React.useState(false);
@@ -90,7 +90,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
       <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
       <List.Item
         left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} />}
@@ -98,7 +98,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
         description={t('settings.startHourDescription')}
         onPress={() => setStartHourPickerVisibility(true)} 
         right={() => 
-          <Text style={{marginRight: 10, marginTop: 10, color: SettingsColor.accentColor, fontSize: 17}}>
+          <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.primary, fontSize: 17}}>
             {DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}
           </Text>} 
       />
@@ -138,7 +138,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
         right={() => 
           <Text style={{
             marginRight: 10, marginTop: 10, 
-            color: SettingsColor.accentColor, fontSize: 17
+            color: theme.colors.primary, fontSize: 17
           }}>
             {t('settings.languageLocale')}
           </Text>} />
@@ -162,7 +162,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
             title={t('settings.dailyNotificationHour')}
             onPress={() => setNotificationHourPickerVisibility(true)} 
             right={() => 
-              <Text style={{marginRight: 10, marginTop: 10, color: SettingsColor.accentColor, fontSize: 17, paddingBottom: 7}}>
+              <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.primary, fontSize: 17, paddingBottom: 7}}>
                 {DateTime.fromISO(settings.dailyNotificationHour).toFormat('HH:mm')}
               </Text>}
             style={{paddingLeft: 20}} 
@@ -224,7 +224,7 @@ const SettingsScreen = ({ settings, setLanguage, navigation, state, importState 
     </View>
     
   );
-};
+});
 
 const writeFile =  (state) => {
   const date = DateTime.now().toFormat('dd-MM-yy')

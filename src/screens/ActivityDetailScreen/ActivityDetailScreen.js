@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native'
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { Appbar, Paragraph, Menu, Title, Divider, List, Card, Button } from 'react-native-paper';
+import { Appbar, Paragraph, Menu, Title, Divider, List, Card, Button, withTheme } from 'react-native-paper';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { 
@@ -16,7 +16,6 @@ import {
   selectActivityByIdAndDate
 } from '../../redux'
 import { isToday, isFuture } from '../../util'
-import { GeneralColor, HeaderColor } from '../../styles/Colors';
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -48,7 +47,7 @@ const ArchivedWarning = ({ activity }) => {
 }
 
 // TODO: use selectActivityByIdAndDate instead of selectActivityById
-const ActivityDetailScreen = ({ 
+const ActivityDetailScreen = withTheme(({ 
   activity,           // activity object to show on the screen (see ActivitySlice)
   goal,               // the goal object to witch the activity belongs (see GoalsSlice)
   entry,              // the entry of the daily log to show, if one. (see LogsSlice)
@@ -60,6 +59,7 @@ const ActivityDetailScreen = ({
   archiveActivity,     // function to call when the activity is archived (deleted)
   date,
   dayStartHour,
+  theme,
 }) => {
   const { t, i18n } = useTranslation()
 
@@ -97,7 +97,7 @@ const ActivityDetailScreen = ({
     date && !dateIsToday || activity.archived ? null :
     tutorialState == tutorialStates.Finished ? (
       <>
-        <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
+        <Appbar.Action icon='pencil' color={theme.colors.onPrimary} onPress={() => {
           navigation.navigate('ActivityForm', { activityId: activity.id })
         }}
         />
@@ -110,16 +110,16 @@ const ActivityDetailScreen = ({
       </>
     ) : (
       <>
-        <Appbar.Action icon='pencil' color={HeaderColor.icon} style={{opacity: 0.5}} />
-        <Appbar.Action icon='dots-vertical' color={HeaderColor.icon} style={{opacity: 0.5}} />
+        <Appbar.Action icon='pencil' color={theme.colors.onPrimary} style={{opacity: 0.5}} />
+        <Appbar.Action icon='dots-vertical' color={theme.colors.onPrimary} style={{opacity: 0.5}} />
       </> 
     )
   )
 
   return(
-    <View style={{flex:1,backgroundColor: GeneralColor.screenBackground}} >
+    <View style={{flex:1,backgroundColor: theme.colors.background}} >
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
-      <KeyboardAwareScrollView style={{ backgroundColor: GeneralColor.background, flex: 1 }}>
+      <KeyboardAwareScrollView style={{ backgroundColor: theme.colors.background, flex: 1 }}>
         <ArchivedWarning activity={activity} />
         {date && !dateIsToday? 
         <>
@@ -186,7 +186,7 @@ const ActivityDetailScreen = ({
       />
     </View>
   )
-}
+})
 
 
 const mapStateToProps = (state, ownProps) => {

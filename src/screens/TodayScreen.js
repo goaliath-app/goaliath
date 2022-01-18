@@ -5,13 +5,12 @@ import { View } from 'react-native'
 import { DayContent, Dialog, Header, SpeechBubble } from '../components'
 import { getToday, isBetween } from '../util'
 import { useTranslation } from 'react-i18next'
-import { GeneralColor } from '../styles/Colors';
 import { useFocusEffect } from '@react-navigation/native';
-import { Appbar } from 'react-native-paper'
+import { Appbar, withTheme } from 'react-native-paper'
 import { updateLogs, setTutorialState, selectTutorialState } from '../redux'
 import tutorialStates from '../tutorialStates'
 
-const TodayScreen = ({ navigation }) => {
+const TodayScreen = withTheme(({ navigation, theme }) => {
   const dispatch = useDispatch()
 
   function updateDay(){
@@ -51,12 +50,12 @@ const TodayScreen = ({ navigation }) => {
   );
 
   return (
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
       <Header title={t('today.headerTitle')} navigation={navigation} buttons={
         tutorialState == tutorialStates.Finished ? 
-          <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color="white" />
+          <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color={theme.colors.onPrimary} />
           :
-          <Appbar.Action icon='cog' color="white" style={{opacity: 0.5}} />
+          <Appbar.Action icon='cog' color={theme.colors.onPrimary} style={{opacity: 0.5}} />
       }/>
       { isBetween(tutorialStates.TodayScreenIntroduction, tutorialState, tutorialStates.GoalsScreenIntroduction) ?
         <SpeechBubble
@@ -120,6 +119,6 @@ const TodayScreen = ({ navigation }) => {
       />
     </View>
   );
-}
+})
 
-export default TodayScreen
+export default TodayScreen;

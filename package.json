@@ -23,6 +23,7 @@
     "@react-navigation/stack": "^5.14.3",
     "@reduxjs/toolkit": "^1.5.0",
     "array-move": "^3.0.1",
+    "color": "^4.2.0",
     "expo": "^44.0.0",
     "expo-document-picker": "~10.1.0",
     "expo-file-system": "~13.1.0",

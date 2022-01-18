@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native'
-import { Divider, List } from 'react-native-paper';
+import { Divider, List, withTheme } from 'react-native-paper';
 
 import { ActivityBarChartPicker } from './BarCharts'
 import { default as ActivityCalendarHeatmap } from './CalendarHeatmap'
@@ -19,16 +19,15 @@ const StatsPannel = ({ activityId, goalId }) => (
   </View>
 )
 
-/* TODO TRANSLATE */
-const Placeholder = () => {
+const Placeholder = withTheme(({ theme }) => {
   const { t, i18n } = useTranslation()
 
   return (
     <List.Item 
-      left={()=><ActivityIndicator style={{transform: [{scale: 1.2}], marginHorizontal: 6}} color='#0000ff' />} 
+      left={()=><ActivityIndicator style={{transform: [{scale: 1.2}], marginHorizontal: 6}} color={theme.colors.primary} />} 
       title={t('loadingStats')}
     />
   )
-}
+})
 
 export default loadedComponent(StatsPannel, Placeholder)

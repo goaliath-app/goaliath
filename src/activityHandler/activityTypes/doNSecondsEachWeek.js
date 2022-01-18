@@ -10,16 +10,15 @@ import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import Duration from 'luxon/src/duration.js'
 import { View } from 'react-native'
-import { IconButton } from 'react-native-paper'
+import { IconButton, withTheme } from 'react-native-paper'
 import PlayFilledIcon from '../../../assets/play-filled'
 import PlayOutlinedIcon from '../../../assets/play-outlined'
 import PauseFilledIcon from '../../../assets/pause-filled'
 import PauseOutlinedIcon from '../../../assets/pause-outlined'
-import { ActivityListItemColors } from '../../styles/Colors'
 import { ActivityListItem, DoubleProgressBar } from '../../components'
 import Notifications from '../../notifications';
 
-const TodayScreenItem = ({ activityId, date }) => {
+const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
 
@@ -118,16 +117,16 @@ const TodayScreenItem = ({ activityId, date }) => {
       { timerIsRunning? 
         <DoubleProgressBar 
           height={4}
-          firstColor={ActivityListItemColors.progressBarFirstColor} 
-          secondColor={ActivityListItemColors.progressBarSecondColor} 
-          backgroundColor={ActivityListItemColors.progressBarBackground} 
+          firstColor={theme.colors.primaryDarkVariant} 
+          secondColor={theme.colors.primary} 
+          backgroundColor={theme.colors.primaryLightVariant} 
           firstProgress={weeklyProgress} 
           secondProgress={totalProgress} 
         />
         : null }
     </View>
   )
-}
+})
 
 function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){
   // misc. hooks

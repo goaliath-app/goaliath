@@ -1,10 +1,9 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View, FlatList } from 'react-native';
-import { GeneralColor, SelectWeekliesColor } from '../styles/Colors';
 import { Header, Checkbox, CalendarWeekItem } from '../components';
 import { useTranslation } from 'react-i18next';
-import { Appbar, List, Text, Divider } from 'react-native-paper';
+import { Appbar, List, Text, Divider, withTheme } from 'react-native-paper';
 import { 
   selectAllActivities, selectEntriesByDay, weekliesSelectedToday, 
   getTodaySelector 
@@ -12,7 +11,7 @@ import {
 import { SelectWeekliesItemDue, addEntryThunk, removeEntryThunk, SelectWeekliesItemCompleted } from './../activityHandler'
 
 
-const SelectWeeklyActivitiesScreen = ({ navigation }) => {
+const SelectWeeklyActivitiesScreen = withTheme(({ navigation, theme }) => {
   
   // misc. hooks
   const { t, i18n } = useTranslation()
@@ -70,7 +69,7 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
       <Header 
         title={t('weeklyActivities.headerTitle')} 
         left='back' 
@@ -104,6 +103,6 @@ const SelectWeeklyActivitiesScreen = ({ navigation }) => {
       } 
     </View>
   );
-}
+})
 
 export default SelectWeeklyActivitiesScreen;

@@ -2,15 +2,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { View } from 'react-native';
-import { GeneralColor } from '../styles/Colors';
 import { Header } from '../components';
 import { useTranslation } from 'react-i18next';
-import { Appbar, Paragraph, TextInput, Subheading, IconButton } from 'react-native-paper';
+import { Appbar, Paragraph, TextInput, Subheading, IconButton, withTheme } from 'react-native-paper';
 import { addTodayTask, tasksAddedToday } from '../redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 
-const AddTasksScreen = ({ navigation, addTodayTask, tasksAddedToday }) => {
+const AddTasksScreen = ({ theme, navigation, addTodayTask, tasksAddedToday }) => {
   const { t, i18n } = useTranslation()
 
   const [taskNames, setTaskNames] = React.useState({0: ''})
@@ -32,7 +31,7 @@ const AddTasksScreen = ({ navigation, addTodayTask, tasksAddedToday }) => {
   )
 
   return (
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
     <Header 
       title={t('addTasks.title')}
       left='back' 
@@ -104,4 +103,4 @@ const actionsToProps = {
   tasksAddedToday,
 }
 
-export default connect(mapStateToProps, actionsToProps)(AddTasksScreen)
+export default withTheme(connect(mapStateToProps, actionsToProps)(AddTasksScreen));
