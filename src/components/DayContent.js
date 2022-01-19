@@ -82,7 +82,7 @@ const DayContent = withTheme(({ theme, date }) => {
     <Animated.View style={{flex: 1}} layout={Layout.delay(100)}>
       <ScrollView style={{flex: 1}}>
         { timeStatus == 'past' && completedActivities.length == 0 && pendingActivities.length == 0 ? <EmptyPastWarning /> : null }
-        { timeStatus == 'future' ? <EmptyPastWarning /> : null }
+        { timeStatus == 'future' ? <FutureWarning /> : null }
         <ViewHighlighter animated={false} active={tutorialState == tutorialStates.ActivitiesInTodayScreen}>
           <ActivityList data={pendingActivities} date={date} />
         </ViewHighlighter>
