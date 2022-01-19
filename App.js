@@ -110,7 +110,8 @@ export default function App() {
           tabBarIcon: ({ focused, color, size }) => (
             <CalendarScreenIcon {...{focused, color, size}} />
           ),
-          tabBarButton: (props) => <CalendarScreenButton {...props} />
+          tabBarButton: (props) => <CalendarScreenButton {...props} />,
+          unmountOnBlur: true,  // this prevents all calendar selectors to be re-run when the calendar screen is not active. TODO: remove when selectors are optimized using re-reselect
       }} />
       <Tab.Screen name='Stats' component={StatsScreen} 
         options={{ 
@@ -118,7 +119,8 @@ export default function App() {
           tabBarIcon: ({ focused, color, size }) => (
             <StatsScreenIcon {...{focused, color, size}} />
           ),
-          tabBarButton: (props) => <StatsScreenButton {...props} />
+          tabBarButton: (props) => <StatsScreenButton {...props} />,
+          unmountOnBlur: true,  // this prevents all stats selectors to be re-run when the stats screen is not active. TODO: remove when selectors are optimized using re-reselect
       }} />
     </Tab.Navigator>
   )
