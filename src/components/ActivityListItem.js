@@ -11,7 +11,7 @@ import PlayOutlinedIcon from '../../assets/play-outlined'
 import PauseFilledIcon from '../../assets/pause-filled'
 import PauseOutlinedIcon from '../../assets/pause-outlined'
 import { useTranslation } from 'react-i18next'
-import MaterialComunityIcons  from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialCommunityIcons  from 'react-native-vector-icons/MaterialCommunityIcons'
 import Checkbox from './Checkbox'
 import { useSelector } from 'react-redux';
 import { usesSelectWeekliesScreen, getFreeActivitiesWeekCompletionRatio } from '../activityHandler'
@@ -241,8 +241,8 @@ export const SelectWeekliesListItem = ({ date, checked, color='black', navigatio
     <View style={{ backgroundColor: 'transparent' }}>
       <List.Item
         left={() => <IconButton icon={() => checked? 
-          <MaterialComunityIcons name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
-          : <MaterialComunityIcons name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
+          <MaterialCommunityIcons name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
+          : <MaterialCommunityIcons name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
           } />
         }
         title={t('today.selectWeekliesTitle')}
@@ -261,10 +261,9 @@ export const SelectTasksListItem = ({checked, onPress}) => {
     <View style={{ backgroundColor: 'transparent' }}>
       <List.Item
         left={() => <IconButton icon={() => checked? 
-          <MaterialComunityIcons name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
-          : <MaterialComunityIcons name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
-          }
-          size={26} />}
+          <MaterialCommunityIcons name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
+          : <MaterialCommunityIcons name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
+          } />}
         title={t('today.selectTasksTitle')}
         titleNumberOfLines={2}
         // description={t('today.selectTasksDescription')}

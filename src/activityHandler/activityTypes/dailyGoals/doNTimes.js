@@ -7,9 +7,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native'
 import { IconButton } from 'react-native-paper'
-import CheckboxMultipleBlankOutline from '../../../../assets/checkbox-multiple-blank-outline'
-import CheckboxMultipleMarked from '../../../../assets/checkbox-multiple-marked'
 import { ActivityListItem } from '../../../components'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 
 const TodayScreenItem = ({ activityId, date }) => {
@@ -37,9 +36,9 @@ const TodayScreenItem = ({ activityId, date }) => {
   let leftSlot
   // TODO: this is a placeholder, use the right icon with the right onPress
   if(entry.completed){
-    leftSlot = <IconButton icon={() => <CheckboxMultipleMarked />} onPress={addOne} />
+    leftSlot = <IconButton icon={() => <MaterialCommunityIcons name={"checkbox-multiple-marked"} size={25} />} onPress={addOne} />
   }else{
-    leftSlot = <IconButton icon={() => <CheckboxMultipleBlankOutline />} onPress={addOne} />
+    leftSlot = <IconButton icon={() => <MaterialCommunityIcons name={"checkbox-multiple-blank-outline"} size={25} />} onPress={addOne} />
   }
   
   const description = t(
