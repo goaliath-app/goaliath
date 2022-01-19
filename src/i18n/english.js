@@ -266,6 +266,7 @@ const en = {
 
     addTasks: {
       title: 'Add One Time Tasks',
+      placeholder: 'Task name',
       description: 'The tasks will be added to this day as "do once" activities.',
     },
 
@@ -308,7 +309,8 @@ const en = {
           frequencyString: '{{days}} days each week',
           frequencyStringSingular: '{{days}} day each week',
           completed: 'Completed',
-          daysLeft: '{{daysLeft}} days left'
+          daysLeft: '{{daysLeft}} days left',
+          daysLeftSingular: '{{daysLeft}} day left',
         }
       },
       dailyGoals: {

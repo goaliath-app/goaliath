@@ -266,6 +266,7 @@ const es= {
 
     addTasks: {
       title: 'Añade Tareas Puntuales',
+      placeholder: 'Nombre de la tarea',
       description: 'Las tareas aparencerán en este día como actividades que hacer solo una vez.',
     },
 
@@ -308,7 +309,8 @@ const es= {
           frequencyString: '{{days}} días a la semana',
           frequencyStringSingular: '{{days}} día a la semana',
           completed: 'Completada',
-          daysLeft: 'Quedan {{daysLeft}} días'
+          daysLeft: 'Quedan {{daysLeft}} días',
+          daysLeftSingular: 'Queda {{daysLeft}} día',
         }
       },
       dailyGoals: {

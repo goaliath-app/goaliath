@@ -59,7 +59,7 @@ const AddTasksScreen = ({ theme, navigation, addTodayTask, tasksAddedToday }) =>
                     }
                     setTaskNames(newTaskNames)
                   }}
-                  placeholder={'Task Name'}
+                  placeholder={t('addTasks.placeholder')}
                 />
                 {taskNames[key] !== ''?
                 <IconButton
