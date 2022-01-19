@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { View } from 'react-native'
-import { List, Portal, Dialog, Divider, Paragraph, Title } from 'react-native-paper'
+import { List, Portal, Dialog, Divider, Paragraph, Title, withTheme } from 'react-native-paper'
 import { getToday } from '../util'
 import { toggleTask, getTodaySelector, deleteTask, selectAllTasksByDate } from '../redux'
 import { useTranslation } from 'react-i18next'
@@ -32,7 +32,7 @@ const TaskList = ({ date, show="all" }) => {
 
 export default TaskList
 
-const TaskListItem = ({ date, task }) => {
+const TaskListItem = withTheme(({ date, task, theme }) => {
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
@@ -44,8 +44,8 @@ const TaskListItem = ({ date, task }) => {
         left={() => (
           <View>
             <Checkbox 
-              color='black'
-              uncheckedColor='black'
+              color={theme.colors.onBackground}
+              uncheckedColor={theme.colors.onBackground}
               status={task.completed? 'checked' : 'unchecked'}
               onPress={() => {dispatch(toggleTask(date, task.id))}}
             />
@@ -75,4 +75,4 @@ const TaskListItem = ({ date, task }) => {
       </Portal>
     </View>
   )
-}
+})

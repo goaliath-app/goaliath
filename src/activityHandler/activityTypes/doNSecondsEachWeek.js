@@ -155,7 +155,7 @@ function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, is
   )
 }
 
-function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
+const SelectWeekliesItemCompleted = withTheme(({ activity, today, theme, isSelected, onPress }) => {
   const { t, i18n } = useTranslation()
   
   const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, today, activity.id))
@@ -174,13 +174,13 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
         selected={isSelected} 
         onPress={onPress}
         date={today}
-        checkboxColor='grey'
+        checkboxColor={theme.colors.placeholder}
         onCheckboxPress={()=>{}}
       /> 
       :
       null
   )
-}
+})
 
 function getFrequencyString(state, activityId, t, date=null){
   const activity = selectActivityByIdAndDate(state, activityId, date)

@@ -1,12 +1,12 @@
 import React from 'react';
-
+import { withTheme } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { toggleCompleted, selectEntryByActivityIdAndDate, selectActivityByIdAndDate } from '../../../redux'
 import { Checkbox, ActivityListItem } from '../../../components'
 
 
-const TodayScreenItem = ({ activityId, date }) => {
+const TodayScreenItem = withTheme(({ activityId, date, theme }) => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
@@ -19,8 +19,8 @@ const TodayScreenItem = ({ activityId, date }) => {
       date={date}
       left={() => (
         <Checkbox 
-          color='black'
-          uncheckedColor='black'
+          color={theme.colors.onBackground}
+          uncheckedColor={theme.colors.onBackground}
           status={entry.completed?'checked':'unchecked'}
           onPress={() => {
             dispatch(toggleCompleted({date: date, id: activityId}))
@@ -29,7 +29,7 @@ const TodayScreenItem = ({ activityId, date }) => {
       )}
     />
   )
-}
+})
 
 function getFrequencyString(state, activityId, t){
   return '' 

@@ -94,7 +94,7 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
         selected={isSelected} 
         onPress={onPress}
         date={today}
-        checkboxColor='grey'
+        checkboxColor={theme.colors.placeholder}
       /> 
       :
       null

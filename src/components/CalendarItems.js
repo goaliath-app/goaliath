@@ -192,6 +192,7 @@ const CalendarDayItem = withTheme(({
             width: '100%',
             height: `${dayProgress*100}%`,
             backgroundColor: theme.colors.primary,
+            opacity: 0.4,
           }} />
           {/* Today Highlight */}
           <View style={{ position: 'absolute', flex: 1, alignSelf: 'center' }}>
@@ -307,6 +308,7 @@ const CalendarWeekItem = withTheme(({
             height: 7,
             width: `${weekProgress*100}%`,
             backgroundColor: theme.colors.primary,
+            opacity: 0.6,
           }} />
         </View>
       : null }

@@ -87,6 +87,7 @@ export default function App() {
     <Tab.Navigator labeled={false} showLabel={false} screenOptions={{
       headerShown: false,
       tabBarLabel: () => null,
+      tabBarActiveTintColor: currentTheme.colors.primary,
     }}>
       <Tab.Screen name='Today' component={TodayStack} 
         options={{ 

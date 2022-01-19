@@ -8,7 +8,7 @@ import {
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import { View, } from 'react-native'
-import { IconButton, } from 'react-native-paper'
+import { IconButton, withTheme} from 'react-native-paper'
 import { ActivityListItem } from '../../components'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -103,7 +103,7 @@ function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, is
 }
 
 
-function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
+const SelectWeekliesItemCompleted = withTheme(({ activity, today, theme, isSelected, onPress }) => {
   const { t, i18n } = useTranslation()
   
   const weekCompleted = useSelector(state => isWeekCompleted(state, activity.id, today))
@@ -124,13 +124,13 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
         selected={isSelected} 
         onPress={onPress}
         date={today}
-        checkboxColor='grey'
+        checkboxColor={theme.colors.placeholder}
         onCheckboxPress={()=>{}}
       /> 
       :
       null
   )
-}
+})
 
 // addEntryThunk to add the repetitions field to entries of this activity type
 function addEntryThunk( activityId, date ){
