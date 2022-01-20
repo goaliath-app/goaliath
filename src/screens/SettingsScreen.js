@@ -151,6 +151,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
           <Switch 
             value={dailyNotificationSwitch} 
             onValueChange={ () => changeDailyNotificationSwitch( t ) }
+            style={{ height: 48, width: 48 }}
           />
         )}
         description={t('settings.dailyNotificationDescription')}

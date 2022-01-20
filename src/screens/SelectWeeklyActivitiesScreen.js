@@ -56,6 +56,7 @@ const SelectWeeklyActivitiesScreen = withTheme(({ navigation, theme }) => {
         dispatch(weekliesSelectedToday())
         navigation.goBack()
       }}
+      style={{ height: 48, width: 48 }}
     />
   )
 

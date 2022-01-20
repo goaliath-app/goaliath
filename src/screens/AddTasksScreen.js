@@ -27,6 +27,7 @@ const AddTasksScreen = ({ theme, navigation, addTodayTask, tasksAddedToday }) =>
         tasksAddedToday()
         navigation.goBack()
       }}
+      style={{ height: 48, width: 48 }}
     />
   )
 
@@ -49,7 +50,7 @@ const AddTasksScreen = ({ theme, navigation, addTodayTask, tasksAddedToday }) =>
               <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 5}}>
                 <Subheading>{parseInt(key)+1}.</Subheading>
                 <TextInput
-                  style={{flex: 1, marginLeft: 14, height: 46, backgroundColor: 'transparent'}}
+                  style={{flex: 1, marginLeft: 14, height: 48, backgroundColor: 'transparent'}}
                   id={key}
                   value={taskNames[key]}
                   onChangeText={(text) => {
@@ -76,11 +77,13 @@ const AddTasksScreen = ({ theme, navigation, addTodayTask, tasksAddedToday }) =>
                     })
                     setTaskNames(newTaskNames)
                   }}
+                  style={{ height: 48, width: 48 }}
                 /> :
                 <IconButton
                   icon="close"
                   size={20}
                   color='transparent'
+                  style={{ height: 48, width: 48 }}
                 /> 
                 }
               </View>

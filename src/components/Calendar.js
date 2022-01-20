@@ -45,8 +45,8 @@ const Calendar = withTheme(({
         {/* TODO: Add horizontal scroll. */}
         <IconButton icon={() => <FontAwesomeIcon icon={faChevronLeft} />} 
           onPress={() => setSelectedDate(selectedDate.minus({month: 1}))} 
-          style={{paddingHorizontal: 10}} />
-        <Pressable onPress={() => setwheelPickerVisible(true)}>
+          style={{paddingHorizontal: 10, height: 48, width: 48}} />
+        <Pressable onPress={() => setwheelPickerVisible(true)} style={{ height: 48 }}>
           <Subheading>{monthLabel} {year}</Subheading>
           {wheelPickerVisible?
           <DateWheelPicker initialSelectedDate={selectedDate} onDismiss={() => setwheelPickerVisible(false)} onOKPress={(newDate) => setSelectedDate(newDate)} today={today} visible={wheelPickerVisible} />
@@ -55,7 +55,7 @@ const Calendar = withTheme(({
         </Pressable>
         <IconButton icon={() => <FontAwesomeIcon icon={faChevronRight} />} 
           onPress={() => setSelectedDate(selectedDate.plus({month: 1}))} 
-          style={{paddingHorizontal: 10}} />
+          style={{paddingHorizontal: 10, height: 48, width: 48}} />
       </View>
 
       <View style={{ flexDirection:'row', justifyContent:'space-around', marginBottom: 5 }}>

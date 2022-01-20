@@ -7,12 +7,12 @@ const Header = withTheme(({ theme, title, subtitle, left, navigation, buttons })
 
     if(left === 'back'){
         leftComponent = (
-            <Appbar.BackAction onPress={navigation.goBack} />
+            <Appbar.BackAction onPress={navigation.goBack} style={{ height: 48, width: 48 }} />
         )
     }else if( left == 'highlightedBack'){
         leftComponent = (
             <IconHighlighter highlightStyle={{backgroundColor: theme.colors.onPrimary}}>
-                <Appbar.BackAction color={theme.colors.onPrimary} onPress={navigation.goBack} />
+                <Appbar.BackAction color={theme.colors.onPrimary} onPress={navigation.goBack} style={{ height: 48, width: 48 }} />
             </IconHighlighter>
         )
     }else if(left == 'hamburger'){

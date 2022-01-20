@@ -28,6 +28,7 @@ const Activity = ({ name, active, id, activity, goal }) => {
           <Switch
             disabled={true}
             value={active}
+            style={{ height: 48, width: 48 }}
           />
         )}
         description={frequencyString} 

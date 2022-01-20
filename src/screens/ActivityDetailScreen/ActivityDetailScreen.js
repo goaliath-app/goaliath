@@ -100,6 +100,7 @@ const ActivityDetailScreen = withTheme(({
         <Appbar.Action icon='pencil' color={theme.colors.onPrimary} onPress={() => {
           navigation.navigate('ActivityForm', { activityId: activity.id })
         }}
+        style={{ height: 48, width: 48 }}
         />
         <ThreeDotsMenu 
           menuItems={menuItems} 
@@ -110,8 +111,8 @@ const ActivityDetailScreen = withTheme(({
       </>
     ) : (
       <>
-        <Appbar.Action icon='pencil' color={theme.colors.onPrimary} style={{opacity: 0.5}} />
-        <Appbar.Action icon='dots-vertical' color={theme.colors.onPrimary} style={{opacity: 0.5}} />
+        <Appbar.Action icon='pencil' color={theme.colors.onPrimary} style={{opacity: 0.5, height: 48, width: 48}} />
+        <Appbar.Action icon='dots-vertical' color={theme.colors.onPrimary} style={{opacity: 0.5, height: 48, width: 48}} />
       </> 
     )
   )

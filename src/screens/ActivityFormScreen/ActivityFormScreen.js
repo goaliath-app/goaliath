@@ -274,7 +274,8 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
           }
           navigation.goBack()
         }
-      }} 
+      }}
+      style={{ height: 48, width: 48 }}
     /> 
   )
 
@@ -288,7 +289,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
       <KeyboardAwareScrollView style={{flexGrow: 0}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
         <TextInput 
           error={nameInputError} 
-          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, height: 55, backgroundColor: theme.colors.surface}} 
+          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, backgroundColor: theme.colors.surface}} 
           mode= 'outlined' 
           label={t('activityForm.nameInputLabel')}
           value={name} 
@@ -315,7 +316,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
         />
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
-        <Pressable style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {
+        <Pressable style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10, height: 50, borderRadius: 5}} onPress={() => {
           Keyboard.dismiss()
           setFrequencyVisible(true)
           setNoFrequencyError(false)
@@ -371,7 +372,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
               title={t('activityForm.switch.multipleTimes')}
               right={() => (
                 <View style={{ marginRight: 12 }}>
-                  <Switch value={multipleTimesSwitch} onValueChange={() => {setTimeGoalSwitch(false), setMultipleTimesSwitch(!multipleTimesSwitch)}} />
+                  <Switch value={multipleTimesSwitch} onValueChange={() => {setTimeGoalSwitch(false), setMultipleTimesSwitch(!multipleTimesSwitch)}} style={{ height: 48, width: 48 }} />
                 </View>
               )}
             />
@@ -413,7 +414,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
               title={t('activityForm.switch.repetitionsGoal')}
               right={() => (
                 <View style={{ marginRight: 12 }}>
-                  <Switch value={repetitionsGoalSwitch} onValueChange={() => {
+                  <Switch value={repetitionsGoalSwitch} style={{ height: 48, width: 48 }} onValueChange={() => {
                     if(!timeGoalSwitch){
                       setTimeGoalSwitch(true)
                     } else{
@@ -456,7 +457,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
               title={t('activityForm.switch.timeGoal')}
               right={() => (
                 <View style={{ marginRight: 12 }}>
-                  <Switch value={timeGoalSwitch} onValueChange={( newValue ) => {
+                  <Switch value={timeGoalSwitch} style={{ height: 48, width: 48 }} onValueChange={( newValue ) => {
                     if (!repetitionsGoalSwitch && !newValue) {
                       setRepetitionsGoalSwitch(true)
                     } else {
