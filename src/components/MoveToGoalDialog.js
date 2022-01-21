@@ -1,15 +1,16 @@
 import React from 'react';
 import { ScrollView, View } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
-import { Paragraph, Portal, Dialog as PaperDialog, Button, Snackbar, withTheme } from 'react-native-paper';
+import { Paragraph, Portal, Dialog as PaperDialog, Button, withTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { selectAllGoals, changeActivityGoal, selectActivityById, selectGoalById } from '../redux'
+import { Context } from '../../App'
 
 const Dialog = withTheme(({ theme, visible, setVisible, activityId }) => {
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
 
-  const [ snackbarVisible, setSnackBarVisible ] = React.useState(false)
+  const { showSnackbar } = React.useContext(Context)
 
   const activity = useSelector(state => selectActivityById(state, activityId))
   const currentGoal = useSelector(state => selectGoalById(state, activity.goalId))
@@ -30,7 +31,7 @@ const Dialog = withTheme(({ theme, visible, setVisible, activityId }) => {
                 return (
                   <Button key={goal.id} mode="outlined" onPress={() => {
                     setVisible(false)
-                    setSnackBarVisible(true)
+                    showSnackbar(t("activityDetail.changeGoalSnackbar", {goalName: goal.name}))
                     dispatch(changeActivityGoal(activityId, goal.id))
                   }}>
                     {goal.name}
@@ -46,14 +47,6 @@ const Dialog = withTheme(({ theme, visible, setVisible, activityId }) => {
           }}>{t("activityDetail.changeGoalDialogCancel")}</Button>
         </PaperDialog.Actions>
       </PaperDialog>
-
-      <Snackbar
-        visible={snackbarVisible}
-        onDismiss={()=>setSnackBarVisible(false)}
-        duration={5000}
-      >
-        {t("activityDetail.changeGoalSnackbar")}
-      </Snackbar>
 
     </Portal>
   )

@@ -66,7 +66,7 @@ const en = {
       changeGoalDialogTitle: "Select target goal",
       changeGoalDialogCancel: "Cancel",
       changeGoalDialogBody: 'Current goal: {{currentGoal}}',
-      changeGoalSnackbar: "Activity moved to other goal",
+      changeGoalSnackbar: "Activity moved to {{goalName}} goal",
       archivedWarning: "This activity is archived",
       restoreButton: "Restore activity",
     },
@@ -273,7 +273,8 @@ const en = {
     taskList: {
       longPressMenu: {
         paragraph: 'This is a one time task',
-        delete: 'Delete Task',
+        deleteTitle: 'Delete Task',
+        deleteDescription: "This action can't be undone.",
         deleteSnackbar: 'Task deleted',
       }
     },

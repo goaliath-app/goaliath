@@ -1,7 +1,7 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';  // this import needs to be at the top.
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import { DefaultTheme, Provider as PaperProvider, Snackbar } from  'react-native-paper'
+import { DefaultTheme, Provider as PaperProvider, Snackbar } from 'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { PersistGate } from 'redux-persist/integration/react'
@@ -163,7 +163,7 @@ export default function App() {
                 <Stack.Screen name='Settings' component={SettingsScreen} />
               </Stack.Navigator>
               }
-              <Snackbar style={{backgroundColor: Color(currentTheme.onSurface).alpha(0.9).string()}}
+              <Snackbar style={{backgroundColor: Color(currentTheme.onSurface).alpha(0.9).string(), bottom: 35}}
                 action={{label: 'OK', action: () => setSnackbarMessage("")}}
                 visible={snackbarMessage != ""}
                 onDismiss={()=>setSnackbarMessage("")}

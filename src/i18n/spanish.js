@@ -66,7 +66,7 @@ const es= {
       changeGoalDialogTitle: "Seleccionar nueva meta",
       changeGoalDialogCancel: "Cancelar",
       changeGoalDialogBody: 'Meta actual: {{currentGoal}}',
-      changeGoalSnackbar: "Actividad movida a otra meta",
+      changeGoalSnackbar: "Actividad movida a la meta {{goalName}}",
       archivedWarning: "Esta actividad está archivada",
       restoreButton: "Restaurar actividad",
     },
@@ -231,7 +231,7 @@ const es= {
         export: 'Exportar',
         exportDescription: 'Guarda tus datos',
         import: 'Importar',
-        importDescription: 'Tienes una copia de seguridad? Restaura tus datos',
+        importDescription: '¿Tienes una copia de seguridad? Restaura tus datos',
         language: 'Idioma',
         languageDescription: 'Sólo cambiaran los textos por defecto',
         importDialog: {
@@ -273,7 +273,8 @@ const es= {
     taskList: {
       longPressMenu: {
         paragraph: 'Tarea puntual',
-        delete: 'Eliminar tarea',
+        deleteTitle: 'Eliminar tarea',
+        deleteDescription: 'Esta acción no podrá ser deshecha.',
         deleteSnackbar: 'Tarea eliminada',
       }
     },
