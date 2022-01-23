@@ -1,3 +1,5 @@
+import Color from 'color'
+
 const palette = {
   blue: '#4D75C5',
   blueLight: '#E3EEFF',
@@ -14,40 +16,62 @@ const palette = {
   grayDark: '#121212',
 }
 
-export const lightTheme = adaptToPaperTheme({
+export const lightTheme = populateTheme({
   colors: {
-    primary: palette.blue,
-    primaryLightVariant: palette.blueLight,
-    primaryDarkVariant: palette.blueDark,
-    accent: palette.amberLight,
-    accentLightVariant: palette.amberLight,
-    accentDarkVariant: palette.amberDark,
-    background: palette.white,
-    surface: palette.white,
+    // key colors
+    primaryColor: 'hsla(256, 80%, 57%, 1)',
+    secondaryColor: 'hsl(224, 35%, 57%)',
+    accentColor: 'hsla(162, 60%, 57%, 1)',//'hsl(224, 100%, 57%)',
+    neutralColor: '#000000',
+
+    // aliases
+    primary: 'primary40',
+    onPrimary: 'primary100',
+    primaryContainer: 'primary90',
+    onPrimaryContainer: 'primary10',
+    secondary: 'secondary40',
+    onSecondary: 'secondary100',
+    secondaryContainer: 'secondary90',
+    onSecondaryContainer: 'secondary10',
+    accent: 'accent40',
+    onAccent: 'accent100',
+    accentContainer: 'accent90',
+    onAccentContainer: 'accent10',
+
+    background: 'secondary95',
+    onBackground: 'neutral10',
+    surface: 'secondary99',
+    onSurface: 'neutral10',
+    surfaceVariant: 'neutral90',
+    onSurfaceVariant: 'neutral30',
+    outline: 'neutral50',
+
+    inverseSurface: 'neutral20',
+    inverseOnSurface: 'neutral95',
+    inversePrimary: 'primary80',
+    
+    // extra colors
+    primaryDarkVariant: 'primary30',
     error: palette.red,
-    onPrimary: palette.white,
-    onAccent: palette.black,
-    onBackground: palette.black,
-    onSurface: palette.black,
     onError: palette.white,
     disabled: palette.grayLight,
     placeholder: palette.gray,
   }
 })
 
-export const darkTheme = adaptToPaperTheme({
+export const darkTheme = populateTheme({
   colors: {
     primary: palette.blue,
     primaryLightVariant: palette.blueLight,
     primaryDarkVariant: palette.blueDark,
-    accent: palette.amber,
-    accentLightVariant: palette.amberLight,
-    accentDarkVariant: palette.amberDark,
+    secondary: palette.amber,
+    secondaryLightVariant: palette.amberLight,
+    secondaryDarkVariant: palette.amberDark,
     background: palette.grayDark,
     surface: palette.grayDark,
     error: palette.redLight,
     onPrimary: palette.white,
-    onAccent: palette.black,
+    onSecondary: palette.black,
     onBackground: palette.white,
     onSurface: palette.white,
     onError: palette.black,
@@ -56,17 +80,42 @@ export const darkTheme = adaptToPaperTheme({
   }
 })
 
-/* This function adds extra keys that paper theme needs to work properly,
-with duplicate values of the theme.
-At the moment it adds the text color. Other colors that are not added:
-- backdrop
-- notification*/
-function adaptToPaperTheme(theme){
-  return {
-    ...theme,
-    colors: {
-      ...theme.colors,
-      text: theme.colors.onSurface
-    }
+
+function setLuminosity(color, luminosity){
+  const [ hue, saturation, oldLuminosity ] = Color(color).hsl().array()
+  return Color.hsl(hue, saturation, luminosity).hex()
+}
+
+function generateTonalPalette(color, name){
+  const luminosityValues = [ 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100 ]
+  const tonalPalette = {}
+  luminosityValues.forEach( luminosity => {
+    tonalPalette[name + luminosity] = setLuminosity(color, luminosity)
+  })
+  return tonalPalette
+}
+
+function populateTheme(theme){
+  // add paper text color key
+  theme.colors.text = theme.colors.onSurface
+
+  // add tonal palette colors for primary and secondary colors
+  theme.colors = { 
+    ...theme.colors, 
+    ...generateTonalPalette(theme.colors.primaryColor, 'primary'),
+    ...generateTonalPalette(theme.colors.secondaryColor, 'secondary'), 
+    ...generateTonalPalette(theme.colors.accentColor, 'accent'),
+    ...generateTonalPalette(theme.colors.neutralColor, 'neutral'), 
   }
+
+  // resolve keys referencing other keys 
+  // (you can set primaryLightVariant to primary30) and this will resolve it 
+  // for you
+  Object.keys(theme.colors).forEach( key => {
+    if( theme.colors[theme.colors[key]] != undefined ){
+      theme.colors[key] = theme.colors[theme.colors[key]]
+    }
+  })
+  
+  return theme
 }

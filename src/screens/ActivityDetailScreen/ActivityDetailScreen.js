@@ -117,9 +117,9 @@ const ActivityDetailScreen = withTheme(({
   )
 
   return(
-    <View style={{flex:1,backgroundColor: theme.colors.background}} >
+    <View style={{flex:1,backgroundColor: theme.colors.primary99}} >
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
-      <KeyboardAwareScrollView style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+      <KeyboardAwareScrollView style={{ flex: 1 }}>
         <ArchivedWarning activity={activity} />
         {date && !dateIsToday? 
         <>

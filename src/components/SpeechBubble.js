@@ -152,7 +152,7 @@ const SpeechBubble = withTheme(({
 
   return (
     <TapGestureHandler onGestureEvent={onPressHandler} maxDurationMs={10000}>
-      <Animated.View style={[styles.speechBubble, {backgroundColor: theme.colors.primaryLightVariant}, bubbleAnimatedStyle, bubbleStyle]} exiting={FadeOut}>
+      <Animated.View style={[styles.speechBubble, {backgroundColor: theme.colors.primaryContainer}, bubbleAnimatedStyle, bubbleStyle]} exiting={FadeOut}>
         <AnimatedTextComponent {...configProps} speech={speeches[speechIndex]} 
           onAnimationEnd={onTextEnd} bypassAnimation={bypassAnimation} />
         <Animated.Image style={bounceStyle} source={touchIconSrc} />

@@ -90,7 +90,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.surface}}>
       <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
       <List.Item
         left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} />}
@@ -98,7 +98,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         description={t('settings.startHourDescription')}
         onPress={() => setStartHourPickerVisibility(true)} 
         right={() => 
-          <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.primary, fontSize: 17}}>
+          <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.onSecondaryContainer, fontSize: 17}}>
             {DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}
           </Text>} 
       />
@@ -138,7 +138,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         right={() => 
           <Text style={{
             marginRight: 10, marginTop: 10, 
-            color: theme.colors.primary, fontSize: 17
+            color: theme.colors.onSecondaryContainer, fontSize: 17
           }}>
             {t('settings.languageLocale')}
           </Text>} />
@@ -162,7 +162,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
             title={t('settings.dailyNotificationHour')}
             onPress={() => setNotificationHourPickerVisibility(true)} 
             right={() => 
-              <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.primary, fontSize: 17, paddingBottom: 7}}>
+              <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.onSecondaryContainer, fontSize: 17, paddingBottom: 7}}>
                 {DateTime.fromISO(settings.dailyNotificationHour).toFormat('HH:mm')}
               </Text>}
             style={{paddingLeft: 20}} 

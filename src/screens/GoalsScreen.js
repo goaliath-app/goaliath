@@ -125,7 +125,7 @@ const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
   )
       
   return(
-    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.surface}}>
       <Header 
         title={t('goals.headerTitle')} navigation={navigation} 
         buttons={

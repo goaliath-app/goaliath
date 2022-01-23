@@ -7,7 +7,7 @@ const Header = withTheme(({ theme, title, subtitle, left, navigation, buttons })
 
     if(left === 'back'){
         leftComponent = (
-            <Appbar.BackAction onPress={navigation.goBack} />
+            <Appbar.BackAction onPress={navigation.goBack} color={theme.colors.onPrimary} />
         )
     }else if( left == 'highlightedBack'){
         leftComponent = (
@@ -24,7 +24,7 @@ const Header = withTheme(({ theme, title, subtitle, left, navigation, buttons })
     return (
         <Appbar>
             {leftComponent}
-            <Appbar.Content title={title} subtitle={subtitle} />
+            <Appbar.Content title={title} subtitle={subtitle} titleStyle={{color: theme.colors.onPrimary}} />
             {buttons}
         </Appbar>
     )

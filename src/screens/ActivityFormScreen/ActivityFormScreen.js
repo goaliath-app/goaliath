@@ -261,7 +261,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
   }
 
   const headerButtons = (
-    <Appbar.Action icon='check' onPress={() => {
+    <Appbar.Action icon='check' color={theme.colors.onPrimary} onPress={() => {
         Keyboard.dismiss()
 
         if(validate()){
@@ -279,7 +279,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
   )
 
   return(
-    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.surface}}>
       <Header 
         title={activity?.name?activity.name:t('activityForm.headerTitle')} 
         left='back' navigation={navigation} 

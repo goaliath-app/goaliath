@@ -191,7 +191,7 @@ const GoalScreen = withTheme(({ activities, goal, navigation, theme }) => {
 
   return (
     <>
-      <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+      <View style={{flex: 1, backgroundColor: theme.colors.surface}}>
         <Header title={goal.name} left={headerIcon} navigation={navigation} buttons={headerButtons}/>
         {/* ArchivedWarning only shows if the goal is archived */}
         <ArchivedWarning goal={goal}/>

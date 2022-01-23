@@ -64,7 +64,7 @@ const GoalWeekView = ({ theme, goalId, date }) => {
             width={5}
             fill={goalCompletionRatio * 100}
             tintColor={theme.colors.primary}
-            backgroundColor={theme.colors.primaryLightVariant} />
+            backgroundColor={theme.colors.primaryContainer} />
       )}>
         {goalActivities.map(activity => <ActivityWeekView activityId={activity.id} date={date} />)}
       </List.Accordion>
@@ -113,7 +113,7 @@ const CalendarWeekViewScreen = withTheme(({ route, theme }) => {
   const navigation = useNavigation()
 
   return(
-    <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+    <View style={{ backgroundColor: theme.colors.surface, flex: 1 }}>
       <Header title={headerTitle(date, t)} left='back' navigation={navigation} />
       <ScrollView >
         {/*WeekViewComponent*/}

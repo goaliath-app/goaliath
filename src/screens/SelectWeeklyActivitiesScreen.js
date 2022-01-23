@@ -69,7 +69,7 @@ const SelectWeeklyActivitiesScreen = withTheme(({ navigation, theme }) => {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.surface}}>
       <Header 
         title={t('weeklyActivities.headerTitle')} 
         left='back' 
