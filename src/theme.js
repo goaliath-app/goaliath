@@ -19,16 +19,17 @@ const palette = {
 const defaultLightPlacements = {
   // Header
   headerContent: 'onPrimary',
+  headerBackground: 'primary',
   statusBarBackground: 'primary30',
 
   // Tab bar
   tabBarActiveIcon: 'primary',
   tabBarInactiveIcon: 'neutral80',
-  tabBarBackground: 'primary99',
+  tabBarBackground: 'surface',
 
   // TodayScreen
-  todayDueCheckbox: 'onBackground',
-  todayCompletedCheckbox: 'onBackground',
+  todayDueIcon: 'onBackground',
+  todayCompletedIcon: 'onBackground',
 
   activityBackground: 'surface',
   runningActivityBackground: 'accentContainer',
@@ -107,6 +108,10 @@ const defaultLightPlacements = {
   // WeekDaySelector
   weekDaySelectorPressedBackground: 'accent',
   weekDaySelectorPressedText: 'onAccent',
+
+  // value used by react-native-paper
+  text: 'onSurface',
+
 }
 
 const defaultLightAliases = {
@@ -135,8 +140,43 @@ const defaultLightAliases = {
   inverseOnSurface: 'neutral95',
   inversePrimary: 'primary80',
 
-  // value used by react-native-paper
-  text: 'primary10',
+}
+
+const darkPlacements = {
+  headerBackground: 'surface',
+  headerContent: 'onSurface',
+  statusBarBackground: 'background',
+
+}
+
+const darkAliases = {
+  primary: 'primary20',
+  onPrimary: 'primary0',
+  primaryContainer: 'primary10',
+  onPrimaryContainer: 'primary90',
+  secondary: 'secondary20',
+  // onSecondary: 'secondary100',
+  // secondaryContainer: 'secondary90',
+  // onSecondaryContainer: 'secondary10',
+  accent: 'accent20',
+  // onAccent: 'accent100',
+  // accentContainer: 'accent90',
+  // onAccentContainer: 'accent10',
+
+  background: 'secondary10',
+  onBackground: 'neutral100',
+  surface: 'neutral20',
+  onSurface: 'neutral100',
+  // surfaceVariant: 'neutral90',
+  // onSurfaceVariant: 'neutral30',
+  // outline: 'neutral50',
+
+  // inverseSurface: 'neutral20',
+  // inverseOnSurface: 'neutral95',
+  // inversePrimary: 'primary80',
+
+  // // value used by react-native-paper
+  // text: 'primary10',
 }
 
 export const lightTheme = populateTheme(
@@ -156,10 +196,10 @@ export const lightTheme = populateTheme(
   },
 
   // aliases override
-  {},
+  darkAliases,
 
   // placements override
-  {}
+  darkPlacements
 )
 
 // export const darkTheme = populateTheme({

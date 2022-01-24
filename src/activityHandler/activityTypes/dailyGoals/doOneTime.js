@@ -19,8 +19,8 @@ const TodayScreenItem = withTheme(({ activityId, date, theme }) => {
       date={date}
       left={() => (
         <Checkbox 
-          color={theme.colors.todayCompletedCheckbox}
-          uncheckedColor={theme.colors.todayDueCheckbox}
+          color={theme.colors.todayCompletedIcon}
+          uncheckedColor={theme.colors.todayDueIcon}
           status={entry.completed?'checked':'unchecked'}
           onPress={() => {
             dispatch(toggleCompleted({date: date, id: activityId}))

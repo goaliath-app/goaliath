@@ -22,7 +22,7 @@ const Header = withTheme(({ theme, title, subtitle, left, navigation, buttons })
     }
 
     return (
-        <Appbar>
+        <Appbar style={{backgroundColor: theme.colors.headerBackground}}>
             {leftComponent}
             <Appbar.Content title={title} subtitle={subtitle} titleStyle={{color: theme.colors.headerContent}} />
             {buttons}

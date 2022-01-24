@@ -230,7 +230,7 @@ const legacy_ActivityListItem = ({
   );
 }
 
-export const SelectWeekliesListItem = ({ date, checked, color='black', navigation, disabled=false, style}) => {
+export const SelectWeekliesListItem = withTheme(({ theme, date, checked, navigation, disabled=false, style}) => {
   const { t, i18n } = useTranslation()
 
   const state = useSelector((state) => state)
@@ -243,8 +243,8 @@ export const SelectWeekliesListItem = ({ date, checked, color='black', navigatio
   return(
     <StylishListItem
       left={() => <IconButton icon={() => checked? 
-        <MaterialCommunityIcons name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
-        : <MaterialCommunityIcons name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
+        <MaterialCommunityIcons color={theme.colors.todayCompletedIcon} name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
+        : <MaterialCommunityIcons color={theme.colors.todayDueIcon} name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
         } />
       }
       title={t('today.selectWeekliesTitle')}
@@ -253,16 +253,16 @@ export const SelectWeekliesListItem = ({ date, checked, color='black', navigatio
       style={style}
     />
   )
-}
+})
 
-export const SelectTasksListItem = ({checked, onPress, style}) => {
+export const SelectTasksListItem = withTheme(({theme, checked, onPress, style}) => {
   const { t, i18n } = useTranslation()
 
   return(
     <StylishListItem
         left={() => <IconButton icon={() => checked? 
-          <MaterialCommunityIcons name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
-          : <MaterialCommunityIcons name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
+          <MaterialCommunityIcons color={theme.colors.todayCompletedIcon} name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
+          : <MaterialCommunityIcons color={theme.colors.todayDueIcon} name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
           } />}
         title={t('today.selectTasksTitle')}
         // description={t('today.selectTasksDescription')}
@@ -270,7 +270,7 @@ export const SelectTasksListItem = ({checked, onPress, style}) => {
         style={style}
     />
   )
-}
+})
 
 export const DoubleProgressBar = ({firstColor, secondColor, backgroundColor, firstProgress, secondProgress, height}) => (
   <View >
