@@ -15,7 +15,7 @@ import {
   ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen,
   OnboardingScreen, SelectWeeklyActivitiesScreen,
   AddTasksScreen, CalendarDayViewScreen, CalendarWeekViewScreen,
-  StatsScreen, ArchivedGoalsScreen, ArchivedActivitiesScreen
+  StatsScreen, ArchivedGoalsScreen, ArchivedActivitiesScreen, AboutUsScreen
 } from './src/screens'
 import { 
   TodayScreenIcon, GoalsScreenIcon, GoalsScreenButton, CalendarScreenIcon, 
@@ -161,6 +161,7 @@ export default function App() {
                 <Stack.Screen name='CalendarDayView' component={CalendarDayViewScreen} />
                 <Stack.Screen name='CalendarWeekView' component={CalendarWeekViewScreen} />
                 <Stack.Screen name='Settings' component={SettingsScreen} />
+                <Stack.Screen name='AboutUs' component={AboutUsScreen} />
               </Stack.Navigator>
               }
               <Snackbar style={{backgroundColor: Color(currentTheme.onSurface).alpha(0.9).string(), bottom: 35}}

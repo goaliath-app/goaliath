@@ -151,6 +151,10 @@ const en = {
         activityUpdated: 'Activity updated',
       },
     },
+
+    aboutUs:{
+      title: 'Goaliath team',   
+    },
     
     calendar: {
       headerTitle: 'Calendar',
@@ -248,7 +252,12 @@ const en = {
       dailyNotification: 'Daily notification',
       dailyNotificationDescription: 'Receive a reminder to use Goaliath',
       dailyNotificationHour: 'Daily notification hour',
-
+      aboutUs: 'Meet the team',
+      aboutGoaliath: {
+        title: 'Learn about the Goaliath method',
+        description: "You'll be redirected to the web",
+        blogURL: 'https://goaliath-app.github.io/',
+      },
     },
     
     today: {

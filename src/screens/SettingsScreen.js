@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Share } from 'react-native'
+import { Linking, Share, View} from 'react-native'
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Text, List, Divider, Paragraph, Portal, Switch, Dialog,
   Button, withTheme } from 'react-native-paper'
@@ -173,7 +173,20 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         </View>
         : null
       }
-      
+      <List.Item
+        left= { () => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"coffee"} />}
+        title={t('settings.aboutUs')}
+        onPress={() => navigation.navigate('AboutUs')}
+      />
+      <Divider />
+      <List.Item
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"book"} />}
+        title={t('settings.aboutGoaliath.title')}
+        onPress={() => Linking.openURL(t('settings.aboutGoaliath.blogURL'))}
+        description={t('settings.aboutGoaliath.description')}
+      />
+      <Divider />    
+
       {/*Start Hour Picker*/}
       <DateTimePickerModal
         isVisible={isStartHourPickerVisible}
@@ -192,6 +205,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
       />
 
       <Portal>
+        {/* Import dialog */}
         <Dialog visible={isImportDialogVisible} onDismiss={() => {setImportDialogVisible(false)}}>
           <Dialog.Title>{t('settings.importDialog.title')}</Dialog.Title>
           <Dialog.Content>
@@ -203,6 +217,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
           </Dialog.Actions>
         </Dialog>
 
+        {/* Language dialog */}
         <Dialog visible={isLanguageDialogVisible} onDismiss={() => {setLanguageDialogVisible(false)}}>
           <Dialog.Title>{t('settings.languageDialog.title')}</Dialog.Title>
             <Dialog.Content>
