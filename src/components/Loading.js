@@ -36,7 +36,7 @@ export function loadedComponent(Component, LoadingComponent){
 
 export const FullScreenActivityIndicator = withTheme(({ theme }) => (
   <View style={{flex: 1, justifyContent: "center"}}>
-    <ActivityIndicator style={{transform: [{scale: 2.5}]}} color={theme.colors.primary} />
+    <ActivityIndicator style={{transform: [{scale: 2.5}]}} color={theme.colors.activityIndicator} />
   </View>
 ))
 

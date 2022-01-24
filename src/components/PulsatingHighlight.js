@@ -37,7 +37,7 @@ export const ViewHighlighter = withTheme(({ theme, children, active=true, animat
       position: "absolute",
       height: "100%",
       width: "100%",
-      backgroundColor: theme.colors.primary,
+      backgroundColor: theme.colors.pulsatingHighlight,
     },
   })
   
@@ -81,7 +81,7 @@ const PulsatingHighlight = withTheme(({ theme, active=true, style={} }) => {
       position: "absolute", 
       height: 120, 
       width: 120, 
-      backgroundColor: theme.colors.primary,
+      backgroundColor: theme.colors.pulsatingHighlight,
       borderRadius: 90,
     },
   })

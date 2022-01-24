@@ -44,8 +44,8 @@ const TaskListItem = withTheme(({ date, task, theme }) => {
         left={() => (
           <View>
             <Checkbox 
-              color={theme.colors.onBackground}
-              uncheckedColor={theme.colors.onBackground}
+              color={theme.colors.todayCompletedCheckbox}
+              uncheckedColor={theme.colors.todayDueCheckbox}
               status={task.completed? 'checked' : 'unchecked'}
               onPress={() => {dispatch(toggleTask(date, task.id))}}
             />

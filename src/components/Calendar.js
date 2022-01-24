@@ -59,13 +59,13 @@ const Calendar = withTheme(({
       </View>
 
       <View style={{ flexDirection:'row', justifyContent:'space-around', marginBottom: 5 }}>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.monday')}</Text>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.tuesday')}</Text>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.wednesday')}</Text>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.thursday')}</Text>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.friday')}</Text>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.saturday')}</Text>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.sunday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.monday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.tuesday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.wednesday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.thursday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.friday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.saturday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.sunday')}</Text>
       </View>
       
       {weekData.map( date => 

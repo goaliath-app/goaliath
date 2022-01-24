@@ -47,7 +47,7 @@ export const ActivityListItem = withTheme(({
     null :
     <>
       <StylishListItem
-        style={[isActivityRunning(entry.intervals)?{backgroundColor: theme.colors.accentContainer} : {}, style]}
+        style={[isActivityRunning(entry.intervals)?{backgroundColor: theme.colors.runningActivityBackground} : {}, style]}
         left={left}
         right={() => ( 
           todayTime.as('seconds') > 0?
@@ -303,7 +303,7 @@ const StylishListItem = withTheme(({
 }) => {
   return(
     <View style={[{ 
-      backgroundColor: theme.colors.secondary99, 
+      backgroundColor: theme.colors.activityBackground, 
       borderRadius: 15, 
       marginHorizontal: 1, 
       marginTop: 2,

@@ -98,7 +98,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         description={t('settings.startHourDescription')}
         onPress={() => setStartHourPickerVisibility(true)} 
         right={() => 
-          <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.onSecondaryContainer, fontSize: 17}}>
+          <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.settingValueText, fontSize: 17}}>
             {DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}
           </Text>} 
       />
@@ -138,7 +138,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         right={() => 
           <Text style={{
             marginRight: 10, marginTop: 10, 
-            color: theme.colors.onSecondaryContainer, fontSize: 17
+            color: theme.colors.settingValueText, fontSize: 17
           }}>
             {t('settings.languageLocale')}
           </Text>} />
@@ -162,7 +162,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
             title={t('settings.dailyNotificationHour')}
             onPress={() => setNotificationHourPickerVisibility(true)} 
             right={() => 
-              <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.onSecondaryContainer, fontSize: 17, paddingBottom: 7}}>
+              <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.settingValueText, fontSize: 17, paddingBottom: 7}}>
                 {DateTime.fromISO(settings.dailyNotificationHour).toFormat('HH:mm')}
               </Text>}
             style={{paddingLeft: 20}} 

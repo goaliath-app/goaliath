@@ -35,10 +35,10 @@ import { withTheme } from 'react-native-paper'
 
 const ActivityCalendarHeatmap = withTheme(({ theme, activityId, goalId }) => {
   const colors = {
-    values: [ theme.colors.accent80, theme.colors.accent60, theme.colors.accent50, theme.colors.accent30 ],
-    skippedDayBackground: theme.colors.secondary95,
-    emptyDayBackground: 'transparent',
-    emptyDayBorder: theme.colors.secondary90,
+    values: [ theme.colors.heatmap1, theme.colors.heatmap2, theme.colors.heatmap3, theme.colors.heatmap4 ],
+    skippedDayBackground: theme.colors.heatmapSkipped,
+    emptyDayBackground: theme.colors.heatmapEmptyBackground,
+    emptyDayBorder: theme.colors.heatmapEmptyBorder,
   }
 
   const state = useSelector((state) => state)

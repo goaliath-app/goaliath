@@ -116,9 +116,9 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
         bottom={ timerIsRunning? 
           () => <DoubleProgressBar 
             height={4}
-            firstColor={theme.colors.primaryDarkVariant} 
-            secondColor={theme.colors.primary} 
-            backgroundColor={theme.colors.primaryLightVariant} 
+            firstColor={theme.colors.progressBarWeek} 
+            secondColor={theme.colors.progressBarToday} 
+            backgroundColor={theme.colors.progressBarBackground} 
             firstProgress={weeklyProgress} 
             secondProgress={totalProgress} 
           />
@@ -175,7 +175,7 @@ const SelectWeekliesItemCompleted = withTheme(({ activity, today, theme, isSelec
         selected={isSelected} 
         onPress={onPress}
         date={today}
-        checkboxColor={theme.colors.placeholder}
+        checkboxColor={theme.colors.completedCheckbox}
         onCheckboxPress={()=>{}}
       /> 
       :

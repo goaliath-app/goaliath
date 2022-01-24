@@ -31,7 +31,7 @@ const GoalFormScreen = withTheme(({ theme, navigation, goal=null }) => {
 
   const headerButtons = (
     <Appbar.Action 
-      color={theme.colors.onPrimary}
+      color={theme.colors.headerContent}
       icon='check' 
       onPress={() => {
         const newGoal = {name: name, motivation: motivation}

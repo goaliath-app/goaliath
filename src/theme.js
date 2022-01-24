@@ -16,12 +16,105 @@ const palette = {
   grayDark: '#121212',
 }
 
+const defaultLightColorPlacements = {
+  // Header
+  headerContent: 'onPrimary',
+  statusBarBackground: 'primary30',
+
+  // Tab bar
+  tabBarActiveIcon: 'primary',
+  tabBarInactiveIcon: 'neutral80',
+  tabBarBackground: 'primary99',
+
+  // TodayScreen
+  todayDueCheckbox: 'onBackground',
+  todayCompletedCheckbox: 'onBackground',
+
+  activityBackground: 'surface',
+  runningActivityBackground: 'accentContainer',
+
+  progressBarToday: 'accent',
+  progressBarWeek: 'accent30',
+  progressBarBackground: 'accent80',
+
+  completedWeekliesSelector: 'placeholder',
+
+  // SelectWeekliesScreen
+    // Checkboxes use values in TodayScreen
+  completedCheckbox: 'placeholder',
+  selectWeekliesActivityBackground: 'surface',
+  selectWeekliesChangedText: 'primary',
+  selectWeekliesSelectedActivityBackground: 'accentContainer',
+
+  // Stats
+  barChartSelectorSelectedBackground: 'accent50',
+  barChartSelectorSelectedText: 'text',
+  barChartBar: 'accent',
+  heatmap1: 'accent80',
+  heatmap2: 'accent60',
+  heatmap3: 'accent50',
+  heatmap4: 'accent30',
+  heatmapSkipped: 'secondary95',
+  heatmapEmptyBackground: 'transparent',
+  heatmapEmptyBorder: 'secondary90',
+
+  // Calendar
+  weekDayLabel: 'disabled',
+  weekBackground: 'secondary95',
+  dayProgressBar: 'accent70',
+  weekProgressBar: 'accent',
+  weekProgressBarBackground: 'secondary90',
+  weekDayNumber: 'text',
+  weekPastDayNumber: 'placeholder',
+  calendarTodayHighlightBackground: 'primary60',
+  calendarTodayHighlightText: 'onAccent',
+  calendarSoftTodayHighlightText: 'primaryDarkVariant',
+  weekPressedDayBackGround: 'accent',
+  weekFailedDayBackGround: 'disabled',
+  weekPressedBackground: 'accent90',
+  calendarLongPressBackground: 'accent60',
+
+  // Tutorial
+  todayItemHighlight: 'primaryContainer',
+  pulsatingHighlight: 'primary',
+  speechBubbleBackground: 'primaryContainer',
+
+  // Miscellaneous
+  helpIcon: 'primary',
+  activityIndicator: 'primary',
+
+  // Info Card
+  infoCardContent: 'onPrimaryContainer',
+  infoCardBackground: 'primary95',
+
+  // TimeInput
+  timeInputRegular: 'onSurface',
+  timeInputSelected: 'primary',
+
+  // CalendarWeekViewScreen
+  weekViewGoalCircularProgress: 'primary',
+  weekViewGoalCircularProgressBackground: 'primaryContainer',
+
+  // SettingsScreen
+  settingValueText: 'accent30',
+
+  // TodayScreen
+  todayScreenBackground: 'background',
+
+  // ActivityDetailScreen
+  activityDetailTimeInputRunning: 'primary',
+
+  // WeekDaySelector
+  weekDaySelectorPressedBackground: 'accent',
+  weekDaySelectorPressedText: 'onAccent',
+}
+
 export const lightTheme = populateTheme({
   colors: {
     // key colors
     primaryColor: 'hsla(256, 80%, 57%, 1)',
     secondaryColor: 'hsl(224, 35%, 57%)',
-    accentColor: 'hsla(162, 60%, 57%, 1)',//'hsl(224, 100%, 57%)',
+    accentColor: 'hsla(162, 60%, 57%, 1)',
     neutralColor: '#000000',
 
     // aliases
@@ -59,26 +152,26 @@ export const lightTheme = populateTheme({
   }
 })
 
-export const darkTheme = populateTheme({
-  colors: {
-    primary: palette.blue,
-    primaryLightVariant: palette.blueLight,
-    primaryDarkVariant: palette.blueDark,
-    secondary: palette.amber,
-    secondaryLightVariant: palette.amberLight,
-    secondaryDarkVariant: palette.amberDark,
-    background: palette.grayDark,
-    surface: palette.grayDark,
-    error: palette.redLight,
-    onPrimary: palette.white,
-    onSecondary: palette.black,
-    onBackground: palette.white,
-    onSurface: palette.white,
-    onError: palette.black,
-    disabled: palette.grayLight,
-    placeholder: palette.gray,
-  }
-})
+// export const darkTheme = populateTheme({
+//   colors: {
+//     primary: palette.blue,
+//     primaryLightVariant: palette.blueLight,
+//     primaryDarkVariant: palette.blueDark,
+//     secondary: palette.amber,
+//     secondaryLightVariant: palette.amberLight,
+//     secondaryDarkVariant: palette.amberDark,
+//     background: palette.grayDark,
+//     surface: palette.grayDark,
+//     error: palette.redLight,
+//     onPrimary: palette.white,
+//     onSecondary: palette.black,
+//     onBackground: palette.white,
+//     onSurface: palette.white,
+//     onError: palette.black,
+//     disabled: palette.grayLight,
+//     placeholder: palette.gray,
+//   }
+// })
 
 
 function setLuminosity(color, luminosity){
@@ -95,7 +188,7 @@ function generateTonalPalette(color, name){
   return tonalPalette
 }
 
-function populateTheme(theme){
+function populateTheme(theme, placements=defaultLightColorPlacements){
   // add paper text color key
   theme.colors.text = theme.colors.onSurface
 
@@ -116,6 +209,15 @@ function populateTheme(theme){
       theme.colors[key] = theme.colors[theme.colors[key]]
     }
   })
-  
+
+  const colorPlacements = { ...placements }
+  Object.keys(colorPlacements).forEach( key => {
+    if( theme.colors[colorPlacements[key]] != undefined ){
+      theme.colors[key] = theme.colors[colorPlacements[key]]
+    }else{
+      theme.colors[key] = colorPlacements[key]
+    }
+  })
+
   return theme
 }

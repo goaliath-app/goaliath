@@ -41,8 +41,8 @@ const WeekdaySelectorItem = withTheme(({ label, state, onPress, theme }) => {
     case 'regular': 
       break
     case 'pressed':
-      squareColor = theme.colors.accent
-      textColor = theme.colors.onAccent
+      squareColor = theme.colors.weekDaySelectorPressedBackground
+      textColor = theme.colors.weekDaySelectorPressedText
       break
   }
   

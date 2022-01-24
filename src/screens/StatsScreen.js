@@ -19,7 +19,7 @@ const StatsScreen = withTheme(({ navigation, theme }) => {
   const [ selectedGoal, setSelectedGoal ] = useState(null)
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: theme.colors.secondary99}}>
+    <ScrollView style={{flex: 1, backgroundColor: theme.colors.surface}}>
       <Header title={t('statsScreen.headerTitle')} navigation={navigation} />
       <GoalSelector onGoalSelection={setSelectedGoal}/>
       <Divider style={{marginHorizontal: 8}}/>

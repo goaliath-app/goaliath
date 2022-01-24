@@ -53,8 +53,8 @@ export const ActivityBarChartPicker = withTheme(({ theme, activityId, goalId }) 
         onPress={value => setPeriod(value)}
         borderRadius={0}
         height={35}
-        buttonColor={theme.colors.accent50}
-        selectedColor={theme.colors.text}
+        buttonColor={theme.colors.barChartSelectorSelectedBackground}
+        selectedColor={theme.colors.barChartSelectorSelectedText}
       />
       <SwitchSelector
         options={showOptions}
@@ -62,8 +62,8 @@ export const ActivityBarChartPicker = withTheme(({ theme, activityId, goalId }) 
         borderRadius={0}
         height={35}
         onPress={value => setShow(value)}
-        buttonColor={theme.colors.accent50}
-        selectedColor={theme.colors.text}
+        buttonColor={theme.colors.barChartSelectorSelectedBackground}
+        selectedColor={theme.colors.barChartSelectorSelectedText}
       />
       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 14}}>
         <IconButton icon='chevron-left' size={20} onPress={() => setDate(date.minus(dateOffset))}/>
@@ -273,7 +273,7 @@ const VictoryBarChart = withTheme(({ theme, data, xLabel, yLabel, tickValues, ti
         axisLabelComponent={<VictoryLabel dy={-30} />}
       />
       <VictoryBar
-        style={{ data: { fill: theme.colors.accent } }}
+        style={{ data: { fill: theme.colors.barChartBar } }}
         alignment="middle"
         data={data}
         barRatio={0.6}

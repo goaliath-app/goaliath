@@ -261,7 +261,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
   }
 
   const headerButtons = (
-    <Appbar.Action icon='check' color={theme.colors.onPrimary} onPress={() => {
+    <Appbar.Action icon='check' color={theme.colors.headerContent} onPress={() => {
         Keyboard.dismiss()
 
         if(validate()){

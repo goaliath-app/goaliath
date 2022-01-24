@@ -89,10 +89,10 @@ const DayContent = withTheme(({ theme, date }) => {
             tutorialState >= tutorialStates.ChooseWeekliesIntroduction 
             && tutorialState < tutorialStates.Finished
             && weekliesSelector!='checked' ?
-        <SelectWeekliesListItem date={date} checked={false} navigation={navigation} disabled={weekliesSelector=='hidden'} style={tutorialState == tutorialStates.ChooseWeekliesIntroduction?{backgroundColor: theme.colors.primaryContainer} : {}} />
+        <SelectWeekliesListItem date={date} checked={false} navigation={navigation} disabled={weekliesSelector=='hidden'} style={tutorialState == tutorialStates.ChooseWeekliesIntroduction?{backgroundColor: theme.colors.todayItemHighlight} : {}} />
         : <></> }
         { tasksSelector == 'unchecked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
-          <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}} style={tutorialState == tutorialStates.OneTimeTasksIntroduction?{backgroundColor: theme.colors.primaryContainer} : {}} />
+          <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}} style={tutorialState == tutorialStates.OneTimeTasksIntroduction?{backgroundColor: theme.colors.todayItemHighlight} : {}} />
           : <></> 
         }
         <ActivityList data={completedActivities} date={date} />
@@ -101,7 +101,7 @@ const DayContent = withTheme(({ theme, date }) => {
         <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
         : <></> }
         { weekliesSelector == 'allcompleted'?
-        <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color={theme.colors.placeholder}/>
+        <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color={theme.colors.completedWeekliesSelector}/>
         : <></> }
         { tasksSelector == 'checked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
           <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>

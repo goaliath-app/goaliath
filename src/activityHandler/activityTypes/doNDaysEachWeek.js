@@ -53,7 +53,7 @@ const SelectWeekliesItemDue = withTheme(({ theme, activity, today, isChecked, on
   let description
   if(isChecked=='checked'){
     description = (
-      <Text style={{color: theme.colors.primary}}>
+      <Text style={{color: theme.colors.selectWeekliesChangedText}}>
         {t('weeklyActivities.daysLeft', {daysLeft: daysLeft-1})}
       </Text>
     )
@@ -94,7 +94,7 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
         selected={isSelected} 
         onPress={onPress}
         date={today}
-        checkboxColor={theme.colors.placeholder}
+        checkboxColor={theme.colors.completedCheckbox}
       /> 
       :
       null

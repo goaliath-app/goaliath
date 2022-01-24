@@ -246,19 +246,19 @@ const CalendarWeekItem = withTheme(({
 }) => {
 
   const colors = {
-    weekBackground: theme.colors.secondary95,
-    dayProgressBar: theme.colors.accent70,
-    weekProgressBar: theme.colors.accent,
-    weekProgressBarBackground: theme.colors.secondary90,
-    dayNumber: theme.colors.text,
-    pastDayNumber: theme.colors.placeholder,
-    todayHighlightBackground: theme.colors.primary60,
-    todayHighlightText: theme.colors.onAccent,
-    softTodayHighlightText: theme.colors.primaryDarkVariant,
-    pressedDayBackGround: theme.colors.primary,
-    failedDayBackGround: theme.colors.disabled,
-    weekPressedBackground: theme.colors.primary90,
-    longPressBackground: theme.colors.primary60,
+    weekBackground: theme.colors.weekBackground,
+    dayProgressBar: theme.colors.dayProgressBar,
+    weekProgressBar: theme.colors.weekProgressBar,
+    weekProgressBarBackground: theme.colors.weekProgressBarBackground,
+    dayNumber: theme.colors.weekDayNumber,
+    pastDayNumber: theme.colors.weekPastDayNumber,
+    todayHighlightBackground: theme.colors.calendarTodayHighlightBackground,
+    todayHighlightText: theme.colors.calendarTodayHighlightText,
+    softTodayHighlightText: theme.colors.calendarSoftTodayHighlightText,
+    pressedDayBackGround: theme.colors.weekPressedDayBackGround,
+    failedDayBackGround: theme.colors.weekFailedDayBackGround,
+    weekPressedBackground: theme.colors.weekPressedBackground,
+    longPressBackground: theme.colors.calendarLongPressBackground,
   }
 
   const pressAnimationValue = useSharedValue(0)

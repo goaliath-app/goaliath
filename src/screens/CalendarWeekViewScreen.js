@@ -63,8 +63,8 @@ const GoalWeekView = ({ theme, goalId, date }) => {
             size={25}
             width={5}
             fill={goalCompletionRatio * 100}
-            tintColor={theme.colors.primary}
-            backgroundColor={theme.colors.primaryContainer} />
+            tintColor={theme.colors.weekViewGoalCircularProgress}
+            backgroundColor={theme.colors.weekViewGoalCircularProgressBackground} />
       )}>
         {goalActivities.map(activity => <ActivityWeekView activityId={activity.id} date={date} />)}
       </List.Accordion>

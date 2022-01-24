@@ -24,7 +24,7 @@ const Placeholder = withTheme(({ theme }) => {
 
   return (
     <List.Item 
-      left={()=><ActivityIndicator style={{transform: [{scale: 1.2}], marginHorizontal: 6}} color={theme.colors.primary} />} 
+      left={()=><ActivityIndicator style={{transform: [{scale: 1.2}], marginHorizontal: 6}} color={theme.colors.activityIndicator} />} 
       title={t('loadingStats')}
     />
   )
