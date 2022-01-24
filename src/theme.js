@@ -16,7 +16,7 @@ const palette = {
   grayDark: '#121212',
 }
 
-const defaultLightColorPlacements = {
+const defaultLightPlacements = {
   // Header
   headerContent: 'onPrimary',
   statusBarBackground: 'primary30',
@@ -37,11 +37,11 @@ const defaultLightColorPlacements = {
   progressBarWeek: 'accent30',
   progressBarBackground: 'accent80',
 
-  completedWeekliesSelector: 'placeholder',
+  completedWeekliesSelector: 'neutral60',
 
   // SelectWeekliesScreen
     // Checkboxes use values in TodayScreen
-  completedCheckbox: 'placeholder',
+  completedCheckbox: 'neutral60',
   selectWeekliesActivityBackground: 'surface',
   selectWeekliesChangedText: 'primary',
   selectWeekliesSelectedActivityBackground: 'accentContainer',
@@ -59,18 +59,18 @@ const defaultLightColorPlacements = {
   heatmapEmptyBorder: 'secondary90',
 
   // Calendar
-  weekDayLabel: 'disabled',
+  weekDayLabel: 'neutral60',
   weekBackground: 'secondary95',
   dayProgressBar: 'accent70',
   weekProgressBar: 'accent',
   weekProgressBarBackground: 'secondary90',
   weekDayNumber: 'text',
-  weekPastDayNumber: 'placeholder',
+  weekPastDayNumber: 'neutral60',
   calendarTodayHighlightBackground: 'primary60',
   calendarTodayHighlightText: 'onAccent',
-  calendarSoftTodayHighlightText: 'primaryDarkVariant',
+  calendarSoftTodayHighlightText: 'primary30',
   weekPressedDayBackGround: 'accent',
-  weekFailedDayBackGround: 'disabled',
+  weekFailedDayBackGround: 'neutral80',
   weekPressedBackground: 'accent90',
   calendarLongPressBackground: 'accent60',
 
@@ -109,48 +109,58 @@ const defaultLightColorPlacements = {
   weekDaySelectorPressedText: 'onAccent',
 }
 
-export const lightTheme = populateTheme({
-  colors: {
-    // key colors
-    primaryColor: 'hsla(256, 80%, 57%, 1)',
-    secondaryColor: 'hsl(224, 35%, 57%)',
-    accentColor: 'hsla(162, 60%, 57%, 1)',
-    neutralColor: '#000000',
+const defaultLightAliases = {
+  primary: 'primary40',
+  onPrimary: 'primary100',
+  primaryContainer: 'primary90',
+  onPrimaryContainer: 'primary10',
+  secondary: 'secondary40',
+  onSecondary: 'secondary100',
+  secondaryContainer: 'secondary90',
+  onSecondaryContainer: 'secondary10',
+  accent: 'accent40',
+  onAccent: 'accent100',
+  accentContainer: 'accent90',
+  onAccentContainer: 'accent10',
 
-    // aliases
-    primary: 'primary40',
-    onPrimary: 'primary100',
-    primaryContainer: 'primary90',
-    onPrimaryContainer: 'primary10',
-    secondary: 'secondary40',
-    onSecondary: 'secondary100',
-    secondaryContainer: 'secondary90',
-    onSecondaryContainer: 'secondary10',
-    accent: 'accent40',
-    onAccent: 'accent100',
-    accentContainer: 'accent90',
-    onAccentContainer: 'accent10',
+  background: 'secondary95',
+  onBackground: 'neutral10',
+  surface: 'secondary99',
+  onSurface: 'neutral10',
+  surfaceVariant: 'neutral90',
+  onSurfaceVariant: 'neutral30',
+  outline: 'neutral50',
 
-    background: 'secondary95',
-    onBackground: 'neutral10',
-    surface: 'secondary99',
-    onSurface: 'neutral10',
-    surfaceVariant: 'neutral90',
-    onSurfaceVariant: 'neutral30',
-    outline: 'neutral50',
+  inverseSurface: 'neutral20',
+  inverseOnSurface: 'neutral95',
+  inversePrimary: 'primary80',
 
-    inverseSurface: 'neutral20',
-    inverseOnSurface: 'neutral95',
-    inversePrimary: 'primary80',
-    
-    // extra colors
-    primaryDarkVariant: 'primary30',
+  // value used by react-native-paper
+  text: 'primary10',
+}
+
+export const lightTheme = populateTheme(
+  
+  // key colors, to generate tonal palettes
+  {
+    primary: 'hsla(256, 80%, 57%, 1)',
+    secondary: 'hsl(224, 35%, 57%)',
+    accent: 'hsla(162, 60%, 57%, 1)',
+    neutral: '#000000',
+  },
+
+  // raw colors
+  {
     error: palette.red,
     onError: palette.white,
-    disabled: palette.grayLight,
-    placeholder: palette.gray,
-  }
-})
+  },
+
+  // aliases override
+  {},
+
+  // placements override
+  {}
+)
 
 // export const darkTheme = populateTheme({
 //   colors: {
@@ -188,36 +198,58 @@ function generateTonalPalette(color, name){
   return tonalPalette
 }
 
-function populateTheme(theme, placements=defaultLightColorPlacements){
-  // add paper text color key
-  theme.colors.text = theme.colors.onSurface
+function populateTheme(
+  /* colors: object 
+  key: name of the color
+  value: color as string
+  These colors won't be added to the theme.colors as they are. They will be used
+  to generate tonal palletes, and that tones will be added instead.
+  The name of the added colos will be "colornameXX" where XX is the value of
+  the tone luminosity. Available values are
+  00, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100 */
+  colors,
+  
+  // colors that will be added to the theme.colors as they are
+  rawColors,
 
-  // add tonal palette colors for primary and secondary colors
-  theme.colors = { 
-    ...theme.colors, 
-    ...generateTonalPalette(theme.colors.primaryColor, 'primary'),
-    ...generateTonalPalette(theme.colors.secondaryColor, 'secondary'), 
-    ...generateTonalPalette(theme.colors.accentColor, 'accent'),
-    ...generateTonalPalette(theme.colors.neutralColor, 'neutral'), 
-  }
+  /* aliases: object
+  key: name of the color to be added to the theme
+  value: string referencing a key name of one of the colors added from the
+  tonal palette of the colors argument, or the raw colors in rawColors.
+  
+  Keys with the alias name will be added to the final theme.colors, with the corresponding
+  color as value. */
+  aliases={}, 
 
-  // resolve keys referencing other keys 
-  // (you can set primaryLightVariant to primary30) and this will resolve it 
-  // for you
-  Object.keys(theme.colors).forEach( key => {
-    if( theme.colors[theme.colors[key]] != undefined ){
-      theme.colors[key] = theme.colors[theme.colors[key]]
-    }
+  /* aliases: object 
+  key: name of the place the color will be used
+  value: string referencing a color name of any color (tonal palettes, raw
+    colors and aliases).
+    
+  Keys with the color placement will be added to the theme.colors with the
+  corresponding colors. */ 
+  placements={},
+){
+  const theme = { colors: {} }
+
+  Object.keys(colors).forEach( colorName => {
+    const palette = generateTonalPalette(colors[colorName], colorName)
+    Object.assign(theme.colors, palette)
   })
 
-  const colorPlacements = { ...placements }
-  Object.keys(colorPlacements).forEach( key => {
-    if( theme.colors[colorPlacements[key]] != undefined ){
-      theme.colors[key] = theme.colors[colorPlacements[key]]
-    }else{
-      theme.colors[key] = colorPlacements[key]
-    }
+  Object.assign(theme.colors, rawColors)
+
+  const aliasesWithDefaults = { ...defaultLightAliases, ...aliases }
+  Object.keys(aliasesWithDefaults).forEach( alias => {
+    theme.colors[alias] = theme.colors[aliasesWithDefaults[alias]]
   })
+
+  const placementsWithDefaults = { ...defaultLightPlacements, ...placements }
+  Object.keys(placementsWithDefaults).forEach( placement => {
+    theme.colors[placement] = theme.colors[placementsWithDefaults[placement]]
+  })
+
+  console.log(theme)
 
   return theme
 }
