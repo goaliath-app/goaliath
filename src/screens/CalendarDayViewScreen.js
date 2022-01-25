@@ -12,7 +12,7 @@ const CalendarDayViewScreen = withTheme(({ navigation, route, theme }) => {
   const monthLabel = t('units.monthNames.' + date.toFormat('MMMM').toLowerCase())
 
   return(
-    <View style={{ backgroundColor: theme.colors.surface, flex: 1 }}>
+    <View style={{ backgroundColor: theme.colors.calendarDayViewScreenBackground, flex: 1 }}>
       <Header title={t('calendar.dayView.header', {month: monthLabel, day: date.toFormat('d'), year: date.toFormat('yyyy')})} left='back' navigation={navigation} />
       <DayContent date={date} />
     </View>

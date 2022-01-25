@@ -117,7 +117,7 @@ const ActivityDetailScreen = withTheme(({
   )
 
   return(
-    <View style={{flex:1,backgroundColor: theme.colors.surface}} >
+    <View style={{flex:1,backgroundColor: theme.colors.activityDetailsScreenBackground}} >
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
       <KeyboardAwareScrollView style={{ flex: 1 }}>
         <ArchivedWarning activity={activity} />

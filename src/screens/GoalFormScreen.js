@@ -51,7 +51,7 @@ const GoalFormScreen = withTheme(({ theme, navigation, goal=null }) => {
   )
 
   return(
-    <View style={{flex: 1, backgroundColor: theme.colors.surface}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.goalFormScreenBackground}}>
       <Header 
         title={goal?.name? goal.name : t('goalForm.headerTitle')} 
         left='back' 
@@ -63,7 +63,7 @@ const GoalFormScreen = withTheme(({ theme, navigation, goal=null }) => {
           <Subheading style={{marginTop: 16}}>{t('goalForm.goalNameSubheading')}</Subheading>
         </View>
         <TextInput 
-          style={{fontSize: 16, backgroundColor: theme.colors.surface}}
+          style={{fontSize: 16, backgroundColor: theme.colors.textInputBackground}}
           error={nameInputError} 
           mode='outlined' 
           label={t('goalForm.nameTextInputLabel')}
@@ -94,7 +94,7 @@ const GoalFormScreen = withTheme(({ theme, navigation, goal=null }) => {
           }/>
         </View>
         <TextInput
-          style={{fontSize: 16, backgroundColor: theme.colors.surface}}
+          style={{fontSize: 16, backgroundColor: theme.colors.textInputBackground}}
           mode='outlined'
           label={t('goalForm.motivationTextInputLabel')}
           multiline={true}

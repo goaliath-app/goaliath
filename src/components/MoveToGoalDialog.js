@@ -24,7 +24,7 @@ const Dialog = withTheme(({ theme, visible, setVisible, activityId }) => {
           <View style={{marginHorizontal: 24}}>
             <Paragraph>{t("activityDetail.changeGoalDialogBody", {currentGoal: currentGoal.name})}</Paragraph>
             <View style={{height: 16}} />
-            <ScrollView style={{maxHeight: "80%", backgroundColor: theme.colors.surface}}>
+            <ScrollView style={{maxHeight: "80%", backgroundColor: theme.colors.dialogBackground}}>
             {
               goals.map(goal => {
                 return (

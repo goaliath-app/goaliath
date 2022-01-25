@@ -12,7 +12,7 @@ const CalendarScreen = withTheme(({ navigation, theme }) => {
   return (
     <View style={{
       flex: 1, 
-      backgroundColor: theme.colors.surface, 
+      backgroundColor: theme.colors.calendarScreenBackground, 
     }}>
       <Header title={t('calendar.headerTitle')} navigation={navigation}/>
       <Calendar

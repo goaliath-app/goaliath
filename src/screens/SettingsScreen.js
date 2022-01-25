@@ -90,7 +90,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: theme.colors.surface}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.settingsScreenBackground}}>
       <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
       <List.Item
         left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} />}
