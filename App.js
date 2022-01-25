@@ -27,6 +27,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import tutorialStates from './src/tutorialStates'
 import { lightTheme, darkTheme } from './src/theme';
 import Color from 'color'
+import * as Sentry from 'sentry-expo';
+
+// init sentry
+Sentry.init({
+  dsn: 'https://604d643593ee4cceb34bb1216d0fcd11@o1126190.ingest.sentry.io/6166919',
+  enableInExpoDevelopment: true,
+  // debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+});
 
 Notifications.initNotifications()
 
