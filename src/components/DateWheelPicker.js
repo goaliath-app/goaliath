@@ -1,11 +1,12 @@
 import React from 'react';
 import { Pressable, View } from 'react-native';
-import { Dialog, Text, Portal, Button } from 'react-native-paper'
+import { Dialog, Text, Portal, Button, withTheme } from 'react-native-paper'
 import { useTranslation } from 'react-i18next';
 import { DateTime } from 'luxon'
 import ScrollPicker from 'react-native-wheel-scrollview-picker';
 
-const DateWheelPicker = ({ 
+
+const DateWheelPicker = withTheme(({ 
   // luxon DateTime for the date selected when the picker is created
   initialSelectedDate,
   // function without arguments to be called when the picker is dismissed
@@ -17,6 +18,7 @@ const DateWheelPicker = ({
   today, 
   // bool, if true the picker is visible
   visible,
+  theme
 }) => {
 
   const { t, i18n } = useTranslation()
@@ -43,7 +45,7 @@ const DateWheelPicker = ({
     <Portal>
       <Dialog visible={visible} onDismiss={onDismiss}>
         <Dialog.Content style={{alignItems: 'center'}}>
-          <View style={{flexDirection:'row', backgroundColor:'white'}}>
+          <View style={{flexDirection:'row', backgroundColor: theme.colors.dialogBackground}}>
             <ScrollPicker
               dataSource={monthOptions}
               selectedIndex={monthPickerIndex}
@@ -53,9 +55,9 @@ const DateWheelPicker = ({
               }}
               wrapperHeight={180}
               wrapperWidth={150}
-              wrapperColor='#FFFFFF'
+              wrapperColor={theme.colors.dialogBackground}
               itemHeight={60}
-              highlightColor='#d8d8d8'
+              highlightColor={theme.colors.outline}
               highlightBorderWidth={2}
             />
 
@@ -68,9 +70,9 @@ const DateWheelPicker = ({
               }}
               wrapperHeight={180}
               wrapperWidth={150}
-              wrapperColor='#FFFFFF'
+              wrapperColor={theme.colors.dialogBackground}
               itemHeight={60}
-              highlightColor='#d8d8d8'
+              highlightColor={theme.colors.outline}
               highlightBorderWidth={2}
             />
 
@@ -97,6 +99,6 @@ const DateWheelPicker = ({
   
   );
 
-}
+})
 
 export default DateWheelPicker;

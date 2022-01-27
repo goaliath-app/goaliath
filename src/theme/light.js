@@ -66,6 +66,7 @@ export const lightPlacements = {
   helpIcon: 'primary',
   activityIndicator: 'primary',
   textInputBackground: 'surface',
+  divider: 'outline',
 
   // Info Card
   infoCardContent: 'onPrimaryContainer',
