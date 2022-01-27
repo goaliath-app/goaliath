@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linking, Share, View} from 'react-native'
+import { Linking, Share, View, ScrollView } from 'react-native'
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Text, List, Divider, Paragraph, Portal, Switch, Dialog,
   Button, withTheme } from 'react-native-paper'
@@ -93,99 +93,101 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.background}}>
       <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
-      <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} />}
-        title={t('settings.startHour')}
-        description={t('settings.startHourDescription')}
-        onPress={() => setStartHourPickerVisibility(true)} 
-        right={() => 
-          <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.primary, fontSize: 17}}>
-            {DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}
-          </Text>} 
-      />
-      <Divider />
-      <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"mail"} />}
-        title={t('settings.feedback')}
-        description={t('settings.feedbackDescription')}
-        onPress={() => email('jimenaa971@gmail.com')}
-      />
-      <Divider />
-      <List.Item
-        left={() => <AntDesign style={{alignSelf: 'center', margin: 5}} size={25} name={"sharealt"} />}
-        title={t('settings.share')}
-        description={t('settings.shareDescription')}
-        onPress={() => Share.share({message: t('settings.shareMessage')})}
-      />
-      <Divider />
-      <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"save"} />}
-        title={t('settings.export')}
-        description={t('settings.exportDescription')}
-        onPress={() => writeFile(state)}
-      />
-      <Divider />
-      <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"download-cloud"} />}
-        title={t('settings.import')}
-        description={t('settings.importDescription')}
-        onPress={() => readFile()}
-      />
-      <Divider />
-      <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"globe"} />}
-        title={t('settings.language')}
-        onPress={() => setLanguageDialogVisible(true)}
-        right={() => 
-          <Text style={{
-            marginRight: 10, marginTop: 10, 
-            color: theme.colors.primary, fontSize: 17
-          }}>
-            {t('settings.languageLocale')}
-          </Text>} />
-      <Divider />
-      <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"bell"} />}
-        title={t('settings.dailyNotification')}
-        titleNumberOfLines={2}
-        right={() => (
-          <Switch 
-            value={dailyNotificationSwitch} 
-            onValueChange={ () => changeDailyNotificationSwitch( t ) }
-            style={{ height: 48, width: 48 }}
-          />
-        )}
-        description={t('settings.dailyNotificationDescription')}
-      />
-      <Divider />
-      {dailyNotificationSwitch?
-        <View>
-          <List.Item 
-            title={t('settings.dailyNotificationHour')}
-            onPress={() => setNotificationHourPickerVisibility(true)} 
-            right={() => 
-              <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.primary, fontSize: 17, paddingBottom: 7}}>
-                {DateTime.fromISO(settings.dailyNotificationHour).toFormat('HH:mm')}
-              </Text>}
-            style={{paddingLeft: 20}} 
-          />
-          <Divider />
-        </View>
-        : null
-      }
-      <List.Item
-        left= { () => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"coffee"} />}
-        title={t('settings.aboutUs')}
-        onPress={() => navigation.navigate('AboutUs')}
-      />
-      <Divider />
-      <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"book"} />}
-        title={t('settings.aboutGoaliath.title')}
-        onPress={() => Linking.openURL(t('settings.aboutGoaliath.blogURL'))}
-        description={t('settings.aboutGoaliath.description')}
-      />
-      <Divider />    
+      <ScrollView style={{flex: 1}} >
+        <List.Item
+          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} />}
+          title={t('settings.startHour')}
+          description={t('settings.startHourDescription')}
+          onPress={() => setStartHourPickerVisibility(true)} 
+          right={() => 
+            <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.primary, fontSize: 17}}>
+              {DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}
+            </Text>} 
+        />
+        <Divider />
+        <List.Item
+          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"mail"} />}
+          title={t('settings.feedback')}
+          description={t('settings.feedbackDescription')}
+          onPress={() => email('jimenaa971@gmail.com')}
+        />
+        <Divider />
+        <List.Item
+          left={() => <AntDesign style={{alignSelf: 'center', margin: 5}} size={25} name={"sharealt"} />}
+          title={t('settings.share')}
+          description={t('settings.shareDescription')}
+          onPress={() => Share.share({message: t('settings.shareMessage')})}
+        />
+        <Divider />
+        <List.Item
+          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"save"} />}
+          title={t('settings.export')}
+          description={t('settings.exportDescription')}
+          onPress={() => writeFile(state)}
+        />
+        <Divider />
+        <List.Item
+          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"download-cloud"} />}
+          title={t('settings.import')}
+          description={t('settings.importDescription')}
+          onPress={() => readFile()}
+        />
+        <Divider />
+        <List.Item
+          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"globe"} />}
+          title={t('settings.language')}
+          onPress={() => setLanguageDialogVisible(true)}
+          right={() => 
+            <Text style={{
+              marginRight: 10, marginTop: 10, 
+              color: theme.colors.primary, fontSize: 17
+            }}>
+              {t('settings.languageLocale')}
+            </Text>} />
+        <Divider />
+        <List.Item
+          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"bell"} />}
+          title={t('settings.dailyNotification')}
+          titleNumberOfLines={2}
+          right={() => (
+            <Switch 
+              value={dailyNotificationSwitch} 
+              onValueChange={ () => changeDailyNotificationSwitch( t ) }
+              style={{ height: 48, width: 48 }}
+            />
+          )}
+          description={t('settings.dailyNotificationDescription')}
+        />
+        <Divider />
+        {dailyNotificationSwitch?
+          <View>
+            <List.Item 
+              title={t('settings.dailyNotificationHour')}
+              onPress={() => setNotificationHourPickerVisibility(true)} 
+              right={() => 
+                <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.primary, fontSize: 17, paddingBottom: 7}}>
+                  {DateTime.fromISO(settings.dailyNotificationHour).toFormat('HH:mm')}
+                </Text>}
+              style={{paddingLeft: 20}} 
+            />
+            <Divider />
+          </View>
+          : null
+        }
+        <List.Item
+          left= { () => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"coffee"} />}
+          title={t('settings.aboutUs')}
+          onPress={() => navigation.navigate('AboutUs')}
+        />
+        <Divider />
+        <List.Item
+          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"book"} />}
+          title={t('settings.aboutGoaliath.title')}
+          onPress={() => Linking.openURL(t('settings.aboutGoaliath.blogURL'))}
+          description={t('settings.aboutGoaliath.description')}
+        />
+        <Divider />  
+      </ ScrollView>  
 
       {/*Start Hour Picker*/}
       <DateTimePickerModal
