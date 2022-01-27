@@ -66,7 +66,7 @@ const en = {
       changeGoalDialogTitle: "Select target goal",
       changeGoalDialogCancel: "Cancel",
       changeGoalDialogBody: 'Current goal: {{currentGoal}}',
-      changeGoalSnackbar: "Activity moved to other goal",
+      changeGoalSnackbar: "Activity moved to {{goalName}} goal",
       archivedWarning: "This activity is archived",
       restoreButton: "Restore activity",
     },
@@ -150,6 +150,10 @@ const en = {
         activityCreated: 'Activity created',
         activityUpdated: 'Activity updated',
       },
+    },
+
+    aboutUs:{
+      title: 'Goaliath team',   
     },
     
     calendar: {
@@ -248,7 +252,12 @@ const en = {
       dailyNotification: 'Daily notification',
       dailyNotificationDescription: 'Receive a reminder to use Goaliath',
       dailyNotificationHour: 'Daily notification hour',
-
+      aboutUs: 'Meet the team',
+      aboutGoaliath: {
+        title: 'Learn about the Goaliath method',
+        description: "You'll be redirected to the web",
+        blogURL: 'https://goaliath-app.github.io/',
+      },
     },
     
     today: {
@@ -273,7 +282,8 @@ const en = {
     taskList: {
       longPressMenu: {
         paragraph: 'This is a one time task',
-        delete: 'Delete Task',
+        deleteTitle: 'Delete Task',
+        deleteDescription: "This action can't be undone.",
         deleteSnackbar: 'Task deleted',
       }
     },

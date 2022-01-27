@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Share } from 'react-native'
+import { Linking, Share, View, ScrollView } from 'react-native'
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { Text, List, Divider, Paragraph, Portal, Snackbar, Switch, Dialog,
+import { Text, List, Divider, Paragraph, Portal, Switch, Dialog,
   Button, withTheme } from 'react-native-paper'
 import { DateTime } from 'luxon'
 import DateTimePickerModal from "react-native-modal-datetime-picker"
@@ -15,6 +15,7 @@ import { Header } from '../components'
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Notifications from '../notifications';
+import { Context } from '../../App'
 
 
 const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, state, importState }) => {
@@ -23,11 +24,11 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
   const [ isLanguageDialogVisible, setLanguageDialogVisible ] = React.useState(false);
   const [ isImportDialogVisible, setImportDialogVisible ] = React.useState(false);
   const [ importedStateText, setImportedStateText ] = React.useState('');
-  const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
   const [ dailyNotificationSwitch, setDailyNotificationSwitch ] = React.useState(true)
 
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
+  const { showSnackbar } = React.useContext(Context);
 
 
   const changeDayStartHour = (JSDate) => {
@@ -37,7 +38,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
     dispatch(updateLogs())
     
     //Snackbar
-    setSnackbarMessage(dateTime.toFormat('T') > DateTime.now().toFormat('T')?
+    showSnackbar(dateTime.toFormat('T') > DateTime.now().toFormat('T')?
      t('settings.yesterdaySnackbar', {startHour: dateTime.toFormat('T').toString()}) 
      : t('settings.todaySnackbar', {startHour: dateTime.toFormat('T').toString()}))
   };
@@ -60,7 +61,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
     try {
       state = JSON.parse(text)
     } catch(e) {
-      setSnackbarMessage("Import failed: wrong file format")
+      showSnackbar("Import failed: wrong file format")
       return
     }
     if(state){
@@ -92,6 +93,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.settingsScreenBackground}}>
       <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
+      <ScrollView style={{flex: 1}} >
       <List.Item
         left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} />}
         title={t('settings.startHour')}
@@ -151,6 +153,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
           <Switch 
             value={dailyNotificationSwitch} 
             onValueChange={ () => changeDailyNotificationSwitch( t ) }
+            style={{ height: 48, width: 48 }}
           />
         )}
         description={t('settings.dailyNotificationDescription')}
@@ -171,6 +174,21 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         </View>
         : null
       }
+      <List.Item
+          left= { () => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"coffee"} />}
+          title={t('settings.aboutUs')}
+          onPress={() => navigation.navigate('AboutUs')}
+        />
+        <Divider />
+        <List.Item
+          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"book"} />}
+          title={t('settings.aboutGoaliath.title')}
+          onPress={() => Linking.openURL(t('settings.aboutGoaliath.blogURL'))}
+          description={t('settings.aboutGoaliath.description')}
+        />
+        <Divider />
+      </ScrollView>
+      
       
       {/*Start Hour Picker*/}
       <DateTimePickerModal
@@ -190,6 +208,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
       />
 
       <Portal>
+        {/* Import dialog */}
         <Dialog visible={isImportDialogVisible} onDismiss={() => {setImportDialogVisible(false)}}>
           <Dialog.Title>{t('settings.importDialog.title')}</Dialog.Title>
           <Dialog.Content>
@@ -201,6 +220,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
           </Dialog.Actions>
         </Dialog>
 
+        {/* Language dialog */}
         <Dialog visible={isLanguageDialogVisible} onDismiss={() => {setLanguageDialogVisible(false)}}>
           <Dialog.Title>{t('settings.languageDialog.title')}</Dialog.Title>
             <Dialog.Content>
@@ -212,14 +232,6 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
             </Dialog.Content>
         </Dialog>
       </Portal>
-
-      <Snackbar
-        visible={snackbarMessage != ""}
-        onDismiss={()=>setSnackbarMessage("")}
-        duration={5000}
-      >
-        {snackbarMessage}
-      </Snackbar>
 
     </View>
     

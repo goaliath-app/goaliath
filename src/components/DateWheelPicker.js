@@ -1,9 +1,9 @@
 import React from 'react';
 import { Pressable, View } from 'react-native';
-import { Dialog, Text, Portal } from 'react-native-paper'
-import WheelPickerExpo from 'react-native-wheel-picker-expo';
+import { Dialog, Text, Portal, Button } from 'react-native-paper'
 import { useTranslation } from 'react-i18next';
 import { DateTime } from 'luxon'
+import ScrollPicker from 'react-native-wheel-scrollview-picker';
 
 const DateWheelPicker = ({ 
   // luxon DateTime for the date selected when the picker is created
@@ -16,8 +16,7 @@ const DateWheelPicker = ({
   // today luxon DateTime, to calculate the year options to show
   today, 
   // bool, if true the picker is visible
-  visible 
-  
+  visible,
 }) => {
 
   const { t, i18n } = useTranslation()
@@ -28,7 +27,7 @@ const DateWheelPicker = ({
     t('units.monthNames.november'), t('units.monthNames.december')]
 
   const yearOptions = []
-  for(let year=today.year-80; year < today.year+80; year++){
+  for(let year=today.year-1; year < today.year+10; year++){
     yearOptions.push(year)
   }
   
@@ -36,44 +35,61 @@ const DateWheelPicker = ({
   const monthIndex = initialSelectedDate.month-1
 
   // selected year, as an integer
-  const [ yearPickerValue, setYearPickerValue ] = React.useState()
+  const [ yearPickerIndex, setYearPickerIndex ] = React.useState(yearIndex)
   // selected month, as an integer (1 to 12)
-  const [ monthPickerValue, setMonthPickerValue ] = React.useState()  
+  const [ monthPickerIndex, setMonthPickerIndex ] = React.useState(monthIndex)  
 
   return (
     <Portal>
       <Dialog visible={visible} onDismiss={onDismiss}>
         <Dialog.Content style={{alignItems: 'center'}}>
-          <View style={{flexDirection:'row'}}>
-            {/* Months Picker */}
-            <WheelPickerExpo
-              items={monthOptions.map(name => ({ label: name, value: '' }))}
-              initialSelectedIndex={monthIndex}
-              onChange={({ index }) => {setMonthPickerValue(index + 1)}}
+          <View style={{flexDirection:'row', backgroundColor:'white'}}>
+            <ScrollPicker
+              dataSource={monthOptions}
+              selectedIndex={monthPickerIndex}
+              renderItem={ (data, index) => <Text>{data}</Text> }
+              onValueChange={(data, selectedIndex) => {
+                setMonthPickerIndex(selectedIndex)
+              }}
+              wrapperHeight={180}
+              wrapperWidth={150}
+              wrapperColor='#FFFFFF'
+              itemHeight={60}
+              highlightColor='#d8d8d8'
+              highlightBorderWidth={2}
             />
 
-            {/* Years Picker */}
-            <WheelPickerExpo
-              items={yearOptions.map(name => ({ label: name, value: '' }))}
-              initialSelectedIndex={yearIndex}
-              onChange={({ item }) => {setYearPickerValue(item.label)}}
-            /> 
+            <ScrollPicker
+              dataSource={yearOptions}
+              selectedIndex={yearPickerIndex}
+              renderItem={ (data, index) => <Text>{data}</Text> }
+              onValueChange={(data, selectedIndex) => {
+                setYearPickerIndex(selectedIndex)
+              }}
+              wrapperHeight={180}
+              wrapperWidth={150}
+              wrapperColor='#FFFFFF'
+              itemHeight={60}
+              highlightColor='#d8d8d8'
+              highlightBorderWidth={2}
+            />
+
           </View>
 
           <View style={{flexDirection: 'row', marginTop: 20}}>
-            <Pressable onPress={onDismiss} style={{margin: 5, paddingHorizontal: 10}}>
+            <Button onPress={onDismiss} style={{margin: 5, paddingHorizontal: 10}}>
               <Text>{t('dateWheelPicker.dialog.cancel')}</Text>
-            </Pressable>
-            <Pressable 
+            </Button>
+            <Button 
               onPress={
                 () => {
-                  onOKPress(DateTime.fromObject({year: yearPickerValue, month: monthPickerValue, day: 1}))
+                  onOKPress(DateTime.fromObject({year: yearOptions[yearPickerIndex], month: monthPickerIndex+1, day: 1}))
                   onDismiss()}
               } 
               style={{margin: 5, paddingHorizontal: 10}}
             >
               <Text>{t('dateWheelPicker.dialog.acept')}</Text>
-            </Pressable>
+            </Button>
           </View>
         </Dialog.Content>
       </Dialog>

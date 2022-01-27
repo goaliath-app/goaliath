@@ -46,6 +46,7 @@ const Activity = ({ name, active, id, activity, goal }) => {
             disabled={ goal.archived || tutorialState != tutorialStates.Finished }
             onValueChange={() => dispatch(toggleActivity(id))} 
             value={active}
+            style={{ height: 48, width: 48 }}
           />
         )}
         description={frequencyString} 
@@ -146,17 +147,19 @@ const GoalScreen = withTheme(({ activities, goal, navigation, theme }) => {
               setMenuVisible(false)
               navigation.navigate('GoalForm', { id: goal.id } )
             }}
+            style={{ height: 48, width: 48 }}
           />
           :
-          <Appbar.Action icon='pencil' color={theme.colors.headerContent} style={{opacity: 0.5}} />
+          <Appbar.Action icon='pencil' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
         }
 
         { tutorialState <= tutorialStates.SampleActivityCreated ? 
-          <Appbar.Action icon='plus' color={theme.colors.headerContent} style={{opacity: 0.5}} />
+          <Appbar.Action icon='plus' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
           : 
           <Appbar.Action icon='plus' color={theme.colors.headerContent} onPress={() => {
             navigation.navigate('ActivityForm', { goalId: goal.id })
           }}
+          style={{ height: 48, width: 48 }}
         />
         }
         
@@ -168,7 +171,7 @@ const GoalScreen = withTheme(({ activities, goal, navigation, theme }) => {
             visible={menuVisible} 
           />
           :
-          <Appbar.Action icon='dots-vertical' color={theme.colors.headerContent} style={{opacity: 0.5}} />
+          <Appbar.Action icon='dots-vertical' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
         }
       </>
   )

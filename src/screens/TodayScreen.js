@@ -53,9 +53,9 @@ const TodayScreen = withTheme(({ navigation, theme }) => {
     <View style={{flex: 1, backgroundColor: theme.colors.todayScreenBackground}}>
       <Header title={t('today.headerTitle')} navigation={navigation} buttons={
         tutorialState == tutorialStates.Finished ? 
-          <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color={theme.colors.headerContent} />
+          <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color={theme.colors.headerContent} style={{ height: 48, width: 48 }} />
           :
-          <Appbar.Action icon='cog' color={theme.colors.headerContent} style={{opacity: 0.5}} />
+          <Appbar.Action icon='cog' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
       }/>
       { isBetween(tutorialStates.TodayScreenIntroduction, tutorialState, tutorialStates.GoalsScreenIntroduction) ?
         <SpeechBubble

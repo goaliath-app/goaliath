@@ -37,6 +37,22 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "jsEngine": "hermes"
+    "jsEngine": "hermes",
+    "plugins": [
+      "sentry-expo"
+    ],
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "goaliath",
+            "project": "goaliath",
+            "authToken": "265a7966561944468d17d179fa676d4338efaaf6f22f469a9dab011a64026909",
+            "setCommits": true
+          }
+        }
+      ]
+    }
   }
 }

@@ -27,7 +27,8 @@ const OnboardingScreen = ({ finishOnboarding }) => {
       <Pressable onPress={() => {
         dispatch(setTutorialState(tutorialStates.Finished))
         finishOnboarding()
-      }} style={{alignItems: 'flex-end', marginRight: 25, marginBottom: 20}}>
+        }} 
+        style={{alignItems: 'flex-end', marginRight: 25, marginBottom: 20, height: 48}}>
         <Text style={{ justifySelf: 'flex-end', fontSize: 16 }}>{t('onboarding.skip')}</Text>
       </Pressable>
     </View>

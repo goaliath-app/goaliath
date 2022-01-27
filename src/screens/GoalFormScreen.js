@@ -46,7 +46,8 @@ const GoalFormScreen = withTheme(({ theme, navigation, goal=null }) => {
           }
           navigation.goBack()}
         }
-      } 
+      }
+      style={{ height: 48, width: 48 }}
     />
   )
 

@@ -26,6 +26,7 @@ const ArchivedGoalListItem = ({ name, active, id }) => {
             disabled={true}
             value={active} 
             onValueChange={ () => dispatch(toggleGoal(id)) }
+            style={{ height: 48, width: 48 }}
           />
         )}
       />

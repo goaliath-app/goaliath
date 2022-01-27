@@ -55,6 +55,7 @@ export const ActivityBarChartPicker = withTheme(({ theme, activityId, goalId }) 
         height={35}
         buttonColor={theme.colors.barChartSelectorSelectedBackground}
         selectedColor={theme.colors.barChartSelectorSelectedText}
+        textContainerStyle={48}
       />
       <SwitchSelector
         options={showOptions}
@@ -64,11 +65,12 @@ export const ActivityBarChartPicker = withTheme(({ theme, activityId, goalId }) 
         onPress={value => setShow(value)}
         buttonColor={theme.colors.barChartSelectorSelectedBackground}
         selectedColor={theme.colors.barChartSelectorSelectedText}
+        textContainerStyle={48}
       />
       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 14}}>
-        <IconButton icon='chevron-left' size={20} onPress={() => setDate(date.minus(dateOffset))}/>
+        <IconButton icon='chevron-left' size={20} onPress={() => setDate(date.minus(dateOffset))} style={{ height: 48, width: 48 }} />
         <Text>{title}</Text>
-        <IconButton icon='chevron-right' size={20} onPress={() => setDate(date.plus(dateOffset))}/>
+        <IconButton icon='chevron-right' size={20} onPress={() => setDate(date.plus(dateOffset))} style={{ height: 48, width: 48 }}/>
       </View>
       <ActivityBarChart activityId={activityId} goalId={goalId} period={period} show={show} date={date}/>
     </View>

@@ -27,7 +27,7 @@ const HelpIcon = withTheme(({
             {dialogContent}
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => {setVisible(false)}}>{t('helpIcon.closeButton')}</Button>
+            <Button onPress={() => {setVisible(false)}} style={{ height: 48, width: 48 }}>{t('helpIcon.closeButton')}</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

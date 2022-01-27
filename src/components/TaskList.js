@@ -36,7 +36,6 @@ const TaskListItem = withTheme(({ date, task, theme }) => {
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
-  const { showSnackbar } = React.useContext(Context);
 
   return(
     <View style={{ backgroundColor: 'transparent' }}>
@@ -64,11 +63,11 @@ const TaskListItem = withTheme(({ date, task, theme }) => {
             <Title>{task.name}</Title>
             <Paragraph style={{marginBottom: 15}}>{t("taskList.longPressMenu.paragraph")}</Paragraph>
             <Divider />
-            <List.Item title={t("taskList.longPressMenu.delete")} onPress={() => {
+            <List.Item title={t("taskList.longPressMenu.deleteTitle")} onPress={() => {
               setLongPressDialogVisible(false)
-              showSnackbar(t("taskList.longPressMenu.deleteSnackbar"))
               dispatch(deleteTask(date, task.id))
-            }} />
+              }}
+              description={t("taskList.longPressMenu.deleteDescription")} />
             <Divider />
           </Dialog.Content>
         </Dialog>

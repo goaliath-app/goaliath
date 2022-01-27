@@ -1,7 +1,7 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';  // this import needs to be at the top.
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import { DefaultTheme, Provider as PaperProvider, Snackbar } from  'react-native-paper'
+import { DefaultTheme, Provider as PaperProvider, Snackbar } from 'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { PersistGate } from 'redux-persist/integration/react'
@@ -15,7 +15,7 @@ import {
   ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen,
   OnboardingScreen, SelectWeeklyActivitiesScreen,
   AddTasksScreen, CalendarDayViewScreen, CalendarWeekViewScreen,
-  StatsScreen, ArchivedGoalsScreen, ArchivedActivitiesScreen
+  StatsScreen, ArchivedGoalsScreen, ArchivedActivitiesScreen, AboutUsScreen
 } from './src/screens'
 import { 
   TodayScreenIcon, GoalsScreenIcon, GoalsScreenButton, CalendarScreenIcon, 
@@ -27,6 +27,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import tutorialStates from './src/tutorialStates'
 import { lightTheme, darkTheme } from './src/theme';
 import Color from 'color'
+import * as Sentry from 'sentry-expo';
+
+// init sentry
+Sentry.init({
+  dsn: 'https://604d643593ee4cceb34bb1216d0fcd11@o1126190.ingest.sentry.io/6166919',
+  enableInExpoDevelopment: true,
+  // debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+});
 
 Notifications.initNotifications()
 
@@ -163,9 +171,10 @@ export default function App() {
                 <Stack.Screen name='CalendarDayView' component={CalendarDayViewScreen} />
                 <Stack.Screen name='CalendarWeekView' component={CalendarWeekViewScreen} />
                 <Stack.Screen name='Settings' component={SettingsScreen} />
+                <Stack.Screen name='AboutUs' component={AboutUsScreen} />
               </Stack.Navigator>
               }
-              <Snackbar style={{backgroundColor: Color(currentTheme.onSurface).alpha(0.9).string()}}
+              <Snackbar style={{backgroundColor: Color(currentTheme.onSurface).alpha(0.9).string(), bottom: 35}}
                 action={{label: 'OK', action: () => setSnackbarMessage("")}}
                 visible={snackbarMessage != ""}
                 onDismiss={()=>setSnackbarMessage("")}
