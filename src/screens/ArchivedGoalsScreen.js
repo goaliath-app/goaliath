@@ -65,7 +65,7 @@ const ArchivedGoalsScreen = withTheme(({ theme, navigation }) => {
   )
       
   return(
-    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.archivedGoalsScreenBackground}}>
       <Header 
         title={t("archivedGoalsScreen.title")} left='back' navigation={navigation} 
       />

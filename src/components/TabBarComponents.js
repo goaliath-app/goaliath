@@ -9,9 +9,7 @@ import { IconHighlighter } from '../components';
 import tutorialStates from '../tutorialStates'
 import Color from 'color'
 
-function disabledColor(color){
-  return Color(color).alpha(0.5).rgb().string()
-}
+const disabledColor = 'primary95'
 
 export const TodayScreenIcon = ({ focused, color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
@@ -33,11 +31,11 @@ export const TodayScreenIcon = ({ focused, color, size }) => {
   )
 }
 
-export const GoalsScreenIcon = ({ focused, color, size }) => {
+export const GoalsScreenIcon = withTheme(({ theme, focused, color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
   const tutorialAwareColor = (
-    tutorialState == tutorialStates.TodayScreenIntroduction ? disabledColor(color) : color
+    tutorialState == tutorialStates.TodayScreenIntroduction ? theme.colors[disabledColor] : color
   )
 
   const [ isHighlightActive, setIsHighlightActive ] = React.useState(false)
@@ -63,7 +61,7 @@ export const GoalsScreenIcon = ({ focused, color, size }) => {
       />
     </IconHighlighter>
   )
-}
+})
 
 export const GoalsScreenButton = ( props ) => {
   const tutorialState = useSelector(selectTutorialState)
@@ -75,10 +73,10 @@ export const GoalsScreenButton = ( props ) => {
   )
 }
 
-export const CalendarScreenIcon = ({ color, size }) => {
+export const CalendarScreenIcon = withTheme(({ theme, color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? disabledColor(color) : color
+  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? theme.colors[disabledColor] : color
 
   return (
     <FontAwesomeIcon 
@@ -87,7 +85,7 @@ export const CalendarScreenIcon = ({ color, size }) => {
       color={tutorialAwareColor} 
     />
   )
-}
+})
 
 export const CalendarScreenButton = ( props ) => {
   const tutorialState = useSelector(selectTutorialState)
@@ -99,10 +97,10 @@ export const CalendarScreenButton = ( props ) => {
   )
 }
 
-export const StatsScreenIcon = ({ color, size }) => {
+export const StatsScreenIcon = withTheme(({ theme, color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? disabledColor(color) : color
+  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? theme.colors[disabledColor] : color
 
   return (
     <FontAwesomeIcon 
@@ -111,7 +109,7 @@ export const StatsScreenIcon = ({ color, size }) => {
       color={tutorialAwareColor} 
     />
   )
-}
+})
 
 export const StatsScreenButton = ( props ) => {
   const tutorialState = useSelector(selectTutorialState)

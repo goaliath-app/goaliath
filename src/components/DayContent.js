@@ -83,22 +83,16 @@ const DayContent = withTheme(({ theme, date }) => {
       <ScrollView style={{flex: 1}}>
         { timeStatus == 'past' && completedActivities.length == 0 && pendingActivities.length == 0 ? <EmptyPastWarning /> : null }
         { timeStatus == 'future' ? <FutureWarning /> : null }
-        <ViewHighlighter animated={false} active={tutorialState == tutorialStates.ActivitiesInTodayScreen}>
-          <ActivityList data={pendingActivities} date={date} />
-        </ViewHighlighter>
+        <ActivityList data={pendingActivities} date={date} />
         <TaskList date={date} show='pending' />
         { weekliesSelector=='unchecked' || 
             tutorialState >= tutorialStates.ChooseWeekliesIntroduction 
             && tutorialState < tutorialStates.Finished
             && weekliesSelector!='checked' ?
-        <ViewHighlighter animated={false} active={tutorialState == tutorialStates.ChooseWeekliesIntroduction}>
-          <SelectWeekliesListItem date={date} checked={false} navigation={navigation} disabled={weekliesSelector=='hidden'}/>
-        </ViewHighlighter>
+        <SelectWeekliesListItem date={date} checked={false} navigation={navigation} disabled={weekliesSelector=='hidden'} style={tutorialState == tutorialStates.ChooseWeekliesIntroduction?{backgroundColor: theme.colors.todayItemHighlight} : {}} />
         : <></> }
         { tasksSelector == 'unchecked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
-        <ViewHighlighter animated={false} active={tutorialState == tutorialStates.OneTimeTasksIntroduction}>
-          <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}}/>
-        </ViewHighlighter>
+          <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}} style={tutorialState == tutorialStates.OneTimeTasksIntroduction?{backgroundColor: theme.colors.todayItemHighlight} : {}} />
           : <></> 
         }
         <ActivityList data={completedActivities} date={date} />
@@ -107,7 +101,7 @@ const DayContent = withTheme(({ theme, date }) => {
         <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
         : <></> }
         { weekliesSelector == 'allcompleted'?
-        <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color={theme.colors.placeholder}/>
+        <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color={theme.colors.completedWeekliesSelector}/>
         : <></> }
         { tasksSelector == 'checked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
           <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>

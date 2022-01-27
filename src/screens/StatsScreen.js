@@ -19,7 +19,7 @@ const StatsScreen = withTheme(({ navigation, theme }) => {
   const [ selectedGoal, setSelectedGoal ] = useState(null)
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <ScrollView style={{flex: 1, backgroundColor: theme.colors.statsScreenBackground}}>
       <Header title={t('statsScreen.headerTitle')} navigation={navigation} />
       <GoalSelector onGoalSelection={setSelectedGoal}/>
       <Divider style={{marginHorizontal: 8}}/>
@@ -74,7 +74,7 @@ const LoadingStatsScreen = withTheme(({ navigation, theme }) => {
   const { t, i18n } = useTranslation()
 
   return (
-    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.statsScreenBackground}}>
       <Header title={t('statsScreen.headerTitle')} navigation={navigation} />
       <FullScreenActivityIndicator />
     </View>

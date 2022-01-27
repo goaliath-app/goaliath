@@ -9,11 +9,11 @@ const InfoCard = withTheme(({
   extraContent, 
   style={},
   cardStyle={},
-  titleStyle={}, 
-  paragraphStyle={}
+  titleStyle={color: theme.colors.infoCardContent}, 
+  paragraphStyle={color: theme.colors.infoCardContent}
 }) => (
   <View style={{ margin: 24 }}>
-    <Card style={[{backgroundColor: theme.colors.primaryLightVariant}, cardStyle]}>
+    <Card style={[{backgroundColor: theme.colors.infoCardBackground}, cardStyle]}>
       <Card.Content style={style}>
         { title? <Title style={titleStyle}>{title}</Title> : null }
         { paragraph ? <Paragraph style={paragraphStyle}>{paragraph}</Paragraph> : null }

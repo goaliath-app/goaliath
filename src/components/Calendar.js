@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, View, StyleSheet } from 'react-native';
-import { IconButton, Text, Subheading, withTheme } from 'react-native-paper';
+import { IconButton, Text, Subheading, withTheme, TouchableRipple } from 'react-native-paper';
 import { CalendarWeekItem } from './index'
 import { useSelector } from 'react-redux';
 import { getTodaySelector } from '../redux/selectors'
@@ -46,26 +46,63 @@ const Calendar = withTheme(({
         <IconButton icon={() => <FontAwesomeIcon icon={faChevronLeft} />} 
           onPress={() => setSelectedDate(selectedDate.minus({month: 1}))} 
           style={{paddingHorizontal: 10, height: 48, width: 48}} />
-        <Pressable onPress={() => setwheelPickerVisible(true)} style={{ height: 48 }}>
+        <TouchableRipple onPress={() => setwheelPickerVisible(true)} style={{borderRadius: 10, overflow: 'hidden'}} >
+          <View style={{ height: 48, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15 }}>
           <Subheading>{monthLabel} {year}</Subheading>
           {wheelPickerVisible?
           <DateWheelPicker initialSelectedDate={selectedDate} onDismiss={() => setwheelPickerVisible(false)} onOKPress={(newDate) => setSelectedDate(newDate)} today={today} visible={wheelPickerVisible} />
           :
           <></>}
-        </Pressable>
+          </View>
+        </TouchableRipple>
         <IconButton icon={() => <FontAwesomeIcon icon={faChevronRight} />} 
           onPress={() => setSelectedDate(selectedDate.plus({month: 1}))} 
           style={{paddingHorizontal: 10, height: 48, width: 48}} />
       </View>
 
+      <CalendarMonth 
+        selectedDate={selectedDate}
+        startOfWeek={startOfWeek}
+        onDayPress={onDayPress}
+        onDayLongPress={onDayLongPress}
+        theme={theme}
+      />
+     
+    </View>
+  )
+})
+
+const CalendarMonth = React.memo(({
+  selectedDate,
+  theme,
+  startOfWeek=1,
+  onDayPress=()=>{},      // this function will receive a date of that day as argument, as a Luxon DateTime
+  onDayLongPress=()=>{}
+}) => {
+
+  const { t, i18n } = useTranslation()
+
+  //Get first day of selectedDate week
+  // const startOfFirstWeek = selectedDate.plus({days: (0 - ((today.weekday % 7) - startOfWeek) % 7)})
+  const startOfFirstWeek = selectedDate.startOf('week')
+  
+  const weekData = []
+  for (let currentDate = startOfFirstWeek; 
+    currentDate < selectedDate.set({month: selectedDate.month + 1}); 
+    currentDate = currentDate.plus({days: 7})) {
+      weekData.push(currentDate)
+    }
+  
+  return(
+    <View>
       <View style={{ flexDirection:'row', justifyContent:'space-around', marginBottom: 5 }}>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.monday')}</Text>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.tuesday')}</Text>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.wednesday')}</Text>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.thursday')}</Text>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.friday')}</Text>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.saturday')}</Text>
-        <Text style={{color: theme.colors.disabled}}>{t('units.dayNamesShort2.sunday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.monday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.tuesday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.wednesday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.thursday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.friday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.saturday')}</Text>
+        <Text style={{color: theme.colors.weekDayLabel}}>{t('units.dayNamesShort2.sunday')}</Text>
       </View>
       
       {weekData.map( date => 

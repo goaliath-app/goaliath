@@ -126,22 +126,22 @@ const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
   )
       
   return(
-    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.goalsScreenBackground}}>
       <Header 
         title={t('goals.headerTitle')} navigation={navigation} 
         buttons={
         <>
         {
           tutorialState < tutorialStates.FirstGoalCreation ?
-            <Appbar.Action icon='plus' color={theme.colors.onPrimary} style={{ opacity: 0.5, height: 48, width: 48 }} />
+            <Appbar.Action icon='plus' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
           : tutorialState == tutorialStates.FirstGoalCreation ?
-            <IconHighlighter highlightStyle={{backgroundColor: theme.colors.onPrimary}}>
-              <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color={theme.colors.onPrimary} style={{ height: 48, width: 48 }} />
+            <IconHighlighter highlightStyle={{backgroundColor: theme.colors.headerContent}}>
+              <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color={theme.colors.headerContent} style={{ height: 48, width: 48 }} />
             </IconHighlighter>
           : tutorialState > tutorialStates.FirstGoalCreation && tutorialState < tutorialStates.ActivitiesInTodayScreen ?
-            <Appbar.Action icon='plus' color={theme.colors.onPrimary} style={{ opacity: 0.5, height: 48, width: 48 }} />
+            <Appbar.Action icon='plus' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
           : // tutorialState > ActivitiesInTodayScreen 
-            <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color={theme.colors.onPrimary} style={{ height: 48, width: 48 }} />
+            <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color={theme.colors.headerContent} style={{ height: 48, width: 48 }} />
         }
         { tutorialState == tutorialStates.Finished ?
           <ThreeDotsMenu 
@@ -151,7 +151,7 @@ const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
             visible={menuVisible} 
           />
           :
-          <Appbar.Action icon='dots-vertical' color={theme.colors.onPrimary} style={{opacity: 0.5, height: 48, width: 48}} />
+          <Appbar.Action icon='dots-vertical' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
         }
         </>
         }/>

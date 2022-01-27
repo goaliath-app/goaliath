@@ -57,14 +57,14 @@ const GoalWeekView = ({ theme, goalId, date }) => {
     <View>
       <List.Accordion title={goal.name} 
         titleNumberOfLines={2}
-        style={{ backgroundColor: theme.colors.surface, borderBottomWidth: 0.2, borderBottomColor: '#CCCCCC', borderTopWidth: 0.2, borderTopColor: '#CCCCCC',paddingLeft: 10 }} 
+        style={{ backgroundColor: theme.colors.goalWeekViewBackground, borderBottomWidth: 0.2, borderBottomColor: '#CCCCCC', borderTopWidth: 0.2, borderTopColor: '#CCCCCC',paddingLeft: 10 }} 
         left={() => (
           <AnimatedCircularProgress
             size={25}
             width={5}
             fill={goalCompletionRatio * 100}
-            tintColor={theme.colors.primary}
-            backgroundColor={theme.colors.primaryLightVariant} />
+            tintColor={theme.colors.weekViewGoalCircularProgress}
+            backgroundColor={theme.colors.weekViewGoalCircularProgressBackground} />
       )}>
         {goalActivities.map(activity => <ActivityWeekView activityId={activity.id} date={date} />)}
       </List.Accordion>
@@ -113,7 +113,7 @@ const CalendarWeekViewScreen = withTheme(({ route, theme }) => {
   const navigation = useNavigation()
 
   return(
-    <View style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+    <View style={{ backgroundColor: theme.colors.calendarWeekViewScreenBackground, flex: 1 }}>
       <Header title={headerTitle(date, t)} left='back' navigation={navigation} />
       <ScrollView >
         {/*WeekViewComponent*/}

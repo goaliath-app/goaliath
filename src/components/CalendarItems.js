@@ -20,6 +20,7 @@ import Color from 'color';
 
 const CalendarDayItem = withTheme(({
   theme,
+  colors,
   day, 
   currentMonth, 
   activityId, 
@@ -61,18 +62,22 @@ const CalendarDayItem = withTheme(({
 
   const isDueThisDay = useSelector(state => dueToday(state, activityId, day))
   const activityFailedThisDay = activityId != null && isDueThisDay && dayProgress == 0 && day < today
-  const dayBackground = activityFailedThisDay? theme.colors.disabled : 'transparent'
+  const dayBackground = activityFailedThisDay? colors.failedDayBackGround : 'transparent'
 
   const pressAnimationStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
       dayAnimationValue.value,
       [0, 1],
-      [dayBackground, theme.colors.primary]
+      [dayBackground, colors.pressedDayBackGround]
     )
 
-    const zIndex = weekFillAnimationValue.value > 0? 1 : 0
+    return { backgroundColor }
+  })
 
-    return { backgroundColor, zIndex }
+  const pressContainerAnimationStyle = useAnimatedStyle(() => {
+      const zIndex = weekFillAnimationValue.value > 0? 1 : 0
+
+      return { zIndex }
   })
 
   function onDayPress(){
@@ -149,7 +154,7 @@ const CalendarDayItem = withTheme(({
 
     return {
       opacity,
-      backgroundColor: theme.colors.primary,
+      backgroundColor: colors.longPressBackground,
       position: 'absolute',
       top: 0,
       left,
@@ -164,13 +169,15 @@ const CalendarDayItem = withTheme(({
       aspectRatio: 1,
     },
   
+    // soft today highlight
     softTodayView: {
       justifyContent: 'center', 
       alignItems: 'center'
     },
   
+    // today highlight
     todayView: {
-      backgroundColor: theme.colors.primaryDarkVariant, 
+      backgroundColor: colors.todayHighlightBackground, 
       borderRadius: 30, 
       width: 30, 
       height: 30, 
@@ -180,7 +187,7 @@ const CalendarDayItem = withTheme(({
   })
 
   return(
-    <Animated.View style={[styles.dayComponent, pressAnimationStyle]} onLayout={(layoutEvent) => {
+    <Animated.View style={[styles.dayComponent, pressContainerAnimationStyle]} onLayout={(layoutEvent) => {
       setMyCurrentLayout(layoutEvent.nativeEvent.layout)
     }}>
       <GestureDetector gesture={compoundGesture} >
@@ -191,29 +198,32 @@ const CalendarDayItem = withTheme(({
             alignSelf: 'flex-end',
             width: '100%',
             height: `${dayProgress*100}%`,
-            backgroundColor: theme.colors.primary,
-            opacity: 0.4,
+            backgroundColor: colors.dayProgressBar,
           }} />
+          {/* Press animation */}
+          <Animated.View style={[{
+            position: 'absolute', top: 0, bottom: 0, left: 0, right: 0
+          }, pressAnimationStyle] } />
           {/* Today Highlight */}
           <View style={{ position: 'absolute', flex: 1, alignSelf: 'center' }}>
             {today.day===day.day && today.month===day.month && today.year===day.year? 
               (softTodayHighlight?
               <View style={styles.softTodayView}>
-                <Text style={{ color: theme.colors.primaryDarkVariant, fontWeight: 'bold', textDecorationLine: 'underline' }}>
+                <Text style={{ color: colors.softTodayHighlightText, fontWeight: 'bold', textDecorationLine: 'underline' }}>
                   {dayLabel}
                 </Text>
               </View>
               :
               <View style={styles.todayView}>
-                <Text style={{ color: theme.colors.onPrimary }}>
+                <Text style={{ color: colors.todayHighlightText }}>
                   {dayLabel}
                 </Text>
               </View> )
             :
             currentMonth == null || currentMonth.toFormat('L')==day.month?
-            <Text>{dayLabel}</Text>
+            <Text style={{color: colors.dayNumber}}>{dayLabel}</Text>
             :
-            <Text style={{color: theme.colors.placeholder}}>{dayLabel}</Text>
+            <Text style={{color: colors.pastDayNumber}}>{dayLabel}</Text>
             }
           </View>
         </View>
@@ -234,6 +244,23 @@ const CalendarWeekItem = withTheme(({
   onDayPress=()=>{},
   onDayLongPress=()=>{},
 }) => {
+
+  const colors = {
+    weekBackground: theme.colors.weekBackground,
+    dayProgressBar: theme.colors.dayProgressBar,
+    weekProgressBar: theme.colors.weekProgressBar,
+    weekProgressBarBackground: theme.colors.weekProgressBarBackground,
+    dayNumber: theme.colors.weekDayNumber,
+    pastDayNumber: theme.colors.weekPastDayNumber,
+    todayHighlightBackground: theme.colors.calendarTodayHighlightBackground,
+    todayHighlightText: theme.colors.calendarTodayHighlightText,
+    softTodayHighlightText: theme.colors.calendarSoftTodayHighlightText,
+    pressedDayBackGround: theme.colors.weekPressedDayBackGround,
+    failedDayBackGround: theme.colors.weekFailedDayBackGround,
+    weekPressedBackground: theme.colors.weekPressedBackground,
+    longPressBackground: theme.colors.calendarLongPressBackground,
+  }
+
   const pressAnimationValue = useSharedValue(0)
 
   const [myCurrentLayout, setMyCurrentLayout] = React.useState()
@@ -249,14 +276,13 @@ const CalendarWeekItem = withTheme(({
     }
   })
 
-  const pressedColor = Color(theme.colors.primaryLightVariant).darken(0.1).string()
 
   const animatedWeekStyle = useAnimatedStyle(() => {
     return {
       backgroundColor: interpolateColor(
         pressAnimationValue.value, 
         [0, 1],
-        [theme.colors.primaryLightVariant, pressedColor] 
+        [colors.weekBackground, colors.weekPressedBackground] 
       )
     }
   })
@@ -275,7 +301,6 @@ const CalendarWeekItem = withTheme(({
     weekComponent: {
       justifyContent: 'space-around',
       flexDirection: 'row',
-      backgroundColor: theme.colors.primaryLightVariant
     },
   })
 
@@ -296,6 +321,7 @@ const CalendarWeekItem = withTheme(({
             onPress={onDayPress} 
             animate={animate}
             weekViewLayout={myCurrentLayout}
+            colors={colors}
           />
         ))}
       </Animated.View>
@@ -303,11 +329,11 @@ const CalendarWeekItem = withTheme(({
       {/* Week ProgressBar */}
       {
       showWeekProgress?
-        <View style={{marginBottom: 10, backgroundColor: Color(theme.colors.primaryLightVariant).darken(0.05).string()}}>
+        <View style={{marginBottom: 10, backgroundColor: colors.weekProgressBarBackground}}>
           <View style={{
             height: 7,
             width: `${weekProgress*100}%`,
-            backgroundColor: theme.colors.primary,
+            backgroundColor: colors.weekProgressBar,
             opacity: 0.6,
           }} />
         </View>

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Text, TextInput, withTheme } from 'react-native-paper';
 import { Duration } from 'luxon'
 
-const TimeInput = withTheme(({ theme, value, onValueChange, regularColor=theme.colors.onSurface, selectedColor=theme.colors.primary, maxHours=23 }) => {
+const TimeInput = withTheme(({ theme, value, onValueChange, regularColor=theme.colors.timeInputRegular, selectedColor=theme.colors.timeInputSelected, maxHours=23 }) => {
 
   const [currentFocus, setCurrentFocus] = React.useState()
   const [selection, setSelection] = React.useState()

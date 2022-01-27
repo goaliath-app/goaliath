@@ -97,7 +97,7 @@ const ActivityDetailScreen = withTheme(({
     date && !dateIsToday || activity.archived ? null :
     tutorialState == tutorialStates.Finished ? (
       <>
-        <Appbar.Action icon='pencil' color={theme.colors.onPrimary} onPress={() => {
+        <Appbar.Action icon='pencil' color={theme.colors.headerContent} onPress={() => {
           navigation.navigate('ActivityForm', { activityId: activity.id })
         }}
         style={{ height: 48, width: 48 }}
@@ -111,16 +111,16 @@ const ActivityDetailScreen = withTheme(({
       </>
     ) : (
       <>
-        <Appbar.Action icon='pencil' color={theme.colors.onPrimary} style={{opacity: 0.5, height: 48, width: 48}} />
-        <Appbar.Action icon='dots-vertical' color={theme.colors.onPrimary} style={{opacity: 0.5, height: 48, width: 48}} />
+        <Appbar.Action icon='pencil' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
+        <Appbar.Action icon='dots-vertical' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
       </> 
     )
   )
 
   return(
-    <View style={{flex:1,backgroundColor: theme.colors.background}} >
+    <View style={{flex:1,backgroundColor: theme.colors.activityDetailsScreenBackground}} >
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
-      <KeyboardAwareScrollView style={{ backgroundColor: theme.colors.background, flex: 1 }}>
+      <KeyboardAwareScrollView style={{ flex: 1 }}>
         <ArchivedWarning activity={activity} />
         {date && !dateIsToday? 
         <>

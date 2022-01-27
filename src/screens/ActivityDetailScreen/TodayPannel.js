@@ -98,7 +98,7 @@ const TodayPannel = withTheme(({ entry, toggleCompleted, startTodayTimer, stopTo
         </View>
       : null }
       <TimeInput 
-        regularColor={activityRunning? theme.colors.primary : theme.colors.onSurface}
+        regularColor={activityRunning? theme.colors.activityDetailTimeInputRunning : theme.colors.onSurface}
         value={todayTime.as('seconds')} 
         onValueChange={(value) => { 
           setTodayTime(

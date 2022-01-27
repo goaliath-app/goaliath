@@ -16,7 +16,7 @@ const HelpIcon = withTheme(({
   return(
     <View>
       <Pressable onPress={() => setVisible(true)} >
-        <FontAwesomeIcon icon={faQuestionCircle} size={20} color={theme.colors.primary} />
+        <FontAwesomeIcon icon={faQuestionCircle} size={20} color={theme.colors.helpIcon} />
       </Pressable>
       <Portal>
         <Dialog 

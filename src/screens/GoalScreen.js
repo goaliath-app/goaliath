@@ -143,20 +143,20 @@ const GoalScreen = withTheme(({ activities, goal, navigation, theme }) => {
     goal.archived? null :
       <>
         { tutorialState == tutorialStates.Finished ?
-          <Appbar.Action icon='pencil' color={theme.colors.onPrimary} onPress={() => {
+          <Appbar.Action icon='pencil' color={theme.colors.headerContent} onPress={() => {
               setMenuVisible(false)
               navigation.navigate('GoalForm', { id: goal.id } )
             }}
             style={{ height: 48, width: 48 }}
           />
           :
-          <Appbar.Action icon='pencil' color={theme.colors.onPrimary} style={{opacity: 0.5, height: 48, width: 48}} />
+          <Appbar.Action icon='pencil' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
         }
 
         { tutorialState <= tutorialStates.SampleActivityCreated ? 
-          <Appbar.Action icon='plus' color={theme.colors.onPrimary} style={{opacity: 0.5, height: 48, width: 48}} />
+          <Appbar.Action icon='plus' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
           : 
-          <Appbar.Action icon='plus' color={theme.colors.onPrimary} onPress={() => {
+          <Appbar.Action icon='plus' color={theme.colors.headerContent} onPress={() => {
             navigation.navigate('ActivityForm', { goalId: goal.id })
           }}
           style={{ height: 48, width: 48 }}
@@ -171,7 +171,7 @@ const GoalScreen = withTheme(({ activities, goal, navigation, theme }) => {
             visible={menuVisible} 
           />
           :
-          <Appbar.Action icon='dots-vertical' color={theme.colors.onPrimary} style={{opacity: 0.5, height: 48, width: 48}} />
+          <Appbar.Action icon='dots-vertical' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
         }
       </>
   )
@@ -194,7 +194,7 @@ const GoalScreen = withTheme(({ activities, goal, navigation, theme }) => {
 
   return (
     <>
-      <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+      <View style={{flex: 1, backgroundColor: theme.colors.goalScreenBackground}}>
         <Header title={goal.name} left={headerIcon} navigation={navigation} buttons={headerButtons}/>
         {/* ArchivedWarning only shows if the goal is archived */}
         <ArchivedWarning goal={goal}/>

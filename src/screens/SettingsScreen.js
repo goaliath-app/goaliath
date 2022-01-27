@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linking, Share, View} from 'react-native'
+import { Linking, Share, View, ScrollView } from 'react-native'
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Text, List, Divider, Paragraph, Portal, Switch, Dialog,
   Button, withTheme } from 'react-native-paper'
@@ -91,15 +91,16 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.settingsScreenBackground}}>
       <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
+      <ScrollView style={{flex: 1}} >
       <List.Item
         left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} />}
         title={t('settings.startHour')}
         description={t('settings.startHourDescription')}
         onPress={() => setStartHourPickerVisibility(true)} 
         right={() => 
-          <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.primary, fontSize: 17}}>
+          <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.settingValueText, fontSize: 17}}>
             {DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}
           </Text>} 
       />
@@ -139,7 +140,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         right={() => 
           <Text style={{
             marginRight: 10, marginTop: 10, 
-            color: theme.colors.primary, fontSize: 17
+            color: theme.colors.settingValueText, fontSize: 17
           }}>
             {t('settings.languageLocale')}
           </Text>} />
@@ -164,7 +165,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
             title={t('settings.dailyNotificationHour')}
             onPress={() => setNotificationHourPickerVisibility(true)} 
             right={() => 
-              <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.primary, fontSize: 17, paddingBottom: 7}}>
+              <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.settingValueText, fontSize: 17, paddingBottom: 7}}>
                 {DateTime.fromISO(settings.dailyNotificationHour).toFormat('HH:mm')}
               </Text>}
             style={{paddingLeft: 20}} 
@@ -174,19 +175,21 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         : null
       }
       <List.Item
-        left= { () => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"coffee"} />}
-        title={t('settings.aboutUs')}
-        onPress={() => navigation.navigate('AboutUs')}
-      />
-      <Divider />
-      <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"book"} />}
-        title={t('settings.aboutGoaliath.title')}
-        onPress={() => Linking.openURL(t('settings.aboutGoaliath.blogURL'))}
-        description={t('settings.aboutGoaliath.description')}
-      />
-      <Divider />    
-
+          left= { () => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"coffee"} />}
+          title={t('settings.aboutUs')}
+          onPress={() => navigation.navigate('AboutUs')}
+        />
+        <Divider />
+        <List.Item
+          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"book"} />}
+          title={t('settings.aboutGoaliath.title')}
+          onPress={() => Linking.openURL(t('settings.aboutGoaliath.blogURL'))}
+          description={t('settings.aboutGoaliath.description')}
+        />
+        <Divider />
+      </ScrollView>
+      
+      
       {/*Start Hour Picker*/}
       <DateTimePickerModal
         isVisible={isStartHourPickerVisible}

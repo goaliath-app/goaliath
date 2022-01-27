@@ -117,15 +117,16 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
         date={date}
         left={()=>leftSlot}
         description={description}
+        bottom={ timerIsRunning? 
+          () => <DoubleProgressBar 
+            height={4}
+            firstColor={theme.colors.progressBarToday} 
+            backgroundColor={theme.colors.progressBarBackground} 
+            firstProgress={progress} 
+          />
+          : null }
       />
-      { timerIsRunning? 
-        <DoubleProgressBar 
-          height={4}
-          firstColor={theme.colors.primary} 
-          backgroundColor={theme.colors.primaryLightVariant} 
-          firstProgress={progress} 
-        />
-        : null }
+      
     </View>
   )
 })

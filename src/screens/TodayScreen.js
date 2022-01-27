@@ -50,12 +50,12 @@ const TodayScreen = withTheme(({ navigation, theme }) => {
   );
 
   return (
-    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.todayScreenBackground}}>
       <Header title={t('today.headerTitle')} navigation={navigation} buttons={
         tutorialState == tutorialStates.Finished ? 
-          <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color={theme.colors.onPrimary} style={{ height: 48, width: 48 }} />
+          <Appbar.Action icon='cog' onPress={() => {navigation.navigate('Settings')}} color={theme.colors.headerContent} style={{ height: 48, width: 48 }} />
           :
-          <Appbar.Action icon='cog' color={theme.colors.onPrimary} style={{opacity: 0.5, height: 48, width: 48}} />
+          <Appbar.Action icon='cog' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
       }/>
       { isBetween(tutorialStates.TodayScreenIntroduction, tutorialState, tutorialStates.GoalsScreenIntroduction) ?
         <SpeechBubble

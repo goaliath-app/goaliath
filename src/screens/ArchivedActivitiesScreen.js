@@ -74,7 +74,7 @@ const ArchivedActivitiesScreen = withTheme(({ theme, route, navigation }) => {
   )
 
   return (
-    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.archivedActivitiesScreenBackground}}>
       <Header title={t("archivedActivitiesScreen.title", {goalName: goal.name})} left='back' navigation={navigation} />
       <View style={{ flex: 1 }}>
         {thisGoalArchivedActivities.length > 0?

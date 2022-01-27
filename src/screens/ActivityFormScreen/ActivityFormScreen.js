@@ -261,7 +261,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
   }
 
   const headerButtons = (
-    <Appbar.Action icon='check' onPress={() => {
+    <Appbar.Action icon='check' color={theme.colors.headerContent} onPress={() => {
         Keyboard.dismiss()
 
         if(validate()){
@@ -280,7 +280,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
   )
 
   return(
-    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.activityFormScreenBackground}}>
       <Header 
         title={activity?.name?activity.name:t('activityForm.headerTitle')} 
         left='back' navigation={navigation} 
@@ -289,7 +289,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
       <KeyboardAwareScrollView style={{flexGrow: 0}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
         <TextInput 
           error={nameInputError} 
-          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, backgroundColor: theme.colors.surface}} 
+          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, backgroundColor: theme.colors.textInputBackground}} 
           mode= 'outlined' 
           label={t('activityForm.nameInputLabel')}
           value={name} 
@@ -305,7 +305,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
             </HelperText> : null
         }
         <TextInput 
-          style={{paddingHorizontal: 15, paddingTop: 10, paddingBottom: 10, fontSize: 16, backgroundColor: theme.colors.surface}} 
+          style={{paddingHorizontal: 15, paddingTop: 10, paddingBottom: 10, fontSize: 16, backgroundColor: theme.colors.textInputBackground}} 
           mode= 'outlined' 
           multiline={true}
           label={t('activityForm.descriptionInputLabel')}

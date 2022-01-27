@@ -17,7 +17,9 @@ import { useSelector } from 'react-redux';
 import { usesSelectWeekliesScreen, getFreeActivitiesWeekCompletionRatio } from '../activityHandler'
 
 
-export const ActivityListItem = withTheme(({ theme, activity, entry, date, left, description }) => {
+export const ActivityListItem = withTheme(({ 
+  theme, activity, entry, date, left, description, bottom, style
+}) => {
   const { t, i18n } = useTranslation()
 
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
@@ -43,21 +45,22 @@ export const ActivityListItem = withTheme(({ theme, activity, entry, date, left,
   return(
     entry.archived?
     null :
-    <View style={{ backgroundColor: isActivityRunning(entry.intervals)? theme.colors.primaryLightVariant : 'transparent' }}>
-      <List.Item
+    <>
+      <StylishListItem
+        style={[isActivityRunning(entry.intervals)?{backgroundColor: theme.colors.runningActivityBackground} : {}, style]}
         left={left}
         right={() => ( 
           todayTime.as('seconds') > 0?
-           <Text style={styles.timeLabel}>{todayTime.toFormat('hh:mm:ss')}</Text> 
-           : null
+          <Text style={styles.timeLabel}>{todayTime.toFormat('hh:mm:ss')}</Text> 
+          : null
         )}
         title={activity.name}
-        titleNumberOfLines={2}
         description={description}
         onLongPress={()=>setLongPressDialogVisible(true)}
         onPress={() => {
           navigation.navigate('ActivityDetail', {activityId: activity.id, date: date.toISO()})
         }}
+        bottom={bottom}
       />
 
       {/* Long press menu */}
@@ -79,7 +82,7 @@ export const ActivityListItem = withTheme(({ theme, activity, entry, date, left,
             </Dialog.Content>
         </Dialog>
       </Portal>
-    </View>
+    </>
   )
 })
 
@@ -227,7 +230,7 @@ const legacy_ActivityListItem = ({
   );
 }
 
-export const SelectWeekliesListItem = ({ date, checked, color='black', navigation, disabled=false}) => {
+export const SelectWeekliesListItem = withTheme(({ theme, date, checked, navigation, disabled=false, style}) => {
   const { t, i18n } = useTranslation()
 
   const state = useSelector((state) => state)
@@ -238,40 +241,36 @@ export const SelectWeekliesListItem = ({ date, checked, color='black', navigatio
   const weekProgress = getFreeActivitiesWeekCompletionRatio(state, date)
 
   return(
-    <View style={{ backgroundColor: 'transparent' }}>
-      <List.Item
-        left={() => <IconButton icon={() => checked? 
-          <MaterialCommunityIcons name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
-          : <MaterialCommunityIcons name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
-          } />
-        }
-        title={t('today.selectWeekliesTitle')}
-        titleNumberOfLines={2}
-        description={t('today.selectWeekliesDescription', {weekActivitiesNumber: weekActivitiesNumber, weekProgress: Math.round(weekProgress * 100)})}
-        onPress={() => {disabled ? ()=>{} : navigation.navigate('SelectWeeklyActivities')}}
-      />
-    </View>
+    <StylishListItem
+      left={() => <IconButton icon={() => checked? 
+        <MaterialCommunityIcons color={theme.colors.todayCompletedIcon} name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
+        : <MaterialCommunityIcons color={theme.colors.todayDueIcon} name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
+        } />
+      }
+      title={t('today.selectWeekliesTitle')}
+      description={t('today.selectWeekliesDescription', {weekActivitiesNumber: weekActivitiesNumber, weekProgress: Math.round(weekProgress * 100)})}
+      onPress={() => {disabled ? ()=>{} : navigation.navigate('SelectWeeklyActivities')}}
+      style={style}
+    />
   )
-}
+})
 
-export const SelectTasksListItem = ({checked, onPress}) => {
+export const SelectTasksListItem = withTheme(({theme, checked, onPress, style}) => {
   const { t, i18n } = useTranslation()
 
   return(
-    <View style={{ backgroundColor: 'transparent' }}>
-      <List.Item
+    <StylishListItem
         left={() => <IconButton icon={() => checked? 
-          <MaterialCommunityIcons name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
-          : <MaterialCommunityIcons name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
+          <MaterialCommunityIcons color={theme.colors.todayCompletedIcon} name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
+          : <MaterialCommunityIcons color={theme.colors.todayDueIcon} name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
           } />}
         title={t('today.selectTasksTitle')}
-        titleNumberOfLines={2}
         // description={t('today.selectTasksDescription')}
         onPress={onPress}
-      />
-    </View>
+        style={style}
+    />
   )
-}
+})
 
 export const DoubleProgressBar = ({firstColor, secondColor, backgroundColor, firstProgress, secondProgress, height}) => (
   <View >
@@ -289,4 +288,44 @@ const styles = StyleSheet.create({
     marginRight: 12,
     fontSize: 15,
   },
+})
+
+const StylishListItem = withTheme(({
+  left,
+  title,
+  onPress,
+  onLongPress,
+  description,
+  style,
+  right,
+  theme,
+  bottom,
+}) => {
+  return(
+    <View style={[{ 
+      backgroundColor: theme.colors.activityBackground, 
+      borderRadius: 15, 
+      marginHorizontal: 1, 
+      marginTop: 2,
+      overflow: 'hidden',
+      height: 67,
+      justifyContent: 'center',
+    }, style]}>
+      <List.Item
+        left={left}
+        title={title}
+        titleNumberOfLines={2}
+        description={description}
+        onPress={onPress}
+        onLongPress={onLongPress}
+        right={right}
+      />
+      <View style={{ 
+        position: 'absolute', bottom: 0, left: 0, right: 0
+      }}>
+        {bottom ? bottom() : null}
+      </View>
+      
+    </View>
+  )
 })

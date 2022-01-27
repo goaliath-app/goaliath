@@ -22,7 +22,7 @@ const WeeklyListItem = withTheme(({ theme, name, description, id, checkboxStatus
       titleNumberOfLines={2}
       description={description}
       style={{
-        backgroundColor: selected? theme.colors.primaryLightVariant : theme.colors.surface
+        backgroundColor: selected? theme.colors.selectWeekliesSelectedActivityBackground : theme.colors.selectWeekliesActivityBackground
       }}
       onPress={onPress}
     />

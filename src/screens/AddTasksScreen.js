@@ -32,7 +32,7 @@ const AddTasksScreen = ({ theme, navigation, addTodayTask, tasksAddedToday }) =>
   )
 
   return (
-    <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.addTasksScreenBackground}}>
     <Header 
       title={t('addTasks.title')}
       left='back' 

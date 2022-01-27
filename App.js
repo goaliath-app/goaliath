@@ -95,7 +95,9 @@ export default function App() {
     <Tab.Navigator labeled={false} showLabel={false} screenOptions={{
       headerShown: false,
       tabBarLabel: () => null,
-      tabBarActiveTintColor: currentTheme.colors.primary,
+      tabBarActiveTintColor: currentTheme.colors.tabBarActiveIcon,
+      tabBarInactiveTintColor: currentTheme.colors.tabBarInactiveIcon,
+      tabBarStyle: {backgroundColor: currentTheme.colors.tabBarBackground}
     }}>
       <Tab.Screen name='Today' component={TodayStack} 
         options={{ 
@@ -146,7 +148,7 @@ export default function App() {
               <StatusBar 
                 style={'light'}
                 translucent={false} 
-                backgroundColor={currentTheme.colors.primaryDarkVariant}
+                backgroundColor={currentTheme.colors.statusBarBackground}
               />
               <GestureHandlerRootView style={{flex: 1}}>
               {newUser?
