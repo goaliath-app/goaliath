@@ -12,7 +12,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#536BAC"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -27,12 +27,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/sling-adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/adaptive-icon-crown.png",
+        "backgroundColor": "#536BAC"
       },
       "useNextNotificationsApi": true,
       "package": "app.goaliath",
-      "versionCode": 2
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png"
