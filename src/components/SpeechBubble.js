@@ -154,14 +154,15 @@ const SpeechBubble = withTheme(({
     <TapGestureHandler onGestureEvent={onPressHandler} maxDurationMs={10000}>
       <Animated.View style={[styles.speechBubble, {backgroundColor: theme.colors.speechBubbleBackground}, bubbleAnimatedStyle, bubbleStyle]} exiting={FadeOut}>
         <AnimatedTextComponent {...configProps} speech={speeches[speechIndex]} 
-          onAnimationEnd={onTextEnd} bypassAnimation={bypassAnimation} />
+          onAnimationEnd={onTextEnd} bypassAnimation={bypassAnimation} 
+          textStyle={{color: theme.colors.speechBubbleText}} />
         <Animated.Image style={bounceStyle} source={touchIconSrc} />
       </Animated.View>
     </TapGestureHandler>
   )
 })
 
-const FadeInSpeech = ({ speech, onAnimationEnd }) => {
+const FadeInSpeech = ({ speech, onAnimationEnd, textStyle }) => {
   const [ lastSpeechId, setLastSpeechId ] = React.useState(speech.id)
   const fadeIn = useSharedValue(0)
 
@@ -181,7 +182,7 @@ const FadeInSpeech = ({ speech, onAnimationEnd }) => {
   })
 
   return (
-    <Animated.Text style={[{flex: 1}, fadeInStyle]}>
+    <Animated.Text style={[{flex: 1}, textStyle, fadeInStyle]}>
       {speech.text}
     </Animated.Text>
   )
@@ -322,8 +323,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 50,
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 10,
+    marginRight: 10,
     marginBottom: 10,
     marginTop: 10,
     paddingLeft: 20,

@@ -316,7 +316,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
         />
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
-        <Pressable style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10, height: 50, borderRadius: 5}} onPress={() => {
+        <Pressable style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10, height: 60, borderRadius: 5}} onPress={() => {
           Keyboard.dismiss()
           setFrequencyVisible(true)
           setNoFrequencyError(false)

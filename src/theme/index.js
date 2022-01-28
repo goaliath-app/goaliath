@@ -16,6 +16,7 @@ export const lightTheme = populateTheme(
   {
     error: '#CE0A24',
     onError: '#ffffff',
+    transparent: 'transparent',
   },
 
   // aliases
@@ -115,8 +116,6 @@ function populateTheme(
   Object.keys(placements).forEach( placement => {
     theme.colors[placement] = theme.colors[placements[placement]]
   })
-
-  console.log(theme)
 
   return theme
 }

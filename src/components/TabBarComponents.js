@@ -9,9 +9,8 @@ import { IconHighlighter } from '../components';
 import tutorialStates from '../tutorialStates'
 import Color from 'color'
 
-const disabledColor = 'primary95'
 
-export const TodayScreenIcon = ({ focused, color, size }) => {
+export const TodayScreenIcon = withTheme(({ theme, focused, color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
   const isHighlightActive = (
@@ -21,7 +20,8 @@ export const TodayScreenIcon = ({ focused, color, size }) => {
   )
 
   return (
-    <IconHighlighter active={isHighlightActive}>
+    <IconHighlighter active={isHighlightActive} 
+      highlightStyle={{backgroundColor: theme.colors.tabBarItemHighlight}}>
       <FontAwesomeIcon 
         icon={faTasks} 
         size={size} 
@@ -29,13 +29,13 @@ export const TodayScreenIcon = ({ focused, color, size }) => {
       />
     </IconHighlighter>
   )
-}
+})
 
 export const GoalsScreenIcon = withTheme(({ theme, focused, color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
   const tutorialAwareColor = (
-    tutorialState == tutorialStates.TodayScreenIntroduction ? theme.colors[disabledColor] : color
+    tutorialState == tutorialStates.TodayScreenIntroduction ? theme.colors.tabBarDisabledIcon : color
   )
 
   const [ isHighlightActive, setIsHighlightActive ] = React.useState(false)
@@ -53,7 +53,8 @@ export const GoalsScreenIcon = withTheme(({ theme, focused, color, size }) => {
   }, [tutorialState, focused])
 
   return (
-    <IconHighlighter active={isHighlightActive}>
+    <IconHighlighter active={isHighlightActive}
+      highlightStyle={{backgroundColor: theme.colors.tabBarItemHighlight}}>
       <FontAwesomeIcon 
         icon={faTrophy} 
         size={size} 
@@ -76,7 +77,7 @@ export const GoalsScreenButton = ( props ) => {
 export const CalendarScreenIcon = withTheme(({ theme, color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? theme.colors[disabledColor] : color
+  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? theme.colors.tabBarDisabledIcon : color
 
   return (
     <FontAwesomeIcon 
@@ -100,7 +101,7 @@ export const CalendarScreenButton = ( props ) => {
 export const StatsScreenIcon = withTheme(({ theme, color, size }) => {
   const tutorialState = useSelector(selectTutorialState)
 
-  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? theme.colors[disabledColor] : color
+  const tutorialAwareColor = tutorialState != tutorialStates.Finished ? theme.colors.tabBarDisabledIcon : color
 
   return (
     <FontAwesomeIcon 

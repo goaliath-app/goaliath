@@ -7,6 +7,7 @@ export const lightPlacements = {
   // Tab bar
   tabBarActiveIcon: 'primary',
   tabBarInactiveIcon: 'neutral80',
+  tabBarDisabledIcon: 'primary100',
   tabBarBackground: 'surface',
 
   // TodayScreen
@@ -31,6 +32,7 @@ export const lightPlacements = {
 
   // Stats
   barChartSelectorSelectedBackground: 'accent50',
+  barChartSelectorBackground: 'transparent',
   barChartSelectorSelectedText: 'onSurface',
   barChartBar: 'accent',
   heatmap1: 'accent80',
@@ -59,8 +61,10 @@ export const lightPlacements = {
 
   // Tutorial
   todayItemHighlight: 'primaryContainer',
+  tabBarItemHighlight: 'accent60',
   pulsatingHighlight: 'primary',
   speechBubbleBackground: 'primaryContainer',
+  speechBubbleText: 'onPrimaryContainer',
 
   // Miscellaneous
   helpIcon: 'primary',
@@ -95,6 +99,10 @@ export const lightPlacements = {
 
   // value used by react-native-paper
   text: 'onSurface',
+  placeholder: 'neutral50',
+  //disabled: 'neutral60',
+  //backdrop
+  //notification
 
   // Screen Backgrounds
   dialogBackground: 'surface',
@@ -113,6 +121,7 @@ export const lightPlacements = {
   statsScreenBackground: 'surface',
   activityDetailsScreenBackground: 'surface',
   activityFormScreenBackground: 'surface',
+
 }
 
 export const lightAliases = {
