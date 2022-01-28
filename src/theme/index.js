@@ -6,7 +6,7 @@ import { darkPlacements, darkAliases } from './dark'
 export const lightTheme = populateTheme(
   // key colors, to generate tonal palettes
   {
-    primary: 'hsla(256, 80%, 57%, 1)',
+    primary: '#386cc7',
     secondary: 'hsl(224, 35%, 57%)',
     accent: 'hsla(162, 60%, 57%, 1)',
     neutral: '#000000',
