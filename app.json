@@ -7,10 +7,10 @@
     "icon": "./assets/icon.png",
     "notification": {
       "icon": "./assets/notification-icon.png",
-      "color": "#000000"
+      "color": "#536BAC"
     },
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon-color.png",
       "resizeMode": "contain",
       "backgroundColor": "#536BAC"
     },
@@ -27,7 +27,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon-crown.png",
+        "foregroundImage": "./assets/adaptive-icon-crown-small.png",
         "backgroundColor": "#536BAC"
       },
       "useNextNotificationsApi": true,
