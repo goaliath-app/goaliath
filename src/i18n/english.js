@@ -153,7 +153,11 @@ const en = {
     },
 
     aboutUs:{
-      title: 'Goaliath team',   
+      title: 'Goaliath team',
+      description: "We are Jimena and Óliver, the creators of Goaliath.\nIn 2021 we were in a period of self-learning in different subjects. But we couldn't do everything we set out to do and our progress was slow.\nIn response we came up with Goaliath. A simple but powerful tool that helped us achieve our goals without getting lost in the intricate path. And now we've published it so it can help you too.\nIf you have any suggestions or see something wrong, you can let us know from the settings.\n", //Jimena - {{jimenaLink}}\nÓliver - {{oliverLink}}\nCódigo fuente -  {{goaliathLink}},
+      jimenaLink: "https://www.linkedin.com/in/jimena-andrea/",
+      oliverLink: "https://twitter.com/oliverlsanz",
+      goaliathLink: "https://github.com/goaliath-app/goaliath"  
     },
     
     calendar: {
