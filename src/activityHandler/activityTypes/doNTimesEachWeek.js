@@ -31,7 +31,6 @@ const TodayScreenItem = ({ activityId, date }) => {
   
   // compute values
   const totalReps = weeklyReps + todayReps
-  const repsLeft = weeklyRepsGoal - totalReps < 0 ? 0 : weeklyRepsGoal - totalReps
   
   // functions
   function addOne(){
@@ -49,7 +48,7 @@ const TodayScreenItem = ({ activityId, date }) => {
   
   const description = t(
     'activityHandler.activityTypes.doNTimesEachWeek.listItemDescription', 
-    { todayReps, repsLeft, weeklyRepsGoal }
+    { todayReps, totalReps, weeklyRepsGoal }
   )
   
   React.useEffect(() => {

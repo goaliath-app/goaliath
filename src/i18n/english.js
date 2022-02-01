@@ -3,7 +3,7 @@ const en = {
     activityListItem: {
       description: {
         todayTimeGoal: 'Goal: {{expressionValue}} {{expressionUnit}}',
-        weekTimeGoal: 'This week: {{weeklyTimeNumber}} of {{expressionValue}} {{expressionUnit}}'
+        weekTimeGoal: 'This week: {{weeklyTimeNumber}} of {{expressionValue}} {{expressionUnit}} done'
       },
       longPressMenu: {
         edit: 'Edit activity',
@@ -313,7 +313,7 @@ const en = {
         },
         doNTimesEachWeek: {
           frequencyString: '{{repetitions}} repetitions each week',
-          listItemDescription: '{{todayReps}} done today - {{repsLeft}} of {{weeklyRepsGoal}} left this week',
+          listItemDescription: '{{todayReps}} done today - {{totalReps}} of {{weeklyRepsGoal}} done this week',
           weeklyCompletedDescription: '{{repetitionsGoal}} repetitions goal met this week',
           timesLeft: '{{repetitionsLeft}} repetitions left',
           completed: 'Completed'
@@ -335,11 +335,11 @@ const en = {
         // frequencyStrings of their corresponding activityType
         doNSeconds: {
           frequencyString: '{{value}} {{unit}}',
-          listItemDescription: '{{currentTimeValue}} of {{timeGoalValue}} {{unit}}'
+          listItemDescription: '{{currentTimeValue}} of {{timeGoalValue}} {{unit}} done'
         },
         doNTimes: {
           frequencyString: '{{repetitions}} times',
-          listItemDescription: '{{todayReps}} of {{repsGoal}} repetitions',
+          listItemDescription: '{{todayReps}} of {{repsGoal}} repetitions done',
         },
         doOneTime: {
           frequencyString: 'Do',

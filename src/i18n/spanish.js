@@ -3,7 +3,7 @@ const es= {
     activityListItem: {
       description: {
         todayTimeGoal: 'Objetivo: {{expressionValue}} {{expressionUnit}}',
-        weekTimeGoal: 'Esta semana: {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
+        weekTimeGoal: 'Esta semana: hecho {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
       },
       longPressMenu: {
         edit: 'Editar actividad',
@@ -133,7 +133,7 @@ const es= {
       frequencyLabel: 'Selecciona una frecuencia',
       switch: {
         multipleTimes: 'Objetivo de repeticiones',
-        repetitionsGoal: 'Repeticiones diarias',
+        repetitionsGoal: 'Objetivo de repeticiones',
         timeGoal: 'Objetivo de tiempo'
       },
       dailyRepetitions: 'Repeticiones diarias',
@@ -177,8 +177,6 @@ const es= {
       },
     },
   
-    
-
     goalForm: {
       nameError: "Introduce un nombre",
       descriptionHelpDialogTitle: "Motivación",
@@ -314,7 +312,7 @@ const es= {
         },
         doNTimesEachWeek: {
           frequencyString: '{{repetitions}} repeticiones a la semana',
-          listItemDescription: '{{todayReps}} reps hoy - {{repsLeft}} de {{weeklyRepsGoal}} esta semana',
+          listItemDescription: '{{todayReps}} reps hoy - Hecho {{totalReps}} de {{weeklyRepsGoal}} esta semana',
           weeklyCompletedDescription: '{{repetitionsGoal}} repeticiones completadas',
           timesLeft: 'Quedan {{repetitionsLeft}} repeticiones',
           completed: 'Completada'
@@ -336,11 +334,11 @@ const es= {
         // frequencyStrings of their corresponding activityType
         doNSeconds: {
           frequencyString: '{{value}} {{unit}}',
-          listItemDescription: '{{currentTimeValue}} de {{timeGoalValue}} {{unit}}',
+          listItemDescription: 'Hecho {{currentTimeValue}} de {{timeGoalValue}} {{unit}}',
         },
         doNTimes: {
           frequencyString: '{{repetitions}} veces',
-          listItemDescription: '{{todayReps}} de {{repsGoal}} repeticiones',
+          listItemDescription: 'Hecho {{todayReps}} de {{repsGoal}} repeticiones',
         },
         doOneTime: {
           frequencyString: 'Hacer',
