@@ -102,6 +102,10 @@ export const lightPlacements = {
   // SettingsScreen
   settingValueText: 'accent30',
 
+  //AboutUsScreen
+  links: 'accent30',
+  imageBorder: 'accent',
+
   // TodayScreen
   todayScreenBackground: 'background',
 
@@ -132,6 +136,7 @@ export const lightPlacements = {
   statsScreenBackground: 'surface',
   activityDetailsScreenBackground: 'surface',
   activityFormScreenBackground: 'surface',
+  aboutUsScreenBackground: 'surface',
 }
 
 export const lightAliases = {
