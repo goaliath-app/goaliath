@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const StylishListItem = withTheme(({
+export const StylishListItem = withTheme(({
   left,
   title,
   onPress,

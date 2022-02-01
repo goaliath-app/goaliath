@@ -1,14 +1,11 @@
 import React from 'react';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { View } from 'react-native'
 import { List, Portal, Dialog, Divider, Paragraph, Title, withTheme } from 'react-native-paper'
-import { getToday } from '../util'
-import { toggleTask, getTodaySelector, deleteTask, selectAllTasksByDate } from '../redux'
+import { toggleTask, deleteTask, selectAllTasksByDate } from '../redux'
 import { useTranslation } from 'react-i18next'
 import Checkbox from './Checkbox'
-import { FlatList } from 'react-native';
-import { DeleteDialog } from '../components'
-import { Context } from '../../App'
+import { StylishListItem } from '../components'
 
 
 const TaskList = ({ date, show="all" }) => {
@@ -16,17 +13,14 @@ const TaskList = ({ date, show="all" }) => {
   const completedTasks = allTasks.filter(task => task.completed)
   const pendingTasks = allTasks.filter(task => !task.completed)
 
-  const filteredtasks = (
+  const filteredTasks = (
     show == "completed" ? completedTasks :
     show == "pending" ? pendingTasks :
     allTasks
   )
 
   return (
-    <FlatList
-      data={filteredtasks}
-      renderItem={({ item }) => <TaskListItem date={date} task={item} />}
-    />
+    filteredTasks.map(task => <TaskListItem date={date} task={task} />)
   )
 }
 
@@ -39,7 +33,7 @@ const TaskListItem = withTheme(({ date, task, theme }) => {
 
   return(
     <View style={{ backgroundColor: 'transparent' }}>
-      <List.Item
+      <StylishListItem
         left={() => (
           <View>
             <Checkbox 
@@ -52,7 +46,7 @@ const TaskListItem = withTheme(({ date, task, theme }) => {
         )}
         title={task.name}
         description={t('today.oneTimeTaskDescription')}
-        onPress={()=>{}}
+        onPress={() => setLongPressDialogVisible(true)}
         onLongPress={() => setLongPressDialogVisible(true)}
       />
 
