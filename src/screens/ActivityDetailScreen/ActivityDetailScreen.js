@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
   toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, 
-  archiveActivity, restoreActivity, selectTutorialState, selectGoalByIdAndDate, 
+  restoreActivity, selectTutorialState, selectGoalByIdAndDate, 
   selectActivityByIdAndDate
 } from '../../redux'
 import { isToday, isFuture } from '../../util'
@@ -48,20 +48,34 @@ const ArchivedWarning = ({ activity }) => {
 
 // TODO: use selectActivityByIdAndDate instead of selectActivityById
 const ActivityDetailScreen = withTheme(({ 
-  activity,           // activity object to show on the screen (see ActivitySlice)
-  goal,               // the goal object to witch the activity belongs (see GoalsSlice)
-  entry,              // the entry of the daily log to show, if one. (see LogsSlice)
   navigation,         // navigation prop 
-  toggleCompleted,    // function to call when the user changes the activity completion state
-  stopTodayTimer,          // function to call when the user stops the activity timer
-  startTodayTimer,         // function to call when the user starts the activity timer
-  upsertEntry,  // function to call when needed to modify the activity entry
-  archiveActivity,     // function to call when the activity is archived (deleted)
-  date,
-  dayStartHour,
   theme,
+  route
 }) => {
+
+  const { 
+    activityId,  // id of the activity to show
+    date: isoDate         // (optional) iso string datetime of the log entry to show
+  } = route.params
+
+  const date = isoDate ? DateTime.fromISO(isoDate) : null
+  
+  let activity, goal, entry
+  if(date){
+    activity = useSelector(state => selectActivityByIdAndDate(state, activityId, date))
+    goal = useSelector(state => selectGoalByIdAndDate(state, activity.goalId, date))
+    entry = useSelector(state => selectEntryByActivityIdAndDate(state, activityId, date))
+  }else{
+    activity = useSelector(state => selectActivityById(state, activityId))
+    goal = useSelector(state => selectGoalById(state, activity.goalId))
+    entry = useSelector(state => null)
+  }
+
+  const dayStartHour = useSelector(state => state.settings.dayStartHour)
+
   const { t, i18n } = useTranslation()
+
+  const dispatch = useDispatch()
 
   const tutorialState = useSelector(selectTutorialState)
 
@@ -142,10 +156,10 @@ const ActivityDetailScreen = withTheme(({
         {dateIsToday?
         <TodayPannel 
           entry={entry} 
-          toggleCompleted={toggleCompleted} 
-          startTodayTimer={startTodayTimer} 
-          stopTodayTimer={stopTodayTimer} 
-          upsertEntry={upsertEntry} 
+          toggleCompleted={(...args) => dispatch(toggleCompleted(...args))} 
+          startTodayTimer={(...args) => dispatch(startTodayTimer(...args))} 
+          stopTodayTimer={(...args) => dispatch(stopTodayTimer(...args))} 
+          upsertEntry={(...args) => dispatch(upsertEntry(...args))} 
           date={date} 
           dayStartHour={dayStartHour}
           activity={activity}
@@ -154,10 +168,10 @@ const ActivityDetailScreen = withTheme(({
           entry?
           <TodayPannel 
             entry={entry} 
-            toggleCompleted={toggleCompleted} 
+            toggleCompleted={(...args) => dispatch(toggleCompleted(...args))} 
             startTodayTimer={()=>{}} 
             stopTodayTimer={()=>{}} 
-            upsertEntry={upsertEntry} 
+            upsertEntry={(...args) => dispatch(upsertEntry(...args))} 
             date={date} 
             dayStartHour={dayStartHour} 
             activity={activity}
@@ -190,35 +204,4 @@ const ActivityDetailScreen = withTheme(({
 })
 
 
-const mapStateToProps = (state, ownProps) => {
-  const { 
-    activityId,  // id of the activity to show
-    date         // (optional) iso string datetime of the log entry to show
-  } = ownProps.route.params
-
-  const dateTime = date ? DateTime.fromISO(date) : null
-  
-  let activity, goal, entry
-  if(dateTime){
-    activity = selectActivityByIdAndDate(state, activityId, dateTime)
-    goal = selectGoalByIdAndDate(state, activity.goalId, dateTime)
-    entry = selectEntryByActivityIdAndDate(state, activityId, dateTime)
-  }else{
-    activity = selectActivityById(state, activityId)
-    goal = selectGoalById(state, activity.goalId)
-  }
-  
-  const { dayStartHour } = state.settings
-
-  return { activity, goal, entry, date: dateTime, dayStartHour }
-}
-
-const actionToProps = {
-  toggleCompleted,
-  stopTodayTimer,
-  startTodayTimer,
-  upsertEntry,
-  archiveActivity
-}
-
-export default connect(mapStateToProps, actionToProps)(ActivityDetailScreen);
+export default ActivityDetailScreen;
