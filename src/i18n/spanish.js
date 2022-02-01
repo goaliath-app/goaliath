@@ -127,7 +127,8 @@ const es= {
         noName: 'Es necesario un nombre para tu actividad',
         noDaysSelected: 'Selecciona al menos un día',
         noTime: 'Por favor introduce el tiempo a dedicar',
-        noFrequency: 'Por favor selecciona una frecuencia'
+        noFrequency: 'Por favor selecciona una frecuencia',
+        noRepetitions: 'Por favor introduce las repeticiones',
       },
       frequencyTitle: 'Frecuencia',
       frequencyLabel: 'Selecciona una frecuencia',

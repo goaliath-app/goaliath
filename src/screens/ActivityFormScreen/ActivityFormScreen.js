@@ -6,7 +6,7 @@ import {
   Switch, Text, Paragraph, withTheme 
 } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
-import { Header, TimeInput, BottomScreenPadding, InfoCard } from '../../components';
+import { Header, TimeInput, BottomScreenPadding, InfoCard, RepetitionsInput } from '../../components';
 import { setActivity, selectActivityById } from '../../redux'
 import NumberOfWeeklyDaysInput from './NumberOfWeeklyDaysInput'
 import WeekdaySelector from './WeekdaySelector'
@@ -143,6 +143,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
   const [daysOfWeekError, setDaysOfWeekError] = React.useState(false)
   const [timeInputError, setTimeInputError] = React.useState(false)
   const [noFrequencyError, setNoFrequencyError] = React.useState(false)
+  const [noRepetitionsError, setNoRepetitionsError] = React.useState(false)
 
   const [isFrecuencyVisible, setFrequencyVisible] = React.useState(false)
 
@@ -157,6 +158,11 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
 
     if(frequencySelector === null){
       setNoFrequencyError(true)
+      error = true
+    }
+
+    if(parseInt(repetitions) <= 0 || Number.isNaN(parseInt(repetitions))){
+      setNoRepetitionsError(true)
       error = true
     }
     
@@ -190,6 +196,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
       setNameInputError(false)
       setDaysOfWeekError(false)
       setNoFrequencyError(false)
+      setNoRepetitionsError(false)
       return true
     }
   }
@@ -377,26 +384,13 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
               )}
             />
             {multipleTimesSwitch?
-              <View style={{marginHorizontal: 16, flexDirection: 'row', justifyContent:'space-between'}}>
-                <Text style={{alignSelf: 'center'}}>{t('activityForm.dailyRepetitions')}</Text>
-                <TextInput 
-                  style={{
-                    marginLeft: 20,
-                    fontSize: 40,
-                    textAlign: 'center',
-                    backgroundColor: 'transparent'
-                  }} 
-                  selectTextOnFocus={true}
-                  selectionColor= {'transparent'}
-                  value={repetitions}
-                  onChangeText={(value) => {
-                    value = value<1000?value:'999'
-                    value = value>0?value:'1'
-                    setRepetitions(value)
-                  }}  
-                  keyboardType='numeric' 
-                />
-              </View>
+              <RepetitionsInput  
+                description={t('activityForm.dailyRepetitions')}
+                value={repetitions}
+                onValueChange={setRepetitions}
+                error={noRepetitionsError}
+                clearError={() => setNoRepetitionsError(false)}
+              />
             : null
             }
           </View>
@@ -426,27 +420,14 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
               )}
             />
             {repetitionsGoalSwitch?
-              <View style={{marginHorizontal: 16, flexDirection: 'row', justifyContent:'space-between'}}>
-                <Text style={{alignSelf: 'center'}}>{t('activityForm.weeklyRepetitions')}</Text>
-                <TextInput 
-                  style={{
-                    marginLeft: 20,
-                    fontSize: 40,
-                    textAlign: 'center',
-                    backgroundColor: 'transparent'
-                  }} 
-                  selectTextOnFocus={true}
-                  selectionColor= {'transparent'}
-                  value={repetitions}
-                  onChangeText={(value) => {
-                    value = value<1000?value:'999'
-                    value = value>0?value:'1'
-                    setRepetitions(value)
-                  }}  
-                  keyboardType='numeric' 
-                />
-              </View>
-              : null}
+              <RepetitionsInput  
+                description={t('activityForm.weeklyRepetitions')}
+                value={repetitions}
+                onValueChange={setRepetitions}
+                error={noRepetitionsError}
+                clearError={() => setNoRepetitionsError(false)}
+              />
+            : null}
           </View>
           : null
         }

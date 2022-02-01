@@ -30,3 +30,4 @@ export {
 } from './TabBarComponents'
 export { IconHighlighter, ViewHighlighter } from './PulsatingHighlight'
 export { default as StateMonitor } from './StateMonitor'
+export { default as RepetitionsInput } from './RepetitionsInput'

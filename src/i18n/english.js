@@ -126,7 +126,8 @@ const en = {
         noName: 'A name is required',
         noDaysSelected: 'Select at least one day',
         noTime: 'Please enter a time',
-        noFrequency: 'Please select a frequency'
+        noFrequency: 'Please select a frequency',
+        noRepetitions: 'Please enter repetitions',
       },
       frequencyTitle: 'Frequency',
       frequencyLabel: 'Select frequency',
