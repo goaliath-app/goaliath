@@ -156,9 +156,9 @@ const es= {
     aboutUs:{
       title: 'El equipo detrás de Goaliath',
       description: "Somos Jimena y Óliver, los creadores de Goaliath.\n\nEn 2021 nos encontrábamos en un periodo de autoaprendizaje en distintas materias. Pero no podíamos con todo lo que nos propusimos y nuestro progreso era lento.\n\nComo respuesta ideamos Goaliath. Una herramienta simple pero potente que nos ayudó a conseguir nuestros objetivos sin perdernos en el intrincado camino. Y ahora la hemos publicado para que también pueda ayudarte a ti.\n\nSi tienes alguna sugerencia o ves algo que no funciona bien, puedes decírnoslo desde los ajustes.\n\n",
-      jimena: 'Jimena - ',
-      oliver: 'Óliver - ',
-      goaliath: 'Código fuente - ',
+      jimena: 'Jimena',
+      oliver: 'Óliver',
+      goaliath: 'Código fuente',
       jimenaLink: "https://www.linkedin.com/in/jimena-andrea/",
       oliverLink: "https://twitter.com/oliverlsanz",
       goaliathLink: "https://github.com/goaliath-app/goaliath"  
