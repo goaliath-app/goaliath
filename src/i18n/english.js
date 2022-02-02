@@ -53,6 +53,8 @@ const en = {
     loadingStats: 'Loading Stats...',
     
     activityDetail: {
+      detailsTabLabel: 'Details',
+      statsTabLabel: 'Stats',
       threeDotsMenu: {
         editActivity: 'Edit activity',
         deleteActivity: 'Archive activity',

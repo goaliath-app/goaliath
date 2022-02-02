@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ActivityIndicator } from 'react-native'
 import { withTheme } from 'react-native-paper'
 
-const LoadingContainer = ({ children, LoadingComponent=()=><View/>, bypassLoading=false }) => {
+export const LoadingContainer = ({ children, LoadingComponent=()=><View/>, bypassLoading=false }) => {
   if(children.length > 1){
     throw 'Loading container can only have one child, wrap them in a View'
   }

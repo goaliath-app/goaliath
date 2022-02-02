@@ -5,7 +5,7 @@ import { Divider, List, withTheme } from 'react-native-paper';
 import { ActivityBarChartPicker } from './BarCharts'
 import { default as ActivityCalendarHeatmap } from './CalendarHeatmap'
 import { default as GenericStats } from './GenericStats'
-import { loadedComponent } from '../components/Loading'
+import { loadedComponent, FullScreenActivityIndicator } from '../components/Loading'
 import { useTranslation } from 'react-i18next'
 
 const StatsPannel = ({ activityId, goalId }) => (
@@ -19,15 +19,4 @@ const StatsPannel = ({ activityId, goalId }) => (
   </View>
 )
 
-const Placeholder = withTheme(({ theme }) => {
-  const { t, i18n } = useTranslation()
-
-  return (
-    <List.Item 
-      left={()=><ActivityIndicator style={{transform: [{scale: 1.2}], marginHorizontal: 6}} color={theme.colors.activityIndicator} />} 
-      title={t('loadingStats')}
-    />
-  )
-})
-
-export default loadedComponent(StatsPannel, Placeholder)
+export default loadedComponent(StatsPannel, FullScreenActivityIndicator)

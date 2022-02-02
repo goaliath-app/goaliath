@@ -79,7 +79,7 @@ const TodayPannel = withTheme(({ timerDisabled=false, entry, date, dayStartHour,
             <Paragraph style={{marginRight: 6}}>{t('todayPannel.checkboxLabel')}</Paragraph>
             <Checkbox 
               status={entry.completed? 'checked':'unchecked'} 
-              onPress={() => {useDispatch(toggleCompleted({date: date, id: entry.id}))} }
+              onPress={() => {dispatch(toggleCompleted({date: date, id: entry.id}))} }
             />
           </View>
         )}
@@ -98,7 +98,10 @@ const TodayPannel = withTheme(({ timerDisabled=false, entry, date, dayStartHour,
               dispatch(setRepetitions({ date, id: entry.id, repetitions: value }))
             }}
             selectTextOnFocus={true}
-            keyboardType='numeric' />
+            keyboardType='numeric' 
+            underlineColor='transparent'
+            selectionColor='transparent'
+            />
           </View>
           <List.Item title={t('todayPannel.time')} />
         </View>
