@@ -6,11 +6,13 @@ import { TimeInput } from '../../components';
 import { getTodayTime, isActivityRunning, isToday, startOfDay } from '../../util'
 import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
-import { setRepetitions } from './../../redux'
+import { setRepetitions, toggleCompleted, upsertEntry, startTodayTimer, stopTodayTimer } from './../../redux'
 import { usesRepetitions, getTimeGoal } from '../../activityHandler'
 import Notifications from '../../notifications';
 
-const TodayPannel = withTheme(({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour, activity, theme }) => {
+const TodayPannel = withTheme(({ timerDisabled=false, entry, date, dayStartHour, activity, theme }) => {
+  console.log("TODAYPANNEL DATE", date)
+  
   React.useEffect(() => {
     if (isActivityRunning(entry.intervals)) {
       const intervalId = setInterval(() => {
@@ -28,17 +30,21 @@ const TodayPannel = withTheme(({ entry, toggleCompleted, startTodayTimer, stopTo
   const secondsRemaining = secondsGoal - todayTime.as('seconds')
 
   function onPressPlay(){
-    //Start timer
-    startTodayTimer(entry.id)
-    //Send timer notifications
-    Notifications.timerStarted(activity, entry, secondsRemaining, t)
+    if(!timerDisabled){
+      //Start timer
+      dispatch(startTodayTimer(entry.id))
+      //Send timer notifications
+      Notifications.timerStarted(activity, entry, secondsRemaining, t)
+    }
   }
 
   function onPressPause(){
-    //Stop timer
-    stopTodayTimer(entry.id)
-    //Dismiss notifications
-    Notifications.timerStoped(activity.id)
+    if(!timerDisabled){
+      //Stop timer
+      dispatch(stopTodayTimer(entry.id))
+      //Dismiss notifications
+      Notifications.timerStoped(activity.id)
+    }
   }
 
   const dispatch = useDispatch()
@@ -53,7 +59,7 @@ const TodayPannel = withTheme(({ entry, toggleCompleted, startTodayTimer, stopTo
       startDate: startOfDay(date, dayStartHour).toISO(),
       endDate: date.plus({seconds}).toISO()
     }
-    upsertEntry({date: date, entry: {...entry, intervals: [newInterval]}})
+    dispatch(upsertEntry({date: date, entry: {...entry, intervals: [newInterval]}}))
   }
 
   const dateIsToday = isToday(date, dayStartHour)
@@ -73,7 +79,7 @@ const TodayPannel = withTheme(({ entry, toggleCompleted, startTodayTimer, stopTo
             <Paragraph style={{marginRight: 6}}>{t('todayPannel.checkboxLabel')}</Paragraph>
             <Checkbox 
               status={entry.completed? 'checked':'unchecked'} 
-              onPress={() => {toggleCompleted({date: date, id: entry.id})} }
+              onPress={() => {useDispatch(toggleCompleted({date: date, id: entry.id}))} }
             />
           </View>
         )}

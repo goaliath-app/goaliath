@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Appbar, Paragraph, Menu, Title, Divider, List, Card, Button, withTheme } from 'react-native-paper';
 import { DateTime } from 'luxon'
@@ -11,7 +11,6 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
-  toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, 
   restoreActivity, selectTutorialState, selectGoalByIdAndDate, 
   selectActivityByIdAndDate
 } from '../../redux'
@@ -21,6 +20,26 @@ import TodayPannel from './TodayPannel'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { StatsPannel, MoveToGoalDialog, InfoCard } from '../../components'
 import tutorialStates from '../../tutorialStates'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
+const Tab = createMaterialTopTabNavigator();
+
+const ActivityDetailTabs = withTheme(({ 
+  activity, goal, entry, theme, date
+}) => {
+  console.log("Rendering ACTIVITYDETAIL TABS")
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Details" component={() => (
+        <ActivityDetails activity={activity} goal={goal} entry={entry} date={date} />
+      )} />
+      <Tab.Screen name="Stats" component={() => (
+        <ScrollView style={{flex: 1, backgroundColor: theme.colors.activityDetailsScreenBackground}}>
+          <StatsPannel activityId={activity.id} />
+        </ScrollView>)} />
+    </Tab.Navigator>
+  );
+})
 
 const ArchivedWarning = ({ activity }) => {
   const { t, i18n } = useTranslation()
@@ -46,16 +65,16 @@ const ArchivedWarning = ({ activity }) => {
   )
 }
 
-// TODO: use selectActivityByIdAndDate instead of selectActivityById
+
 const ActivityDetailScreen = withTheme(({ 
-  navigation,         // navigation prop 
+  navigation,
   theme,
   route
 }) => {
-
+  console.log("RENDERING ACTIVITYDETAIL SCREEN")
   const { 
-    activityId,  // id of the activity to show
-    date: isoDate         // (optional) iso string datetime of the log entry to show
+    activityId,    // id of the activity to show
+    date: isoDate  // (optional) iso string datetime of the log entry to show
   } = route.params
 
   const date = isoDate ? DateTime.fromISO(isoDate) : null
@@ -75,23 +94,13 @@ const ActivityDetailScreen = withTheme(({
 
   const { t, i18n } = useTranslation()
 
-  const dispatch = useDispatch()
-
   const tutorialState = useSelector(selectTutorialState)
 
   const dateIsToday = date?isToday(date, dayStartHour):false
-  const dateIsFuture = date?isFuture(date, dayStartHour):false
-  const monthLabel = date?t('units.monthNames.' + date.toFormat('MMMM').toLowerCase()):null
-  const dateTitle = ( date ? 
-    t('calendar.dayView.header', 
-      {month: monthLabel, day: date.toFormat('d'), year: date.toFormat('yyyy')}) 
-    : null
-  )
 
   const [menuVisible, setMenuVisible] = React.useState(false);  // sets the visibility of the threeDotsMenu
   const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
   const [moveToGoalDialogVisible, setMoveToGoalDialogVisible] = React.useState(false)  // sets the visibility of the delete dialog
-
 
   // items that appear in the three dots menu
   const menuItems = (
@@ -134,56 +143,8 @@ const ActivityDetailScreen = withTheme(({
   return(
     <View style={{flex:1,backgroundColor: theme.colors.activityDetailsScreenBackground}} >
       <Header title={activity.name} left='back' navigation={navigation} buttons={headerButtons} />
-      <KeyboardAwareScrollView style={{ flex: 1 }}>
-        <ArchivedWarning activity={activity} />
-        {date && !dateIsToday? 
-        <>
-        <List.Item 
-          title={<Title>{dateTitle}</Title>} 
-          right={() => ( dateIsFuture?null:
-            <View style={{alignSelf: 'center', paddingRight: 12}}>
-              <HelpIcon dialogContent={
-                <Paragraph>{t('activityDetail.helpIconText')}</Paragraph>
-              }/>
-            </View>
-          )}
-        />
-        <Divider />
-        </>
-        : null
-        }
-        <BasicActivityInfo activity={activity} goal={goal} />
-        {dateIsToday?
-        <TodayPannel 
-          entry={entry} 
-          toggleCompleted={(...args) => dispatch(toggleCompleted(...args))} 
-          startTodayTimer={(...args) => dispatch(startTodayTimer(...args))} 
-          stopTodayTimer={(...args) => dispatch(stopTodayTimer(...args))} 
-          upsertEntry={(...args) => dispatch(upsertEntry(...args))} 
-          date={date} 
-          dayStartHour={dayStartHour}
-          activity={activity}
-        /> 
-        : 
-          entry?
-          <TodayPannel 
-            entry={entry} 
-            toggleCompleted={(...args) => dispatch(toggleCompleted(...args))} 
-            startTodayTimer={()=>{}} 
-            stopTodayTimer={()=>{}} 
-            upsertEntry={(...args) => dispatch(upsertEntry(...args))} 
-            date={date} 
-            dayStartHour={dayStartHour} 
-            activity={activity}
-          />
-          :
-          null
-        }
 
-        <StatsPannel activityId={activity.id} />
-
-        <BottomScreenPadding />
-      </KeyboardAwareScrollView>
+      <ActivityDetailTabs activity={activity} goal={goal} entry={entry} date={date} />
 
       <DeleteActivityDialog
         visible={deleteDialogVisible}
@@ -200,6 +161,76 @@ const ActivityDetailScreen = withTheme(({
         activityId={activity.id} 
       />
     </View>
+  )
+})
+
+
+// TODO: use selectActivityByIdAndDate instead of selectActivityById
+const ActivityDetails = withTheme(({ 
+  activity,
+  goal,
+  entry,
+  date,
+  theme,
+}) => {
+  console.log("RENDERING ACTIVITYDETAILS")
+
+  const dayStartHour = useSelector(state => state.settings.dayStarthour)
+
+  const { t, i18n } = useTranslation()
+
+  const dispatch = useDispatch()
+
+  const dateIsToday = date?isToday(date, dayStartHour):false
+  const dateIsFuture = date?isFuture(date, dayStartHour):false
+  const monthLabel = date?t('units.monthNames.' + date.toFormat('MMMM').toLowerCase()):null
+  const dateTitle = ( date ? 
+    t('calendar.dayView.header', 
+      {month: monthLabel, day: date.toFormat('d'), year: date.toFormat('yyyy')}) 
+    : null
+  )
+
+  return(
+    <KeyboardAwareScrollView style={{ flex: 1, backgroundColor: theme.colors.activityDetailsScreenBackground }}>
+      <ArchivedWarning activity={activity} />
+      {date && !dateIsToday? 
+      <>
+      <List.Item 
+        title={<Title>{dateTitle}</Title>} 
+        right={() => ( dateIsFuture?null:
+          <View style={{alignSelf: 'center', paddingRight: 12}}>
+            <HelpIcon dialogContent={
+              <Paragraph>{t('activityDetail.helpIconText')}</Paragraph>
+            }/>
+          </View>
+        )}
+      />
+      <Divider />
+      </>
+      : null
+      }
+      <BasicActivityInfo activity={activity} goal={goal} />
+      {dateIsToday?
+      <TodayPannel 
+        entry={entry} 
+        date={date} 
+        dayStartHour={dayStartHour}
+        activity={activity}
+      /> 
+      : 
+        entry?
+        <TodayPannel 
+          entry={entry} 
+          date={date} 
+          dayStartHour={dayStartHour} 
+          activity={activity}
+        />
+        :
+        null
+      }
+
+      <BottomScreenPadding />
+    </KeyboardAwareScrollView>
   )
 })
 
