@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native'
-import { Menu, Appbar, withTheme } from 'react-native-paper'
+import { Menu, Appbar, withTheme, IconButton } from 'react-native-paper'
 import { ThreeDotsMenuColor } from '../styles/Colors';
 
 
@@ -30,7 +30,9 @@ export const SelfManagedThreeDotsMenu = withTheme(({
     - title: the text to display in the menu item
     - onPress: the function to call when the menu item is pressed
   */
-  items 
+  items,
+  color,
+  size
 }) => {
   const [menuVisible, setMenuVisible] = React.useState(false)
 
@@ -48,12 +50,15 @@ export const SelfManagedThreeDotsMenu = withTheme(({
   return (
     <View>
       <Menu
-        style={{ top: 60 }}
         visible={menuVisible}
         onDismiss={() => setMenuVisible(false)}
         anchor={
-          <Appbar.Action icon='dots-vertical' color={theme.colors.headerContent} 
-            onPress={() => setMenuVisible(true)} style={{ height: 48, width: 48 }} />
+          <IconButton 
+            icon='dots-vertical' color={color ? color : theme.colors.headerContent} 
+            onPress={() => setMenuVisible(true)} 
+            style={{ height: 48, width: 48 }} 
+            { ...(size ? { size: size } : {}) }
+          />
         }
       >
         {menuItems}
