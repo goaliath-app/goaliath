@@ -8,25 +8,7 @@ import Checkbox from './Checkbox'
 import { StylishListItem } from '../components'
 
 
-const TaskList = ({ date, show="all" }) => {
-  const allTasks   = useSelector(state => selectAllTasksByDate(state, date))
-  const completedTasks = allTasks.filter(task => task.completed)
-  const pendingTasks = allTasks.filter(task => !task.completed)
-
-  const filteredTasks = (
-    show == "completed" ? completedTasks :
-    show == "pending" ? pendingTasks :
-    allTasks
-  )
-
-  return (
-    filteredTasks.map(task => <TaskListItem date={date} task={task} />)
-  )
-}
-
-export default TaskList
-
-const TaskListItem = withTheme(({ date, task, theme }) => {
+export const TaskListItem = withTheme(({ date, task, theme }) => {
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()

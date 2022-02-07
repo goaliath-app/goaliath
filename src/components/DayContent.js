@@ -1,19 +1,23 @@
 import React from 'react';
-import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { View, ScrollView } from 'react-native'
-import { Card, Title, Paragraph, withTheme } from 'react-native-paper'
+import { withTheme } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native';
-import { ActivityList, BottomScreenPadding, ViewHighlighter } from '../components'
-import { SelectWeekliesListItem, SelectTasksListItem, TaskList, DeleteDialog, InfoCard } from '../components';
 import { 
-  areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay, selectTutorialState
+  SelectWeekliesListItem, SelectTasksListItem, InfoCard,
+  TaskListItem, BottomScreenPadding
+} from '../components';
+import { 
+  areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay, 
+  selectTutorialState, selectAllTasksByDate
 } from '../redux'
 import { areThereWeeklyActivities, areTherePendingWeeklyActivities } from '../activityHandler'
 import { useTranslation } from 'react-i18next'
 import { getToday } from '../util'
 import tutorialStates from '../tutorialStates'
 import Animated, { Layout } from 'react-native-reanimated'
+import { TodayScreenItem } from '../activityHandler'
+
 
 const FutureWarning = () => {
   const { t, i18n } = useTranslation()
@@ -38,21 +42,10 @@ const EmptyPastWarning = () => {
 }
 
 const DayContent = withTheme(({ theme, date }) => {
-  
-  // setup hooks
-  const navigation = useNavigation()
-  const { t, i18n } = useTranslation()
-  const dispatch = useDispatch()
-
   // selectors
   // using getToday because on day change getTodaySelector was still returning the previous day
   const today      = getToday(useSelector(state => state.settings.dayStartHour))
   const entryList  = useSelector((state) => selectEntriesByDay(state, date))
-  const tasksAdded = useSelector(state => areTasksAdded(state, date))
-  const areWeekliesSelectedTodayResult = useSelector(areWeekliesSelectedToday)
-  const areTherePendingWeeklyActivitiesResult = useSelector((state) => areTherePendingWeeklyActivities(state, date))
-  const areThereWeeklyActivitiesResult = useSelector(areThereWeeklyActivities)
-  const tutorialState = useSelector(selectTutorialState)
 
   // compute values
   const timeStatus = (
@@ -61,20 +54,6 @@ const DayContent = withTheme(({ theme, date }) => {
     'future'
   )
 
-  const weekliesSelector = (
-    timeStatus != 'today' ? 'hidden' :
-    areWeekliesSelectedTodayResult? 'checked' :
-    areTherePendingWeeklyActivitiesResult? 'unchecked' :
-    areThereWeeklyActivitiesResult? 'allcompleted' :
-    'hidden'
-  )
-
-  const tasksSelector = (
-    timeStatus != 'today' ? 'hidden' :
-    tasksAdded ? 'checked' :
-    'unchecked'
-  )
-  
   const completedActivities = entryList.filter(entry => !entry.archived && entry.completed)
   const pendingActivities   = entryList.filter(entry => !entry.archived && !entry.completed)
 
@@ -83,33 +62,124 @@ const DayContent = withTheme(({ theme, date }) => {
       <ScrollView style={{flex: 1}}>
         { timeStatus == 'past' && completedActivities.length == 0 && pendingActivities.length == 0 ? <EmptyPastWarning /> : null }
         { timeStatus == 'future' ? <FutureWarning /> : null }
-        <ActivityList data={pendingActivities} date={date} />
-        <TaskList date={date} show='pending' />
-        { weekliesSelector=='unchecked' || 
-            tutorialState >= tutorialStates.ChooseWeekliesIntroduction 
-            && tutorialState < tutorialStates.Finished
-            && weekliesSelector!='checked' ?
-        <SelectWeekliesListItem date={date} checked={false} navigation={navigation} disabled={weekliesSelector=='hidden'} style={tutorialState == tutorialStates.ChooseWeekliesIntroduction?{backgroundColor: theme.colors.todayItemHighlight} : {}} />
-        : <></> }
-        { tasksSelector == 'unchecked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
-          <SelectTasksListItem checked={false} onPress={() => {navigation.navigate('AddTasks')}} style={tutorialState == tutorialStates.OneTimeTasksIntroduction?{backgroundColor: theme.colors.todayItemHighlight} : {}} />
-          : <></> 
-        }
-        <ActivityList data={completedActivities} date={date} />
-        <TaskList date={date} show='completed' />
-        { weekliesSelector == 'checked'?
-        <SelectWeekliesListItem date={date} checked={true} navigation={navigation}/>
-        : <></> }
-        { weekliesSelector == 'allcompleted'?
-        <SelectWeekliesListItem date={date} checked={true} navigation={navigation} color={theme.colors.completedWeekliesSelector}/>
-        : <></> }
-        { tasksSelector == 'checked' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
-          <SelectTasksListItem checked={true} onPress={() => {navigation.navigate('AddTasks')}}/>
-          : <></> }
+        <DayContentList date={date} />
         <BottomScreenPadding />  
       </ScrollView>
     </Animated.View>
   );
 })
+
+const DayContentList = ({ date }) => {
+    // setup hooks
+    const navigation = useNavigation()
+  
+    // selectors
+    // using getToday because on day change getTodaySelector was still returning the previous day
+    const today      = getToday(useSelector(state => state.settings.dayStartHour))
+    const entryList  = useSelector((state) => selectEntriesByDay(state, date))
+    const taskList   = useSelector(state => selectAllTasksByDate(state, date))
+
+    const tasksAdded = useSelector(state => areTasksAdded(state, date))
+    const areWeekliesSelectedTodayResult = useSelector(areWeekliesSelectedToday)
+    const areTherePendingWeeklyActivitiesResult = useSelector((state) => areTherePendingWeeklyActivities(state, date))
+    const areThereWeeklyActivitiesResult = useSelector(areThereWeeklyActivities)
+    const tutorialState = useSelector(selectTutorialState)
+  
+    // compute values
+    const timeStatus = (
+      today.toISO() == date.toISO() ? 'today' :
+      today > date ? 'past' :
+      'future'
+    )
+  
+    const weekliesSelectorItem = (
+        timeStatus == 'today' && areThereWeeklyActivitiesResult 
+      || 
+        tutorialState >= tutorialStates.ChooseWeekliesIntroduction 
+        && tutorialState < tutorialStates.Finished
+      ?
+        [{
+          type: 'raw', 
+          completed: areWeekliesSelectedTodayResult || areTherePendingWeeklyActivitiesResult,
+          item: <SelectWeekliesListItem 
+                  date={date} 
+                  checked={areWeekliesSelectedTodayResult || areTherePendingWeeklyActivitiesResult} 
+                  navigation={navigation} 
+                  disabled={timeStatus != 'today'} 
+                  style={
+                    tutorialState == tutorialStates.ChooseWeekliesIntroduction?
+                      {backgroundColor: theme.colors.todayItemHighlight} : {}
+                    } 
+                  { ...(areTherePendingWeeklyActivitiesResult ? {} : {color: theme.colors.completedWeekliesSelector})}
+                  key='selectWeekliesItem'
+                />
+        }] 
+        : []
+    )
+
+    const tasksSelectorItem = (
+      timeStatus == 'today' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
+        [{
+          type: 'raw',
+          completed: tasksAdded,
+          item: <SelectTasksListItem
+                  checked={tasksAdded}
+                  onPress={() => {navigation.navigate('AddTasks')}}
+                  style={
+                    tutorialState == tutorialStates.OneTimeTasksIntroduction?
+                      {backgroundColor: theme.colors.todayItemHighlight} : {}
+                    }
+                  key='tasksSelectorItem'
+                />
+        }]
+        : []
+    )
+
+
+
+    const activityItems = entryList.map(item => ({ type: 'activity', item: item, completed: item.completed }))
+    const taskItems = taskList.map(item => ({ type: 'task', item: item, completed: item.completed }))
+
+    let listItems = activityItems.concat(taskItems)
+    listItems = listItems.concat(weekliesSelectorItem)
+    listItems = listItems.concat(tasksSelectorItem)
+    
+    // sort items
+    listItems.sort((a, b) => {
+      // sort by completion
+      if (a.completed && !b.completed) return 1
+      if (!a.completed && b.completed) return -1
+      // then sort by type
+      if(a.type == b.type) return 0
+        // tasks first
+      if (a.type == 'task') return -1
+      if (b.type == 'task') return 1
+        // then activities
+      if (a.type == 'activity') return -1
+      if (b.type == 'activity') return 1
+        // then raw items
+      if (a.type == 'raw') return -1
+      if (b.type == 'raw') return 1
+      return 0
+    })
+
+    function renderItem(item){
+      if (item.type == 'activity'){
+        return <TodayScreenItem activityId={item.item.id} date={date} key={'activity'+item.item.id} />
+      } else if (item.type == 'task'){
+        return <TaskListItem task={item.item} date={date} key={'task'+item.item.name}/>
+      } else if (item.type == 'raw'){
+        return item.item
+      }
+    }
+    
+    return (
+      <View>
+        {
+          listItems.map(item => renderItem(item))
+        }
+      </View>
+    )
+}
 
 export default DayContent
