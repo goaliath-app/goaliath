@@ -76,7 +76,7 @@ export default function App() {
 
   const [ newUser, setNewUser ] = React.useState()
   const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
-  const [ darkMode, setDarkMode ] = React.useState(false)
+  const [ darkMode, setDarkMode ] = React.useState(true)
 
   const currentTheme = darkMode? {...DefaultTheme, ...darkTheme} : {...DefaultTheme, ...lightTheme}
 

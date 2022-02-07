@@ -13,7 +13,7 @@ import { ActivityListItem } from '../../components'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 // TODO: just done basic visuals, see TODOs below
-const TodayScreenItem = ({ activityId, date }) => {
+const TodayScreenItem = withTheme(({ activityId, date, theme }) => {
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
 
@@ -41,9 +41,9 @@ const TodayScreenItem = ({ activityId, date }) => {
   let leftSlot
   // TODO: this is a placeholder, use the right icon with the right onPress
   if(entry.completed){
-    leftSlot = <IconButton icon={() => <MaterialCommunityIcons name={"checkbox-multiple-marked"} size={25} />} onPress={addOne} />
+    leftSlot = <IconButton icon={() => <MaterialCommunityIcons name={"checkbox-multiple-marked"} size={25} color={theme.colors.todayCompletedIcon} />} onPress={addOne} />
   }else{
-    leftSlot = <IconButton icon={() => <MaterialCommunityIcons name={"checkbox-multiple-blank-outline"} size={25} />} onPress={addOne} />
+    leftSlot = <IconButton icon={() => <MaterialCommunityIcons name={"checkbox-multiple-blank-outline"} size={25} color={theme.colors.todayDueIcon} />} onPress={addOne} />
   }
   
   const description = t(
@@ -68,7 +68,7 @@ const TodayScreenItem = ({ activityId, date }) => {
       />
     </View>
   )
-}
+})
 
 function usesRepetitions(state, activityId, date){
   return true

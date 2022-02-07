@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Subheading, TextInput } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 
-const NumberOfWeeklyDaysInput = ({ daysPerWeek, setDaysPerWeek }) => {
+const NumberOfWeeklyDaysInput = ({ daysPerWeek, setDaysPerWeek, theme }) => {
   const { t, i18n } = useTranslation()
   
   return(
@@ -26,7 +26,8 @@ const NumberOfWeeklyDaysInput = ({ daysPerWeek, setDaysPerWeek }) => {
           value = value>0?value:'1'
           setDaysPerWeek(value)
         }}  
-        keyboardType='numeric' 
+        keyboardType='numeric'
+        activeUnderlineColor={theme.colors.textInputSelected}
       />
     </View>
   )

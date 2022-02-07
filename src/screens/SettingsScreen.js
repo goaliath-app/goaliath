@@ -95,7 +95,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
       <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
       <ScrollView style={{flex: 1}} >
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} color={theme.colors.settingsIcons} />}
         title={t('settings.startHour')}
         description={t('settings.startHourDescription')}
         onPress={() => setStartHourPickerVisibility(true)} 
@@ -106,35 +106,35 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
       />
       <Divider />
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"mail"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"mail"} color={theme.colors.settingsIcons} />}
         title={t('settings.feedback')}
         description={t('settings.feedbackDescription')}
         onPress={() => email('jimenaa971@gmail.com')}
       />
       <Divider />
       <List.Item
-        left={() => <AntDesign style={{alignSelf: 'center', margin: 5}} size={25} name={"sharealt"} />}
+        left={() => <AntDesign style={{alignSelf: 'center', margin: 5}} size={25} name={"sharealt"} color={theme.colors.settingsIcons} />}
         title={t('settings.share')}
         description={t('settings.shareDescription')}
         onPress={() => Share.share({message: t('settings.shareMessage')})}
       />
       <Divider />
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"save"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"save"} color={theme.colors.settingsIcons} />}
         title={t('settings.export')}
         description={t('settings.exportDescription')}
         onPress={() => writeFile(state)}
       />
       <Divider />
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"download-cloud"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"download-cloud"} color={theme.colors.settingsIcons} />}
         title={t('settings.import')}
         description={t('settings.importDescription')}
         onPress={() => readFile()}
       />
       <Divider />
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"globe"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"globe"} color={theme.colors.settingsIcons} />}
         title={t('settings.language')}
         onPress={() => setLanguageDialogVisible(true)}
         right={() => 
@@ -146,7 +146,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
           </Text>} />
       <Divider />
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"bell"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"bell"} color={theme.colors.settingsIcons} />}
         title={t('settings.dailyNotification')}
         titleNumberOfLines={2}
         right={() => (
@@ -175,13 +175,13 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         : null
       }
       <List.Item
-          left= { () => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"coffee"} />}
+          left= { () => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"coffee"} color={theme.colors.settingsIcons} />}
           title={t('settings.aboutUs')}
           onPress={() => navigation.navigate('AboutUs')}
         />
         <Divider />
         <List.Item
-          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"book"} />}
+          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"book"} color={theme.colors.settingsIcons} />}
           title={t('settings.aboutGoaliath.title')}
           onPress={() => Linking.openURL(t('settings.aboutGoaliath.blogURL'))}
           description={t('settings.aboutGoaliath.description')}

@@ -43,7 +43,7 @@ const Calendar = withTheme(({
     <View style={{ padding: 15 }}>
       <View style={{flexDirection:'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20}}>
         {/* TODO: Add horizontal scroll. */}
-        <IconButton icon={() => <FontAwesomeIcon icon={faChevronLeft} />} 
+        <IconButton icon={() => <FontAwesomeIcon icon={faChevronLeft} color={theme.colors.onBackground} />} 
           onPress={() => setSelectedDate(selectedDate.minus({month: 1}))} 
           style={{paddingHorizontal: 10, height: 48, width: 48}} />
         <TouchableRipple onPress={() => setwheelPickerVisible(true)} style={{borderRadius: 10, overflow: 'hidden'}} >
@@ -55,7 +55,7 @@ const Calendar = withTheme(({
           <></>}
           </View>
         </TouchableRipple>
-        <IconButton icon={() => <FontAwesomeIcon icon={faChevronRight} />} 
+        <IconButton icon={() => <FontAwesomeIcon icon={faChevronRight} color={theme.colors.onBackground} />} 
           onPress={() => setSelectedDate(selectedDate.plus({month: 1}))} 
           style={{paddingHorizontal: 10, height: 48, width: 48}} />
       </View>
