@@ -1,17 +1,76 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { View } from 'react-native'
-import { Button, List, Checkbox, Divider, Paragraph, TextInput, withTheme } from 'react-native-paper';
+import { 
+  Button, List, Checkbox, Divider, Paragraph, TextInput, withTheme, Portal, 
+  Dialog, Title, Caption, IconButton
+} from 'react-native-paper';
 import { TimeInput } from '../../components';
 import { getTodayTime, isActivityRunning, isToday, startOfDay } from '../../util'
 import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
-import { setRepetitions, toggleCompleted, upsertEntry, startTodayTimer, stopTodayTimer } from './../../redux'
+import { 
+  setRepetitions, toggleCompleted, upsertEntry, startTodayTimer, stopTodayTimer,
+  selectEntryByActivityIdAndDate 
+} from './../../redux'
 import { usesRepetitions, getTimeGoal } from '../../activityHandler'
 import Notifications from '../../notifications';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpRightFromSquare } from '@fortawesome/free-regular-svg-icons'
+import IonIcon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+
+
+
+
+
+export const TodayPannelModal = withTheme(({ 
+  date, activity, entry, theme, timerDisabled=false, visible=true, onDismiss=()=>{}
+}) => {
+  const dayStartHour = useSelector(state => state.settings.dayStartHour)
+  const navigation = useNavigation()
+
+  return (
+    <Portal>
+      {/* { visible ? 
+        <View style={{ position: 'absolute', height: '100%', width: '100%', backgroundColor: theme.colors.neutral0, opacity: 0.2 }} />
+      : null } */}
+      <Dialog visible={visible} onDismiss={onDismiss} style={{marginHorizontal: 15}}>
+        <Dialog.Content style={{margin: 0, padding: 0, paddingRight: 0, paddingTop: 18}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15}} >
+            <View>
+              <Title>{activity.name}</Title>
+              <Caption>Japanese</Caption>
+            </View>
+            <IconButton 
+              style={{marginTop: 0, marginRight: 10, height: 50, width: 50}}
+              icon={
+                () => <IonIcon size={30} name={"md-open-outline"}/>
+              } 
+              onPress={() => { 
+                onDismiss()    
+                navigation.navigate('ActivityDetail', {activityId: activity.id, date: date.toISO()})}
+              }/>
+            
+          </View>
+          <Divider style={{marginRight: 25}}/>
+          <View style={{height:10}} />
+          <TodayPannel 
+            timerDisabled={timerDisabled}
+            entry={entry}
+            date={date}
+            dayStartHour={dayStartHour}
+            activity={activity}
+          /> 
+        </Dialog.Content>
+      </Dialog>
+    </Portal>
+  )
+})
+
 
 const TodayPannel = withTheme(({ timerDisabled=false, entry, date, dayStartHour, activity, theme }) => {
-  console.log("TODAYPANNEL DATE", date)
   
   React.useEffect(() => {
     if (isActivityRunning(entry.intervals)) {
@@ -128,7 +187,6 @@ const TodayPannel = withTheme(({ timerDisabled=false, entry, date, dayStartHour,
               {t('todayPannel.startButton')}</Button>)
           : null
         }
-      <Divider />
     </View>
   )
 })

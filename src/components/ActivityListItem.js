@@ -15,6 +15,7 @@ import MaterialCommunityIcons  from 'react-native-vector-icons/MaterialCommunity
 import Checkbox from './Checkbox'
 import { useSelector } from 'react-redux';
 import { usesSelectWeekliesScreen, getFreeActivitiesWeekCompletionRatio } from '../activityHandler'
+import { TodayPannelModal } from '../screens/ActivityDetailScreen/TodayPannel';
 
 
 export const ActivityListItem = withTheme(({ 
@@ -23,6 +24,7 @@ export const ActivityListItem = withTheme(({
   const { t, i18n } = useTranslation()
 
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
+  const [ isTodayPannelVisible, setTodayPannelVisible ] = React.useState(false)
 
   function update(){
     const currentTime = getTodayTime(entry.intervals)
@@ -58,9 +60,18 @@ export const ActivityListItem = withTheme(({
         description={description}
         onLongPress={()=>setLongPressDialogVisible(true)}
         onPress={() => {
-          navigation.navigate('ActivityDetail', {activityId: activity.id, date: date.toISO()})
+          setTodayPannelVisible(true)
         }}
         bottom={bottom}
+      />
+
+      {/* ActivityDetail modal */}
+      <TodayPannelModal 
+        date={date}
+        entry={entry}
+        activity={activity}
+        visible={isTodayPannelVisible}
+        onDismiss={()=>setTodayPannelVisible(false)}
       />
 
       {/* Long press menu */}
