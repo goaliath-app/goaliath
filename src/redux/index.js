@@ -50,5 +50,5 @@ export {
 export { 
     selectAllActiveActivities, getWeeklyStats, getTodaySelector,
     selectAllActiveActivitiesByDate, isActiveSelector, 
-    selectAllActiveActivitiesByGoalIdAndDate,
+    selectAllActiveActivitiesByGoalIdAndDate, selectAllActivitiesByGoalId
 } from './selectors'
