@@ -2,7 +2,7 @@ import { useStore } from 'react-redux'
 import { DateTime } from 'luxon'
 import Duration from 'luxon/src/duration.js'
 
-import { selectAllActivitiesByDate, selectActivityByIdAndDate } from './ActivitySlice'
+import { selectAllActivitiesByDate, selectActivityByIdAndDate, selectAllActivities } from './ActivitySlice'
 import { selectGoalByIdAndDate } from './GoalsSlice'
 import { selectAllWeekEntriesByActivityId } from './LogSlice'
 
@@ -82,4 +82,13 @@ export function selectAllActiveActivitiesByGoalIdAndDate(state, goalId, date){
   return activeActivities.filter(activity => {
     return activity.goalId == goalId
   })
+}
+
+export function selectAllActivitiesByGoalId(state, goalId){
+  const activities = selectAllActivities(state)
+  const thisGoalActivities = activities.filter(activity => {
+    return activity.goalId == goalId && !activity.archived
+  })
+  
+  return thisGoalActivities 
 }
