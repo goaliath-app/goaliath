@@ -293,7 +293,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
         left='back' navigation={navigation} 
         buttons={headerButtons}
       />
-      <KeyboardAwareScrollView style={{flexGrow: 0}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
+      <KeyboardAwareScrollView style={{flex: 1}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
         <TextInput 
           error={nameInputError} 
           style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, backgroundColor: theme.colors.textInputBackground}} 
@@ -339,19 +339,13 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
             :frequencySelector=='weekly'? t('activityForm.dialog.weeklyTitle')
             : null
           }</Text>
-          { activityPreviewText.length > 0 && <Text style={{ fontSize: 14 }}>{activityPreviewText}</Text> }
+          {/* This shows the activity preview text inside the frequency selector item */}
+          {/* { activityPreviewText.length > 0 && <Text style={{ fontSize: 14 }}>{activityPreviewText}</Text> } */}
           </View>
         </Pressable>
         <HelperText style={{paddingLeft:25}} type="error" visible={noFrequencyError}>
           {t('activityForm.errors.noFrequency')}
         </HelperText>
-        {/* Another alternative to show the activity frequency preview 
-        <InfoCard 
-          style={{marginVertical: 0}}
-          cardStyle={{marginVertical: 0}}
-          paragraphStyle={{marginVertical: 0, fontSize: 16, textAlign: 'center'}}
-          paragraph={"Due "+activityPreviewText} 
-        /> */}
 
         {frequencySelector=='daily'?
           <View> 
@@ -482,6 +476,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
             : null }
           </View>
         : null}
+
         
 
         <Portal>
@@ -506,6 +501,15 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
         </Portal>
         <BottomScreenPadding />
       </KeyboardAwareScrollView>
+      { frequencySelector != undefined ? 
+          /* Another alternative to show the activity frequency preview */
+          <InfoCard 
+            style={{marginVertical: 0}}
+            cardStyle={{marginVertical: 0}}
+            paragraphStyle={{marginVertical: 0, fontSize: 16, textAlign: 'center'}}
+            paragraph={name? `${name} ${activityPreviewText}` : activityPreviewText} 
+          /> 
+        : null }
     </View>
   )
 })
