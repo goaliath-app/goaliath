@@ -2,21 +2,97 @@ import React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Appbar, Divider, Switch, Menu, Portal, Dialog, withTheme, Title } from 'react-native-paper';
+import { List, Appbar, Divider, Switch, Menu, Portal, Dialog, withTheme, IconButton } from 'react-native-paper';
 import { 
-  Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog, BottomScreenPadding, 
-  SpeechBubble, IconHighlighter, ViewHighlighter,
+  Header, InfoCard, ThreeDotsMenu, DeleteActivityDialog, DeleteGoalDialog, BottomScreenPadding, 
+  SpeechBubble, IconHighlighter, MoveToGoalDialog, ViewHighlighter,
 } from '../components'
 import { hasSomethingToShow, isBetween } from '../util'
 import { useTranslation } from 'react-i18next'
 import { 
   selectAllActiveActivitiesByGoalIdAndDate, getTodaySelector, selectAllGoals, 
-  toggleGoal, selectTutorialState, setTutorialState,
+  toggleGoal, selectTutorialState, setTutorialState, selectAllActivitiesByGoalId,
 } from '../redux';
+import { getFrequencyString } from '../activityHandler'
 import tutorialStates from '../tutorialStates'
+import { Collapse, CollapseHeader, CollapseBody } from "accordion-collapse-react-native";
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 
-const GoalListItem = ({ theme, name, active, id }) => {
+const Activity = ({ active, activity, name }) => {
+  const navigation = useNavigation();
+  const { t, i18 } = useTranslation();
+  const dispatch = useDispatch();
+
+  const tutorialState = useSelector(selectTutorialState)
+
+  const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
+  const [ isDeleteDialogVisible, setDeleteDialogVisible ] = React.useState(false)
+  const [ isMoveToGoalDialogVisible, setMoveToGoalDialogVisible ] = React.useState(false)
+
+  const frequencyString = useSelector((state) => getFrequencyString(state, activity.id, t))
+
+  return (
+    <View>
+      <List.Item
+        style={{paddingTop: 5}}
+        onPress={() => navigation.navigate('ActivityDetail', { activityId: activity.id })}
+        onLongPress={
+          tutorialState == tutorialStates.Finished ? () => setLongPressDialogVisible(true) : () => {}
+        }
+        title={name}
+        titleNumberOfLines={2}
+        right={() => (
+          <Switch
+            onValueChange={() => dispatch(toggleActivity(activity.id))} 
+            value={active}
+            style={{ height: 48, width: 48 }}
+          />
+        )}
+        description={frequencyString} 
+      />
+
+      {/* Long press menu */}
+      <Portal>
+        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+          <Dialog.Title>{name}</Dialog.Title>
+            <Dialog.Content>
+              <Divider />
+              <List.Item title={t("goal.longPressMenu.edit")} onPress={() => {
+                setLongPressDialogVisible(false)
+                navigation.navigate('ActivityForm', { activityId: activity.id } )
+              }} />
+              <Divider />
+              <List.Item title={t("goal.longPressMenu.archive")} onPress={() => {
+                setLongPressDialogVisible(false)
+                setDeleteDialogVisible(true)
+              }} />
+              <Divider />
+              <List.Item title={t("goal.longPressMenu.move")} onPress={() => {
+                setLongPressDialogVisible(false)
+                setMoveToGoalDialogVisible(true)
+              }} />
+              <Divider />
+            </Dialog.Content>
+        </Dialog>
+      </Portal>
+
+      <DeleteActivityDialog
+        visible={isDeleteDialogVisible}
+        onDismiss={() => setDeleteDialogVisible(false)}
+        activityId={activity.id}
+      />
+
+      <MoveToGoalDialog 
+        visible={isMoveToGoalDialogVisible} 
+        setVisible={setMoveToGoalDialogVisible} 
+        activityId={activity.id} 
+      />
+    </View>
+  );
+}
+
+const GoalListItem = withTheme(({ name, active, id, theme }) => {
   const { t, i18n } = useTranslation()
 
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
@@ -26,8 +102,9 @@ const GoalListItem = ({ theme, name, active, id }) => {
 
   const navigation = useNavigation();
 
-  const today= useSelector(getTodaySelector)
+  const today = useSelector(getTodaySelector)
   const activities = useSelector((state) => selectAllActiveActivitiesByGoalIdAndDate(state, id, today))
+  const goalActivities = useSelector((state) => selectAllActivitiesByGoalId(state, id))
 
   const dispatch = useDispatch();
 
@@ -40,53 +117,59 @@ const GoalListItem = ({ theme, name, active, id }) => {
   return (
     <View>
       <ViewHighlighter active={amIHighlighted}>
-        <List.Item 
-          onPress={() => navigation.navigate('Goal', { goalId: id })}
-          onLongPress={
-            tutorialState == tutorialStates.Finished ? () => setLongPressDialogVisible(true) : () => {}
-          }
-          title={name}
-          titleNumberOfLines={2}
-          right={() => (
-            <Switch 
-              disabled={ tutorialState != tutorialStates.Finished }
-              value={active} 
-              onValueChange={ () => dispatch(toggleGoal(id)) }
-              style={{ height: 48, width: 48 }}
-            />
-          )}
-          description={t('goals.goalDescription', {activitiesNumber: activities.length})}
-        />
-        <Divider />
+        <Collapse handleLongPress={tutorialState == tutorialStates.Finished ? () => setLongPressDialogVisible(true) : () => {} }>
+          <CollapseHeader>
+              <List.Item
+                title={name}
+                titleNumberOfLines={2}
+                right={() => (
+                  <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                    <IconButton icon={() => <FeatherIcon name={"plus"} size={25} color={theme.colors.actionIcons} />} onPress={() => navigation.navigate('ActivityForm', { goalId: id })} />
+                    <IconButton icon={() => <FeatherIcon name={"arrow-up-right"} size={25} color={theme.colors.actionIcons} />} onPress={() => navigation.navigate('Goal', { goalId: id })} />
+                    <Switch 
+                      disabled={ tutorialState != tutorialStates.Finished }
+                      value={active} 
+                      onValueChange={ () => dispatch(toggleGoal(id)) }
+                      style={{ height: 48, width: 48 }}
+                    />
+                  </View>
+                )}
+                description={t('goals.goalDescription', {activitiesNumber: activities.length})}
+              />
+          </CollapseHeader>
+          <CollapseBody style={{marginHorizontal: 10}}>
+            {goalActivities.map(activity => <Activity name={activity.name} activity={activity} active={activity.active} />)}
+          </CollapseBody>
+        </Collapse>
       </ViewHighlighter>
 
       {/* Long press menu */}
       <Portal>
         <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
           <Dialog.Title>{name}</Dialog.Title>
-            <Dialog.Content>
-              <Divider />
-              <List.Item title={t("goals.longPressMenu.edit")} onPress={() => {
-                setLongPressDialogVisible(false)
-                navigation.navigate('GoalForm', { id: id } )
-              }} />
-              <Divider />
-              <List.Item title={t("goals.longPressMenu.archive")} onPress={() => {
-                setLongPressDialogVisible(false)
-                setDeleteDialogVisible(true)
-              }} />
-              <Divider />
-              <List.Item title={t("goals.longPressMenu.add")} onPress={() => {
-                setLongPressDialogVisible(false)
-                navigation.navigate('ActivityForm', { goalId: id } )
-              }} />
-              <Divider />
-              <List.Item title={t("goals.longPressMenu.viewArchivedActivities")} onPress={() => {
-                setLongPressDialogVisible(false)
-                navigation.navigate("ArchivedActivities", { goalId: id })
-              }} />
-              <Divider />
-            </Dialog.Content>
+          <Dialog.Content>
+            <Divider />
+            <List.Item title={t("goals.longPressMenu.edit")} onPress={() => {
+              setLongPressDialogVisible(false)
+              navigation.navigate('GoalForm', { id: id } )
+            }} />
+            <Divider />
+            <List.Item title={t("goals.longPressMenu.archive")} onPress={() => {
+              setLongPressDialogVisible(false)
+              setDeleteDialogVisible(true)
+            }} />
+            <Divider />
+            <List.Item title={t("goals.longPressMenu.add")} onPress={() => {
+              setLongPressDialogVisible(false)
+              navigation.navigate('ActivityForm', { goalId: id } )
+            }} />
+            <Divider />
+            <List.Item title={t("goals.longPressMenu.viewArchivedActivities")} onPress={() => {
+              setLongPressDialogVisible(false)
+              navigation.navigate("ArchivedActivities", { goalId: id })
+            }} />
+            <Divider />
+          </Dialog.Content>
         </Dialog>
       </Portal>
 
@@ -96,7 +179,7 @@ const GoalListItem = ({ theme, name, active, id }) => {
         goalId={id} />
     </View>
   );
-}
+})
 
 const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
   const { t, i18n } = useTranslation()
