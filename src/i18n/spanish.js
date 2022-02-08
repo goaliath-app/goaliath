@@ -195,7 +195,7 @@ const es= {
       motivation: 'Motivación',
       threeDotsMenu: {
         editGoal: 'Editar meta',
-        deleteGoal: 'Eliminar meta',
+        deleteGoal: 'Archivar meta',
         viewArchivedActivities: 'Ver actividades archivadas',
       },
       deleteDialog: {
@@ -219,7 +219,7 @@ const es= {
       infoTitle: 'No hay metas',
       infoContent: "Crea una nueva meta pulsando el icono +",
       menu: {
-        viewArchived: "View archived goals",
+        viewArchived: "Ver metas archivadas",
       },
       longPressMenu: {
         add: "Añadir nueva actividad",
