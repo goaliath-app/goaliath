@@ -71,6 +71,13 @@ const en = {
       changeGoalSnackbar: "Activity moved to {{goalName}} goal",
       archivedWarning: "This activity is archived",
       restoreButton: "Restore activity",
+      todayStatusCard: {
+        dueToday: 'This activity is scheduled for today',
+        dueThisWeek: 'You can choose to do this activity today from the Today List',
+        notDue: 'You don\'t have to do this activity today',
+        chosenToday: 'You have chosen to do this activity today',
+        goToToday: "Go to Today List",
+      }
     },
 
     basicActivityInfo: {

@@ -269,7 +269,7 @@ export function getFreeActivitiesWeekCompletionRatio(state, date){
   return getActivitySetWeekCompletionRatio(state, activities, date)
 }
 
-function dueThisWeek(state, activityId, date){
+export function dueThisWeek(state, activityId, date){
   // This function tells wether the activity is due this week or not
   // An activity is not due for a week if
   //  - it is archived

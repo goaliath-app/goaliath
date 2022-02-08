@@ -71,6 +71,13 @@ const es= {
       changeGoalSnackbar: "Actividad movida a la meta {{goalName}}",
       archivedWarning: "Esta actividad está archivada",
       restoreButton: "Restaurar actividad",
+      todayStatusCard: {
+        dueToday: 'Esta actividad está programada para hoy',
+        dueThisWeek: 'Puedes elegir hacer hoy esta actividad desde la lista de hoy',
+        notDue: 'No tienes que hacer esta actividad hoy',
+        chosenToday: 'Has elegido hacer esta actividad hoy',
+        goToToday: "Ir a Hoy",
+      }
     },
   
     basicActivityInfo: {
