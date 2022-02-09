@@ -9,6 +9,7 @@ const initialState = {
     language: Localization.locale,
     tutorialState: tutorialStates.NewUser,
     dailyNotificationHour: DateTime.fromObject({hour:9, minute:0}).toISO(),
+    darkTheme: false,
 }
 
 const settingsSlice = createSlice({
@@ -30,16 +31,23 @@ const settingsSlice = createSlice({
         },
         setDailyNotificationHour(state, action){
             state.dailyNotificationHour = action.payload
-        }
+        },
+        setDarkTheme(state, action){
+            state.darkTheme = action.payload
+        },
     }
 })
 
 export const { 
-    setDayStartHour, setState, setLanguage, setTutorialState, setDailyNotificationHour, 
+    setDayStartHour, setState, setLanguage, setTutorialState, setDailyNotificationHour, setDarkTheme,
 } = settingsSlice.actions
 
 export function selectTutorialState(state){
     return state.settings.tutorialState
+}
+
+export function selectDarkTheme(state){
+    return state.settings.darkTheme
 }
 
 export default settingsSlice.reducer

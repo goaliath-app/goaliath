@@ -9,7 +9,10 @@ import { persistStore } from 'redux-persist'
 import { StatusBar } from 'expo-status-bar'
 import i18n from './src/i18n'
 import { useTranslation } from 'react-i18next'
-import { store, setTutorialState } from './src/redux'
+import { 
+  store, setTutorialState, setDarkTheme as setDarkThemeReducer,
+  selectDarkTheme,
+} from './src/redux'
 import { 
   TodayScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, 
   ActivityFormScreen, GoalFormScreen, CalendarScreen, SettingsScreen,
@@ -76,9 +79,14 @@ export default function App() {
 
   const [ newUser, setNewUser ] = React.useState()
   const [ snackbarMessage, setSnackbarMessage ] = React.useState("")
-  const [ darkMode, setDarkMode ] = React.useState(true)
+  const [ darkThemeState, setDarkThemeState ] = React.useState()
 
-  const currentTheme = darkMode? {...DefaultTheme, ...darkTheme} : {...DefaultTheme, ...lightTheme}
+  const currentTheme = darkThemeState? {...DefaultTheme, ...darkTheme} : {...DefaultTheme, ...lightTheme}
+
+  function setDarkTheme(value){
+    setDarkThemeState(value)
+    store.dispatch(setDarkThemeReducer(value))
+  }
 
   function finishOnboarding(){
     setNewUser(false)
@@ -87,6 +95,7 @@ export default function App() {
   function onStoreRehydration(){
     setNewUser(store.getState().settings.tutorialState == tutorialStates.NewUser)
     i18n.changeLanguage(store.getState().settings.language)
+    setDarkTheme(selectDarkTheme(store.getState()))
   }
 
   const { t, i18 } = useTranslation()
@@ -143,8 +152,11 @@ export default function App() {
         onBeforeLift={()=>onStoreRehydration()}
       >
         <PaperProvider theme={currentTheme}>
-          <Context.Provider value={ { showSnackbar: setSnackbarMessage } } >
-            <NavigationContainer theme={DarkTheme}>
+          <Context.Provider value={ { 
+              showSnackbar: setSnackbarMessage,
+              setDarkTheme
+            } } >
+            <NavigationContainer theme={darkThemeState? DarkTheme : NavigationDefaultTheme}>
               <StatusBar 
                 style={'light'}
                 translucent={false} 

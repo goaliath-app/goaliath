@@ -10,7 +10,9 @@ import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker'
 import { useTranslation } from 'react-i18next'
-import { setDayStartHour, importState, setLanguage, setDailyNotificationHour, updateLogs } from '../redux'
+import { setDayStartHour, importState, setLanguage, setDailyNotificationHour, 
+  updateLogs, selectDarkTheme,
+} from '../redux'
 import { Header } from '../components'
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -19,6 +21,8 @@ import { Context } from '../../App'
 
 
 const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, state, importState }) => {
+  const darkThemeSwitch = useSelector(selectDarkTheme)
+  
   const [ isStartHourPickerVisible, setStartHourPickerVisibility ] = React.useState(false);
   const [ isNotificationHourPickerVisible, setNotificationHourPickerVisibility ] = React.useState(false);
   const [ isLanguageDialogVisible, setLanguageDialogVisible ] = React.useState(false);
@@ -28,8 +32,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
 
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
-  const { showSnackbar } = React.useContext(Context);
-
+  const { showSnackbar, setDarkTheme } = React.useContext(Context);
 
   const changeDayStartHour = (JSDate) => {
     const dateTime = DateTime.fromJSDate(JSDate)
@@ -94,6 +97,19 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
     <View style={{flex: 1, backgroundColor: theme.colors.settingsScreenBackground}}>
       <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
       <ScrollView style={{flex: 1}} >
+      <List.Item
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"moon"} color={theme.colors.settingsIcons} />}
+        title={t('settings.darkTheme')}
+        titleNumberOfLines={2}
+        right={() => (
+          <Switch 
+            value={darkThemeSwitch} 
+            onValueChange={ () => setDarkTheme(!darkThemeSwitch) }
+            style={{ height: 48, width: 48 }}
+          />
+        )}
+      />
+      <Divider />
       <List.Item
         left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} color={theme.colors.settingsIcons} />}
         title={t('settings.startHour')}
@@ -257,7 +273,7 @@ const actionToProps = {
   setDayStartHour,
   importState,
   setLanguage,
-  setDailyNotificationHour
+  setDailyNotificationHour,
 }
 
 export default connect(mapStateToProps, actionToProps)(SettingsScreen);
