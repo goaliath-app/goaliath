@@ -53,6 +53,8 @@ const es= {
     loadingStats: 'Cargando Estadísticas...',
     
     activityDetail: {
+      detailsTabLabel: 'Detalles',
+      statsTabLabel: 'Estadísticas',
       threeDotsMenu: {
         editActivity: 'Editar actividad',
         deleteActivity: 'Archivar actividad',
@@ -69,6 +71,13 @@ const es= {
       changeGoalSnackbar: "Actividad movida a la meta {{goalName}}",
       archivedWarning: "Esta actividad está archivada",
       restoreButton: "Restaurar actividad",
+      todayStatusCard: {
+        dueToday: 'Esta actividad está programada para hoy',
+        dueThisWeek: 'Puedes elegir hacer hoy esta actividad desde la lista de hoy',
+        notDue: 'No tienes que hacer esta actividad hoy',
+        chosenToday: 'Has elegido hacer esta actividad hoy',
+        goToToday: "Ir a Hoy",
+      }
     },
   
     basicActivityInfo: {
@@ -127,7 +136,8 @@ const es= {
         noName: 'Es necesario un nombre para tu actividad',
         noDaysSelected: 'Selecciona al menos un día',
         noTime: 'Por favor introduce el tiempo a dedicar',
-        noFrequency: 'Por favor selecciona una frecuencia'
+        noFrequency: 'Por favor selecciona una frecuencia',
+        noRepetitions: 'Por favor introduce las repeticiones',
       },
       frequencyTitle: 'Frecuencia',
       frequencyLabel: 'Selecciona una frecuencia',
@@ -192,7 +202,7 @@ const es= {
       motivation: 'Motivación',
       threeDotsMenu: {
         editGoal: 'Editar meta',
-        deleteGoal: 'Eliminar meta',
+        deleteGoal: 'Archivar meta',
         viewArchivedActivities: 'Ver actividades archivadas',
       },
       deleteDialog: {
@@ -216,7 +226,7 @@ const es= {
       infoTitle: 'No hay metas',
       infoContent: "Crea una nueva meta pulsando el icono +",
       menu: {
-        viewArchived: "View archived goals",
+        viewArchived: "Ver metas archivadas",
       },
       longPressMenu: {
         add: "Añadir nueva actividad",
@@ -302,6 +312,10 @@ const es= {
       timeLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}',
       checkCompleted: 'Hecho: {{weeklyTimes}} días completado',
       timedCompleted: 'Hecho: {{unit}} {{expression}} dedicada/os',
+      selectedCaption: 'Hoy trabajaré en',
+      dueCaption: 'Para otro día',
+      completedCaption: 'Completadas',
+      noSelectedActivities: 'Selecciona actividades más abajo, o pulsa ✓ si hoy no vas a hacer ninguna actividad semanal',
     },
 
     activityHandler: {

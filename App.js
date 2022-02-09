@@ -106,7 +106,8 @@ export default function App() {
       tabBarLabel: () => null,
       tabBarActiveTintColor: currentTheme.colors.tabBarActiveIcon,
       tabBarInactiveTintColor: currentTheme.colors.tabBarInactiveIcon,
-      tabBarStyle: {backgroundColor: currentTheme.colors.tabBarBackground}
+      tabBarStyle: {backgroundColor: currentTheme.colors.tabBarBackground},
+      tabBarHideOnKeyboard: true,
     }}>
       <Tab.Screen name='Today' component={TodayStack} 
         options={{ 

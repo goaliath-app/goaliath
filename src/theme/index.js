@@ -17,6 +17,7 @@ export const lightTheme = populateTheme(
     error: '#CE0A24',
     onError: '#ffffff',
     transparent: 'transparent',
+    backdrop: 'hsla(0, 0%, 0%, 0.5)',
   },
 
   // aliases

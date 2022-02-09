@@ -70,6 +70,7 @@ const TimeInput = withTheme(({ theme, value, onValueChange, regularColor=theme.c
     }>
 
       <TextInput 
+        key={'hoursInput'}
         value={
           currentFocus=='hours'?
             hours.toString()
@@ -86,6 +87,7 @@ const TimeInput = withTheme(({ theme, value, onValueChange, regularColor=theme.c
       <Text style={{fontSize: 50, marginBottom: 5, color: regularColor}}>:</Text>
       
       <TextInput 
+        key={'minutesInput'}
         value={
           currentFocus=='minutes'?
             minutes.toString()
@@ -102,6 +104,7 @@ const TimeInput = withTheme(({ theme, value, onValueChange, regularColor=theme.c
       <Text style={{fontSize: 50, marginBottom: 5, color: regularColor}}>:</Text>
 
       <TextInput 
+        key={'secondsInput'}
         value={
           currentFocus=='seconds'?
             seconds.toString()
