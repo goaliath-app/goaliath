@@ -76,6 +76,7 @@ export const lightPlacements = {
   textInputBackground: 'surface',
   divider: 'outline',
   menuBackground: 'surface',
+  snackbarText: 'surface',
 
   // Info Card
   infoCardContent: 'onPrimaryContainer',

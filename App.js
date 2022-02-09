@@ -2,7 +2,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';  // this 
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { DefaultTheme, Provider as PaperProvider, Snackbar } from 'react-native-paper'
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme as NavigationDefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
@@ -144,7 +144,7 @@ export default function App() {
       >
         <PaperProvider theme={currentTheme}>
           <Context.Provider value={ { showSnackbar: setSnackbarMessage } } >
-            <NavigationContainer>
+            <NavigationContainer theme={DarkTheme}>
               <StatusBar 
                 style={'light'}
                 translucent={false} 
@@ -179,6 +179,11 @@ export default function App() {
                 visible={snackbarMessage != ""}
                 onDismiss={()=>setSnackbarMessage("")}
                 duration={5000}
+                theme={{
+                  colors: {
+                    surface: currentTheme.colors.snackbarText,
+                  }
+                }}
               >{snackbarMessage}</Snackbar>
               </GestureHandlerRootView>
             </NavigationContainer>

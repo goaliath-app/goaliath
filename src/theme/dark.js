@@ -17,9 +17,9 @@ export const darkPlacements = {
   activityBackground: 'surface',
   runningActivityBackground: 'surfaceVariant',
 
-  progressBarToday: 'accent40',
-  progressBarWeek: 'accent30',
-  progressBarBackground: 'accent',
+  progressBarToday: 'accent',
+  progressBarWeek: 'accent40',
+  progressBarBackground: 'primaryContainer',
 
   completedWeekliesSelector: 'neutral60',
 
@@ -51,8 +51,8 @@ export const darkPlacements = {
   weekDayLabel: 'neutral60',
   weekBackground: 'neutral20',
   dayProgressBar: 'accent40',
-  weekProgressBar: 'accent30',
-  weekProgressBarBackground: 'accent',
+  weekProgressBar: 'accent',
+  weekProgressBarBackground: 'primaryContainer',
   weekDayNumber: 'onSurface',
   weekPastDayNumber: 'neutral60',
   calendarTodayHighlightBackground: 'primary',
@@ -77,6 +77,7 @@ export const darkPlacements = {
   textInputBackground: 'surface',
   divider: 'outline',
   menuBackground: 'surfaceVariant',
+  snackbarText: 'onSurface',
 
   // Info Card
   infoCardContent: 'onPrimaryContainer',
