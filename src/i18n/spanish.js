@@ -311,6 +311,10 @@ const es= {
       timeLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}',
       checkCompleted: 'Hecho: {{weeklyTimes}} días completado',
       timedCompleted: 'Hecho: {{unit}} {{expression}} dedicada/os',
+      selectedCaption: 'Hoy trabajaré en',
+      dueCaption: 'Para otro día',
+      completedCaption: 'Completadas',
+      noSelectedActivities: 'Selecciona actividades más abajo, o pulsa ✓ si hoy no vas a hacer ninguna actividad semanal',
     },
 
     activityHandler: {

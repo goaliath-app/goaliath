@@ -312,6 +312,10 @@ const en = {
       timeLeft: '{{timeExprValue}} {{timeExprLocaleUnit}} left',
       checkCompleted: 'Completed: {{weeklyTimes}} days done',
       timedCompleted: 'Completed: {{unit}} {{expression}} dedicated',
+      selectedCaption: 'Today I will work on',
+      dueCaption: 'Today I won\'t',
+      completedCaption: 'Completed',
+      noSelectedActivities: 'Choose activities from below, or press ✓ if you won\'t do any weekly activities today',
     },
 
     activityHandler: {

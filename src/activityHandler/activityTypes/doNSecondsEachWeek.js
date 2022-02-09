@@ -174,6 +174,7 @@ const SelectWeekliesItemCompleted = withTheme(({ activity, today, theme, isSelec
         checkboxStatus={'checked'} 
         selected={isSelected} 
         onPress={onPress}
+        onCheckboxPress={onPress}
         date={today}
         checkboxColor={theme.colors.completedCheckbox}
         onCheckboxPress={()=>{}}

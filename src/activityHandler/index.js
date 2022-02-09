@@ -64,7 +64,12 @@ export function SelectWeekliesItemCompleted({ activity, today, isSelected, onPre
 
   return (
     isActivityActive && ActivityTypeSelectWeekliesItemCompleted?
-      <ActivityTypeSelectWeekliesItemCompleted activity={activity} today={today} isSelected={isSelected} onPress={onPress} />
+      <ActivityTypeSelectWeekliesItemCompleted 
+        activity={activity} 
+        today={today} 
+        isSelected={isSelected} 
+        onPress={onPress} 
+      />
       :
       null
   )
@@ -131,6 +136,17 @@ export function areTherePendingWeeklyActivities(state, date){
   }
 
   return false
+}
+
+/* Only valid for weekly activities */
+export function isWeekCompleted(state, activityId, date){
+  const activity = selectActivityByIdAndDate(state, activityId, date)
+
+  const activityType = activityTypes[activity.type]
+
+  return activityType.isWeekCompleted ? 
+    activityType.isWeekCompleted(state, activityId, date)
+    : false
 }
 
 export function getFrequencyString(state, activityId, t, date=null){
