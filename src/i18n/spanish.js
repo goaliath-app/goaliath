@@ -216,6 +216,7 @@ const es= {
     goals: {
       headerTitle: 'Metas',
       goalDescription: '{{activitiesNumber}} actividades activas',
+      activities: 'Actividades',
       infoTitle: 'No hay metas',
       infoContent: "Crea una nueva meta pulsando el icono +",
       menu: {

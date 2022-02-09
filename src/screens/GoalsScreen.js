@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { 
   selectAllActiveActivitiesByGoalIdAndDate, getTodaySelector, selectAllGoals, 
   toggleGoal, selectTutorialState, setTutorialState, selectAllActivitiesByGoalId,
+  toggleActivity,
 } from '../redux';
 import { getFrequencyString } from '../activityHandler'
 import tutorialStates from '../tutorialStates'
@@ -19,7 +20,7 @@ import { Collapse, CollapseHeader, CollapseBody } from "accordion-collapse-react
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 
-const Activity = ({ active, activity, name }) => {
+const Activity = withTheme(({ active, activity, name, theme }) => {
   const navigation = useNavigation();
   const { t, i18 } = useTranslation();
   const dispatch = useDispatch();
@@ -35,7 +36,6 @@ const Activity = ({ active, activity, name }) => {
   return (
     <View>
       <List.Item
-        style={{paddingTop: 5}}
         onPress={() => navigation.navigate('ActivityDetail', { activityId: activity.id })}
         onLongPress={
           tutorialState == tutorialStates.Finished ? () => setLongPressDialogVisible(true) : () => {}
@@ -90,7 +90,7 @@ const Activity = ({ active, activity, name }) => {
       />
     </View>
   );
-}
+})
 
 const GoalListItem = withTheme(({ name, active, id, theme }) => {
   const { t, i18n } = useTranslation()
@@ -124,8 +124,7 @@ const GoalListItem = withTheme(({ name, active, id, theme }) => {
                 titleNumberOfLines={2}
                 right={() => (
                   <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                    <IconButton icon={() => <FeatherIcon name={"plus"} size={25} color={theme.colors.actionIcons} />} onPress={() => navigation.navigate('ActivityForm', { goalId: id })} />
-                    <IconButton icon={() => <FeatherIcon name={"arrow-up-right"} size={25} color={theme.colors.actionIcons} />} onPress={() => navigation.navigate('Goal', { goalId: id })} />
+                    <IconButton icon={"arrow-top-right"} size={25} color={theme.colors.actionIcons} onPress={() => navigation.navigate('Goal', { goalId: id })} />
                     <Switch 
                       disabled={ tutorialState != tutorialStates.Finished }
                       value={active} 
@@ -137,8 +136,17 @@ const GoalListItem = withTheme(({ name, active, id, theme }) => {
                 description={t('goals.goalDescription', {activitiesNumber: activities.length})}
               />
           </CollapseHeader>
-          <CollapseBody style={{marginHorizontal: 10}}>
-            {goalActivities.map(activity => <Activity name={activity.name} activity={activity} active={activity.active} />)}
+          <CollapseBody style={{ borderBottomWidth: 1, borderTopWidth:1, borderColor: theme.colors.divider, }}>
+            <View>
+              <List.Item 
+                title={t('goals.activities')}
+                right={() => <IconButton icon={"plus"} 
+                  onPress={() => navigation.navigate('ActivityForm', { goalId: id })} 
+                  color={theme.colors.actionIcons} 
+                  size={25} /> }
+              />
+              {goalActivities.map(activity => <Activity name={activity.name} activity={activity} active={activity.active} />)}
+            </View>
           </CollapseBody>
         </Collapse>
       </ViewHighlighter>
