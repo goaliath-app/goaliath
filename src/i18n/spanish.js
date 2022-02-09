@@ -238,6 +238,7 @@ const es= {
 
     settings: {
       headerTitle: 'Ajustes',
+      darkTheme: 'Tema oscuro',
       startHour: 'Hora de inicio del día',
       todaySnackbar: 'El día de hoy terminará a las {{startHour}} de mañana.',
       yesterdaySnackbar: 'Has regresado al día de ayer. Terminará a las {{startHour}} de hoy.',

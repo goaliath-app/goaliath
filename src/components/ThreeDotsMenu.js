@@ -9,7 +9,8 @@ const ThreeDotsMenu = withTheme(({ theme, menuItems, visible, openMenu, closeMen
   return (
     <View>
       <Menu
-        style={{ top: 60 }}
+        style={{ top: 60}}
+        contentStyle={{backgroundColor: theme.colors.menuBackground}}
         visible={visible}
         onDismiss={closeMenu}
         anchor={<Appbar.Action icon='dots-vertical' color={theme.colors.headerContent} onPress={openMenu} style={{ height: 48, width: 48 }} />}>

@@ -56,6 +56,7 @@ export const ActivityBarChartPicker = withTheme(({ theme, activityId, goalId }) 
         buttonColor={theme.colors.barChartSelectorSelectedBackground}
         selectedColor={theme.colors.barChartSelectorSelectedText}
         backgroundColor={theme.colors.barChartSelectorBackground}
+        textColor={theme.colors.barChartSelectorText}
       />
       <SwitchSelector
         options={showOptions}
@@ -66,11 +67,12 @@ export const ActivityBarChartPicker = withTheme(({ theme, activityId, goalId }) 
         buttonColor={theme.colors.barChartSelectorSelectedBackground}
         selectedColor={theme.colors.barChartSelectorSelectedText}
         backgroundColor={theme.colors.barChartSelectorBackground}
+        textColor={theme.colors.barChartSelectorText}
       />
       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 14}}>
-        <IconButton icon='chevron-left' size={20} onPress={() => setDate(date.minus(dateOffset))} style={{ height: 48, width: 48 }} />
-        <Text>{title}</Text>
-        <IconButton icon='chevron-right' size={20} onPress={() => setDate(date.plus(dateOffset))} style={{ height: 48, width: 48 }}/>
+        <IconButton icon='chevron-left' size={20} color={theme.colors.barChartsChevron} onPress={() => setDate(date.minus(dateOffset))} style={{ height: 48, width: 48 }} />
+        <Text style={{ color: theme.colors.barChartLabels }}>{title}</Text>
+        <IconButton icon='chevron-right' size={20} color={theme.colors.barChartsChevron} onPress={() => setDate(date.plus(dateOffset))} style={{ height: 48, width: 48 }}/>
       </View>
       <ActivityBarChart activityId={activityId} goalId={goalId} period={period} show={show} date={date}/>
     </View>
@@ -266,13 +268,15 @@ const VictoryBarChart = withTheme(({ theme, data, xLabel, yLabel, tickValues, ti
         tickValues={tickValues} 
         tickFormat={tickFormat} 
         label={xLabel}
-        axisLabelComponent={<VictoryLabel dy={20} />}
+        style={{tickLabels: {fill: theme.colors.barChartLabels}}}
+        axisLabelComponent={<VictoryLabel dy={20} style={{fill: theme.colors.barChartLabels}} />}
       />
       <VictoryAxis 
         tickValues={yTickValues}
         dependentAxis={true} 
         label={yLabel}
-        axisLabelComponent={<VictoryLabel dy={-30} />}
+        style={{tickLabels: {fill: theme.colors.barChartLabels}}}
+        axisLabelComponent={<VictoryLabel dy={-30} style={{fill: theme.colors.barChartLabels}} />}
       />
       <VictoryBar
         style={{ data: { fill: theme.colors.barChartBar } }}

@@ -64,13 +64,13 @@ export const TodayPannelModal = withTheme(({
               <IconButton 
                 style={{marginRight: 0, height: 50, width: 50}}
                 icon={
-                  () => <IonIcon size={30} name={"md-open-outline"}/>
+                () => <IonIcon color={theme.colors.onSurface} size={30} name={"md-open-outline"}/>
                 } 
                 onPress={() => { 
                   onDismiss()    
                   navigation.navigate('ActivityDetail', {activityId: activity.id, date: date.toISO()})}
                 }/>
-              <SelfManagedThreeDotsMenu items={menuItems} color={'black'} size={30} />
+              <SelfManagedThreeDotsMenu items={menuItems} color={theme.colors.onSurface} size={30} />
             </View>
           </View>
           <Divider style={{marginHorizontal: 25}}/>

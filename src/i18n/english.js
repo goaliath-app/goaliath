@@ -239,6 +239,7 @@ const en = {
 
     settings: {
       headerTitle: 'Settings',
+      darkTheme: 'Dark theme',
       startHour: 'Start of the next day',
       todaySnackbar: 'Today will end at {{startHour}} tomorrow.',
       yesterdaySnackbar: 'You have returned to yesterday. It ends at {{startHour}} today.',

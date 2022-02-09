@@ -46,6 +46,7 @@ const RepetitionsInput = withTheme(({
             if(value < 1) onValueChange("0")
           }}
           keyboardType='numeric' 
+          activeUnderlineColor={theme.colors.textInputSelected}
         />
       </View>
       {/* Error helper text */}

@@ -34,6 +34,9 @@ export const lightPlacements = {
   barChartSelectorSelectedBackground: 'accent50',
   barChartSelectorBackground: 'transparent',
   barChartSelectorSelectedText: 'onSurface',
+  barChartSelectorText: 'onSurface',
+  barChartChevron: 'onSurface',
+  barChartLabels: 'onSurface',
   barChartBar: 'accent',
   heatmap1: 'accent80',
   heatmap2: 'accent60',
@@ -42,6 +45,7 @@ export const lightPlacements = {
   heatmapSkipped: 'secondary95',
   heatmapEmptyBackground: 'transparent',
   heatmapEmptyBorder: 'secondary90',
+  heatmapLabels: 'onSurface',
 
   // Calendar
   weekDayLabel: 'neutral60',
@@ -71,6 +75,8 @@ export const lightPlacements = {
   activityIndicator: 'primary',
   textInputBackground: 'surface',
   divider: 'outline',
+  menuBackground: 'surface',
+  snackbarText: 'surface',
 
   // Info Card
   infoCardContent: 'onPrimaryContainer',
@@ -86,13 +92,11 @@ export const lightPlacements = {
 
   // SettingsScreen
   settingValueText: 'accent30',
+  settingsIcons: 'onSurface',
 
   //AboutUsScreen
   links: 'accent30',
   imageBorder: 'accent',
-
-  // TodayScreen
-  todayScreenBackground: 'background',
 
   // ActivityDetailScreen
   activityDetailTimeInputRunning: 'primary',
@@ -100,6 +104,11 @@ export const lightPlacements = {
   // WeekDaySelector
   weekDaySelectorPressedBackground: 'accent',
   weekDaySelectorPressedText: 'onAccent',
+
+  //ActivityFormScreen
+  frequencySelectorBorder: 'onSurface',
+  frequencySelectorIcons: 'onSurface',
+  textInputSelected: 'accent',
 
   // value used by react-native-paper
   text: 'onSurface',
@@ -109,6 +118,7 @@ export const lightPlacements = {
   //notification
 
   // Screen Backgrounds
+  todayScreenBackground: 'background',
   dialogBackground: 'surface',
   addTasksScreenBackground: 'surface',
   archivedActivitiesScreenBackground: 'surface',
@@ -126,6 +136,7 @@ export const lightPlacements = {
   activityDetailsScreenBackground: 'surface',
   activityFormScreenBackground: 'surface',
   aboutUsScreenBackground: 'surface',
+  onboardingScreenBackground: 'surface',
 }
 
 export const lightAliases = {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Paragraph, Portal, Dialog, Button } from 'react-native-paper';
+import { Paragraph, Portal, Dialog, Button, withTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { archiveGoal, archiveActivity } from '../redux'
 
@@ -42,12 +42,12 @@ export const DeleteActivityDialog = ({ visible, onDismiss, activityId, onDelete=
   )
 }
 
-const DeleteDialog = ({visible, onDismiss, onDelete, title, body}) => {
+const DeleteDialog = withTheme(({visible, onDismiss, onDelete, title, body, theme}) => {
   const { t, i18n } = useTranslation()
 
     return (
       <Portal>
-        <Dialog visible={visible} onDismiss={onDismiss}>
+        <Dialog visible={visible} onDismiss={onDismiss} style={{backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{title}</Dialog.Title>
           <Dialog.Content>
             <Paragraph>{body}</Paragraph>
@@ -59,6 +59,6 @@ const DeleteDialog = ({visible, onDismiss, onDelete, title, body}) => {
         </Dialog>
       </Portal>
     )
-  }
+  })
 
 export default DeleteDialog

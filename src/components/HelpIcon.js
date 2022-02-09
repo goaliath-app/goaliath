@@ -21,7 +21,8 @@ const HelpIcon = withTheme(({
       <Portal>
         <Dialog 
           visible={visible} 
-          onDismiss={() => setVisible(false)} 
+          onDismiss={() => setVisible(false)}
+          style={{backgroundColor: theme.colors.dialogBackground}}
         >
           <Dialog.Content>
             {dialogContent}
