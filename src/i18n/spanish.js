@@ -210,7 +210,7 @@ const es= {
         body: "Podrás ver la meta y restaurarla más adelante desde el menú de la pantalla de metas.",
       },
       infoTitle: "Esta meta está vacía",
-      infoContent: "Puedes añadir nuevas actividades pulsando el icono +",
+      infoContent: 'Puedes añadir nuevas actividades pulsando el icono +.\nElige actividades para realizar de forma contínua que te hagan progresar en tus metas.',
       archivedWarning: "Esta meta está archivada",
       restoreButton: "RESTAURAR META",
       longPressMenu: {
@@ -224,7 +224,7 @@ const es= {
       headerTitle: 'Metas',
       goalDescription: '{{activitiesNumber}} actividades activas',
       infoTitle: 'No hay metas',
-      infoContent: "Crea una nueva meta pulsando el icono +",
+      infoContent: 'Crea una nueva meta pulsando el icono +.\nCosas como "Ponerme en forma", "Aprender inglés" o "Estar con mi familia" son buenos ejemplos de metas.',
       menu: {
         viewArchived: "Ver metas archivadas",
       },

@@ -211,7 +211,7 @@ const en = {
         body: "You can still view and restore it from the menu of the Goals screen.",
       },
       infoTitle: "This goal is empty",
-      infoContent: "You can add an activity by pressing the + icon on the top right.",
+      infoContent: "You can add an activity by pressing the + icon on the top right.\nChoose recurring activities you’ll do often.",
       archivedWarning: "This goal is archived",
       restoreButton: "RESTORE GOAL",
       longPressMenu: {
@@ -225,7 +225,7 @@ const en = {
       headerTitle: 'Goals',
       goalDescription: '{{activitiesNumber}} active activities',
       infoTitle: "There are no goals",
-      infoContent: 'Create a new goal by pressing the + icon on the top right.',
+      infoContent: 'Create a new goal by pressing the + icon on the top right.\nThings like "Fitness", "Learn Spanish" or "Be with my family" are good examples of goals.',
       menu: {
         viewArchived: "View archived goals",
       },
