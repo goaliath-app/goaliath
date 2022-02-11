@@ -194,6 +194,7 @@ const es= {
       headerTitle: 'Nueva meta',
       goalNameSubheading: '¿Qué quieres conseguir?',
       nameTextInputLabel: 'Nombre de la meta',
+      nameTextInputPlaceholder: '"Fitness", "Aprender Inglés"',
       goalMotivationSubheading: '¿Por qué quieres llegar a esa meta?',
       motivationTextInputLabel: 'Tu Motivación (opcional)',
     },
@@ -209,8 +210,8 @@ const es= {
         title: '¿Archivar meta?',
         body: "Podrás ver la meta y restaurarla más adelante desde el menú de la pantalla de metas.",
       },
-      infoTitle: "Esta meta está vacía",
-      infoContent: 'Puedes añadir nuevas actividades pulsando el icono +.\nElige actividades para realizar de forma contínua que te hagan progresar en tus metas.',
+      infoTitle: "No hay actividades",
+      infoContent: 'Puedes añadir nuevas actividades pulsando el icono +. Elige actividades recurrentes que harás a menudo.',
       archivedWarning: "Esta meta está archivada",
       restoreButton: "RESTAURAR META",
       longPressMenu: {
@@ -224,7 +225,7 @@ const es= {
       headerTitle: 'Metas',
       goalDescription: '{{activitiesNumber}} actividades activas',
       infoTitle: 'No hay metas',
-      infoContent: 'Crea una nueva meta pulsando el icono +.\nCosas como "Ponerme en forma", "Aprender inglés" o "Estar con mi familia" son buenos ejemplos de metas.',
+      infoContent: 'Crea una meta pulsando el icono +',
       menu: {
         viewArchived: "Ver metas archivadas",
       },
@@ -289,20 +290,20 @@ const es= {
       dayChangeDialogBody: "El día ha cambiado a {{date}} mientras la app estaba abierta.\n\nSi necesitas hacer las actividades del día hasta más tarde, puedes cambiar la hora de inicio del día en los ajustes.",
       dayChangeDialogConfirmLabel: "Ver nuevo día",
       noActivitiesInfoCard: {
-        title: '¡Aún no has creado ninguna actividad!',
-        content: 'Ve a la sección de los goals (🏆) para planificar tus acciones diarias.'
+        title: 'Bienvenido a Goaliath',
+        content: 'Ve a la sección de Metas (🏆) para planificar tus acciones diarias.'
       },
       noActiveActivitiesInfoCard: {
-        title: 'No tienes actividades activas.',
-        content: 'Ve a la sección de los goals (🏆) para crear nuevas actividades.',
+        title: 'No tienes actividades activas',
+        content: 'Ve a la sección de Metas (🏆) para crear o activar actividades.',
       },
       onlyWeeklyActivitiesInfoCard: {
         title: "¡Hoy no tienes actividades!",
         content: 'Echa un ojo a las actividades semanales para seguir trabajando en tus metas.',
       },
       nothingForTodayInfoCard: {
-        title: "¡Hoy no tienes nada que hacer!",
-        content: 'Tómate un descanso y recarga las pilas para mañana seguir trabajando en tus metas.\n(También puedes aprovechar a planificar nuevas actividades para seguir trabajando en tus metas.)',
+        title: "Nada para hoy",
+        content: 'Tómate un descanso y recarga las pilas para seguir trabajando en tus metas mañana (o planifica nuevas actividades si lo prefieres).',
       },
     },
 

@@ -194,6 +194,7 @@ const en = {
       headerTitle: 'New goal',
       goalNameSubheading: 'What do you want to achieve?',
       nameTextInputLabel: 'Goal Name',
+      nameTextInputPlaceholder: '"Fitness", "Learn Spanish"',
       goalMotivationSubheading: 'Why do you want to achieve this goal?',
       motivationTextInputLabel: 'Your Motivation (optional)',
 
@@ -210,8 +211,8 @@ const en = {
         title: 'Archive goal?',
         body: "You can still view and restore it from the menu of the Goals screen.",
       },
-      infoTitle: "This goal is empty",
-      infoContent: "You can add an activity by pressing the + icon on the top right.\nChoose recurring activities you’ll do often.",
+      infoTitle: "This Goal is empty",
+      infoContent: "You can add an activity by pressing the + icon on the top right. Choose recurring activities you’ll do often.",
       archivedWarning: "This goal is archived",
       restoreButton: "RESTORE GOAL",
       longPressMenu: {
@@ -225,7 +226,7 @@ const en = {
       headerTitle: 'Goals',
       goalDescription: '{{activitiesNumber}} active activities',
       infoTitle: "There are no goals",
-      infoContent: 'Create a new goal by pressing the + icon on the top right.\nThings like "Fitness", "Learn Spanish" or "Be with my family" are good examples of goals.',
+      infoContent: 'Create a goal by pressing the + icon.',
       menu: {
         viewArchived: "View archived goals",
       },
@@ -290,20 +291,20 @@ const en = {
       dayChangeDialogBody: "The day has changed to {{date}} while the app was open.\n\nIf you need to be able to do a day's activities until a later hour, you can change the Day Start Hour in the settings.",
       dayChangeDialogConfirmLabel: "Go to new day",
       noActivitiesInfoCard: {
-        title: 'You have not created activities yet!',
+        title: 'Welcome to Goaliath',
         content: 'Go to the goals section (🏆) to plan your daily actions.'
       },
       noActiveActivitiesInfoCard: {
-        title: 'There are no active activities!',
-        content: 'Go to the goals section (🏆) to create new activities.',
+        title: 'You have no activities',
+        content: 'When you are ready, go to the goals section (🏆) to create or enable activities.',
       },
       onlyWeeklyActivitiesInfoCard: {
-        title: "No activities today!",
-        content: 'Check the weekly activities to continue working on your goals.',
+        title: "Only weekly activities",
+        content: 'Select your weekly activities to continue working on your goals.',
       },
       nothingForTodayInfoCard: {
-        title: "Today you have nothing to do!",
-        content: 'Take a break and recharge energy to continue working on your goals tomorrow.\n(Or maybe you can plan new activities to keep working on your goals.)',
+        title: "Nothing for today!",
+        content: 'Take a break and recharge energy to continue working on your goals tomorrow (or plan new activities if you wish).',
       },
     },
 
@@ -326,7 +327,7 @@ const en = {
       playIcon: 'Press here to start recording time for this time-goal activity',
       repsIcon: 'Tap here to record each repetition you perform',
       checkboxIcon: 'Tap here when you finish the activity to mark it as completed',
-      selectWeekliesListItem: 'Tap here to choose which weekly activities you wan\'t to do today',
+      selectWeekliesListItem: 'Tap here to choose which weekly activities you want to do today',
       firstGoal: 'This is your first goal, but it doesn\'t have any activities yet. Press on it to create them!'
     },
 

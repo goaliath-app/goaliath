@@ -68,7 +68,8 @@ const GoalFormScreen = withTheme(({ theme, navigation, goal=null }) => {
           error={nameInputError} 
           mode='outlined' 
           label={t('goalForm.nameTextInputLabel')}
-          value={name} 
+          value={name}
+          placeholder={t('goalForm.nameTextInputPlaceholder')}
           onChangeText={(value) => {
             setNameInputError(false)
             setName(value)

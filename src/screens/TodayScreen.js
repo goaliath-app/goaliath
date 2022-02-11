@@ -14,17 +14,7 @@ import {
 import tutorialStates from '../tutorialStates'
 import { areTherePendingWeeklyActivities } from '../activityHandler'
 
-// TODAY SCREEN STATES:
-// No se ha creado ninguna actividad => Tutorial de creación
 
-// Se ha creado alguna vez una actividad pero No hay ninguna actividad activa
-// => Aviso correspondiente
-
-// Hay actividades activas, ninguna diaria, pero sí alguna semanal
-
-// Hay actividades activas, pero nada para hacer hoy (tampoco semanales)
-
-// Estado normal, hay algún entry para hoy
 function selectTodayScreenState(state) {
   const today = getTodaySelector(state)
   
