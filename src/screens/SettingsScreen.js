@@ -225,7 +225,9 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
 
       <Portal>
         {/* Import dialog */}
-        <Dialog visible={isImportDialogVisible} onDismiss={() => {setImportDialogVisible(false)}}>
+        <Dialog visible={isImportDialogVisible} 
+          onDismiss={() => {setImportDialogVisible(false)}}
+          style={{backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{t('settings.importDialog.title')}</Dialog.Title>
           <Dialog.Content>
             <Paragraph>{t('settings.importDialog.content')}</Paragraph>
@@ -237,7 +239,9 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         </Dialog>
 
         {/* Language dialog */}
-        <Dialog visible={isLanguageDialogVisible} onDismiss={() => {setLanguageDialogVisible(false)}}>
+        <Dialog visible={isLanguageDialogVisible} 
+          onDismiss={() => {setLanguageDialogVisible(false)}}
+          style={{backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{t('settings.languageDialog.title')}</Dialog.Title>
             <Dialog.Content>
               <Divider />

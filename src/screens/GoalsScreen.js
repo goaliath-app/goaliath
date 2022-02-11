@@ -16,7 +16,7 @@ import {
 import tutorialStates from '../tutorialStates'
 
 
-const GoalListItem = ({ theme, name, active, id }) => {
+const GoalListItem = withTheme(({ theme, name, active, id }) => {
   const { t, i18n } = useTranslation()
 
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
@@ -62,7 +62,9 @@ const GoalListItem = ({ theme, name, active, id }) => {
 
       {/* Long press menu */}
       <Portal>
-        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+        <Dialog visible={isLongPressDialogVisible} 
+          onDismiss={() => {setLongPressDialogVisible(false)}}
+          style={{ backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{name}</Dialog.Title>
             <Dialog.Content>
               <Divider />
@@ -96,7 +98,7 @@ const GoalListItem = ({ theme, name, active, id }) => {
         goalId={id} />
     </View>
   );
-}
+})
 
 const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
   const { t, i18n } = useTranslation()

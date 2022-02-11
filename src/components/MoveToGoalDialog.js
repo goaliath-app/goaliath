@@ -20,7 +20,7 @@ const Dialog = withTheme(({ theme, visible, setVisible, activityId }) => {
 
   return (
     <Portal>
-      <PaperDialog visible={visible} onDismiss={() => {setVisible(false)}}>
+      <PaperDialog visible={visible} onDismiss={() => {setVisible(false)}} style={{backgroundColor: theme.colors.dialogBackground}}>
         <PaperDialog.Title>{t("activityDetail.changeGoalDialogTitle")}</PaperDialog.Title>
           <View style={{marginHorizontal: 24}}>
             <Paragraph>{t("activityDetail.changeGoalDialogBody", {currentGoal: currentGoal.name})}</Paragraph>
