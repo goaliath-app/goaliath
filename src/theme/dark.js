@@ -111,7 +111,7 @@ export const darkPlacements = {
   //ActivityFormScreen
   frequencySelectorBorder: 'onSurface',
   frequencySelectorIcons: 'onPrimaryContainer',
-  textInputSelected: 'accent',
+  textInputSelected: 'primary',
 
   // value used by react-native-paper
   text: 'onSurface',

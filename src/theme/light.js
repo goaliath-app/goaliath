@@ -110,7 +110,7 @@ export const lightPlacements = {
   //ActivityFormScreen
   frequencySelectorBorder: 'onSurface',
   frequencySelectorIcons: 'onSurface',
-  textInputSelected: 'accent',
+  textInputSelected: 'primary',
 
   // value used by react-native-paper
   text: 'onSurface',
