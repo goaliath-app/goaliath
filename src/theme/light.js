@@ -23,6 +23,8 @@ export const lightPlacements = {
 
   completedWeekliesSelector: 'neutral60',
 
+  infoCardViewBackground: 'surface',
+
   // SelectWeekliesScreen
     // Checkboxes use values in TodayScreen
   completedCheckbox: 'neutral60',

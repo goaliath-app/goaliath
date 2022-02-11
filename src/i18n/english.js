@@ -289,6 +289,22 @@ const en = {
       dayChangeDialogTitle: "A new day begins!",
       dayChangeDialogBody: "The day has changed to {{date}} while the app was open.\n\nIf you need to be able to do a day's activities until a later hour, you can change the Day Start Hour in the settings.",
       dayChangeDialogConfirmLabel: "Go to new day",
+      noActivitiesInfoCard: {
+        title: 'You have not created activities yet!',
+        content: 'Go to the goals section (🏆) to plan your daily actions.'
+      },
+      noActiveActivitiesInfoCard: {
+        title: 'There are no active activities!',
+        content: 'Go to the goals section (🏆) to create new activities.',
+      },
+      onlyWeeklyActivitiesInfoCard: {
+        title: "No activities today!",
+        content: 'Check the weekly activities to continue working on your goals.',
+      },
+      nothingForTodayInfoCard: {
+        title: "Today you have nothing to do!",
+        content: 'Take a break and recharge energy to continue working on your goals tomorrow.\n(Or maybe you can plan new activities to keep working on your goals.)',
+      },
     },
 
     addTasks: {

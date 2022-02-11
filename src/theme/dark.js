@@ -23,6 +23,8 @@ export const darkPlacements = {
 
   completedWeekliesSelector: 'neutral60',
 
+  infoCardViewBackground: 'surface',
+
   // SelectWeekliesScreen
     // Checkboxes use values in TodayScreen
   completedCheckbox: 'onSurface', //Same color as todayCompletedIcon

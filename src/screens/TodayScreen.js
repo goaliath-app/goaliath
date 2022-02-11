@@ -2,13 +2,49 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View } from 'react-native'
-import { DayContent, Dialog, Header, SpeechBubble } from '../components'
+import { DayContent, Dialog, Header, InfoCard, SpeechBubble } from '../components'
 import { getToday, isBetween } from '../util'
 import { useTranslation } from 'react-i18next'
 import { useFocusEffect } from '@react-navigation/native';
 import { Appbar, withTheme } from 'react-native-paper'
-import { updateLogs, setTutorialState, selectTutorialState } from '../redux'
+import { 
+  updateLogs, setTutorialState, selectTutorialState, selectAllActivities,
+  selectEntriesByDay, getTodaySelector, selectAllActiveActivities,
+} from '../redux'
 import tutorialStates from '../tutorialStates'
+import { areTherePendingWeeklyActivities } from '../activityHandler'
+
+// TODAY SCREEN STATES:
+// No se ha creado ninguna actividad => Tutorial de creación
+
+// Se ha creado alguna vez una actividad pero No hay ninguna actividad activa
+// => Aviso correspondiente
+
+// Hay actividades activas, ninguna diaria, pero sí alguna semanal
+
+// Hay actividades activas, pero nada para hacer hoy (tampoco semanales)
+
+// Estado normal, hay algún entry para hoy
+function selectTodayScreenState(state) {
+  const today = getTodaySelector(state)
+  
+  if( selectAllActivities(state).length == 0) {
+    return 'no-activities'
+  }
+  
+  if( selectAllActiveActivities(state).length == 0 ){
+    return 'no-active-activities'
+  }
+
+  if( selectEntriesByDay(state, today).length == 0 ) {
+    if( areTherePendingWeeklyActivities(state, today) ) {
+      return 'only-weekly-activities'
+    }
+    return 'nothing-for-today'
+  }
+
+  return 'normal'
+}
 
 const TodayScreen = withTheme(({ navigation, theme }) => {
   const dispatch = useDispatch()
@@ -27,6 +63,7 @@ const TodayScreen = withTheme(({ navigation, theme }) => {
   const tutorialState = useSelector(selectTutorialState)
   const dayStartHour = useSelector(state => state.settings.dayStartHour)
   const today = getToday(dayStartHour)
+  const todayScreenState = useSelector(selectTodayScreenState)
 
   const [ date, setDate ] = useState(today)
   const [ dayChangeDialogVisible, setDayChangeDialogVisible ] = useState(false)
@@ -109,7 +146,38 @@ const TodayScreen = withTheme(({ navigation, theme }) => {
         />
         : null
       }
+      
+      { todayScreenState=='no-activities' && tutorialState==tutorialStates.Finished ?
+        <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
+          <InfoCard title={t('today.noActivitiesInfoCard.title')} 
+            paragraph={t('today.noActivitiesInfoCard.content')}/>
+        </View> 
+        : null 
+      }
+      { todayScreenState=='no-active-activities' && tutorialState==tutorialStates.Finished ?
+        <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
+          <InfoCard title={t('today.noActiveActivitiesInfoCard.title')} 
+            paragraph={t('today.noActiveActivitiesInfoCard.content')} /> 
+        </View> 
+        : null 
+      }
+      { todayScreenState=='only-weekly-activities' && tutorialState==tutorialStates.Finished ?
+        <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
+          <InfoCard title={t('today.onluWeeklyActivities.title')} 
+            paragraph={t('today.onlyWeeklyActivities.content')} /> 
+        </View> 
+        : null 
+      }
+      { todayScreenState=='nothing-for-today' && tutorialState==tutorialStates.Finished ?
+        <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
+          <InfoCard title={t('today.nothingForToday.title')} 
+            paragraph={t('today.nothingForToday.content')} /> 
+        </View>
+        : null 
+      }
+
       <DayContent date={date} />
+
       <Dialog 
         visible={dayChangeDialogVisible} 
         setVisible={setDayChangeDialogVisible}
