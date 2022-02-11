@@ -233,8 +233,8 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
             <Paragraph>{t('settings.importDialog.content')}</Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => importStateFromText(importedStateText)}>{t('settings.importDialog.buttonAcept')}</Button>
             <Button onPress={() => setImportDialogVisible(false)}>{t('settings.importDialog.buttonCancel')}</Button>
+            <Button onPress={() => importStateFromText(importedStateText)}>{t('settings.importDialog.buttonAcept')}</Button>
           </Dialog.Actions>
         </Dialog>
 

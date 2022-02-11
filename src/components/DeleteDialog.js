@@ -53,8 +53,8 @@ const DeleteDialog = withTheme(({visible, onDismiss, onDelete, title, body, them
             <Paragraph>{body}</Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={onDelete}>{t('deleteDialog.delete')}</Button>
             <Button onPress={() => {onDismiss()}}>{t('deleteDialog.cancel')}</Button>
+            <Button onPress={onDelete}>{t('deleteDialog.delete')}</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
