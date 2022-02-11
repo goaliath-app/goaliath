@@ -92,18 +92,18 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
 
   if(timerIsRunning){
     if(entry.completed){
-      leftSlot = <IconButton icon={() => <PauseFilledIcon />} onPress={onPressPause} />
+      leftSlot = () => <IconButton icon={() => <PauseFilledIcon />} onPress={onPressPause} />
     }else{
-      leftSlot = <IconButton icon={() => <PauseOutlinedIcon />} 
+      leftSlot = () => <IconButton icon={() => <PauseOutlinedIcon />} 
                     onLongPress={() => {dispatch(toggleCompleted({date: date, id: activityId}));
                                         dispatch(stopTodayTimer( activityId ))}}
                     onPress={onPressPause} />
     }
   }else{
     if(entry.completed){
-      leftSlot = <IconButton icon={() => <PlayFilledIcon />} onPress={onPressStart} />
+      leftSlot = () => <IconButton icon={() => <PlayFilledIcon />} onPress={onPressStart} />
     }else{
-      leftSlot = <IconButton icon={() => <PlayOutlinedIcon />} 
+      leftSlot = () => <IconButton icon={() => <PlayOutlinedIcon />} 
                     onLongPress={() => dispatch(toggleCompleted({date: date, id: activityId}))}
                     onPress={onPressStart} />
     }
@@ -115,7 +115,10 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
         activity={activity}
         entry={entry}
         date={date}
-        left={()=>leftSlot}
+        left={leftSlot}
+        leftTooltipText={t('tooltips.playIcon')}
+        leftTooltipName={'StartTimerActivityListItemTooltip'}
+        leftTooltipKey={'StartTimerActivityListItemTooltip'+activityId}
         description={description}
         bottom={ timerIsRunning? 
           () => <DoubleProgressBar 

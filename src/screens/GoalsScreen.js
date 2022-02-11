@@ -2,10 +2,13 @@ import React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Appbar, Divider, Switch, Menu, Portal, Dialog, withTheme, Title } from 'react-native-paper';
+import { 
+  List, Appbar, Divider, Switch, Menu, Portal, Dialog, withTheme,
+  Text 
+} from 'react-native-paper';
 import { 
   Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog, BottomScreenPadding, 
-  SpeechBubble, IconHighlighter, ViewHighlighter,
+  SpeechBubble, IconHighlighter, ViewHighlighter, useTooltip,
 } from '../components'
 import { hasSomethingToShow, isBetween } from '../util'
 import { useTranslation } from 'react-i18next'
@@ -16,8 +19,11 @@ import {
 import tutorialStates from '../tutorialStates'
 
 
-const GoalListItem = ({ theme, name, active, id }) => {
+const GoalListItem = withTheme(({ theme, name, active, id }) => {
   const { t, i18n } = useTranslation()
+  const dispatch = useDispatch()
+
+  const Tooltip = useTooltip('goalsListItem', 'goalListItem'+id)
 
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
   const [ isDeleteDialogVisible, setDeleteDialogVisible ] = React.useState(false)
@@ -29,7 +35,6 @@ const GoalListItem = ({ theme, name, active, id }) => {
   const today= useSelector(getTodaySelector)
   const activities = useSelector((state) => selectAllActiveActivitiesByGoalIdAndDate(state, id, today))
 
-  const dispatch = useDispatch();
 
   const amIHighlighted = (
     tutorialState >= tutorialStates.GoalScreenIntroduction 
@@ -38,9 +43,14 @@ const GoalListItem = ({ theme, name, active, id }) => {
   )
 
   return (
+    
     <View>
-      <ViewHighlighter active={amIHighlighted}>
+      <Tooltip
+        content={<Text style={{fontSize: 16}}>{t('tooltips.firstGoal')}</Text>}
+      >
+      <ViewHighlighter active={amIHighlighted} containerStyle={{width: '100%'}}>
         <List.Item 
+          style={{backgroundColor: theme.colors.surface}}
           onPress={() => navigation.navigate('Goal', { goalId: id })}
           onLongPress={
             tutorialState == tutorialStates.Finished ? () => setLongPressDialogVisible(true) : () => {}
@@ -59,6 +69,7 @@ const GoalListItem = ({ theme, name, active, id }) => {
         />
         <Divider />
       </ViewHighlighter>
+      </Tooltip>
 
       {/* Long press menu */}
       <Portal>
@@ -96,7 +107,7 @@ const GoalListItem = ({ theme, name, active, id }) => {
         goalId={id} />
     </View>
   );
-}
+})
 
 const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
   const { t, i18n } = useTranslation()

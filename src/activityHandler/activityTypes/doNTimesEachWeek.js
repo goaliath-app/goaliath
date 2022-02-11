@@ -41,11 +41,11 @@ const TodayScreenItem = withTheme(({ activityId, date, theme }) => {
   let leftSlot
   // TODO: this is a placeholder, use the right icon with the right onPress
   if(entry.completed){
-    leftSlot = <IconButton icon={() => <MaterialCommunityIcons name={"checkbox-multiple-marked"} size={25} color={theme.colors.todayCompletedIcon} />} onPress={addOne} />
+    leftSlot = () => <IconButton icon={() => <MaterialCommunityIcons name={"checkbox-multiple-marked"} size={25} color={theme.colors.todayCompletedIcon} />} onPress={addOne} />
   }else{
-    leftSlot = <IconButton icon={() => <MaterialCommunityIcons name={"checkbox-multiple-blank-outline"} size={25} color={theme.colors.todayDueIcon} />} onPress={addOne} />
+    leftSlot = () => <IconButton icon={() => <MaterialCommunityIcons name={"checkbox-multiple-blank-outline"} size={25} color={theme.colors.todayDueIcon} />} onPress={addOne} />
   }
-  
+
   const description = t(
     'activityHandler.activityTypes.doNTimesEachWeek.listItemDescription', 
     { todayReps, totalReps, weeklyRepsGoal }
@@ -63,7 +63,10 @@ const TodayScreenItem = withTheme(({ activityId, date, theme }) => {
         activity={activity}
         entry={entry}
         date={date}
-        left={()=>leftSlot}
+        left={leftSlot}
+        leftTooltipText={t('tooltips.repsIcon')}
+        leftTooltipName={'AddRepetitionListItemTooltip'}
+        leftTooltipKey={'AddRepetitionListItemTooltip'+activityId}
         description={description}
       />
     </View>

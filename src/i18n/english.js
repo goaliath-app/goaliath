@@ -321,6 +321,14 @@ const en = {
         deleteSnackbar: 'Task deleted',
       }
     },
+    
+    tooltips: {
+      playIcon: 'Press here to start recording time for this time-goal activity',
+      repsIcon: 'Tap here to record each repetition you perform',
+      checkboxIcon: 'Tap here when you finish the activity to mark it as completed',
+      selectWeekliesListItem: 'Tap here to choose which weekly activities you wan\'t to do today',
+      firstGoal: 'This is your first goal, but it doesn\'t have any activities yet. Press on it to create them!'
+    },
 
     weeklyActivities: {
       headerTitle: 'Select weekly activities',

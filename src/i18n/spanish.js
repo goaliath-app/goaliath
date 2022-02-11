@@ -320,6 +320,14 @@ const es= {
         deleteSnackbar: 'Tarea eliminada',
       }
     },
+
+    tooltips: {
+      playIcon: 'Pulsa aquí para iniciar el temporizador para esta actividad con un objetivo de tiempo',
+      repsIcon: 'Pulsa aquí cuando realices una repetición para registrarla',
+      checkboxIcon: 'Pulsa aquí cuando termines la actividad para marcarla como completada',
+      selectWeekliesListItem: 'Pulsa aquí para elegir las actividades semanales en las que quieres trabajar hoy',
+      firstGoal: 'Este es tu primer goal, pero aún no tiene actividades. Pulsa aquí para crearlas!',
+    },
     
     weeklyActivities: {
       headerTitle: 'Selecciona las actividades semanales',

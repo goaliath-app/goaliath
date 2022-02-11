@@ -71,6 +71,7 @@ export const lightPlacements = {
   pulsatingHighlight: 'primary',
   speechBubbleBackground: 'primaryContainer',
   speechBubbleText: 'onPrimaryContainer',
+  tooltipBackground: 'surface',
 
   // Miscellaneous
   helpIcon: 'primary',

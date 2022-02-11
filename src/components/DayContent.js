@@ -100,10 +100,10 @@ const DayContentList = ({ date }) => {
       ?
         [{
           type: 'raw', 
-          completed: areWeekliesSelectedTodayResult || areTherePendingWeeklyActivitiesResult,
+          completed: areWeekliesSelectedTodayResult || !areTherePendingWeeklyActivitiesResult,
           item: <SelectWeekliesListItem 
                   date={date} 
-                  checked={areWeekliesSelectedTodayResult || areTherePendingWeeklyActivitiesResult} 
+                  checked={areWeekliesSelectedTodayResult || !areTherePendingWeeklyActivitiesResult} 
                   navigation={navigation} 
                   disabled={timeStatus != 'today'} 
                   style={
