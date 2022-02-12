@@ -22,13 +22,20 @@ const Onboarding = withTheme(({ finishOnboarding, theme }) => {
     return(
       <View style={styles.slide}>
         <Image source={item.image} />
-        <Title style={{ marginBottom: 8 }} >{item.title}</Title>
-        <Paragraph style={{ textAlign: 'justify' }} >{item.text}</Paragraph>
+        <Title style={{ marginBottom: 8, fontSize: 22 }} >{item.title}</Title>
+        <Paragraph style={{ textAlign: 'center', fontSize: 16 }} >{item.text}</Paragraph>
       </View>
     )
   }
 
   const slides = [
+    {
+      key: 'zero',
+      title: t('onboarding.slideZero.title'),
+      image: t('onboarding.slideZero.image'),
+      text: t('onboarding.slideZero.text'),
+    },
+
     {
       key: 'one',
       title: t('onboarding.slideOne.title'),

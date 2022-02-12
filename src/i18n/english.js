@@ -503,20 +503,25 @@ const en = {
       previous: 'Previous',
       next: 'Next',
       begin: "Let's go!",
+      slideZero: {
+        title: 'Welcome to Goaliath',
+        image: '',
+        text: 'Achieve big goals through your everyday actions',
+      },
       slideOne: {
         title: 'Create your goals',
         image: '',
-        text: '',
+        text: 'Decide what you are aiming for',
       },
       slideTwo: {
         title: 'Add activities',
         image: '',
-        text: '',
+        text: 'Plan the actions you will take towards each goal',
       },
       slideThree: {
         title: 'Act each day',
         image: '',
-        text: '',
+        text: 'Goaliath reminds you of your plan so you can focus on execution',
       }
     },
 

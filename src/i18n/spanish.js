@@ -503,20 +503,25 @@ const es= {
       previous: 'Anterior',
       next: 'Siguiente',
       begin: '¡Empecemos!',
-      slideOne: {
-        title: 'Crea tus goals',
+      slideZero: {
+        title: 'Bienvenido a Goaliath',
         image: '',
-        text: '',
+        text: 'Alcanza grandes metas mediante tus actividades diarias',
+      },
+      slideOne: {
+        title: 'Crea tus Metas',
+        image: '',
+        text: 'Decide cuáles son tus objetivos',
       },
       slideTwo: {
         title: 'Añade actividades',
         image: '',
-        text: '',
+        text: 'Planifica qué acciones tomarás para alcanzar cada meta',
       },
       slideThree: {
         title: 'Actúa cada día',
         image: '',
-        text: '',
+        text: 'Goaliath te recuerda tu plan para que puedas centrarte en ejecutarlo',
       }
     },
 
