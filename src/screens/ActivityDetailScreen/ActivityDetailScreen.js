@@ -1,7 +1,10 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native'
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { Appbar, Paragraph, Menu, Title, Divider, List, Card, Button, withTheme } from 'react-native-paper';
+import { 
+  Appbar, Paragraph, Menu, Title, Divider, List, Card, Button, withTheme,
+  Text
+} from 'react-native-paper';
 import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
 import { 
@@ -12,7 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { 
   selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
   restoreActivity, selectTutorialState, selectGoalByIdAndDate, 
-  selectActivityByIdAndDate
+  selectActivityByIdAndDate, getTodaySelector,
 } from '../../redux'
 import { isToday, isFuture } from '../../util'
 import BasicActivityInfo from './BasicActivityInfo'
@@ -23,6 +26,9 @@ import tutorialStates from '../../tutorialStates'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { SelfManagedThreeDotsMenu } from '../../components/ThreeDotsMenu';
 import { LoadingContainer, FullScreenActivityIndicator } from '../../components/Loading'
+import { dueToday, dueThisWeek, usesSelectWeekliesScreen } from '../../activityHandler';
+import IonIcon from 'react-native-vector-icons/Ionicons';
+
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -221,7 +227,8 @@ const ActivityDetails = withTheme(({
       />
       <Divider />
       </>
-      : null
+      : 
+      null
       }
       <BasicActivityInfo activity={activity} goal={goal} />
       {dateIsToday?
@@ -240,11 +247,61 @@ const ActivityDetails = withTheme(({
           activity={activity}
         />
         :
-        null
+        <TodayStatusCard date={date} activityId={activity.id} />
       }
 
       <BottomScreenPadding />
     </KeyboardAwareScrollView>
+  )
+})
+
+const TodayStatusCard = withTheme(({
+  date,
+  activityId,
+  theme,
+}) => {
+  const navigation = useNavigation()
+  const { t, i18n } = useTranslation()
+
+  const today = useSelector(getTodaySelector)
+
+  if(!date){
+    date = today
+  }
+
+  const entry = useSelector(state => selectEntryByActivityIdAndDate(state, activityId, date))
+  const isDueToday = useSelector(state => dueToday(state, activityId, date))
+  const isDueThisWeek = useSelector(state => dueThisWeek(state, activityId, date))
+  const isWeekly = useSelector(state => usesSelectWeekliesScreen(state, activityId))
+
+  let text, showButton
+  if( isDueToday ){
+    text = t('activityDetail.todayStatusCard.dueToday')
+    showButton = true 
+  }else if( entry && !entry.archived ){
+    text = t('activityDetail.todayStatusCard.chosenToday')
+    showButton = true
+  }else if( isDueThisWeek && isWeekly ){
+    text = t('activityDetail.todayStatusCard.dueThisWeek')
+    showButton = true 
+  }else{
+    text = t('activityDetail.todayStatusCard.notDue')
+    showButton = false
+  }
+
+  return(
+    <InfoCard
+      extraContent={
+        <View style={{flex:1, alignItems: 'center'}}>
+          <Text style={{fontSize: 16, flex: 1}}>{text}</Text>
+          { showButton ?
+            <Button style={{marginTop: 10}} onPress={ () => {
+              navigation.navigate('Today')
+            }}>{t('activityDetail.todayStatusCard.goToToday')}</Button>
+          : null }
+        </ View>
+      }
+    />
   )
 })
 

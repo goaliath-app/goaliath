@@ -1,5 +1,5 @@
 import { View, Pressable } from 'react-native';
-import { Text } from 'react-native-paper'
+import { Text, withTheme } from 'react-native-paper'
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next'
@@ -7,12 +7,12 @@ import { SpeechBubble } from '../components'
 import { setTutorialState } from '../redux'
 import tutorialStates from '../tutorialStates'
 
-const OnboardingScreen = ({ finishOnboarding }) => {
+const OnboardingScreen = withTheme(({ finishOnboarding, theme }) => {
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.onboardingBackground}}>
       <View style={{flex: 1, justifyContent: 'center'}}>
         <SpeechBubble speeches={[
           {id: 0, text: t('onboarding.1')},
@@ -33,6 +33,6 @@ const OnboardingScreen = ({ finishOnboarding }) => {
       </Pressable>
     </View>
   )
-}
+})
 
 export default OnboardingScreen;

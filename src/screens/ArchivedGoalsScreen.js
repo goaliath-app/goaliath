@@ -8,7 +8,7 @@ import { selectAllGoals, toggleGoal, restoreGoal } from '../redux'
 import { Header, InfoCard, } from '../components'
 
 
-const ArchivedGoalListItem = ({ name, active, id }) => {
+const ArchivedGoalListItem = withTheme(({ name, active, id, theme }) => {
   const { t, i18 } = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -34,7 +34,9 @@ const ArchivedGoalListItem = ({ name, active, id }) => {
 
       {/* Long press menu */}
       <Portal>
-        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+        <Dialog visible={isLongPressDialogVisible} 
+          onDismiss={() => {setLongPressDialogVisible(false)}}
+          style={{backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{name}</Dialog.Title>
             <Dialog.Content>
               <Divider />
@@ -48,7 +50,7 @@ const ArchivedGoalListItem = ({ name, active, id }) => {
       </Portal>
     </View>
   );
-}
+})
 
 const ArchivedGoalsScreen = withTheme(({ theme, navigation }) => {
   const { t, i18n } = useTranslation()

@@ -1,15 +1,27 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { View, FlatList } from 'react-native';
-import { Header, Checkbox, CalendarWeekItem } from '../components';
+import { View } from 'react-native';
+import { Header, CalendarWeekItem, InfoCard } from '../components';
 import { useTranslation } from 'react-i18next';
-import { Appbar, List, Text, Divider, withTheme } from 'react-native-paper';
+import { Appbar, Text, Divider, withTheme, Caption } from 'react-native-paper';
 import { 
-  selectAllActivities, selectEntriesByDay, weekliesSelectedToday, 
-  getTodaySelector 
+  selectEntriesByDay, weekliesSelectedToday, 
+  getTodaySelector , selectAllActiveActivities
 } from '../redux';
-import { SelectWeekliesItemDue, addEntryThunk, removeEntryThunk, SelectWeekliesItemCompleted } from './../activityHandler'
+import { 
+  SelectWeekliesItemDue, addEntryThunk, removeEntryThunk, 
+  SelectWeekliesItemCompleted, isWeekCompleted, usesSelectWeekliesScreen } from './../activityHandler'
 
+
+function filterCompletedWeeklyActivitiesSelector(state, activityList, date){
+  return activityList.filter(activity => isWeekCompleted(state, activity.id, date))
+}
+
+function selectAllActiveWeeklyActivities(state){
+  return selectAllActiveActivities(state).filter(
+    activity => usesSelectWeekliesScreen(state, activity.id)
+  )
+}
 
 const SelectWeeklyActivitiesScreen = withTheme(({ navigation, theme }) => {
   
@@ -19,7 +31,7 @@ const SelectWeeklyActivitiesScreen = withTheme(({ navigation, theme }) => {
   
   // selectors
   const today = useSelector(getTodaySelector)
-  const activities = useSelector(selectAllActivities)
+  const activities = useSelector(selectAllActiveWeeklyActivities)
   const entries = useSelector((state) => selectEntriesByDay(state, today))
 
   // state
@@ -69,6 +81,22 @@ const SelectWeeklyActivitiesScreen = withTheme(({ navigation, theme }) => {
     setSelectedActivity(activityId)
   }
 
+  const completedActivities = useSelector(
+    state => filterCompletedWeeklyActivitiesSelector(state, activities, today)
+  )
+  
+  const dueActivities = activities.filter( 
+    activity => !completedActivities.includes(activity)
+  )
+
+  const selectedActivities = dueActivities.filter(
+    activity => checkboxesState[activity.id] == 'checked'
+  )
+
+  const unselectedActivities = dueActivities.filter(
+    activity => checkboxesState[activity.id] != 'checked'
+  )
+
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.selectWeeklyActivitiesScreenBackground}}>
       <Header 
@@ -87,20 +115,44 @@ const SelectWeeklyActivitiesScreen = withTheme(({ navigation, theme }) => {
         />
       </View>
       <Divider />
-      { activities.map( (activity) => (
-          <SelectWeekliesItemDue 
-            activity={activity} today={today} isChecked={checkboxesState[activity.id]} 
-            onCheckboxPress={(status)=>onCheckboxPress(activity.id, status)} isSelected={selectedActivity==activity.id} onPress={()=>onActivityPress(activity.id)} 
-          />
-        ))
+      <Text style={{marginLeft: 10, fontSize:14, marginTop: 10}}>{t('weeklyActivities.selectedCaption')}</Text>
+      {
+        selectedActivities.length > 0 ?
+          selectedActivities.map( activity => (
+            <SelectWeekliesItemDue 
+              activity={activity} today={today} isChecked={checkboxesState[activity.id]} 
+              onCheckboxPress={(status)=>onCheckboxPress(activity.id, status)} isSelected={selectedActivity==activity.id} onPress={()=>onActivityPress(activity.id)} 
+              key={activity.id}
+            />
+          )) : 
+          <InfoCard containerStyle={{marginHorizontal: 24, marginVertical: 8}} paragraph={t('weeklyActivities.noSelectedActivities')} /> 
+
       }
-      { activities.map( (activity) => ( 
-          <SelectWeekliesItemCompleted 
-            activity={activity} today={today} 
-            isSelected={selectedActivity==activity.id} 
-            onPress={()=>onActivityPress(activity.id)} 
-          /> 
-        ))
+      { 
+        unselectedActivities.length > 0 ?
+        <>
+          <Text style={{marginLeft: 10, fontSize:14, marginTop: 10}}>{t('weeklyActivities.dueCaption')}</Text>
+          {unselectedActivities.map( activity => (
+            <SelectWeekliesItemDue 
+              activity={activity} today={today} isChecked={checkboxesState[activity.id]} 
+              onCheckboxPress={(status)=>onCheckboxPress(activity.id, status)} isSelected={selectedActivity==activity.id} onPress={()=>onActivityPress(activity.id)} 
+              key={activity.id}
+            />
+          ))}
+        </> : null
+      }
+      { completedActivities.length > 0 ? 
+        <>
+        <Text style={{marginLeft: 10, fontSize:14, marginTop: 10}}>{t('weeklyActivities.completedCaption')}</Text>
+        { completedActivities.map( activity => (
+            <SelectWeekliesItemCompleted 
+              activity={activity} today={today} 
+              isSelected={selectedActivity==activity.id} 
+              onPress={()=>onActivityPress(activity.id)} 
+              key={activity.id}
+            />
+          ))}
+        </> : null
       } 
     </View>
   );

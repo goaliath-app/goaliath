@@ -53,7 +53,9 @@ export const TodayPannelModal = withTheme(({
       {/* { visible ? 
         <View style={{ position: 'absolute', height: '100%', width: '100%', backgroundColor: theme.colors.neutral0, opacity: 0.2 }} />
       : null } */}
-      <Dialog visible={visible} onDismiss={onDismiss} style={{marginHorizontal: 15, marginTop: 0}}>
+      <Dialog visible={visible} 
+        onDismiss={onDismiss} 
+        style={{marginHorizontal: 15, marginTop: 0, backgroundColor: theme.colors.dialogBackground}}>
         <Dialog.Content style={{margin: 0, padding: 0, paddingRight: 0, paddingTop: 0, paddingLeft: 0}}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15}} >
               <View style={{marginTop: 18, marginLeft: 18}}>
@@ -64,13 +66,13 @@ export const TodayPannelModal = withTheme(({
               <IconButton 
                 style={{marginRight: 0, height: 50, width: 50}}
                 icon={
-                  () => <IonIcon size={30} name={"md-open-outline"}/>
+                () => <IonIcon color={theme.colors.onSurface} size={30} name={"md-open-outline"}/>
                 } 
                 onPress={() => { 
                   onDismiss()    
                   navigation.navigate('ActivityDetail', {activityId: activity.id, date: date.toISO()})}
                 }/>
-              <SelfManagedThreeDotsMenu items={menuItems} color={'black'} size={30} />
+              <SelfManagedThreeDotsMenu items={menuItems} color={theme.colors.onSurface} size={30} />
             </View>
           </View>
           <Divider style={{marginHorizontal: 25}}/>

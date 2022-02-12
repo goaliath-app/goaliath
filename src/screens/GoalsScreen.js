@@ -153,7 +153,9 @@ const GoalListItem = withTheme(({ name, active, id, theme }) => {
 
       {/* Long press menu */}
       <Portal>
-        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+        <Dialog visible={isLongPressDialogVisible} 
+          onDismiss={() => {setLongPressDialogVisible(false)}}
+          style={{ backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{name}</Dialog.Title>
           <Dialog.Content>
             <Divider />

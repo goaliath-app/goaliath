@@ -21,7 +21,7 @@ const StatsScreen = withTheme(({ navigation, theme }) => {
   return (
     <ScrollView style={{flex: 1, backgroundColor: theme.colors.statsScreenBackground}}>
       <Header title={t('statsScreen.headerTitle')} navigation={navigation} />
-      <GoalSelector onGoalSelection={setSelectedGoal}/>
+      <GoalSelector onGoalSelection={setSelectedGoal} theme={theme} />
       <Divider style={{marginHorizontal: 8}}/>
       <StatsPannel goalId={selectedGoal == "all"? null : selectedGoal} bypassLoading />
       <BottomScreenPadding />
@@ -29,7 +29,7 @@ const StatsScreen = withTheme(({ navigation, theme }) => {
   );
 })
 
-const GoalSelector = ({onGoalSelection}) => {
+const GoalSelector = ({onGoalSelection, theme}) => {
   const { t, i18n } = useTranslation()
 
   function innerOnGoalSelection(goalId){
@@ -60,6 +60,7 @@ const GoalSelector = ({onGoalSelection}) => {
           setValue={innerOnGoalSelection}
           setItems={setItems}
           listMode="SCROLLVIEW"
+          theme={theme.type}
           scrollViewProps={{
             nestedScrollEnabled: true,
           }}  

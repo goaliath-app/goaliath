@@ -395,7 +395,7 @@ const DayBox = ({ color, size, border=false, borderColor='#EBEDF0' }) => {
   )
 }
 
-const VerticalLabel = ({ size, label }) => {
+const VerticalLabel = withTheme(({ theme, size, label }) => {
   return (
     <View 
       style={{
@@ -406,10 +406,10 @@ const VerticalLabel = ({ size, label }) => {
         marginRight: 5,
       }}
     >
-      <Text style={{fontSize: size*0.65}}>{label}</Text>
+      <Text style={{fontSize: size*0.65, color: theme.colors.heatmapLabels}}>{label}</Text>
     </View>
   )
-}
+})
 
 const LabelColumn = ({ size, labels }) => {
   return (
@@ -427,7 +427,7 @@ const LabelColumn = ({ size, labels }) => {
   )
 }
 
-const HorizontalLabel = ({ size, label }) => {
+const HorizontalLabel = withTheme(({ theme, size, label }) => {
   return (
     <View 
       style={{
@@ -438,8 +438,8 @@ const HorizontalLabel = ({ size, label }) => {
       }}
     >
       <View style={{ position: 'absolute', height: size, width: 200, left: 2 }}>
-        <Text ellipsizeMode='clip' numberOfLines={1} style={{fontSize: size*0.65}}>{label}</Text>
+        <Text ellipsizeMode='clip' numberOfLines={1} style={{fontSize: size*0.65, color: theme.colors.heatmapLabels}}>{label}</Text>
       </View>
     </View>
   )
-}
+})

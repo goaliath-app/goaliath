@@ -293,7 +293,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
         left='back' navigation={navigation} 
         buttons={headerButtons}
       />
-      <KeyboardAwareScrollView style={{flexGrow: 0}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
+      <KeyboardAwareScrollView style={{flex: 1}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
         <TextInput 
           error={nameInputError} 
           style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, backgroundColor: theme.colors.textInputBackground}} 
@@ -323,14 +323,14 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
         />
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
-        <Pressable style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10, height: 60, borderRadius: 5}} onPress={() => {
+        <Pressable style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10, height: 60, borderRadius: 5, borderColor: theme.colors.frequencySelectorBorder}} onPress={() => {
           Keyboard.dismiss()
           setFrequencyVisible(true)
           setNoFrequencyError(false)
         }}>
-          { frequencySelector=='daily'? <FontAwesomeIcon style={{alignSelf: 'center', marginRight: 10}} size={28}  icon={faCalendarCheck}/> :
-            frequencySelector=='free'? <FeatherIcon style={{alignSelf: 'center', marginRight: 10}} name={"feather"} size={28} /> :
-            frequencySelector=='weekly'? <EntypoIcon style={{alignSelf: 'center', marginRight: 10}} size={30} name={"bar-graph"}/> :
+          { frequencySelector=='daily'? <FontAwesomeIcon style={{alignSelf: 'center', marginRight: 10}} size={28}  icon={faCalendarCheck} color={theme.colors.frequencySelectorIcons} /> :
+            frequencySelector=='free'? <FeatherIcon style={{alignSelf: 'center', marginRight: 10}} name={"feather"} size={28} color={theme.colors.frequencySelectorIcons} /> :
+            frequencySelector=='weekly'? <EntypoIcon style={{alignSelf: 'center', marginRight: 10}} size={30} name={"bar-graph"} color={theme.colors.frequencySelectorIcons} /> :
             null }
             <View>
           <Text style={{ fontSize: 16 }}>{!frequencySelector? t('activityForm.frequencyLabel')
@@ -339,19 +339,13 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
             :frequencySelector=='weekly'? t('activityForm.dialog.weeklyTitle')
             : null
           }</Text>
-          { activityPreviewText.length > 0 && <Text style={{ fontSize: 14 }}>{activityPreviewText}</Text> }
+          {/* This shows the activity preview text inside the frequency selector item */}
+          {/* { activityPreviewText.length > 0 && <Text style={{ fontSize: 14 }}>{activityPreviewText}</Text> } */}
           </View>
         </Pressable>
         <HelperText style={{paddingLeft:25}} type="error" visible={noFrequencyError}>
           {t('activityForm.errors.noFrequency')}
         </HelperText>
-        {/* Another alternative to show the activity frequency preview 
-        <InfoCard 
-          style={{marginVertical: 0}}
-          cardStyle={{marginVertical: 0}}
-          paragraphStyle={{marginVertical: 0, fontSize: 16, textAlign: 'center'}}
-          paragraph={"Due "+activityPreviewText} 
-        /> */}
 
         {frequencySelector=='daily'?
           <View> 
@@ -398,7 +392,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
         }
 
         {frequencySelector == 'free'?
-          <NumberOfWeeklyDaysInput daysPerWeek={days} setDaysPerWeek={setDays} />
+          <NumberOfWeeklyDaysInput daysPerWeek={days} setDaysPerWeek={setDays} theme={theme} />
           : null 
         }
 
@@ -482,18 +476,19 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
             : null }
           </View>
         : null}
+
         
 
         <Portal>
-          <Dialog style={{marginHorizontal: 12}} visible={isFrecuencyVisible} onDismiss={() => {setFrequencyVisible(false)}}>
+          <Dialog style={{marginHorizontal: 12, backgroundColor: theme.colors.dialogBackground}} visible={isFrecuencyVisible} onDismiss={() => {setFrequencyVisible(false)}}>
             <Dialog.Title>{t('activityForm.dialog.title')}</Dialog.Title>
               <Dialog.Content>
                 <Divider />
-                <List.Item left={() => <FontAwesomeIcon style={{alignSelf: 'center'}} size={30} icon={faCalendarCheck}/>} title={t('activityForm.dialog.dailyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.dailyDescription')} onPress={() => {setFrequencySelector('daily'), setFrequencyVisible(false)}} />
+                <List.Item left={() => <FontAwesomeIcon style={{alignSelf: 'center'}} size={30} icon={faCalendarCheck} color={theme.colors.frequencySelectorIcons} />} title={t('activityForm.dialog.dailyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.dailyDescription')} onPress={() => {setFrequencySelector('daily'), setFrequencyVisible(false)}} />
                 <Divider />
-                <List.Item left={() => <FeatherIcon style={{alignSelf: 'center'}} name={"feather"} size={32}/>} title={t('activityForm.dialog.freeTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.freeDescription')} onPress={() => {setFrequencySelector('free'), setFrequencyVisible(false)}} />
+                <List.Item left={() => <FeatherIcon style={{alignSelf: 'center'}} name={"feather"} size={32} color={theme.colors.frequencySelectorIcons} />} title={t('activityForm.dialog.freeTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.freeDescription')} onPress={() => {setFrequencySelector('free'), setFrequencyVisible(false)}} />
                 <Divider />
-                <List.Item left={() => <EntypoIcon style={{alignSelf: 'center'}} size={30} name={"bar-graph"}/>} title={t('activityForm.dialog.weeklyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.weeklyDescription')} onPress={() => {
+                <List.Item left={() => <EntypoIcon style={{alignSelf: 'center'}} size={30} name={"bar-graph"} color={theme.colors.frequencySelectorIcons} />} title={t('activityForm.dialog.weeklyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.weeklyDescription')} onPress={() => {
                   setFrequencySelector('weekly')
                   setFrequencyVisible(false)
                   if (!repetitionsGoalSwitch && !timeGoalSwitch) {
@@ -506,6 +501,15 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
         </Portal>
         <BottomScreenPadding />
       </KeyboardAwareScrollView>
+      { frequencySelector != undefined ? 
+          /* Another alternative to show the activity frequency preview */
+          <InfoCard 
+            style={{marginVertical: 0}}
+            cardStyle={{marginVertical: 0}}
+            paragraphStyle={{marginVertical: 0, fontSize: 16, textAlign: 'center'}}
+            paragraph={name? `${name} ${activityPreviewText}` : activityPreviewText} 
+          /> 
+        : null }
     </View>
   )
 })

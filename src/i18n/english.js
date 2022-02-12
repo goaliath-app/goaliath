@@ -71,6 +71,13 @@ const en = {
       changeGoalSnackbar: "Activity moved to {{goalName}} goal",
       archivedWarning: "This activity is archived",
       restoreButton: "Restore activity",
+      todayStatusCard: {
+        dueToday: 'This activity is scheduled for today',
+        dueThisWeek: 'You can choose to do this activity today from the Today List',
+        notDue: 'You don\'t have to do this activity today',
+        chosenToday: 'You have chosen to do this activity today',
+        goToToday: "Go to Today List",
+      }
     },
 
     basicActivityInfo: {
@@ -233,6 +240,7 @@ const en = {
 
     settings: {
       headerTitle: 'Settings',
+      darkTheme: 'Dark theme',
       startHour: 'Start of the next day',
       todaySnackbar: 'Today will end at {{startHour}} tomorrow.',
       yesterdaySnackbar: 'You have returned to yesterday. It ends at {{startHour}} today.',
@@ -306,6 +314,10 @@ const en = {
       timeLeft: '{{timeExprValue}} {{timeExprLocaleUnit}} left',
       checkCompleted: 'Completed: {{weeklyTimes}} days done',
       timedCompleted: 'Completed: {{unit}} {{expression}} dedicated',
+      selectedCaption: 'Today I will work on',
+      dueCaption: 'Today I won\'t',
+      completedCaption: 'Completed',
+      noSelectedActivities: 'Choose activities from below, or press ✓ if you won\'t do any weekly activities today',
     },
 
     activityHandler: {

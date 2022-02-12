@@ -71,6 +71,13 @@ const es= {
       changeGoalSnackbar: "Actividad movida a la meta {{goalName}}",
       archivedWarning: "Esta actividad está archivada",
       restoreButton: "Restaurar actividad",
+      todayStatusCard: {
+        dueToday: 'Esta actividad está programada para hoy',
+        dueThisWeek: 'Puedes elegir hacer hoy esta actividad desde la lista de hoy',
+        notDue: 'No tienes que hacer esta actividad hoy',
+        chosenToday: 'Has elegido hacer esta actividad hoy',
+        goToToday: "Ir a Hoy",
+      }
     },
   
     basicActivityInfo: {
@@ -232,6 +239,7 @@ const es= {
 
     settings: {
       headerTitle: 'Ajustes',
+      darkTheme: 'Tema oscuro',
       startHour: 'Hora de inicio del día',
       todaySnackbar: 'El día de hoy terminará a las {{startHour}} de mañana.',
       yesterdaySnackbar: 'Has regresado al día de ayer. Terminará a las {{startHour}} de hoy.',
@@ -305,6 +313,10 @@ const es= {
       timeLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}',
       checkCompleted: 'Hecho: {{weeklyTimes}} días completado',
       timedCompleted: 'Hecho: {{unit}} {{expression}} dedicada/os',
+      selectedCaption: 'Hoy trabajaré en',
+      dueCaption: 'Para otro día',
+      completedCaption: 'Completadas',
+      noSelectedActivities: 'Selecciona actividades más abajo, o pulsa ✓ si hoy no vas a hacer ninguna actividad semanal',
     },
 
     activityHandler: {

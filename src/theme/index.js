@@ -24,30 +24,36 @@ export const lightTheme = populateTheme(
   lightAliases,
 
   // placements
-  lightPlacements
+  lightPlacements,
+
+  // extra keys
+  { type: "LIGHT" },
 )
 
-// export const darkTheme = populateTheme(
-//   // key colors, to generate tonal palettes
-//   {
-//     primary: 'hsla(256, 80%, 57%, 1)',
-//     secondary: 'hsl(224, 35%, 57%)',
-//     accent: 'hsla(162, 60%, 57%, 1)',
-//     neutral: '#000000',
-//   },
+export const darkTheme = populateTheme(
+  // key colors, to generate tonal palettes
+  {
+    primary: '#acc6ff',
+    secondary: '#afc6ff',
+    accent: '#335c41',
+    neutral: '#05070a',
+  },
 
-//   // raw colors
-//   {
-//     error: '#CE0A24',
-//     onError: '#ffffff',
-//   },
+  // raw colors
+  {
+    error: '#FE8073',
+    onError: '#ffffff',
+  },
 
-//   // aliases
-//   darkAliases,
+  // aliases
+  darkAliases,
 
-//   // placements
-//   darkPlacements
-// )
+  // placements
+  darkPlacements,
+
+  // extra keys
+  { type: "DARK" },
+)
 
 function setLuminosity(color, luminosity){
   const [ hue, saturation, oldLuminosity ] = Color(color).hsl().array()
@@ -55,7 +61,7 @@ function setLuminosity(color, luminosity){
 }
 
 function generateTonalPalette(color, name){
-  const luminosityValues = [ 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100 ]
+  const luminosityValues = [ 0, 5, 10, 15,20, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100 ]
   const tonalPalette = {}
   luminosityValues.forEach( luminosity => {
     tonalPalette[name + luminosity] = setLuminosity(color, luminosity)
@@ -95,6 +101,9 @@ function populateTheme(
   corresponding colors. */ 
   placements,
 
+  /* Extra keys to be added to the final theme, as they are */
+  extraKeys={},
+
   /* Some tips for building a theme:
   - Only use keys from placements in the actual code.
   - Use the aliases to define specific roles for colors.
@@ -118,5 +127,5 @@ function populateTheme(
     theme.colors[placement] = theme.colors[placements[placement]]
   })
 
-  return theme
+  return Object.assign(theme, extraKeys)
 }

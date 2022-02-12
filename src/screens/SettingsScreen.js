@@ -10,7 +10,9 @@ import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker'
 import { useTranslation } from 'react-i18next'
-import { setDayStartHour, importState, setLanguage, setDailyNotificationHour, updateLogs } from '../redux'
+import { setDayStartHour, importState, setLanguage, setDailyNotificationHour, 
+  updateLogs, selectDarkTheme,
+} from '../redux'
 import { Header } from '../components'
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -19,6 +21,8 @@ import { Context } from '../../App'
 
 
 const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, state, importState }) => {
+  const darkThemeSwitch = useSelector(selectDarkTheme)
+  
   const [ isStartHourPickerVisible, setStartHourPickerVisibility ] = React.useState(false);
   const [ isNotificationHourPickerVisible, setNotificationHourPickerVisibility ] = React.useState(false);
   const [ isLanguageDialogVisible, setLanguageDialogVisible ] = React.useState(false);
@@ -28,8 +32,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
 
   const { t, i18n } = useTranslation()
   const dispatch = useDispatch()
-  const { showSnackbar } = React.useContext(Context);
-
+  const { showSnackbar, setDarkTheme } = React.useContext(Context);
 
   const changeDayStartHour = (JSDate) => {
     const dateTime = DateTime.fromJSDate(JSDate)
@@ -95,7 +98,20 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
       <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
       <ScrollView style={{flex: 1}} >
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"moon"} color={theme.colors.settingsIcons} />}
+        title={t('settings.darkTheme')}
+        titleNumberOfLines={2}
+        right={() => (
+          <Switch 
+            value={darkThemeSwitch} 
+            onValueChange={ () => setDarkTheme(!darkThemeSwitch) }
+            style={{ height: 48, width: 48 }}
+          />
+        )}
+      />
+      <Divider />
+      <List.Item
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"clock"} color={theme.colors.settingsIcons} />}
         title={t('settings.startHour')}
         description={t('settings.startHourDescription')}
         onPress={() => setStartHourPickerVisibility(true)} 
@@ -106,35 +122,35 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
       />
       <Divider />
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"mail"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"mail"} color={theme.colors.settingsIcons} />}
         title={t('settings.feedback')}
         description={t('settings.feedbackDescription')}
         onPress={() => email('jimenaa971@gmail.com')}
       />
       <Divider />
       <List.Item
-        left={() => <AntDesign style={{alignSelf: 'center', margin: 5}} size={25} name={"sharealt"} />}
+        left={() => <AntDesign style={{alignSelf: 'center', margin: 5}} size={25} name={"sharealt"} color={theme.colors.settingsIcons} />}
         title={t('settings.share')}
         description={t('settings.shareDescription')}
         onPress={() => Share.share({message: t('settings.shareMessage')})}
       />
       <Divider />
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"save"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"save"} color={theme.colors.settingsIcons} />}
         title={t('settings.export')}
         description={t('settings.exportDescription')}
         onPress={() => writeFile(state)}
       />
       <Divider />
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"download-cloud"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"download-cloud"} color={theme.colors.settingsIcons} />}
         title={t('settings.import')}
         description={t('settings.importDescription')}
         onPress={() => readFile()}
       />
       <Divider />
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"globe"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"globe"} color={theme.colors.settingsIcons} />}
         title={t('settings.language')}
         onPress={() => setLanguageDialogVisible(true)}
         right={() => 
@@ -146,7 +162,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
           </Text>} />
       <Divider />
       <List.Item
-        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"bell"} />}
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"bell"} color={theme.colors.settingsIcons} />}
         title={t('settings.dailyNotification')}
         titleNumberOfLines={2}
         right={() => (
@@ -175,13 +191,13 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         : null
       }
       <List.Item
-          left= { () => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"coffee"} />}
+          left= { () => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"coffee"} color={theme.colors.settingsIcons} />}
           title={t('settings.aboutUs')}
           onPress={() => navigation.navigate('AboutUs')}
         />
         <Divider />
         <List.Item
-          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"book"} />}
+          left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"book"} color={theme.colors.settingsIcons} />}
           title={t('settings.aboutGoaliath.title')}
           onPress={() => Linking.openURL(t('settings.aboutGoaliath.blogURL'))}
           description={t('settings.aboutGoaliath.description')}
@@ -209,19 +225,23 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
 
       <Portal>
         {/* Import dialog */}
-        <Dialog visible={isImportDialogVisible} onDismiss={() => {setImportDialogVisible(false)}}>
+        <Dialog visible={isImportDialogVisible} 
+          onDismiss={() => {setImportDialogVisible(false)}}
+          style={{backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{t('settings.importDialog.title')}</Dialog.Title>
           <Dialog.Content>
             <Paragraph>{t('settings.importDialog.content')}</Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => importStateFromText(importedStateText)}>{t('settings.importDialog.buttonAcept')}</Button>
             <Button onPress={() => setImportDialogVisible(false)}>{t('settings.importDialog.buttonCancel')}</Button>
+            <Button onPress={() => importStateFromText(importedStateText)}>{t('settings.importDialog.buttonAcept')}</Button>
           </Dialog.Actions>
         </Dialog>
 
         {/* Language dialog */}
-        <Dialog visible={isLanguageDialogVisible} onDismiss={() => {setLanguageDialogVisible(false)}}>
+        <Dialog visible={isLanguageDialogVisible} 
+          onDismiss={() => {setLanguageDialogVisible(false)}}
+          style={{backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{t('settings.languageDialog.title')}</Dialog.Title>
             <Dialog.Content>
               <Divider />
@@ -257,7 +277,7 @@ const actionToProps = {
   setDayStartHour,
   importState,
   setLanguage,
-  setDailyNotificationHour
+  setDailyNotificationHour,
 }
 
 export default connect(mapStateToProps, actionToProps)(SettingsScreen);
