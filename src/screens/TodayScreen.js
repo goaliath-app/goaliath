@@ -6,13 +6,15 @@ import { DayContent, Dialog, Header, InfoCard, SpeechBubble } from '../component
 import { getToday, isBetween } from '../util'
 import { useTranslation } from 'react-i18next'
 import { useFocusEffect } from '@react-navigation/native';
-import { Appbar, withTheme } from 'react-native-paper'
+import { Appbar, withTheme, Paragraph, Text } from 'react-native-paper'
 import { 
   updateLogs, setTutorialState, selectTutorialState, selectAllActivities,
   selectEntriesByDay, getTodaySelector, selectAllActiveActivities,
 } from '../redux'
 import tutorialStates from '../tutorialStates'
 import { areTherePendingWeeklyActivities } from '../activityHandler'
+import { faTrophy } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 
 function selectTodayScreenState(state) {
@@ -140,10 +142,26 @@ const TodayScreen = withTheme(({ navigation, theme }) => {
       { todayScreenState=='no-activities' && tutorialState==tutorialStates.Finished ?
         <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
           <InfoCard title={t('today.noActivitiesInfoCard.title')} 
-            paragraph={t('today.noActivitiesInfoCard.content')}/>
+            // paragraph={t('today.noActivitiesInfoCard.content')}
+            extraContent={
+              <Paragraph style={{overflow: 'visible'}}>
+                <Text>{t('today.noActivitiesInfoCard.contentBeforeIcon')}</Text>
+                {/* If you know a better way of properly aligning the icon to 
+                the text, PLEASE let me know (already tried all the obviuous
+                ways I knew) */}
+                <View style={{width: 20, alignItems: 'center'}}>
+                  <View style={{position: 'absolute', top: -13}}>
+                    <FontAwesomeIcon icon={faTrophy} size={16} color={theme.colors.onSurface} />
+                  </View>
+                </View>
+                <Text>{t('today.noActivitiesInfoCard.contentAfterIcon')}</Text>
+              </Paragraph>}
+            // extraContent={<Paragraph style={{overflow: 'visible'}}>Go to the Goals <FontAwesomeIcon icon={faTrophy} size={16} color={theme.colors.onSurface} /> section to plan your daily actions</Paragraph>}
+          />
         </View> 
         : null 
       }
+
       { todayScreenState=='no-active-activities' && tutorialState==tutorialStates.Finished ?
         <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
           <InfoCard title={t('today.noActiveActivitiesInfoCard.title')} 
@@ -151,13 +169,13 @@ const TodayScreen = withTheme(({ navigation, theme }) => {
         </View> 
         : null 
       }
-      { todayScreenState=='only-weekly-activities' && tutorialState==tutorialStates.Finished ?
+      {/* { todayScreenState=='only-weekly-activities' && tutorialState==tutorialStates.Finished ?
         <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
-          <InfoCard title={t('today.onluWeeklyActivities.title')} 
+          <InfoCard title={t('today.onlyWeeklyActivities.title')} 
             paragraph={t('today.onlyWeeklyActivities.content')} /> 
         </View> 
         : null 
-      }
+      } */}
       { todayScreenState=='nothing-for-today' && tutorialState==tutorialStates.Finished ?
         <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
           <InfoCard title={t('today.nothingForToday.title')} 

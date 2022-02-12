@@ -197,7 +197,7 @@ const en = {
       nameTextInputPlaceholder: '"Fitness", "Learn Spanish"',
       goalMotivationSubheading: 'Why do you want to achieve this goal?',
       motivationTextInputLabel: 'Your Motivation (optional)',
-
+      motivationPlaceholder:'I want to learn Spanish to be able to make new friends during my trip to Barcelona.',
     },
 
     goal: {
@@ -211,7 +211,7 @@ const en = {
         title: 'Archive goal?',
         body: "You can still view and restore it from the menu of the Goals screen.",
       },
-      infoTitle: "This Goal is empty",
+      infoTitle: "There are no activities",
       infoContent: "You can add an activity by pressing the + icon on the top right. Choose recurring activities you’ll do often.",
       archivedWarning: "This goal is archived",
       restoreButton: "RESTORE GOAL",
@@ -292,7 +292,8 @@ const en = {
       dayChangeDialogConfirmLabel: "Go to new day",
       noActivitiesInfoCard: {
         title: 'Welcome to Goaliath',
-        content: 'Go to the goals section (🏆) to plan your daily actions.'
+        contentBeforeIcon: 'Go to the Goals section (',
+        contentAfterIcon: ') to plan your daily actions.',
       },
       noActiveActivitiesInfoCard: {
         title: 'You have no activities',
@@ -341,7 +342,7 @@ const en = {
       selectedCaption: 'Today I will work on',
       dueCaption: 'Today I won\'t',
       completedCaption: 'Completed',
-      noSelectedActivities: 'Choose activities from below, or press ✓ if you won\'t do any weekly activities today',
+      noSelectedActivities: 'Choose what you\'ll do today from the activities below. Press ✓ to confirm.',
     },
 
     activityHandler: {

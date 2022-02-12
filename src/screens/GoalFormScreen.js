@@ -99,6 +99,7 @@ const GoalFormScreen = withTheme(({ theme, navigation, goal=null }) => {
           style={{fontSize: 16, backgroundColor: theme.colors.textInputBackground}}
           mode='outlined'
           label={t('goalForm.motivationTextInputLabel')}
+          placeholder={t('goalForm.motivationPlaceholder')}
           multiline={true}
           numberOfLines={10}
           maxLength={1200}

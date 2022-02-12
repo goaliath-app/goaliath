@@ -197,6 +197,7 @@ const es= {
       nameTextInputPlaceholder: '"Fitness", "Aprender Inglés"',
       goalMotivationSubheading: '¿Por qué quieres llegar a esa meta?',
       motivationTextInputLabel: 'Tu Motivación (opcional)',
+      motivationPlaceholder: "Quiero aprender inglés para hacer nuevos amigos durante mi viaje a Florida.",
     },
 
     goal: {
@@ -291,7 +292,8 @@ const es= {
       dayChangeDialogConfirmLabel: "Ver nuevo día",
       noActivitiesInfoCard: {
         title: 'Bienvenido a Goaliath',
-        content: 'Ve a la sección de Metas (🏆) para planificar tus acciones diarias.'
+        contentBeforeIcon: 'Ve a la sección de Metas (',
+        contentAfterIcon:') para planificar tus acciones diarias.',
       },
       noActiveActivitiesInfoCard: {
         title: 'No tienes actividades activas',
@@ -340,7 +342,7 @@ const es= {
       selectedCaption: 'Hoy trabajaré en',
       dueCaption: 'Para otro día',
       completedCaption: 'Completadas',
-      noSelectedActivities: 'Selecciona actividades más abajo, o pulsa ✓ si hoy no vas a hacer ninguna actividad semanal',
+      noSelectedActivities: 'Selecciona qué actividades semanales de más abajo vas a hacer hoy. Pulsa ✓ para confirmar.',
     },
 
     activityHandler: {
