@@ -171,15 +171,15 @@ const TodayScreen = withTheme(({ navigation, theme }) => {
       }
       {/* { todayScreenState=='only-weekly-activities' && tutorialState==tutorialStates.Finished ?
         <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
-          <InfoCard title={t('today.onlyWeeklyActivities.title')} 
-            paragraph={t('today.onlyWeeklyActivities.content')} /> 
+          <InfoCard title={t('today.onlyWeeklyActivitiesInfoCard.title')} 
+            paragraph={t('today.onlyWeeklyActivitiesInfoCard.content')} /> 
         </View> 
         : null 
       } */}
       { todayScreenState=='nothing-for-today' && tutorialState==tutorialStates.Finished ?
         <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
-          <InfoCard title={t('today.nothingForToday.title')} 
-            paragraph={t('today.nothingForToday.content')} /> 
+          <InfoCard title={t('today.nothingForTodayInfoCard.title')} 
+            paragraph={t('today.nothingForTodayInfoCard.content')} /> 
         </View>
         : null 
       }
