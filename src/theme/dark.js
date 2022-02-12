@@ -65,6 +65,11 @@ export const darkPlacements = {
   weekPressedBackground: 'accent50',
   calendarLongPressBackground: 'accent50',
 
+  //Onboarding
+  dots: 'primaryContainer',
+  activeDot: 'accent',
+  buttons: 'accent',
+
   // Tutorial
     // Waiting to new tutorial. TODO
   todayItemHighlight: 'primaryContainer',

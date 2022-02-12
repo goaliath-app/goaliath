@@ -22,7 +22,7 @@ import {
 } from './src/screens'
 import { 
   TodayScreenIcon, GoalsScreenIcon, GoalsScreenButton, CalendarScreenIcon, 
-  CalendarScreenButton, StatsScreenIcon, StatsScreenButton,
+  CalendarScreenButton, StatsScreenIcon, StatsScreenButton, Onboarding,
 } from './src/components'
 import { generateDummyData } from './src/redux/Thunks'
 import Notifications from './src/notifications'
@@ -93,7 +93,7 @@ export default function App() {
   }
 
   function onStoreRehydration(){
-    setNewUser(store.getState().settings.tutorialState == tutorialStates.NewUser)
+    setNewUser(store.getState().settings.tutorialState)
     i18n.changeLanguage(store.getState().settings.language)
     setDarkTheme(selectDarkTheme(store.getState()))
   }
@@ -165,7 +165,7 @@ export default function App() {
               />
               <GestureHandlerRootView style={{flex: 1}}>
               {newUser?
-              <OnboardingScreen finishOnboarding={finishOnboarding} />
+              <Onboarding finishOnboarding={finishOnboarding} />
               : 
               <Stack.Navigator initialRouteName='bottomTab' headerMode='none'>
                 {/* Bottom tab navigator containing the root screens */}

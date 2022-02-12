@@ -65,6 +65,11 @@ export const lightPlacements = {
   weekPressedBackground: 'accent90',
   calendarLongPressBackground: 'accent60',
 
+  //Onboarding
+  dots: 'outline',
+  activeDot: 'primary',
+  buttons: 'primary',
+
   // Tutorial
   todayItemHighlight: 'primaryContainer',
   tabBarItemHighlight: 'accent60',

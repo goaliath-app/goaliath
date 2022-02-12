@@ -499,7 +499,25 @@ const en = {
       1: 'Hi, I’m Goaliath!',
       2: 'I’ve been created to help you achieve your goals through your everyday actions.',
       3: 'Cool, uh? Let’s begin!',
-      skip: 'Skip tutorial'
+      skip: 'Skip tutorial',
+      previous: 'Previous',
+      next: 'Next',
+      begin: "Let's go!",
+      slideOne: {
+        title: 'Create your goals',
+        image: '',
+        text: '',
+      },
+      slideTwo: {
+        title: 'Add activities',
+        image: '',
+        text: '',
+      },
+      slideThree: {
+        title: 'Act each day',
+        image: '',
+        text: '',
+      }
     },
 
     tutorial: {

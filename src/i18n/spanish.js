@@ -499,7 +499,25 @@ const es= {
       1: 'Hola, ¡soy Goaliath!',
       2: 'He sido creado para ayudarte a alcanzar tus metas a través del trabajo diario.',
       3: 'Mola, ¿eh? ¡Empecemos!',
-      skip: 'Saltar tutorial'
+      skip: 'Saltar tutorial',
+      previous: 'Anterior',
+      next: 'Siguiente',
+      begin: '¡Empecemos!',
+      slideOne: {
+        title: 'Crea tus goals',
+        image: '',
+        text: '',
+      },
+      slideTwo: {
+        title: 'Añade actividades',
+        image: '',
+        text: '',
+      },
+      slideThree: {
+        title: 'Actúa cada día',
+        image: '',
+        text: '',
+      }
     },
 
     tutorial: {
