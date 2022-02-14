@@ -44,7 +44,7 @@ export function useTooltip(
         dispatch(setGuideValue(guideKey, true))
       }}
       useInteractionManager={true}
-      contentStyle={{backgroundColor: theme.colors.surface}}
+      contentStyle={{backgroundColor: theme.colors.tooltipBackground}}
       {...otherProps}
     >
       {children}

@@ -77,7 +77,7 @@ export const darkPlacements = {
   pulsatingHighlight: 'primary',
   speechBubbleBackground: 'primaryContainer',
   speechBubbleText: 'onPrimaryContainer',
-  tooltipBackground: 'surface',
+  tooltipBackground: 'surfaceVariant',
 
   // Miscellaneous
   helpIcon: 'accent',
