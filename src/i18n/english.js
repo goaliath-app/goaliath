@@ -521,7 +521,7 @@ const en = {
       slideThree: {
         title: 'Act each day',
         image: '',
-        text: 'Goaliath reminds you of your plan so you can focus on execution',
+        text: 'Goaliath reminds you of your plan so you can focus on taking action',
       }
     },
 
