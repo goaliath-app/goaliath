@@ -53,7 +53,9 @@ export const TodayPannelModal = withTheme(({
       {/* { visible ? 
         <View style={{ position: 'absolute', height: '100%', width: '100%', backgroundColor: theme.colors.neutral0, opacity: 0.2 }} />
       : null } */}
-      <Dialog visible={visible} onDismiss={onDismiss} style={{marginHorizontal: 15, marginTop: 0}}>
+      <Dialog visible={visible} 
+        onDismiss={onDismiss} 
+        style={{marginHorizontal: 15, marginTop: 0, backgroundColor: theme.colors.dialogBackground}}>
         <Dialog.Content style={{margin: 0, padding: 0, paddingRight: 0, paddingTop: 0, paddingLeft: 0}}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15}} >
               <View style={{marginTop: 18, marginLeft: 18}}>

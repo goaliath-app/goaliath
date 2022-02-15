@@ -1,14 +1,16 @@
 import React from 'react';
-import { Paragraph, Portal, Dialog as PaperDialog, Button } from 'react-native-paper';
+import { Paragraph, Portal, Dialog as PaperDialog, Button, withTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 
 
-const Dialog = ({visible, setVisible, title, body, onConfirm=()=>{}, confirmLabel='OK'}) => {
+const Dialog = withTheme(({visible, setVisible, title, body, onConfirm=()=>{}, confirmLabel='OK', theme}) => {
   const { t, i18n } = useTranslation()
 
     return (
       <Portal>
-        <PaperDialog visible={visible} onDismiss={() => {setVisible(false)}}>
+        <PaperDialog visible={visible} 
+          onDismiss={() => {setVisible(false)}}
+          style={{backgroundColor: theme.colors.dialogBackground}}>
           <PaperDialog.Title>{title}</PaperDialog.Title>
           <PaperDialog.Content>
             <Paragraph>{body}</Paragraph>
@@ -22,6 +24,6 @@ const Dialog = ({visible, setVisible, title, body, onConfirm=()=>{}, confirmLabe
         </PaperDialog>
       </Portal>
     )
-  }
+  })
 
 export default Dialog

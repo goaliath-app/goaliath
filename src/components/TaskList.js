@@ -34,7 +34,9 @@ export const TaskListItem = withTheme(({ date, task, theme }) => {
 
       {/* Long press menu */}
       <Portal>
-        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+        <Dialog visible={isLongPressDialogVisible} 
+          onDismiss={() => {setLongPressDialogVisible(false)}}
+          style={{backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Content>
             <Title>{task.name}</Title>
             <Paragraph style={{marginBottom: 15}}>{t("taskList.longPressMenu.paragraph")}</Paragraph>

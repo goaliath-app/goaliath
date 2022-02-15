@@ -225,19 +225,23 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
 
       <Portal>
         {/* Import dialog */}
-        <Dialog visible={isImportDialogVisible} onDismiss={() => {setImportDialogVisible(false)}}>
+        <Dialog visible={isImportDialogVisible} 
+          onDismiss={() => {setImportDialogVisible(false)}}
+          style={{backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{t('settings.importDialog.title')}</Dialog.Title>
           <Dialog.Content>
             <Paragraph>{t('settings.importDialog.content')}</Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => importStateFromText(importedStateText)}>{t('settings.importDialog.buttonAcept')}</Button>
             <Button onPress={() => setImportDialogVisible(false)}>{t('settings.importDialog.buttonCancel')}</Button>
+            <Button onPress={() => importStateFromText(importedStateText)}>{t('settings.importDialog.buttonAcept')}</Button>
           </Dialog.Actions>
         </Dialog>
 
         {/* Language dialog */}
-        <Dialog visible={isLanguageDialogVisible} onDismiss={() => {setLanguageDialogVisible(false)}}>
+        <Dialog visible={isLanguageDialogVisible} 
+          onDismiss={() => {setLanguageDialogVisible(false)}}
+          style={{backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{t('settings.languageDialog.title')}</Dialog.Title>
             <Dialog.Content>
               <Divider />

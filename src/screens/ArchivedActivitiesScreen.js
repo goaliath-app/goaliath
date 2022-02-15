@@ -8,7 +8,7 @@ import { Header, InfoCard } from '../components';
 import { selectAllActivities, selectGoalById, restoreActivity } from '../redux'
 import { getFrequencyString } from '../activityHandler'
 
-const Activity = ({ name, active, id, activity, goal }) => {
+const Activity = withTheme(({ name, active, id, activity, goal, theme }) => {
   const navigation = useNavigation();
   const { t, i18 } = useTranslation();
   const dispatch = useDispatch();
@@ -37,7 +37,9 @@ const Activity = ({ name, active, id, activity, goal }) => {
 
       {/* Long press menu */}
       <Portal>
-        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+        <Dialog visible={isLongPressDialogVisible} 
+          onDismiss={() => {setLongPressDialogVisible(false)}}
+          style={{backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{name}</Dialog.Title>
             <Dialog.Content>
               <Divider />
@@ -51,7 +53,7 @@ const Activity = ({ name, active, id, activity, goal }) => {
       </Portal>
     </View>
   );
-}
+})
 
 const ArchivedActivitiesScreen = withTheme(({ theme, route, navigation }) => {
   const { t, i18n } = useTranslation()
