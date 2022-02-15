@@ -8,22 +8,16 @@ import { useTranslation } from 'react-i18next';
 const Onboarding = withTheme(({ finishOnboarding, theme }) => {
   const { t, i18n } = useTranslation()
 
-
-  const styles = StyleSheet.create({
-    slide: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      flex: 1,
-      marginHorizontal: 18,
-    }
-  });
-
   const renderItem = ({item}) => {
     return(
-      <View style={styles.slide}>
-        <Image source={item.image} />
-        <Title style={{ marginBottom: 8, fontSize: 22 }} >{item.title}</Title>
-        <Paragraph style={{ textAlign: 'center', fontSize: 16 }} >{item.text}</Paragraph>
+      <View style={{flex: 1}}>
+        <View style={{flex: 2}}>
+          <Image source={item.image} style={{width: '100%', height: '100%', resizeMode: 'contain'}} />
+        </View>
+        <View style={{flex: 1, alignItems: 'center', marginHorizontal: 18}}>
+          <Title style={{ marginBottom: 8, fontSize: 22 }} >{item.title}</Title>
+          <Paragraph style={{ textAlign: 'center', fontSize: 16 }} >{item.text}</Paragraph>
+        </View>
       </View>
     )
   }
@@ -32,28 +26,28 @@ const Onboarding = withTheme(({ finishOnboarding, theme }) => {
     {
       key: 'zero',
       title: t('onboarding.slideZero.title'),
-      image: t('onboarding.slideZero.image'),
+      image: require('../../assets/onboarding-first-slide.png'),
       text: t('onboarding.slideZero.text'),
     },
 
     {
       key: 'one',
       title: t('onboarding.slideOne.title'),
-      image: t('onboarding.slideOne.image'),
+      image: require('../../assets/onboarding-second-slide.png'),
       text: t('onboarding.slideOne.text'),
     },
 
     {
       key: 'two',
       title: t('onboarding.slideTwo.title'),
-      image: t('onboarding.slideOne.image'),
+      image: require('../../assets/onboarding-third-slide.png'),
       text: t('onboarding.slideTwo.text'),
     },
 
     {
       key: 'three',
       title: t('onboarding.slideThree.title'),
-      image: t('onboarding.slideOne.image'),
+      image: require('../../assets/onboarding-fourth-slide.png'),
       text: t('onboarding.slideThree.text'),
     },
   ];
