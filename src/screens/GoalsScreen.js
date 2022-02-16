@@ -2,7 +2,10 @@ import React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Appbar, Divider, Switch, Menu, Portal, Dialog, withTheme, IconButton } from 'react-native-paper';
+import { 
+  List, Appbar, Divider, Switch, Menu, Portal, Dialog, withTheme, IconButton,
+  Text,
+} from 'react-native-paper';
 import { 
   Header, InfoCard, ThreeDotsMenu, DeleteActivityDialog, DeleteGoalDialog, BottomScreenPadding, 
   SpeechBubble, IconHighlighter, MoveToGoalDialog, ViewHighlighter,
@@ -92,7 +95,7 @@ const Activity = withTheme(({ active, activity, name, theme }) => {
   );
 })
 
-const GoalListItem = withTheme(({ name, active, id, theme }) => {
+const GoalListItem = withTheme(({ name, active, id, theme, isExpanded, onExpand }) => {
   const { t, i18n } = useTranslation()
 
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
@@ -117,7 +120,13 @@ const GoalListItem = withTheme(({ name, active, id, theme }) => {
   return (
     <View>
       <ViewHighlighter active={amIHighlighted}>
-        <Collapse handleLongPress={tutorialState == tutorialStates.Finished ? () => setLongPressDialogVisible(true) : () => {} }>
+        <Collapse 
+          handleLongPress={tutorialState == tutorialStates.Finished ? () => setLongPressDialogVisible(true) : () => {} }
+          isExpanded={isExpanded}
+          onToggle={onExpand}  
+          /* TODO: replace primary95 with proper placement color */
+          style={isExpanded ? {backgroundColor: theme.colors.primary95} : {}}  
+        >
           <CollapseHeader>
               <List.Item
                 title={name}
@@ -136,17 +145,20 @@ const GoalListItem = withTheme(({ name, active, id, theme }) => {
                 description={t('goals.goalDescription', {activitiesNumber: activities.length})}
               />
           </CollapseHeader>
-          <CollapseBody style={{ borderBottomWidth: 1, borderTopWidth:1, borderColor: theme.colors.divider, }}>
+          <CollapseBody style={{ borderColor: theme.colors.divider, }}>
+            <Divider />
             <View>
-              <List.Item 
-                title={t('goals.activities')}
-                right={() => <IconButton icon={"plus"} 
+              <View style={{flexDirection: 'row', marginHorizontal: 16, justifyContent:'space-between', alignItems: 'center'}}>
+                {/* TODO: add 'ACTIVITIES' string literal to i18n */}
+                <Text style={{fontSize: 14}}>{'ACTIVITIES'}</Text>
+                <IconButton icon={"plus"} 
                   onPress={() => navigation.navigate('ActivityForm', { goalId: id })} 
                   color={theme.colors.actionIcons} 
-                  size={25} /> }
-              />
+                  size={25} />
+              </View>
               {goalActivities.map(activity => <Activity name={activity.name} activity={activity} active={activity.active} />)}
             </View>
+            <Divider />
           </CollapseBody>
         </Collapse>
       </ViewHighlighter>
@@ -191,21 +203,37 @@ const GoalListItem = withTheme(({ name, active, id, theme }) => {
   );
 })
 
-const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
-  const { t, i18n } = useTranslation()
-  const [menuVisible, setMenuVisible] = React.useState(false);
+const GoalsList = withTheme(({ theme, goals }) => {
+  const [expandedGoal, setExpandedGoal] = React.useState(null);
 
-  const dispatch = useDispatch();
-  const tutorialState = useSelector(selectTutorialState)
-  
   const renderItem = ({ item }) => (
     <GoalListItem
       id={item.id}
       name={item.name}
       active={item.active} 
       motivation={item.motivation} 
+      isExpanded={item.id == expandedGoal}
+      onExpand={(isExpanded) => {
+        if(isExpanded){
+          setExpandedGoal(item.id)
+        }else{
+          setExpandedGoal(null)
+        }
+      }}
     />
   )
+
+  return (
+    <FlatList data={goals} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
+  )
+})
+
+const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
+  const { t, i18n } = useTranslation()
+  const [menuVisible, setMenuVisible] = React.useState(false);
+
+  const dispatch = useDispatch();
+  const tutorialState = useSelector(selectTutorialState)
 
   const menuItems = (
     <>
@@ -279,7 +307,7 @@ const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
       : null}
 
       {hasSomethingToShow(goals)?
-        <FlatList data={goals} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
+        <GoalsList goals={goals}/>
       :
         tutorialState == tutorialStates.Finished ?
           <InfoCard title={t('goals.infoTitle')} paragraph={t('goals.infoContent')} /> : null
