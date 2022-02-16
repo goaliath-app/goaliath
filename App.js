@@ -167,12 +167,14 @@ export default function App() {
                 backgroundColor={currentTheme.colors.statusBarBackground}
               />
               <GestureHandlerRootView style={{flex: 1}}>
-              {newUser?
-              <Onboarding finishOnboarding={finishOnboarding} />
-              : 
-              <Stack.Navigator initialRouteName='bottomTab' headerMode='none'>
+              <Stack.Navigator initialRouteName={ newUser ? 'Onboarding' : 'bottomTab' } headerMode='none'>
                 {/* Bottom tab navigator containing the root screens */}
                 <Stack.Screen name='bottomTab' component={BottomTab} />
+
+                {/* Onboarding screen */}
+                <Stack.Screen name='Onboarding'>
+                  {props => <Onboarding {...props} finishOnboarding={finishOnboarding} />}
+                </Stack.Screen>
 
                 {/* Rest of screens, that hide the bottom bar navigation
                     when focused */}
@@ -189,7 +191,6 @@ export default function App() {
                 <Stack.Screen name='Settings' component={SettingsScreen} />
                 <Stack.Screen name='AboutUs' component={AboutUsScreen} />
               </Stack.Navigator>
-              }
               <Snackbar style={{backgroundColor: Color(currentTheme.onSurface).alpha(0.9).string(), bottom: 35}}
                 action={{label: 'OK', action: () => setSnackbarMessage("")}}
                 visible={snackbarMessage != ""}

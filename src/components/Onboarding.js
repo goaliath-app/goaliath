@@ -3,10 +3,12 @@ import { Image, StyleSheet, View } from 'react-native';
 import { Paragraph, Subheading, Title, withTheme } from 'react-native-paper';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
 
 
 const Onboarding = withTheme(({ finishOnboarding, theme }) => {
   const { t, i18n } = useTranslation()
+  const navigation = useNavigation()
 
   const renderItem = ({item}) => {
     return(
@@ -56,7 +58,7 @@ const Onboarding = withTheme(({ finishOnboarding, theme }) => {
     <AppIntroSlider
       renderItem={renderItem}
       data={slides}
-      onDone={finishOnboarding}
+      onDone={() => {finishOnboarding(); navigation.navigate('bottomTab')}}
       showPrevButton={true}
       renderPrevButton={() => (
         <Subheading style={{ marginLeft: 12 }}>
