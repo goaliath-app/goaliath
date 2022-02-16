@@ -90,6 +90,9 @@ export const lightPlacements = {
   weekViewGoalCircularProgress: 'primary',
   weekViewGoalCircularProgressBackground: 'primaryContainer',
 
+  //GoalsScreen
+  actionIcons: 'onSurface',
+
   // SettingsScreen
   settingValueText: 'accent30',
   settingsIcons: 'onSurface',

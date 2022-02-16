@@ -224,6 +224,7 @@ const en = {
     goals: {
       headerTitle: 'Goals',
       goalDescription: '{{activitiesNumber}} active activities',
+      activities: 'Activities',
       infoTitle: "There are no goals",
       infoContent: 'Create a new goal by pressing the + icon on the top right.',
       menu: {

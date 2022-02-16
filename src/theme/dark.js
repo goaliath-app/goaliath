@@ -91,6 +91,9 @@ export const darkPlacements = {
   weekViewGoalCircularProgress: 'primary',
   weekViewGoalCircularProgressBackground: 'primaryContainer',
 
+  //GoalsScreen
+  actionIcons: 'onSurface',
+
   // SettingsScreen
   settingValueText: 'accent',
   settingsIcons: 'onSurface',
