@@ -8,13 +8,13 @@ import {
 } from 'react-native-paper';
 import { 
   Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog, BottomScreenPadding, 
-  SpeechBubble, IconHighlighter, ViewHighlighter, useTooltip,
+  SpeechBubble, IconHighlighter, ViewHighlighter, useTooltip, useTooltipAnchor,
 } from '../components'
 import { hasSomethingToShow, isBetween } from '../util'
 import { useTranslation } from 'react-i18next'
 import { 
   selectAllActiveActivitiesByGoalIdAndDate, getTodaySelector, selectAllGoals, 
-  toggleGoal, selectTutorialState, setTutorialState,
+  toggleGoal, selectTutorialState, setTutorialState, selectAllActivities
 } from '../redux';
 import tutorialStates from '../tutorialStates'
 
@@ -114,6 +114,9 @@ const GoalListItem = withTheme(({ theme, name, active, id }) => {
 const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
   const { t, i18n } = useTranslation()
   const [menuVisible, setMenuVisible] = React.useState(false);
+
+  const userCreatedActivities = useSelector(state => selectAllActivities(state).length > 0)
+  useTooltipAnchor('leadToTodayScreen', 'leadToTodayScreen', userCreatedActivities)
 
   const dispatch = useDispatch();
   const tutorialState = useSelector(selectTutorialState)

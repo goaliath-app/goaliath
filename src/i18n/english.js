@@ -329,7 +329,8 @@ const en = {
       repsIcon: 'Tap here to record each repetition you perform',
       checkboxIcon: 'Tap here when you finish the activity to mark it as completed',
       selectWeekliesListItem: 'Tap here to choose which weekly activities you want to do today',
-      firstGoal: 'This is your first goal, but it doesn\'t have any activities yet. Press on it to create them!'
+      firstGoal: 'This is your first goal, but it doesn\'t have any activities yet. Press on it to create them!',
+      todayScreenLead: 'You can view activities planned for today in the Today view',
     },
 
     weeklyActivities: {

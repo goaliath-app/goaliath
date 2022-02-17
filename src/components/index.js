@@ -30,5 +30,5 @@ export {
 export { IconHighlighter, ViewHighlighter } from './PulsatingHighlight'
 export { default as StateMonitor } from './StateMonitor'
 export { default as RepetitionsInput } from './RepetitionsInput'
-export { useTooltip } from './UseTooltip'
+export { useTooltip, useTooltipAnchor } from './UseTooltip'
 export { default as Onboarding } from './Onboarding'

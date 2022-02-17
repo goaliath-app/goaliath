@@ -330,6 +330,7 @@ const es= {
       checkboxIcon: 'Pulsa aquí cuando termines la actividad para marcarla como completada',
       selectWeekliesListItem: 'Pulsa aquí para elegir las actividades semanales en las que quieres trabajar hoy',
       firstGoal: 'Este es tu primer goal, pero aún no tiene actividades. Pulsa aquí para crearlas!',
+      todayScreenLead: 'Aquí encontrarás las actividades que has planeado para hoy',
     },
     
     weeklyActivities: {
