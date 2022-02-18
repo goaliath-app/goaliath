@@ -46,7 +46,7 @@ export const darkPlacements = {
   heatmap4: 'accent30',
   heatmapSkipped: 'primaryContainer',
   heatmapEmptyBackground: 'surface',
-  heatmapEmptyBorder: 'accent40',
+  heatmapEmptyBorder: 'neutral20',
   heatmapLabels: 'onSurface',
 
   // Calendar
