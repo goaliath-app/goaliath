@@ -23,6 +23,8 @@ export const lightPlacements = {
 
   completedWeekliesSelector: 'neutral60',
 
+  infoCardViewBackground: 'surface',
+
   // SelectWeekliesScreen
     // Checkboxes use values in TodayScreen
   completedCheckbox: 'neutral60',
@@ -63,12 +65,18 @@ export const lightPlacements = {
   weekPressedBackground: 'accent90',
   calendarLongPressBackground: 'accent60',
 
+  //Onboarding
+  dots: 'outline',
+  activeDot: 'primary',
+  buttons: 'primary',
+
   // Tutorial
   todayItemHighlight: 'primaryContainer',
   tabBarItemHighlight: 'accent60',
   pulsatingHighlight: 'primary',
   speechBubbleBackground: 'primaryContainer',
   speechBubbleText: 'onPrimaryContainer',
+  tooltipBackground: 'surface',
 
   // Miscellaneous
   helpIcon: 'primary',
@@ -108,7 +116,7 @@ export const lightPlacements = {
   //ActivityFormScreen
   frequencySelectorBorder: 'onSurface',
   frequencySelectorIcons: 'onSurface',
-  textInputSelected: 'accent',
+  textInputSelected: 'primary',
 
   // value used by react-native-paper
   text: 'onSurface',

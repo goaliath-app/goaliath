@@ -52,3 +52,8 @@ export {
     selectAllActiveActivitiesByDate, isActiveSelector, 
     selectAllActiveActivitiesByGoalIdAndDate, selectAllActivitiesByGoalId
 } from './selectors'
+
+export {
+    selectGuideValue, setGuideValue, setCurrentOverlay, releaseCurrentOverlay,
+    selectCurrentOverlay,
+} from './GuideSlice'

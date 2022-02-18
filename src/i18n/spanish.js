@@ -194,8 +194,10 @@ const es= {
       headerTitle: 'Nueva meta',
       goalNameSubheading: '¿Qué quieres conseguir?',
       nameTextInputLabel: 'Nombre de la meta',
+      nameTextInputPlaceholder: '"Fitness", "Aprender Inglés"',
       goalMotivationSubheading: '¿Por qué quieres llegar a esa meta?',
       motivationTextInputLabel: 'Tu Motivación (opcional)',
+      motivationPlaceholder: "Quiero aprender inglés para hacer nuevos amigos durante mi viaje a Florida.",
     },
 
     goal: {
@@ -209,8 +211,8 @@ const es= {
         title: '¿Archivar meta?',
         body: "Podrás ver la meta y restaurarla más adelante desde el menú de la pantalla de metas.",
       },
-      infoTitle: "Esta meta está vacía",
-      infoContent: "Puedes añadir nuevas actividades pulsando el icono +",
+      infoTitle: "No hay actividades",
+      infoContent: 'Puedes añadir nuevas actividades pulsando el icono +. Elige actividades recurrentes que harás a menudo.',
       archivedWarning: "Esta meta está archivada",
       restoreButton: "RESTAURAR META",
       longPressMenu: {
@@ -224,7 +226,7 @@ const es= {
       headerTitle: 'Metas',
       goalDescription: '{{activitiesNumber}} actividades activas',
       infoTitle: 'No hay metas',
-      infoContent: "Crea una nueva meta pulsando el icono +",
+      infoContent: 'Crea una meta pulsando el icono +',
       menu: {
         viewArchived: "Ver metas archivadas",
       },
@@ -288,6 +290,23 @@ const es= {
       dayChangeDialogTitle: "¡Buenos días!",
       dayChangeDialogBody: "El día ha cambiado a {{date}} mientras la app estaba abierta.\n\nSi necesitas hacer las actividades del día hasta más tarde, puedes cambiar la hora de inicio del día en los ajustes.",
       dayChangeDialogConfirmLabel: "Ver nuevo día",
+      noActivitiesInfoCard: {
+        title: 'Bienvenido a Goaliath',
+        contentBeforeIcon: 'Ve a la sección de Metas (',
+        contentAfterIcon:') para planificar tus acciones diarias.',
+      },
+      noActiveActivitiesInfoCard: {
+        title: 'No tienes actividades activas',
+        content: 'Ve a la sección de Metas (🏆) para crear o activar actividades.',
+      },
+      onlyWeeklyActivitiesInfoCard: {
+        title: "¡Hoy no tienes actividades!",
+        content: 'Echa un ojo a las actividades semanales para seguir trabajando en tus metas.',
+      },
+      nothingForTodayInfoCard: {
+        title: "Nada para hoy",
+        content: 'Tómate un descanso y recarga las pilas para seguir trabajando en tus metas mañana (o planifica nuevas actividades si lo prefieres).',
+      },
     },
 
     addTasks: {
@@ -304,6 +323,15 @@ const es= {
         deleteSnackbar: 'Tarea eliminada',
       }
     },
+
+    tooltips: {
+      playIcon: 'Pulsa aquí para iniciar el temporizador para esta actividad con un objetivo de tiempo',
+      repsIcon: 'Pulsa aquí cuando realices una repetición para registrarla',
+      checkboxIcon: 'Pulsa aquí cuando termines la actividad para marcarla como completada',
+      selectWeekliesListItem: 'Pulsa aquí para elegir las actividades semanales en las que quieres trabajar hoy',
+      firstGoal: 'Este es tu primer goal, pero aún no tiene actividades. Pulsa aquí para crearlas!',
+      todayScreenLead: 'Aquí encontrarás las actividades que has planeado para hoy',
+    },
     
     weeklyActivities: {
       headerTitle: 'Selecciona las actividades semanales',
@@ -315,7 +343,7 @@ const es= {
       selectedCaption: 'Hoy trabajaré en',
       dueCaption: 'Para otro día',
       completedCaption: 'Completadas',
-      noSelectedActivities: 'Selecciona actividades más abajo, o pulsa ✓ si hoy no vas a hacer ninguna actividad semanal',
+      noSelectedActivities: 'Selecciona qué actividades semanales de más abajo vas a hacer hoy. Pulsa ✓ para confirmar.',
     },
 
     activityHandler: {
@@ -472,7 +500,30 @@ const es= {
       1: 'Hola, ¡soy Goaliath!',
       2: 'He sido creado para ayudarte a alcanzar tus metas a través del trabajo diario.',
       3: 'Mola, ¿eh? ¡Empecemos!',
-      skip: 'Saltar tutorial'
+      skip: 'Saltar tutorial',
+      previous: 'Anterior',
+      next: 'Siguiente',
+      begin: '¡Empecemos!',
+      slideZero: {
+        title: 'Bienvenido a Goaliath',
+        image: '',
+        text: 'Alcanza grandes metas mediante tus actividades diarias',
+      },
+      slideOne: {
+        title: 'Crea tus Metas',
+        image: '',
+        text: 'Decide cuáles son tus objetivos',
+      },
+      slideTwo: {
+        title: 'Añade actividades',
+        image: '',
+        text: 'Planifica qué acciones tomarás para alcanzar cada meta',
+      },
+      slideThree: {
+        title: 'Actúa cada día',
+        image: '',
+        text: 'Goaliath te recuerda tu plan para que puedas centrarte en ejecutarlo',
+      }
     },
 
     tutorial: {

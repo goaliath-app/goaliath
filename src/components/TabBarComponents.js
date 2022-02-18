@@ -1,16 +1,21 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { withTheme } from 'react-native-paper'
+import { withTheme, Text } from 'react-native-paper'
 import { selectTutorialState } from '../redux'
-import { Pressable } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { faTrophy, faCalendarAlt, faChartBar, faTasks } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { IconHighlighter } from '../components';
+import { IconHighlighter, useTooltip } from '../components';
 import tutorialStates from '../tutorialStates'
+import { TooltipChildrenContext } from 'react-native-walkthrough-tooltip';
 import Color from 'color'
+import { useTranslation } from 'react-i18next';
 
 
 export const TodayScreenIcon = withTheme(({ theme, focused, color, size }) => {
+  const { t, i18n } = useTranslation()
+  const Tooltip = useTooltip('leadToTodayScreen', 'leadToTodayScreen', true)
+
   const tutorialState = useSelector(selectTutorialState)
 
   const isHighlightActive = (
@@ -19,15 +24,35 @@ export const TodayScreenIcon = withTheme(({ theme, focused, color, size }) => {
     && !focused
   )
 
-  return (
+  const icon = (
     <IconHighlighter active={isHighlightActive} 
-      highlightStyle={{backgroundColor: theme.colors.tabBarItemHighlight}}>
+    highlightStyle={{backgroundColor: theme.colors.tabBarItemHighlight}}>
       <FontAwesomeIcon 
         icon={faTasks} 
         size={size} 
         color={color} 
       />
     </IconHighlighter>
+  )
+
+  return (
+    <Tooltip 
+      content={<Text>{t('tooltips.todayScreenLead')}</Text>}
+      placement='top'
+      displayInsets={{top: 0, bottom: 0, left: 10, right: 10}}
+      childContentSpacing={20}
+    >
+      <TooltipChildrenContext.Consumer>
+      {({ tooltipDuplicate }) => (
+        <View style={[
+          tooltipDuplicate ? {backgroundColor: theme.colors.activityBackground, borderRadius: 90, height: 60, width: 60} : {},
+          {alignItems: 'center', justifyContent: 'center'}
+          ]}>
+          {icon}
+        </View>
+      )}
+      </TooltipChildrenContext.Consumer>
+    </Tooltip>
   )
 })
 

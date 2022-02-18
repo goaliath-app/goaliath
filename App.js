@@ -2,6 +2,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';  // this 
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { DefaultTheme, Provider as PaperProvider, Snackbar } from 'react-native-paper'
+import { View } from 'react-native'
 import { NavigationContainer, DefaultTheme as NavigationDefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { PersistGate } from 'redux-persist/integration/react'
@@ -11,7 +12,7 @@ import i18n from './src/i18n'
 import { useTranslation } from 'react-i18next'
 import { 
   store, setTutorialState, setDarkTheme as setDarkThemeReducer,
-  selectDarkTheme,
+  selectDarkTheme, selectGuideValue, setGuideValue,
 } from './src/redux'
 import { 
   TodayScreen, ActivityDetailScreen, GoalsScreen, GoalScreen, 
@@ -22,7 +23,7 @@ import {
 } from './src/screens'
 import { 
   TodayScreenIcon, GoalsScreenIcon, GoalsScreenButton, CalendarScreenIcon, 
-  CalendarScreenButton, StatsScreenIcon, StatsScreenButton,
+  CalendarScreenButton, StatsScreenIcon, StatsScreenButton, Onboarding,
 } from './src/components'
 import { generateDummyData } from './src/redux/Thunks'
 import Notifications from './src/notifications'
@@ -90,10 +91,11 @@ export default function App() {
 
   function finishOnboarding(){
     setNewUser(false)
+    store.dispatch(setGuideValue('onboardingShown', true))
   }
 
   function onStoreRehydration(){
-    setNewUser(store.getState().settings.tutorialState == tutorialStates.NewUser)
+    setNewUser(!selectGuideValue(store.getState(), 'onboardingShown'))
     i18n.changeLanguage(store.getState().settings.language)
     setDarkTheme(selectDarkTheme(store.getState()))
   }
@@ -158,18 +160,21 @@ export default function App() {
               setDarkTheme
             } } >
             <NavigationContainer theme={darkThemeState? DarkTheme : NavigationDefaultTheme}>
+              <View style={{flex: 1, backgroundColor: currentTheme.colors.background}}>
               <StatusBar 
                 style={'light'}
                 translucent={false} 
                 backgroundColor={currentTheme.colors.statusBarBackground}
               />
               <GestureHandlerRootView style={{flex: 1}}>
-              {newUser?
-              <OnboardingScreen finishOnboarding={finishOnboarding} />
-              : 
-              <Stack.Navigator initialRouteName='bottomTab' headerMode='none'>
+              <Stack.Navigator initialRouteName={ newUser ? 'Onboarding' : 'bottomTab' } headerMode='none'>
                 {/* Bottom tab navigator containing the root screens */}
                 <Stack.Screen name='bottomTab' component={BottomTab} />
+
+                {/* Onboarding screen */}
+                <Stack.Screen name='Onboarding'>
+                  {props => <Onboarding {...props} finishOnboarding={finishOnboarding} />}
+                </Stack.Screen>
 
                 {/* Rest of screens, that hide the bottom bar navigation
                     when focused */}
@@ -186,7 +191,6 @@ export default function App() {
                 <Stack.Screen name='Settings' component={SettingsScreen} />
                 <Stack.Screen name='AboutUs' component={AboutUsScreen} />
               </Stack.Navigator>
-              }
               <Snackbar style={{backgroundColor: Color(currentTheme.onSurface).alpha(0.9).string(), bottom: 35}}
                 action={{label: 'OK', action: () => setSnackbarMessage("")}}
                 visible={snackbarMessage != ""}
@@ -199,6 +203,7 @@ export default function App() {
                 }}
               >{snackbarMessage}</Snackbar>
               </GestureHandlerRootView>
+              </View>
             </NavigationContainer>
           </Context.Provider>
         </PaperProvider>

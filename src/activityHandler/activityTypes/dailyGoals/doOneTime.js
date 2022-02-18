@@ -4,14 +4,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { toggleCompleted, selectEntryByActivityIdAndDate, selectActivityByIdAndDate } from '../../../redux'
 import { Checkbox, ActivityListItem } from '../../../components'
-
+import { useTranslation } from 'react-i18next'
 
 const TodayScreenItem = withTheme(({ activityId, date, theme }) => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
   const entry = useSelector((state) => selectEntryByActivityIdAndDate(state, activityId, date))
-
+  const { t, i18 } = useTranslation()
+  
   return(
     <ActivityListItem
       activity={activity}
@@ -27,6 +28,9 @@ const TodayScreenItem = withTheme(({ activityId, date, theme }) => {
           }}
         />
       )}
+      leftTooltipText={t('tooltips.checkboxIcon')}
+      leftTooltipName={'DoOnceListItemTooltip'}
+      leftTooltipKey={'DoOnceListItemTooltip'+activityId}
     />
   )
 })

@@ -7,7 +7,10 @@ import tutorialStates from '../tutorialStates'
 const initialState = {
     dayStartHour: DateTime.fromObject({hour:0, minute:0}).toISO(),
     language: Localization.locale,
-    tutorialState: tutorialStates.NewUser,
+
+    // we are skipping the old tutorial for now
+    tutorialState: tutorialStates.Finished,  
+    
     dailyNotificationHour: DateTime.fromObject({hour:9, minute:0}).toISO(),
     darkTheme: false,
 }

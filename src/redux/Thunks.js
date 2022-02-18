@@ -22,6 +22,7 @@ import {
 
 import { setState as setTasksState, initDate as initTasksDate } from './TasksSlice'
 import { setState as setSettingsState } from './SettingsSlice'
+import { setState as setGuideState } from './GuideSlice'
 
 import { getTodaySelector } from './selectors'
 
@@ -240,5 +241,6 @@ export function importState(newState){
     dispatch(setGoalsState({ newState: newState.goals }))
     dispatch(setLogsState({ newState: newState.logs }))
     dispatch(setTasksState({ newState: newState.tasks }))
+    dispatch(setGuideState({ newState: newState.guide }))
   }
 }

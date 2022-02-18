@@ -194,9 +194,10 @@ const en = {
       headerTitle: 'New goal',
       goalNameSubheading: 'What do you want to achieve?',
       nameTextInputLabel: 'Goal Name',
+      nameTextInputPlaceholder: '"Fitness", "Learn Spanish"',
       goalMotivationSubheading: 'Why do you want to achieve this goal?',
       motivationTextInputLabel: 'Your Motivation (optional)',
-
+      motivationPlaceholder:'I want to learn Spanish to be able to make new friends during my trip to Barcelona.',
     },
 
     goal: {
@@ -210,8 +211,8 @@ const en = {
         title: 'Archive goal?',
         body: "You can still view and restore it from the menu of the Goals screen.",
       },
-      infoTitle: "This goal is empty",
-      infoContent: "You can add an activity by pressing the + icon on the top right.",
+      infoTitle: "There are no activities",
+      infoContent: "You can add an activity by pressing the + icon on the top right. Choose recurring activities you’ll do often.",
       archivedWarning: "This goal is archived",
       restoreButton: "RESTORE GOAL",
       longPressMenu: {
@@ -225,7 +226,7 @@ const en = {
       headerTitle: 'Goals',
       goalDescription: '{{activitiesNumber}} active activities',
       infoTitle: "There are no goals",
-      infoContent: 'Create a new goal by pressing the + icon on the top right.',
+      infoContent: 'Create a goal by pressing the + icon.',
       menu: {
         viewArchived: "View archived goals",
       },
@@ -289,6 +290,23 @@ const en = {
       dayChangeDialogTitle: "A new day begins!",
       dayChangeDialogBody: "The day has changed to {{date}} while the app was open.\n\nIf you need to be able to do a day's activities until a later hour, you can change the Day Start Hour in the settings.",
       dayChangeDialogConfirmLabel: "Go to new day",
+      noActivitiesInfoCard: {
+        title: 'Welcome to Goaliath',
+        contentBeforeIcon: 'Go to the Goals section (',
+        contentAfterIcon: ') to plan your daily actions.',
+      },
+      noActiveActivitiesInfoCard: {
+        title: 'You have no activities',
+        content: 'When you are ready, go to the goals section (🏆) to create or enable activities.',
+      },
+      onlyWeeklyActivitiesInfoCard: {
+        title: "Only weekly activities",
+        content: 'Select your weekly activities to continue working on your goals.',
+      },
+      nothingForTodayInfoCard: {
+        title: "Nothing for today!",
+        content: 'Take a break and recharge energy to continue working on your goals tomorrow (or plan new activities if you wish).',
+      },
     },
 
     addTasks: {
@@ -305,6 +323,15 @@ const en = {
         deleteSnackbar: 'Task deleted',
       }
     },
+    
+    tooltips: {
+      playIcon: 'Press here to start recording time for this time-goal activity',
+      repsIcon: 'Tap here to record each repetition you perform',
+      checkboxIcon: 'Tap here when you finish the activity to mark it as completed',
+      selectWeekliesListItem: 'Tap here to choose which weekly activities you want to do today',
+      firstGoal: 'This is your first goal, but it doesn\'t have any activities yet. Press on it to create them!',
+      todayScreenLead: 'You can view activities planned for today in the Today view',
+    },
 
     weeklyActivities: {
       headerTitle: 'Select weekly activities',
@@ -316,7 +343,7 @@ const en = {
       selectedCaption: 'Today I will work on',
       dueCaption: 'Today I won\'t',
       completedCaption: 'Completed',
-      noSelectedActivities: 'Choose activities from below, or press ✓ if you won\'t do any weekly activities today',
+      noSelectedActivities: 'Choose what you\'ll do today from the activities below. Press ✓ to confirm.',
     },
 
     activityHandler: {
@@ -473,7 +500,30 @@ const en = {
       1: 'Hi, I’m Goaliath!',
       2: 'I’ve been created to help you achieve your goals through your everyday actions.',
       3: 'Cool, uh? Let’s begin!',
-      skip: 'Skip tutorial'
+      skip: 'Skip tutorial',
+      previous: 'Previous',
+      next: 'Next',
+      begin: "Let's go!",
+      slideZero: {
+        title: 'Welcome to Goaliath',
+        image: '',
+        text: 'Achieve big goals through your everyday actions',
+      },
+      slideOne: {
+        title: 'Create your goals',
+        image: '',
+        text: 'Decide what you are aiming for',
+      },
+      slideTwo: {
+        title: 'Add activities',
+        image: '',
+        text: 'Plan the actions you will take towards each goal',
+      },
+      slideThree: {
+        title: 'Act each day',
+        image: '',
+        text: 'Goaliath reminds you of your plan so you can focus on taking action',
+      }
     },
 
     tutorial: {
