@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { FlatList, View } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { 
   List, Appbar, Divider, Switch, Menu, Portal, Dialog, withTheme,
@@ -121,7 +121,7 @@ const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
   const dispatch = useDispatch();
   const tutorialState = useSelector(selectTutorialState)
   
-  const renderItem = ({ item }) => (
+  const renderItem = ( item ) => (
     <GoalListItem
       id={item.id}
       name={item.name}
@@ -202,7 +202,10 @@ const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
       : null}
 
       {hasSomethingToShow(goals)?
-        <FlatList data={goals} renderItem={renderItem} ListFooterComponent={BottomScreenPadding} />
+      <ScrollView>
+        {goals.map(goal => renderItem( goal ))}
+        <BottomScreenPadding />
+      </ScrollView>
       :
         tutorialState == tutorialStates.Finished ?
           <InfoCard title={t('goals.infoTitle')} paragraph={t('goals.infoContent')} /> : null
