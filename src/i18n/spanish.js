@@ -240,6 +240,13 @@ const es= {
 
     settings: {
       headerTitle: 'Ajustes',
+      supportUs: 'Apoya Goaliath',
+      supportUsDescription: 'Ayúdanos a seguir trabajando en Goaliath',
+      supportDialog: {
+        title: 'Apoya Goaliath',
+        body: 'Goaliath es una aplicación gratuita creada por dos personas durante cientos de horas.\n\nPuedes ayudarnos a seguir trabajando en ella con una donación.\n\nTen en cuenta que no necesitas pagar para disfrutar de todo lo que ofrece Goaliath.',
+        donate: 'Ir a donaciones',
+      },
       darkTheme: 'Tema oscuro',
       startHour: 'Hora de inicio del día',
       todaySnackbar: 'El día de hoy terminará a las {{startHour}} de mañana.',

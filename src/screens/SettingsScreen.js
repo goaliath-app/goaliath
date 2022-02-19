@@ -26,6 +26,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
   const [ isStartHourPickerVisible, setStartHourPickerVisibility ] = React.useState(false);
   const [ isNotificationHourPickerVisible, setNotificationHourPickerVisibility ] = React.useState(false);
   const [ isLanguageDialogVisible, setLanguageDialogVisible ] = React.useState(false);
+  const [ isSupportDialogVisible, setSupportDialogVisible ] = React.useState(false);
   const [ isImportDialogVisible, setImportDialogVisible ] = React.useState(false);
   const [ importedStateText, setImportedStateText ] = React.useState('');
   const [ dailyNotificationSwitch, setDailyNotificationSwitch ] = React.useState(true)
@@ -97,6 +98,14 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
     <View style={{flex: 1, backgroundColor: theme.colors.settingsScreenBackground}}>
       <Header title={t('settings.headerTitle')} left='back' navigation={navigation}/>
       <ScrollView style={{flex: 1}} >
+      <List.Item
+        left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"heart"} color={theme.colors.settingsIcons} />}
+        title={t('settings.supportUs')}
+        description={t('settings.supportUsDescription')}
+        titleNumberOfLines={2}
+        onPress={() => setSupportDialogVisible(true)}
+      />
+      <Divider />
       <List.Item
         left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"moon"} color={theme.colors.settingsIcons} />}
         title={t('settings.darkTheme')}
@@ -251,6 +260,23 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
               <Divider />
             </Dialog.Content>
         </Dialog>
+
+        {/* Support us dialog */}
+        <Dialog visible={isSupportDialogVisible} 
+            onDismiss={() => {setSupportDialogVisible(false)}}
+            style={{backgroundColor: theme.colors.dialogBackground}}>
+            <Dialog.Title>{t('settings.supportDialog.title')}</Dialog.Title>
+              <Dialog.Content>
+                <Paragraph>
+                  {t('settings.supportDialog.body')}
+                </Paragraph>
+              </Dialog.Content>
+              <Button onPress={() => Linking.openURL('https://ko-fi.com/goaliath')}>
+                {t('settings.supportDialog.donate')}
+              </Button>
+              <View style={{height: 20}} />
+          </Dialog>
+
       </Portal>
 
     </View>

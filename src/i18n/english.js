@@ -240,6 +240,13 @@ const en = {
 
     settings: {
       headerTitle: 'Settings',
+      supportUs: 'Support Goaliath',
+      supportUsDescription: 'Help Goaliath become better, faster and stronger',
+      supportDialog: {
+        title: 'Support Goaliath',
+        body: 'Goaliath is a free app made with love by a two person team during hundreds of hours.\n\nYou can help us keep working on it with a donation.\n\nKeep in mind that you don\'t need to pay to use anything Goaliath has to offer.',
+        donate: 'Take me to donation\'s page',
+      },
       darkTheme: 'Dark theme',
       startHour: 'Start of the next day',
       todaySnackbar: 'Today will end at {{startHour}} tomorrow.',
