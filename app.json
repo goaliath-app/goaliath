@@ -2,7 +2,7 @@
   "expo": {
     "name": "Goaliath",
     "slug": "Goaliath",
-    "version": "0.5.1",
+    "version": "0.5.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "notification": {
@@ -32,7 +32,7 @@
       },
       "useNextNotificationsApi": true,
       "package": "app.goaliath",
-      "versionCode": 5
+      "versionCode": 6
     },
     "web": {
       "favicon": "./assets/favicon.png"
