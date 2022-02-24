@@ -86,6 +86,10 @@ const en = {
     },
 
     stats: {
+      heatmapTitle: 'Activity',
+      heapmapKeyLess: 'Less',
+      heapmapKeyMore: 'More',
+      barchartTitle: 'Stats',
       genericStats: {
         title: 'Lifetime',
         timeDedicated: '{{expressionValue}} total {{expressionUnit}} dedicated',

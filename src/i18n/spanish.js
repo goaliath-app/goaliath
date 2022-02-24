@@ -86,6 +86,10 @@ const es= {
     },
   
     stats: {
+      heatmapTitle: 'Actividad',
+      heapmapKeyLess: 'Menos',
+      heapmapKeyMore: 'Más',
+      barchartTitle: 'Estadísticas',
       genericStats: {
         title: 'Estadísticas Globales',
         timeDedicated: '{{expressionValue}} {{expressionUnit}} dedicados en total',
@@ -336,12 +340,12 @@ const es= {
       repsIcon: 'Pulsa aquí cuando realices una repetición para registrarla',
       checkboxIcon: 'Pulsa aquí cuando termines la actividad para marcarla como completada',
       selectWeekliesListItem: 'Pulsa aquí para elegir las actividades semanales en las que quieres trabajar hoy',
-      firstGoal: 'Este es tu primer goal, pero aún no tiene actividades. Pulsa aquí para crearlas!',
+      firstGoal: 'Esta es tu primera meta, pero aún no tiene actividades. Pulsa aquí para crearlas!',
       todayScreenLead: 'Aquí encontrarás las actividades que has planeado para hoy',
     },
     
     weeklyActivities: {
-      headerTitle: 'Selecciona las actividades semanales',
+      headerTitle: 'Actividades semanales',
       daysLeft: 'Quedan {{daysLeft}} días',
       daysLeftSingular: 'Queda {{daysLeft}} día',
       timeLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}',
