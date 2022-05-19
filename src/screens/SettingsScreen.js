@@ -134,7 +134,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         left={() => <FeatherIcon style={{alignSelf: 'center', margin: 5}} size={25} name={"mail"} color={theme.colors.settingsIcons} />}
         title={t('settings.feedback')}
         description={t('settings.feedbackDescription')}
-        onPress={() => email('jimenaa971@gmail.com')}
+        onPress={() => email('goaliath@mailfence.com')}
       />
       <Divider />
       <List.Item
