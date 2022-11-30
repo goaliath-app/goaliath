@@ -309,13 +309,13 @@ export const CalendarHeatmap = withTheme(({
           }
           </View>
             <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 10, marginRight: -5}}>
-              <Text style={{marginHorizontal: 5}}>Less</Text>
+              <Text style={{marginHorizontal: 5}}>{t('stats.heapmapKeyLess')}</Text>
               <DayBox color={theme.colors.heatmapSkipped} size={boxSize}/>
               <DayBox color={colors[0]} size={boxSize}/>
               <DayBox color={colors[1]} size={boxSize}/>
               <DayBox color={colors[2]} size={boxSize}/>
               <DayBox color={colors[3]} size={boxSize}/>
-            <Text style={{marginHorizontal: 5}}>More</Text>
+            <Text style={{marginHorizontal: 5}}>{t('stats.heapmapKeyMore')}</Text>
         </View>
       </View>
     </View>

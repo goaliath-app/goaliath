@@ -225,20 +225,15 @@ export function selectEntryByActivityIdAndDate(state, activityId, date){
 
 export function selectAllWeekEntriesByActivityId(state, activityId, date){
   // date can be any moment of the week
-  const { dayStartHour } = state.settings
   let entries = {}
   for(let i = 0; i < 7; i++){
-    const weekday = getStartOfWeekDay(date, i, dayStartHour)
+    const weekday = getStartOfWeekDay(date, i)
     const entry = selectEntryByActivityIdAndDate(state, activityId, weekday)
     if(entry){
       entries[i] = entry
     }
   }
   return entries
-}
-
-export function selectThisWeekEntriesByActivityId(state, activityId){
-  selectAllWeekEntriesByActivityId(state, activityId, DateTime.now())
 }
 
 export function selectAllActivityEntries(state, activityId){
@@ -254,11 +249,11 @@ export function selectAllActivityEntries(state, activityId){
 
 export default logSlice.reducer
 
-function getStartOfWeekDay(date, weekDayNumber, dayStartHour){
+function getStartOfWeekDay(date, weekDayNumber){
   /* date: luxon datetime
      weekDayNumber: week day from 0 (monday) to 6 (sunday)
      returns the date of the start of the specified week day of the week of date */
-  const weekStart = startOfWeek(date, dayStartHour)
+  const weekStart = date.startOf('week')
   return weekStart.plus({days: weekDayNumber})
 }
 

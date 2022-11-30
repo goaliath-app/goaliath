@@ -86,6 +86,10 @@ const es= {
     },
   
     stats: {
+      heatmapTitle: 'Actividad',
+      heapmapKeyLess: 'Menos',
+      heapmapKeyMore: 'Más',
+      barchartTitle: 'Estadísticas',
       genericStats: {
         title: 'Estadísticas Globales',
         timeDedicated: '{{expressionValue}} {{expressionUnit}} dedicados en total',
@@ -240,6 +244,13 @@ const es= {
 
     settings: {
       headerTitle: 'Ajustes',
+      supportUs: 'Apoya Goaliath',
+      supportUsDescription: 'Ayúdanos a seguir trabajando en Goaliath',
+      supportDialog: {
+        title: 'Apoya Goaliath',
+        body: 'Goaliath es una aplicación gratuita creada por dos personas durante cientos de horas.\n\nPuedes ayudarnos a seguir trabajando en ella con una donación.\n\nTen en cuenta que no necesitas pagar para disfrutar de todo lo que ofrece Goaliath.',
+        donate: 'Ir a donaciones',
+      },
       darkTheme: 'Tema oscuro',
       startHour: 'Hora de inicio del día',
       todaySnackbar: 'El día de hoy terminará a las {{startHour}} de mañana.',
@@ -329,12 +340,12 @@ const es= {
       repsIcon: 'Pulsa aquí cuando realices una repetición para registrarla',
       checkboxIcon: 'Pulsa aquí cuando termines la actividad para marcarla como completada',
       selectWeekliesListItem: 'Pulsa aquí para elegir las actividades semanales en las que quieres trabajar hoy',
-      firstGoal: 'Este es tu primer goal, pero aún no tiene actividades. Pulsa aquí para crearlas!',
+      firstGoal: 'Esta es tu primera meta, pero aún no tiene actividades. Pulsa aquí para crearlas!',
       todayScreenLead: 'Aquí encontrarás las actividades que has planeado para hoy',
     },
     
     weeklyActivities: {
-      headerTitle: 'Selecciona las actividades semanales',
+      headerTitle: 'Actividades semanales',
       daysLeft: 'Quedan {{daysLeft}} días',
       daysLeftSingular: 'Queda {{daysLeft}} día',
       timeLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}',
