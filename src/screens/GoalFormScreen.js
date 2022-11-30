@@ -1,15 +1,14 @@
 import React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux'
 import { View, StyleSheet } from 'react-native'
-import { Appbar, TextInput, Subheading, Paragraph, HelperText, Title } from 'react-native-paper';
+import { Appbar, TextInput, Subheading, Paragraph, HelperText, Title, withTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { Header, HelpIcon, SpeechBubble } from '../components'
 import { setGoal, selectGoalById, selectTutorialState, setTutorialState } from '../redux';
-import { GeneralColor } from '../styles/Colors';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import tutorialStates from '../tutorialStates'
 
-const GoalFormScreen = ({ navigation, goal=null }) => {
+const GoalFormScreen = withTheme(({ theme, navigation, goal=null }) => {
   const { t, i18n } = useTranslation()
 
   const dispatch = useDispatch()
@@ -32,6 +31,7 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
 
   const headerButtons = (
     <Appbar.Action 
+      color={theme.colors.headerContent}
       icon='check' 
       onPress={() => {
         const newGoal = {name: name, motivation: motivation}
@@ -46,12 +46,13 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
           }
           navigation.goBack()}
         }
-      } 
+      }
+      style={{ height: 48, width: 48 }}
     />
   )
 
   return(
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.goalFormScreenBackground}}>
       <Header 
         title={goal?.name? goal.name : t('goalForm.headerTitle')} 
         left='back' 
@@ -60,10 +61,10 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
       />
       <KeyboardAwareScrollView style={{ paddingHorizontal: 16 }}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Subheading style={styles.subheading}>{t('goalForm.goalNameSubheading')}</Subheading>
+          <Subheading style={{marginTop: 16}}>{t('goalForm.goalNameSubheading')}</Subheading>
         </View>
         <TextInput 
-          style={styles.textInput}
+          style={{fontSize: 16, backgroundColor: theme.colors.textInputBackground}}
           error={nameInputError} 
           mode='outlined' 
           label={t('goalForm.nameTextInputLabel')}
@@ -85,7 +86,7 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
           />
           : null}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Subheading style={styles.subheading}>{t('goalForm.goalMotivationSubheading')}</Subheading>
+          <Subheading style={{marginTop: 16}}>{t('goalForm.goalMotivationSubheading')}</Subheading>
           <HelpIcon dialogContent={
             <View>
               <Title>{t('goalForm.descriptionHelpDialogTitle')}</Title>
@@ -94,7 +95,7 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
           }/>
         </View>
         <TextInput
-          style={styles.textInput}
+          style={{fontSize: 16, backgroundColor: theme.colors.textInputBackground}}
           mode='outlined'
           label={t('goalForm.motivationTextInputLabel')}
           multiline={true}
@@ -106,21 +107,11 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
       </KeyboardAwareScrollView>
     </View>
   )
-}
+})
 
 const mapStateToProps = (state, ownProps) => {
   const goal = selectGoalById(state, ownProps.route.params?.id)
   return { goal }
 }
-
-const styles = StyleSheet.create ({
-  textInput: {
-    fontSize: 16,
-    backgroundColor: GeneralColor.textInputBackground
-  },
-  subheading: {
-    marginTop: 16
-  }
-})
 
 export default connect(mapStateToProps)(GoalFormScreen);

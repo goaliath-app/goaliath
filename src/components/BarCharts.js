@@ -1,14 +1,12 @@
 import React from 'react';
 import { View, Text, Dimensions } from 'react-native'
-import { List, Divider, FlatList, IconButton } from 'react-native-paper';
+import { List, Divider, FlatList, IconButton,withTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { selectActivityById, selectEntryByActivityIdAndDate, getTodaySelector, selectDailyDurationById, selectAllActivities, getPeriodStats } from './../redux'
 import { DateTime } from 'luxon'
 import SwitchSelector from "react-native-switch-selector";
-import { GeneralColor } from "./../styles/Colors"
 import Duration from 'luxon/src/duration.js'
-
 
 // Work in progress
 
@@ -17,7 +15,7 @@ import {
 } from 'victory-native'
 
 
-export const ActivityBarChartPicker = ({ activityId, goalId }) => {
+export const ActivityBarChartPicker = withTheme(({ theme, activityId, goalId }) => {
   const { t, i18n } = useTranslation()
 
   const [ show, setShow ] = React.useState('time')
@@ -55,8 +53,10 @@ export const ActivityBarChartPicker = ({ activityId, goalId }) => {
         onPress={value => setPeriod(value)}
         borderRadius={0}
         height={35}
-        buttonColor={"#ECE0FD"}
-        selectedColor='black'
+        buttonColor={theme.colors.barChartSelectorSelectedBackground}
+        selectedColor={theme.colors.barChartSelectorSelectedText}
+        backgroundColor={theme.colors.barChartSelectorBackground}
+        textColor={theme.colors.barChartSelectorText}
       />
       <SwitchSelector
         options={showOptions}
@@ -64,18 +64,20 @@ export const ActivityBarChartPicker = ({ activityId, goalId }) => {
         borderRadius={0}
         height={35}
         onPress={value => setShow(value)}
-        buttonColor={"#ECE0FD"}
-        selectedColor='black'
+        buttonColor={theme.colors.barChartSelectorSelectedBackground}
+        selectedColor={theme.colors.barChartSelectorSelectedText}
+        backgroundColor={theme.colors.barChartSelectorBackground}
+        textColor={theme.colors.barChartSelectorText}
       />
       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 14}}>
-        <IconButton icon='chevron-left' size={20} onPress={() => setDate(date.minus(dateOffset))}/>
-        <Text>{title}</Text>
-        <IconButton icon='chevron-right' size={20} onPress={() => setDate(date.plus(dateOffset))}/>
+        <IconButton icon='chevron-left' size={20} color={theme.colors.barChartsChevron} onPress={() => setDate(date.minus(dateOffset))} style={{ height: 48, width: 48 }} />
+        <Text style={{ color: theme.colors.barChartLabels }}>{title}</Text>
+        <IconButton icon='chevron-right' size={20} color={theme.colors.barChartsChevron} onPress={() => setDate(date.plus(dateOffset))} style={{ height: 48, width: 48 }}/>
       </View>
       <ActivityBarChart activityId={activityId} goalId={goalId} period={period} show={show} date={date}/>
     </View>
   )
-}
+})
 
 // TODO: select the appropiate y time unit: (seconds, minutes or hours)
 export const ActivityBarChart = ({
@@ -247,7 +249,7 @@ export const ActivityBarChart = ({
     />
 }
 
-const VictoryBarChart = ({ data, xLabel, yLabel, tickValues, tickFormat, yTickValues }) => {
+const VictoryBarChart = withTheme(({ theme, data, xLabel, yLabel, tickValues, tickFormat, yTickValues }) => {
   // VictoryBar has a problem: you need to set domainPadding so bars don't overflow the plot.
   // Here is a example on how to do it:
   // https://codesandbox.io/s/grouped-or-stacked-charts-0jh3h?file=/index.js:1166-1171
@@ -266,20 +268,22 @@ const VictoryBarChart = ({ data, xLabel, yLabel, tickValues, tickFormat, yTickVa
         tickValues={tickValues} 
         tickFormat={tickFormat} 
         label={xLabel}
-        axisLabelComponent={<VictoryLabel dy={20} />}
+        style={{tickLabels: {fill: theme.colors.barChartLabels}}}
+        axisLabelComponent={<VictoryLabel dy={20} style={{fill: theme.colors.barChartLabels}} />}
       />
       <VictoryAxis 
         tickValues={yTickValues}
         dependentAxis={true} 
         label={yLabel}
-        axisLabelComponent={<VictoryLabel dy={-30} />}
+        style={{tickLabels: {fill: theme.colors.barChartLabels}}}
+        axisLabelComponent={<VictoryLabel dy={-30} style={{fill: theme.colors.barChartLabels}} />}
       />
       <VictoryBar
-        style={{ data: { fill: "#c43a31" } }}
+        style={{ data: { fill: theme.colors.barChartBar } }}
         alignment="middle"
         data={data}
         barRatio={0.6}
       />
     </VictoryChart>
   )
-}
+})

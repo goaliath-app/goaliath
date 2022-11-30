@@ -11,9 +11,9 @@ We are still an early work in progress! If you want to know more, feel free to c
 | v0.1 | First fully functional approximation | 100% |
 | v0.2 | Improve the underlying time management method | 100% |
 | v0.3 | Add not essential features (stats, notes, etc.) | 100% |
-| v0.4 | Quality of Life improvements | 0% |
-| v0.5 | Onboarding and tutorial | 0% |
-| v0.6 | Visual and styling improvements | 0% |
+| v0.4 | Quality of Life improvements | 100% |
+| v0.5 | Onboarding and tutorial | 100% |
+| v0.6 | Visual and styling improvements | 10% |
 | v1.0 | First version to be publised to the Play Store | Getting closer every day |
 | Future | Fixes, improvements and new features | - |
 

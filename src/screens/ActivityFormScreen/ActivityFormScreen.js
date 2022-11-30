@@ -3,12 +3,11 @@ import { connect, useSelector, useDispatch } from 'react-redux'
 import { Keyboard, Pressable, View, StyleSheet } from 'react-native';
 import { 
   Appbar, TextInput, HelperText, Subheading, Portal, Dialog, Divider, List, 
-  Switch, Text, Paragraph 
+  Switch, Text, Paragraph, withTheme 
 } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
-import { Header, TimeInput, BottomScreenPadding, InfoCard } from '../../components';
+import { Header, TimeInput, BottomScreenPadding, InfoCard, RepetitionsInput } from '../../components';
 import { setActivity, selectActivityById } from '../../redux'
-import { GeneralColor, ActivityFormColor } from '../../styles/Colors';
 import NumberOfWeeklyDaysInput from './NumberOfWeeklyDaysInput'
 import WeekdaySelector from './WeekdaySelector'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -53,7 +52,7 @@ function previewFrequencyString(activity, t){
   return getFrequencyString(state, id, t, date)
 }
 
-const ActivityFormScreen = ({ route, navigation }) => {
+const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
 
   const { showSnackbar } = React.useContext(Context);
 
@@ -144,6 +143,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
   const [daysOfWeekError, setDaysOfWeekError] = React.useState(false)
   const [timeInputError, setTimeInputError] = React.useState(false)
   const [noFrequencyError, setNoFrequencyError] = React.useState(false)
+  const [noRepetitionsError, setNoRepetitionsError] = React.useState(false)
 
   const [isFrecuencyVisible, setFrequencyVisible] = React.useState(false)
 
@@ -158,6 +158,11 @@ const ActivityFormScreen = ({ route, navigation }) => {
 
     if(frequencySelector === null){
       setNoFrequencyError(true)
+      error = true
+    }
+
+    if(parseInt(repetitions) <= 0 || Number.isNaN(parseInt(repetitions))){
+      setNoRepetitionsError(true)
       error = true
     }
     
@@ -191,6 +196,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
       setNameInputError(false)
       setDaysOfWeekError(false)
       setNoFrequencyError(false)
+      setNoRepetitionsError(false)
       return true
     }
   }
@@ -262,7 +268,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
   }
 
   const headerButtons = (
-    <Appbar.Action icon='check' onPress={() => {
+    <Appbar.Action icon='check' color={theme.colors.headerContent} onPress={() => {
         Keyboard.dismiss()
 
         if(validate()){
@@ -275,21 +281,22 @@ const ActivityFormScreen = ({ route, navigation }) => {
           }
           navigation.goBack()
         }
-      }} 
+      }}
+      style={{ height: 48, width: 48 }}
     /> 
   )
 
   return(
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.activityFormScreenBackground}}>
       <Header 
         title={activity?.name?activity.name:t('activityForm.headerTitle')} 
         left='back' navigation={navigation} 
         buttons={headerButtons}
       />
-      <KeyboardAwareScrollView style={{flexGrow: 0}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
+      <KeyboardAwareScrollView style={{flex: 1}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
         <TextInput 
           error={nameInputError} 
-          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, height: 55, backgroundColor: GeneralColor.textInputBackground}} 
+          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, backgroundColor: theme.colors.textInputBackground}} 
           mode= 'outlined' 
           label={t('activityForm.nameInputLabel')}
           value={name} 
@@ -305,7 +312,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
             </HelperText> : null
         }
         <TextInput 
-          style={{paddingHorizontal: 15, paddingTop: 10, paddingBottom: 10, fontSize: 16, backgroundColor: GeneralColor.textInputBackground}} 
+          style={{paddingHorizontal: 15, paddingTop: 10, paddingBottom: 10, fontSize: 16, backgroundColor: theme.colors.textInputBackground}} 
           mode= 'outlined' 
           multiline={true}
           label={t('activityForm.descriptionInputLabel')}
@@ -316,14 +323,14 @@ const ActivityFormScreen = ({ route, navigation }) => {
         />
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
-        <Pressable style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {
+        <Pressable style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10, height: 60, borderRadius: 5, borderColor: theme.colors.frequencySelectorBorder}} onPress={() => {
           Keyboard.dismiss()
           setFrequencyVisible(true)
           setNoFrequencyError(false)
         }}>
-          { frequencySelector=='daily'? <FontAwesomeIcon style={{alignSelf: 'center', marginRight: 10}} size={28}  icon={faCalendarCheck}/> :
-            frequencySelector=='free'? <FeatherIcon style={{alignSelf: 'center', marginRight: 10}} name={"feather"} size={28} /> :
-            frequencySelector=='weekly'? <EntypoIcon style={{alignSelf: 'center', marginRight: 10}} size={30} name={"bar-graph"}/> :
+          { frequencySelector=='daily'? <FontAwesomeIcon style={{alignSelf: 'center', marginRight: 10}} size={28}  icon={faCalendarCheck} color={theme.colors.frequencySelectorIcons} /> :
+            frequencySelector=='free'? <FeatherIcon style={{alignSelf: 'center', marginRight: 10}} name={"feather"} size={28} color={theme.colors.frequencySelectorIcons} /> :
+            frequencySelector=='weekly'? <EntypoIcon style={{alignSelf: 'center', marginRight: 10}} size={30} name={"bar-graph"} color={theme.colors.frequencySelectorIcons} /> :
             null }
             <View>
           <Text style={{ fontSize: 16 }}>{!frequencySelector? t('activityForm.frequencyLabel')
@@ -332,19 +339,13 @@ const ActivityFormScreen = ({ route, navigation }) => {
             :frequencySelector=='weekly'? t('activityForm.dialog.weeklyTitle')
             : null
           }</Text>
-          { activityPreviewText.length > 0 && <Text style={{ fontSize: 14 }}>{activityPreviewText}</Text> }
+          {/* This shows the activity preview text inside the frequency selector item */}
+          {/* { activityPreviewText.length > 0 && <Text style={{ fontSize: 14 }}>{activityPreviewText}</Text> } */}
           </View>
         </Pressable>
         <HelperText style={{paddingLeft:25}} type="error" visible={noFrequencyError}>
           {t('activityForm.errors.noFrequency')}
         </HelperText>
-        {/* Another alternative to show the activity frequency preview 
-        <InfoCard 
-          style={{marginVertical: 0}}
-          cardStyle={{marginVertical: 0}}
-          paragraphStyle={{marginVertical: 0, fontSize: 16, textAlign: 'center'}}
-          paragraph={"Due "+activityPreviewText} 
-        /> */}
 
         {frequencySelector=='daily'?
           <View> 
@@ -359,7 +360,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
               style={{
                 textAlign: 'center', 
                 borderTopWidth: 1, 
-                borderTopColor: GeneralColor.helperTextBorderTopColor, 
+                borderTopColor: theme.colors.error, 
                 marginHorizontal: 25 
               }} 
               type="error" 
@@ -372,31 +373,18 @@ const ActivityFormScreen = ({ route, navigation }) => {
               title={t('activityForm.switch.multipleTimes')}
               right={() => (
                 <View style={{ marginRight: 12 }}>
-                  <Switch value={multipleTimesSwitch} onValueChange={() => {setTimeGoalSwitch(false), setMultipleTimesSwitch(!multipleTimesSwitch)}} />
+                  <Switch value={multipleTimesSwitch} onValueChange={() => {setTimeGoalSwitch(false), setMultipleTimesSwitch(!multipleTimesSwitch)}} style={{ height: 48, width: 48 }} />
                 </View>
               )}
             />
             {multipleTimesSwitch?
-              <View style={{marginHorizontal: 16, flexDirection: 'row', justifyContent:'space-between'}}>
-                <Text style={{alignSelf: 'center'}}>{t('activityForm.dailyRepetitions')}</Text>
-                <TextInput 
-                  style={{
-                    marginLeft: 20,
-                    fontSize: 40,
-                    textAlign: 'center',
-                    backgroundColor: ActivityFormColor.weeklyDaysTextInputBackground
-                  }} 
-                  selectTextOnFocus={true}
-                  selectionColor= {ActivityFormColor.weeklyDaysTextInputSelectionColor}
-                  value={repetitions}
-                  onChangeText={(value) => {
-                    value = value<1000?value:'999'
-                    value = value>0?value:'1'
-                    setRepetitions(value)
-                  }}  
-                  keyboardType='numeric' 
-                />
-              </View>
+              <RepetitionsInput  
+                description={t('activityForm.dailyRepetitions')}
+                value={repetitions}
+                onValueChange={setRepetitions}
+                error={noRepetitionsError}
+                clearError={() => setNoRepetitionsError(false)}
+              />
             : null
             }
           </View>
@@ -404,7 +392,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
         }
 
         {frequencySelector == 'free'?
-          <NumberOfWeeklyDaysInput daysPerWeek={days} setDaysPerWeek={setDays} />
+          <NumberOfWeeklyDaysInput daysPerWeek={days} setDaysPerWeek={setDays} theme={theme} />
           : null 
         }
 
@@ -414,7 +402,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
               title={t('activityForm.switch.repetitionsGoal')}
               right={() => (
                 <View style={{ marginRight: 12 }}>
-                  <Switch value={repetitionsGoalSwitch} onValueChange={() => {
+                  <Switch value={repetitionsGoalSwitch} style={{ height: 48, width: 48 }} onValueChange={() => {
                     if(!timeGoalSwitch){
                       setTimeGoalSwitch(true)
                     } else{
@@ -426,27 +414,14 @@ const ActivityFormScreen = ({ route, navigation }) => {
               )}
             />
             {repetitionsGoalSwitch?
-              <View style={{marginHorizontal: 16, flexDirection: 'row', justifyContent:'space-between'}}>
-                <Text style={{alignSelf: 'center'}}>{t('activityForm.weeklyRepetitions')}</Text>
-                <TextInput 
-                  style={{
-                    marginLeft: 20,
-                    fontSize: 40,
-                    textAlign: 'center',
-                    backgroundColor: ActivityFormColor.weeklyDaysTextInputBackground
-                  }} 
-                  selectTextOnFocus={true}
-                  selectionColor= {ActivityFormColor.weeklyDaysTextInputSelectionColor}
-                  value={repetitions}
-                  onChangeText={(value) => {
-                    value = value<1000?value:'999'
-                    value = value>0?value:'1'
-                    setRepetitions(value)
-                  }}  
-                  keyboardType='numeric' 
-                />
-              </View>
-              : null}
+              <RepetitionsInput  
+                description={t('activityForm.weeklyRepetitions')}
+                value={repetitions}
+                onValueChange={setRepetitions}
+                error={noRepetitionsError}
+                clearError={() => setNoRepetitionsError(false)}
+              />
+            : null}
           </View>
           : null
         }
@@ -457,7 +432,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
               title={t('activityForm.switch.timeGoal')}
               right={() => (
                 <View style={{ marginRight: 12 }}>
-                  <Switch value={timeGoalSwitch} onValueChange={( newValue ) => {
+                  <Switch value={timeGoalSwitch} style={{ height: 48, width: 48 }} onValueChange={( newValue ) => {
                     if (!repetitionsGoalSwitch && !newValue) {
                       setRepetitionsGoalSwitch(true)
                     } else {
@@ -489,7 +464,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
                   style={{
                     textAlign: 'center', 
                     borderTopWidth: 1, 
-                    borderTopColor: GeneralColor.helperTextBorderTopColor, 
+                    borderTopColor: theme.colors.error, 
                     marginHorizontal: 35
                   }} 
                   type="error" 
@@ -501,18 +476,19 @@ const ActivityFormScreen = ({ route, navigation }) => {
             : null }
           </View>
         : null}
+
         
 
         <Portal>
-          <Dialog style={{marginHorizontal: 12}} visible={isFrecuencyVisible} onDismiss={() => {setFrequencyVisible(false)}}>
+          <Dialog style={{marginHorizontal: 12, backgroundColor: theme.colors.dialogBackground}} visible={isFrecuencyVisible} onDismiss={() => {setFrequencyVisible(false)}}>
             <Dialog.Title>{t('activityForm.dialog.title')}</Dialog.Title>
               <Dialog.Content>
                 <Divider />
-                <List.Item left={() => <FontAwesomeIcon style={{alignSelf: 'center'}} size={30} icon={faCalendarCheck}/>} title={t('activityForm.dialog.dailyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.dailyDescription')} onPress={() => {setFrequencySelector('daily'), setFrequencyVisible(false)}} />
+                <List.Item left={() => <FontAwesomeIcon style={{alignSelf: 'center'}} size={30} icon={faCalendarCheck} color={theme.colors.frequencySelectorIcons} />} title={t('activityForm.dialog.dailyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.dailyDescription')} onPress={() => {setFrequencySelector('daily'), setFrequencyVisible(false)}} />
                 <Divider />
-                <List.Item left={() => <FeatherIcon style={{alignSelf: 'center'}} name={"feather"} size={32}/>} title={t('activityForm.dialog.freeTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.freeDescription')} onPress={() => {setFrequencySelector('free'), setFrequencyVisible(false)}} />
+                <List.Item left={() => <FeatherIcon style={{alignSelf: 'center'}} name={"feather"} size={32} color={theme.colors.frequencySelectorIcons} />} title={t('activityForm.dialog.freeTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.freeDescription')} onPress={() => {setFrequencySelector('free'), setFrequencyVisible(false)}} />
                 <Divider />
-                <List.Item left={() => <EntypoIcon style={{alignSelf: 'center'}} size={30} name={"bar-graph"}/>} title={t('activityForm.dialog.weeklyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.weeklyDescription')} onPress={() => {
+                <List.Item left={() => <EntypoIcon style={{alignSelf: 'center'}} size={30} name={"bar-graph"} color={theme.colors.frequencySelectorIcons} />} title={t('activityForm.dialog.weeklyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.weeklyDescription')} onPress={() => {
                   setFrequencySelector('weekly')
                   setFrequencyVisible(false)
                   if (!repetitionsGoalSwitch && !timeGoalSwitch) {
@@ -525,16 +501,25 @@ const ActivityFormScreen = ({ route, navigation }) => {
         </Portal>
         <BottomScreenPadding />
       </KeyboardAwareScrollView>
+      { frequencySelector != undefined ? 
+          /* Another alternative to show the activity frequency preview */
+          <InfoCard 
+            style={{marginVertical: 0}}
+            cardStyle={{marginVertical: 0}}
+            paragraphStyle={{marginVertical: 0, fontSize: 16, textAlign: 'center'}}
+            paragraph={name? `${name} ${activityPreviewText}` : activityPreviewText} 
+          /> 
+        : null }
     </View>
   )
-}
+})
 
 const styles = StyleSheet.create({
   textInput: {
     fontSize: 40,
     textAlign: 'center',
-    backgroundColor: ActivityFormColor.weeklyDaysTextInputBackground
+    backgroundColor: 'transparent'
   }
 })
 
-export default ActivityFormScreen
+export default ActivityFormScreen;

@@ -43,12 +43,12 @@ export {
 } from './Thunks'
 
 export { 
-    setDayStartHour, setLanguage, setTutorialState, setDailyNotificationHour,
-    selectTutorialState,
+    setDayStartHour, setLanguage, setTutorialState, setDailyNotificationHour, setDarkTheme,
+    selectTutorialState, selectDarkTheme,
 } from './SettingsSlice'
 
 export { 
     selectAllActiveActivities, getWeeklyStats, getTodaySelector,
     selectAllActiveActivitiesByDate, isActiveSelector, 
-    selectAllActiveActivitiesByGoalIdAndDate,
+    selectAllActiveActivitiesByGoalIdAndDate, selectAllActivitiesByGoalId
 } from './selectors'

@@ -1,17 +1,98 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { View } from 'react-native'
-import { Button, List, Checkbox, Divider, Paragraph, TextInput } from 'react-native-paper';
-import { TimeInput } from '../../components';
+import { 
+  Button, List, Checkbox, Divider, Paragraph, TextInput, withTheme, Portal, 
+  Dialog, Title, Caption, IconButton
+} from 'react-native-paper';
+import { TimeInput, SelfManagedThreeDotsMenu } from '../../components';
 import { getTodayTime, isActivityRunning, isToday, startOfDay } from '../../util'
 import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
-import { TodayPannelColor } from '../../styles/Colors';
-import { setRepetitions } from './../../redux'
+import { 
+  setRepetitions, toggleCompleted, upsertEntry, startTodayTimer, stopTodayTimer,
+  selectEntryByActivityIdAndDate 
+} from './../../redux'
 import { usesRepetitions, getTimeGoal } from '../../activityHandler'
 import Notifications from '../../notifications';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpRightFromSquare } from '@fortawesome/free-regular-svg-icons'
+import IonIcon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
-const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, upsertEntry, date, dayStartHour, activity }) => {
+
+
+
+export const TodayPannelModal = withTheme(({ 
+  date, activity, entry, theme, timerDisabled=false, visible=true, onDismiss=()=>{}
+}) => {
+  const dayStartHour = useSelector(state => state.settings.dayStartHour)
+  const navigation = useNavigation()
+  const { t, i18 } = useTranslation()
+
+  const menuItems = [
+    {
+      title: t('activityListItem.longPressMenu.edit'),
+      onPress: () => {
+        onDismiss()
+        navigation.navigate('ActivityForm', { activityId: activity.id } )
+      }
+    },
+    {
+      title: t('activityListItem.longPressMenu.viewGoal'),
+      onPress: () => {
+        onDismiss()
+        navigation.navigate('Goal', { goalId: activity.goalId } )
+      }
+    }
+  ]
+
+  return (
+    <Portal>
+      {/* { visible ? 
+        <View style={{ position: 'absolute', height: '100%', width: '100%', backgroundColor: theme.colors.neutral0, opacity: 0.2 }} />
+      : null } */}
+      <Dialog visible={visible} 
+        onDismiss={onDismiss} 
+        style={{marginHorizontal: 15, marginTop: 0, backgroundColor: theme.colors.dialogBackground}}>
+        <Dialog.Content style={{margin: 0, padding: 0, paddingRight: 0, paddingTop: 0, paddingLeft: 0}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15}} >
+              <View style={{marginTop: 18, marginLeft: 18}}>
+                <Title>{activity.name}</Title>
+                <Caption>Japanese</Caption>
+              </View>
+            <View style={{flexDirection: 'row', marginTop: 8}}>
+              <IconButton 
+                style={{marginRight: 0, height: 50, width: 50}}
+                icon={
+                () => <IonIcon color={theme.colors.onSurface} size={30} name={"md-open-outline"}/>
+                } 
+                onPress={() => { 
+                  onDismiss()    
+                  navigation.navigate('ActivityDetail', {activityId: activity.id, date: date.toISO()})}
+                }/>
+              <SelfManagedThreeDotsMenu items={menuItems} color={theme.colors.onSurface} size={30} />
+            </View>
+          </View>
+          <Divider style={{marginHorizontal: 25}}/>
+          <View style={{height:10}} />
+          <TodayPannel 
+            timerDisabled={timerDisabled}
+            entry={entry}
+            date={date}
+            dayStartHour={dayStartHour}
+            activity={activity}
+          /> 
+        </Dialog.Content>
+      </Dialog>
+    </Portal>
+  )
+})
+
+
+const TodayPannel = withTheme(({ timerDisabled=false, entry, date, dayStartHour, activity, theme }) => {
+  
   React.useEffect(() => {
     if (isActivityRunning(entry.intervals)) {
       const intervalId = setInterval(() => {
@@ -29,17 +110,21 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
   const secondsRemaining = secondsGoal - todayTime.as('seconds')
 
   function onPressPlay(){
-    //Start timer
-    startTodayTimer(entry.id)
-    //Send timer notifications
-    Notifications.timerStarted(activity, entry, secondsRemaining, t)
+    if(!timerDisabled){
+      //Start timer
+      dispatch(startTodayTimer(entry.id))
+      //Send timer notifications
+      Notifications.timerStarted(activity, entry, secondsRemaining, t)
+    }
   }
 
   function onPressPause(){
-    //Stop timer
-    stopTodayTimer(entry.id)
-    //Dismiss notifications
-    Notifications.timerStoped(activity.id)
+    if(!timerDisabled){
+      //Stop timer
+      dispatch(stopTodayTimer(entry.id))
+      //Dismiss notifications
+      Notifications.timerStoped(activity.id)
+    }
   }
 
   const dispatch = useDispatch()
@@ -54,7 +139,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
       startDate: startOfDay(date, dayStartHour).toISO(),
       endDate: date.plus({seconds}).toISO()
     }
-    upsertEntry({date: date, entry: {...entry, intervals: [newInterval]}})
+    dispatch(upsertEntry({date: date, entry: {...entry, intervals: [newInterval]}}))
   }
 
   const dateIsToday = isToday(date, dayStartHour)
@@ -74,7 +159,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
             <Paragraph style={{marginRight: 6}}>{t('todayPannel.checkboxLabel')}</Paragraph>
             <Checkbox 
               status={entry.completed? 'checked':'unchecked'} 
-              onPress={() => {toggleCompleted({date: date, id: entry.id})} }
+              onPress={() => {dispatch(toggleCompleted({date: date, id: entry.id}))} }
             />
           </View>
         )}
@@ -84,7 +169,7 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
           <List.Item title={t('todayPannel.repetitions')} />
           <View style={{ alignItems:'center' }}>
             <TextInput
-            style={{fontSize: 50, textAlign: 'center', margin: 10, width: '30%', backgroundColor: TodayPannelColor.textInputBackground}} 
+            style={{fontSize: 50, textAlign: 'center', margin: 10, width: '30%', backgroundColor: 'transparent'}} 
             value={String(entry.repetitions.length)} 
             onChangeText={(value) => {
               parseInt(value)
@@ -93,13 +178,16 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
               dispatch(setRepetitions({ date, id: entry.id, repetitions: value }))
             }}
             selectTextOnFocus={true}
-            keyboardType='numeric' />
+            keyboardType='numeric' 
+            underlineColor='transparent'
+            selectionColor='transparent'
+            />
           </View>
           <List.Item title={t('todayPannel.time')} />
         </View>
       : null }
       <TimeInput 
-        regularColor={activityRunning? TodayPannelColor.activityRunning : TodayPannelColor.regularColor}
+        regularColor={activityRunning? theme.colors.activityDetailTimeInputRunning : theme.colors.onSurface}
         value={todayTime.as('seconds')} 
         onValueChange={(value) => { 
           setTodayTime(
@@ -120,9 +208,8 @@ const TodayPannel = ({ entry, toggleCompleted, startTodayTimer, stopTodayTimer, 
               {t('todayPannel.startButton')}</Button>)
           : null
         }
-      <Divider />
     </View>
   )
-}
+})
 
-  export default TodayPannel
+  export default TodayPannel;

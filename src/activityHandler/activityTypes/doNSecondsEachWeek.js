@@ -10,16 +10,15 @@ import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import Duration from 'luxon/src/duration.js'
 import { View } from 'react-native'
-import { IconButton } from 'react-native-paper'
+import { IconButton, withTheme } from 'react-native-paper'
 import PlayFilledIcon from '../../../assets/play-filled'
 import PlayOutlinedIcon from '../../../assets/play-outlined'
 import PauseFilledIcon from '../../../assets/pause-filled'
 import PauseOutlinedIcon from '../../../assets/pause-outlined'
-import { ActivityListItemColors } from '../../styles/Colors'
 import { ActivityListItem, DoubleProgressBar } from '../../components'
 import Notifications from '../../notifications';
 
-const TodayScreenItem = ({ activityId, date }) => {
+const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
 
@@ -114,20 +113,21 @@ const TodayScreenItem = ({ activityId, date }) => {
         date={date}
         left={()=>leftSlot}
         description={description}
+        bottom={ timerIsRunning? 
+          () => <DoubleProgressBar 
+            height={4}
+            firstColor={theme.colors.progressBarWeek} 
+            secondColor={theme.colors.progressBarToday} 
+            backgroundColor={theme.colors.progressBarBackground} 
+            firstProgress={weeklyProgress} 
+            secondProgress={totalProgress} 
+          />
+          : null }
       />
-      { timerIsRunning? 
-        <DoubleProgressBar 
-          height={4}
-          firstColor={ActivityListItemColors.progressBarFirstColor} 
-          secondColor={ActivityListItemColors.progressBarSecondColor} 
-          backgroundColor={ActivityListItemColors.progressBarBackground} 
-          firstProgress={weeklyProgress} 
-          secondProgress={totalProgress} 
-        />
-        : null }
+      
     </View>
   )
-}
+})
 
 function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){
   // misc. hooks
@@ -156,7 +156,7 @@ function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, is
   )
 }
 
-function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
+const SelectWeekliesItemCompleted = withTheme(({ activity, today, theme, isSelected, onPress }) => {
   const { t, i18n } = useTranslation()
   
   const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, today, activity.id))
@@ -174,14 +174,15 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
         checkboxStatus={'checked'} 
         selected={isSelected} 
         onPress={onPress}
+        onCheckboxPress={onPress}
         date={today}
-        checkboxColor='grey'
+        checkboxColor={theme.colors.completedCheckbox}
         onCheckboxPress={()=>{}}
       /> 
       :
       null
   )
-}
+})
 
 function getFrequencyString(state, activityId, t, date=null){
   const activity = selectActivityByIdAndDate(state, activityId, date)

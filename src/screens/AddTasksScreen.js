@@ -2,15 +2,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { View } from 'react-native';
-import { GeneralColor } from '../styles/Colors';
 import { Header } from '../components';
 import { useTranslation } from 'react-i18next';
-import { Appbar, Paragraph, TextInput, Subheading, IconButton } from 'react-native-paper';
+import { Appbar, Paragraph, TextInput, Subheading, IconButton, withTheme } from 'react-native-paper';
 import { addTodayTask, tasksAddedToday } from '../redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 
-const AddTasksScreen = ({ navigation, addTodayTask, tasksAddedToday }) => {
+const AddTasksScreen = ({ theme, navigation, addTodayTask, tasksAddedToday }) => {
   const { t, i18n } = useTranslation()
 
   const [taskNames, setTaskNames] = React.useState({0: ''})
@@ -28,11 +27,12 @@ const AddTasksScreen = ({ navigation, addTodayTask, tasksAddedToday }) => {
         tasksAddedToday()
         navigation.goBack()
       }}
+      style={{ height: 48, width: 48 }}
     />
   )
 
   return (
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.addTasksScreenBackground}}>
     <Header 
       title={t('addTasks.title')}
       left='back' 
@@ -50,7 +50,7 @@ const AddTasksScreen = ({ navigation, addTodayTask, tasksAddedToday }) => {
               <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 5}}>
                 <Subheading>{parseInt(key)+1}.</Subheading>
                 <TextInput
-                  style={{flex: 1, marginLeft: 14, height: 46, backgroundColor: 'transparent'}}
+                  style={{flex: 1, marginLeft: 14, height: 48, backgroundColor: 'transparent'}}
                   id={key}
                   value={taskNames[key]}
                   onChangeText={(text) => {
@@ -60,7 +60,7 @@ const AddTasksScreen = ({ navigation, addTodayTask, tasksAddedToday }) => {
                     }
                     setTaskNames(newTaskNames)
                   }}
-                  placeholder={'Task Name'}
+                  placeholder={t('addTasks.placeholder')}
                 />
                 {taskNames[key] !== ''?
                 <IconButton
@@ -77,11 +77,13 @@ const AddTasksScreen = ({ navigation, addTodayTask, tasksAddedToday }) => {
                     })
                     setTaskNames(newTaskNames)
                   }}
+                  style={{ height: 48, width: 48 }}
                 /> :
                 <IconButton
                   icon="close"
                   size={20}
                   color='transparent'
+                  style={{ height: 48, width: 48 }}
                 /> 
                 }
               </View>
@@ -104,4 +106,4 @@ const actionsToProps = {
   tasksAddedToday,
 }
 
-export default connect(mapStateToProps, actionsToProps)(AddTasksScreen)
+export default withTheme(connect(mapStateToProps, actionsToProps)(AddTasksScreen));

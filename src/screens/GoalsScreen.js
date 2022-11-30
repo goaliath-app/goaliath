@@ -2,14 +2,13 @@ import React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Appbar, Divider, Switch, Menu, Portal, Dialog } from 'react-native-paper';
+import { List, Appbar, Divider, Switch, Menu, Portal, Dialog, withTheme, Title } from 'react-native-paper';
 import { 
   Header, InfoCard, ThreeDotsMenu, DeleteGoalDialog, BottomScreenPadding, 
   SpeechBubble, IconHighlighter, ViewHighlighter,
 } from '../components'
 import { hasSomethingToShow, isBetween } from '../util'
 import { useTranslation } from 'react-i18next'
-import { GeneralColor } from '../styles/Colors';
 import { 
   selectAllActiveActivitiesByGoalIdAndDate, getTodaySelector, selectAllGoals, 
   toggleGoal, selectTutorialState, setTutorialState,
@@ -17,7 +16,7 @@ import {
 import tutorialStates from '../tutorialStates'
 
 
-const GoalListItem = ({ name, active, id }) => {
+const GoalListItem = withTheme(({ theme, name, active, id }) => {
   const { t, i18n } = useTranslation()
 
   const [ isLongPressDialogVisible, setLongPressDialogVisible ] = React.useState(false)
@@ -53,6 +52,7 @@ const GoalListItem = ({ name, active, id }) => {
               disabled={ tutorialState != tutorialStates.Finished }
               value={active} 
               onValueChange={ () => dispatch(toggleGoal(id)) }
+              style={{ height: 48, width: 48 }}
             />
           )}
           description={t('goals.goalDescription', {activitiesNumber: activities.length})}
@@ -62,7 +62,9 @@ const GoalListItem = ({ name, active, id }) => {
 
       {/* Long press menu */}
       <Portal>
-        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+        <Dialog visible={isLongPressDialogVisible} 
+          onDismiss={() => {setLongPressDialogVisible(false)}}
+          style={{ backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{name}</Dialog.Title>
             <Dialog.Content>
               <Divider />
@@ -96,9 +98,9 @@ const GoalListItem = ({ name, active, id }) => {
         goalId={id} />
     </View>
   );
-}
+})
 
-const GoalsScreen = ({ navigation, goals }) => {
+const GoalsScreen = withTheme(({ theme, navigation, goals }) => {
   const { t, i18n } = useTranslation()
   const [menuVisible, setMenuVisible] = React.useState(false);
 
@@ -126,22 +128,22 @@ const GoalsScreen = ({ navigation, goals }) => {
   )
       
   return(
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.goalsScreenBackground}}>
       <Header 
         title={t('goals.headerTitle')} navigation={navigation} 
         buttons={
         <>
         {
           tutorialState < tutorialStates.FirstGoalCreation ?
-            <Appbar.Action icon='plus' color="white" style={{opacity: 0.5}} />
+            <Appbar.Action icon='plus' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
           : tutorialState == tutorialStates.FirstGoalCreation ?
-            <IconHighlighter highlightStyle={{backgroundColor: 'white'}}>
-              <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color="white"/>
+            <IconHighlighter highlightStyle={{backgroundColor: theme.colors.headerContent}}>
+              <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color={theme.colors.headerContent} style={{ height: 48, width: 48 }} />
             </IconHighlighter>
           : tutorialState > tutorialStates.FirstGoalCreation && tutorialState < tutorialStates.ActivitiesInTodayScreen ?
-            <Appbar.Action icon='plus' color="white" style={{opacity: 0.5}} />
+            <Appbar.Action icon='plus' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
           : // tutorialState > ActivitiesInTodayScreen 
-            <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color="white"/>
+            <Appbar.Action icon='plus' onPress={() => navigation.navigate('GoalForm')} color={theme.colors.headerContent} style={{ height: 48, width: 48 }} />
         }
         { tutorialState == tutorialStates.Finished ?
           <ThreeDotsMenu 
@@ -151,7 +153,7 @@ const GoalsScreen = ({ navigation, goals }) => {
             visible={menuVisible} 
           />
           :
-          <Appbar.Action icon='dots-vertical' color={'white'} style={{opacity: 0.5}} />
+          <Appbar.Action icon='dots-vertical' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
         }
         </>
         }/>
@@ -193,7 +195,7 @@ const GoalsScreen = ({ navigation, goals }) => {
       }
     </View>
   )
-}
+})
 
 const mapStateToProps = (state) => {
   const goals = selectAllGoals(state)

@@ -2,14 +2,13 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FlatList, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { List, Switch, Divider, Portal, Dialog } from 'react-native-paper';
+import { List, Switch, Divider, Portal, Dialog, withTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { selectAllGoals, toggleGoal, restoreGoal } from '../redux'
-import { GeneralColor } from '../styles/Colors';
 import { Header, InfoCard, } from '../components'
 
 
-const ArchivedGoalListItem = ({ name, active, id }) => {
+const ArchivedGoalListItem = withTheme(({ name, active, id, theme }) => {
   const { t, i18 } = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -27,6 +26,7 @@ const ArchivedGoalListItem = ({ name, active, id }) => {
             disabled={true}
             value={active} 
             onValueChange={ () => dispatch(toggleGoal(id)) }
+            style={{ height: 48, width: 48 }}
           />
         )}
       />
@@ -34,7 +34,9 @@ const ArchivedGoalListItem = ({ name, active, id }) => {
 
       {/* Long press menu */}
       <Portal>
-        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+        <Dialog visible={isLongPressDialogVisible} 
+          onDismiss={() => {setLongPressDialogVisible(false)}}
+          style={{backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{name}</Dialog.Title>
             <Dialog.Content>
               <Divider />
@@ -48,9 +50,9 @@ const ArchivedGoalListItem = ({ name, active, id }) => {
       </Portal>
     </View>
   );
-}
+})
 
-const ArchivedGoalsScreen = ({ navigation }) => {
+const ArchivedGoalsScreen = withTheme(({ theme, navigation }) => {
   const { t, i18n } = useTranslation()
 
   const goals = useSelector(selectAllGoals)
@@ -65,7 +67,7 @@ const ArchivedGoalsScreen = ({ navigation }) => {
   )
       
   return(
-    <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+    <View style={{flex: 1, backgroundColor: theme.colors.archivedGoalsScreenBackground}}>
       <Header 
         title={t("archivedGoalsScreen.title")} left='back' navigation={navigation} 
       />
@@ -76,6 +78,6 @@ const ArchivedGoalsScreen = ({ navigation }) => {
       }
     </View>
   )
-}
+})
 
-export default ArchivedGoalsScreen
+export default ArchivedGoalsScreen;

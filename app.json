@@ -2,17 +2,17 @@
   "expo": {
     "name": "Goaliath",
     "slug": "Goaliath",
-    "version": "1.0.1",
+    "version": "0.5.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "notification": {
       "icon": "./assets/notification-icon.png",
-      "color": "#000000"
+      "color": "#536BAC"
     },
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon-color.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#536BAC"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -27,15 +27,32 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/sling-adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/adaptive-icon-crown-smaller.png",
+        "backgroundColor": "#536BAC"
       },
       "useNextNotificationsApi": true,
-      "package": "app.goaliath"
+      "package": "app.goaliath",
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "jsEngine": "hermes"
+    "jsEngine": "hermes",
+    "plugins": [
+      "sentry-expo"
+    ],
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "goaliath",
+            "project": "goaliath",
+            "authToken": "265a7966561944468d17d179fa676d4338efaaf6f22f469a9dab011a64026909",
+            "setCommits": true
+          }
+        }
+      ]
+    }
   }
 }

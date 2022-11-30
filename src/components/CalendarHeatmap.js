@@ -31,8 +31,16 @@ import { View, Text, Dimensions, FlatList } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { getDayActivityCompletionRatio } from './../activityHandler'
+import { withTheme } from 'react-native-paper'
 
-const ActivityCalendarHeatmap = ({ activityId, goalId }) => {
+const ActivityCalendarHeatmap = withTheme(({ theme, activityId, goalId }) => {
+  const colors = {
+    values: [ theme.colors.heatmap1, theme.colors.heatmap2, theme.colors.heatmap3, theme.colors.heatmap4 ],
+    skippedDayBackground: theme.colors.heatmapSkipped,
+    emptyDayBackground: theme.colors.heatmapEmptyBackground,
+    emptyDayBorder: theme.colors.heatmapEmptyBorder,
+  }
+
   const state = useSelector((state) => state)
   const today = getTodaySelector(state)
 
@@ -71,7 +79,7 @@ const ActivityCalendarHeatmap = ({ activityId, goalId }) => {
 
     let strength, color
     if(averageCompletion == 0) {
-      color = '#EBEDF0'
+      color = colors.skippedDayBackground
     }else{
       strength = averageCompletion
     }
@@ -91,10 +99,12 @@ const ActivityCalendarHeatmap = ({ activityId, goalId }) => {
       data={data}
       weekStart={1}
       domain={domain}
-      emptyColor={'transparent'}
+      emptyColor={colors.emptyDayBackground}
+      colors={colors.values}
+      borderColor={colors.emptyDayBorder}
     />
   )
-}
+})
 
 export default ActivityCalendarHeatmap
 
@@ -140,6 +150,7 @@ export const CalendarHeatmap = ({
   */
   emptyColor = '#EBEDF0',
   boxSize = 15,
+  borderColor = '#EBEDF0',
 }) => {
   const { t, i18 } = useTranslation()
 
@@ -285,7 +296,7 @@ export const CalendarHeatmap = ({
           <WeekColumn 
             data={dataDict} startDate={item.startDate} endDate={item.endDate} 
             weekStart={weekStart} emptyColor={emptyColor} boxSize={boxSize}
-            label={label}
+            label={label} borderColor={borderColor}
           />
         )
       })
@@ -316,6 +327,7 @@ const WeekColumn = ({
   emptyColor,
   boxSize,
   label = '',
+  borderColor,
 }) => {
   const millisInADay = 1000 * 60 * 60 * 24;
   const daysToShow = DateTime.fromFormat(endDate, 'yyyy-MM-dd').diff(DateTime.fromFormat(startDate, 'yyyy-MM-dd'), ['days']).days + 1
@@ -358,13 +370,13 @@ const WeekColumn = ({
       <HorizontalLabel size={boxSize} label={label} />
       <FlatList 
         data = {daysData}
-        renderItem={({item}) =><DayBox color={item.color} size={boxSize} border={item.border} />}
+        renderItem={({item}) =><DayBox borderColor={borderColor} color={item.color} size={boxSize} border={item.border} />}
       />
     </View>
   )
 }
 
-const DayBox = ({ color, size, border=false }) => {
+const DayBox = ({ color, size, border=false, borderColor='#EBEDF0' }) => {
   if(!color) {
     color = 'grey'
   }
@@ -377,13 +389,13 @@ const DayBox = ({ color, size, border=false }) => {
         width: size,
         margin: 1,
         borderWidth: border?1:0,
-        borderColor: '#EBEDF0',
+        borderColor: borderColor,
       }}
     />
   )
 }
 
-const VerticalLabel = ({ size, label }) => {
+const VerticalLabel = withTheme(({ theme, size, label }) => {
   return (
     <View 
       style={{
@@ -394,10 +406,10 @@ const VerticalLabel = ({ size, label }) => {
         marginRight: 5,
       }}
     >
-      <Text style={{fontSize: size*0.65}}>{label}</Text>
+      <Text style={{fontSize: size*0.65, color: theme.colors.heatmapLabels}}>{label}</Text>
     </View>
   )
-}
+})
 
 const LabelColumn = ({ size, labels }) => {
   return (
@@ -415,7 +427,7 @@ const LabelColumn = ({ size, labels }) => {
   )
 }
 
-const HorizontalLabel = ({ size, label }) => {
+const HorizontalLabel = withTheme(({ theme, size, label }) => {
   return (
     <View 
       style={{
@@ -426,8 +438,8 @@ const HorizontalLabel = ({ size, label }) => {
       }}
     >
       <View style={{ position: 'absolute', height: size, width: 200, left: 2 }}>
-        <Text ellipsizeMode='clip' numberOfLines={1} style={{fontSize: size*0.65}}>{label}</Text>
+        <Text ellipsizeMode='clip' numberOfLines={1} style={{fontSize: size*0.65, color: theme.colors.heatmapLabels}}>{label}</Text>
       </View>
     </View>
   )
-}
+})

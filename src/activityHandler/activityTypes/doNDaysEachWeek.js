@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native-paper'
+import { Text, withTheme } from 'react-native-paper'
 import { useSelector } from 'react-redux'
 import { 
   selectActivityById, selectActivityByIdAndDate, getWeeklyStats, 
@@ -9,7 +9,6 @@ import {
 import { WeeklyListItem, WeekView as BaseWeekView } from '../../components'
 import dailyGoals from './dailyGoals'
 import { useTranslation } from 'react-i18next';
-import { SelectWeekliesColor } from '../../styles/Colors';
 
 const TodayScreenItem = ({ activityId, date }) => {
   const activity = useSelector( state => selectActivityByIdAndDate(state, activityId, date) )
@@ -43,7 +42,7 @@ function getWeekProgressString(state, activityId, date, t){
   )
 }
 
-function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, isSelected, onPress }){
+const SelectWeekliesItemDue = withTheme(({ theme, activity, today, isChecked, onCheckboxPress, isSelected, onPress }) => {
   const { t, i18n } = useTranslation()
   
   const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, today, activity.id))
@@ -54,7 +53,7 @@ function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, is
   let description
   if(isChecked=='checked'){
     description = (
-      <Text style={{color: SelectWeekliesColor.selectedActivityDescription}}>
+      <Text style={{color: theme.colors.selectWeekliesChangedText}}>
         {t('weeklyActivities.daysLeft', {daysLeft: daysLeft-1})}
       </Text>
     )
@@ -77,9 +76,9 @@ function SelectWeekliesItemDue({ activity, today, isChecked, onCheckboxPress, is
         date={today}
       /> 
   )
-}
+})
 
-function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
+const SelectWeekliesItemCompleted = withTheme(({ theme, activity, today, isSelected, onPress }) => {
   const { t, i18n } = useTranslation()
   
   const { weeklyTime, daysDoneCount, daysDoneList } = useSelector((state) => getWeeklyStats(state, today, activity.id))
@@ -94,13 +93,14 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
         checkboxStatus={'checked'} 
         selected={isSelected} 
         onPress={onPress}
+        onCheckboxPress={onPress}
         date={today}
-        checkboxColor='grey'
+        checkboxColor={theme.colors.completedCheckbox}
       /> 
       :
       null
   )
-}
+})
 
 function getFrequencyString(state, activityId, t, date=null){
   const activity = selectActivityByIdAndDate(state, activityId, date)

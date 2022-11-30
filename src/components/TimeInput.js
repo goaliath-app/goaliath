@@ -1,10 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text, TextInput } from 'react-native-paper';
+import { Text, TextInput, withTheme } from 'react-native-paper';
 import { Duration } from 'luxon'
-import { TimeInputColor } from '../styles/Colors'
 
-const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularColor, selectedColor=TimeInputColor.selectedColor, maxHours=23 }) => {
+const TimeInput = withTheme(({ theme, value, onValueChange, regularColor=theme.colors.timeInputRegular, selectedColor=theme.colors.timeInputSelected, maxHours=23 }) => {
 
   const [currentFocus, setCurrentFocus] = React.useState()
   const [selection, setSelection] = React.useState()
@@ -20,7 +19,7 @@ const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularCo
   const seconds = duration.seconds
 
   const getTheme = isFocused =>(
-    { colors: { primary: TimeInputColor.primary, text: isFocused?selectedColor:regularColor } }
+    { colors: { primary: 'transparent', text: isFocused? selectedColor : regularColor } }
   )
   
   const commonProps = ({ unit, maxValue }) => ({
@@ -28,8 +27,8 @@ const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularCo
       fontSize: 50, 
       padding: 5, 
       textAlign: 'center', 
-      backgroundColor: TimeInputColor.backgroundColor, 
-      underlineColorAndroid: TimeInputColor.underlineColorAndroid,
+      backgroundColor: 'transparent', 
+      underlineColorAndroid: 'transparent',
     },
     selection: selection,
     autoCorrect: false,
@@ -37,8 +36,8 @@ const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularCo
     maxLength: 2,
     keyboardType: 'number-pad',
     caretHidden: true,
-    underlineColor: TimeInputColor.underlineColor,
-    selectionColor: TimeInputColor.selectionColor,
+    underlineColor: 'transparent',
+    selectionColor: 'transparent',
     theme: getTheme(currentFocus==unit),
     onBlur: () => { 
       if(currentFocus==unit) setCurrentFocus('')
@@ -71,6 +70,7 @@ const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularCo
     }>
 
       <TextInput 
+        key={'hoursInput'}
         value={
           currentFocus=='hours'?
             hours.toString()
@@ -87,6 +87,7 @@ const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularCo
       <Text style={{fontSize: 50, marginBottom: 5, color: regularColor}}>:</Text>
       
       <TextInput 
+        key={'minutesInput'}
         value={
           currentFocus=='minutes'?
             minutes.toString()
@@ -103,6 +104,7 @@ const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularCo
       <Text style={{fontSize: 50, marginBottom: 5, color: regularColor}}>:</Text>
 
       <TextInput 
+        key={'secondsInput'}
         value={
           currentFocus=='seconds'?
             seconds.toString()
@@ -118,6 +120,6 @@ const TimeInput = ({ value, onValueChange, regularColor=TimeInputColor.regularCo
 
     </View>
   )
-}
+})
 
-export default TimeInput
+export default TimeInput;

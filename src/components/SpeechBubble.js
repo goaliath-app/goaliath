@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Pressable } from 'react-native'
-import { Paragraph } from 'react-native-paper'
+import { Paragraph, withTheme } from 'react-native-paper'
 import Animated, {
   useSharedValue,
   withTiming,
@@ -31,7 +31,7 @@ import { TapGestureHandler } from 'react-native-gesture-handler';
  Because of Reanimated 2 limitations we can't use nested text, so to avoid 
  breaking of words in multiple lines we wrapped each word in a View.
 */
-const SpeechBubble = ({
+const SpeechBubble = withTheme(({
   /* 
   PROPS:
 
@@ -49,6 +49,7 @@ const SpeechBubble = ({
   bubbleStyle={},
   // Whether the text should be animated
   animation="fadeIn",  // Valid: "typeWriter", "fadeIn", "faerie" and "fastFaerie"
+  theme,
 }) => {
   // Assets
   const touchIconSrc = require('./../../assets/ic_touch_app.png')
@@ -151,16 +152,17 @@ const SpeechBubble = ({
 
   return (
     <TapGestureHandler onGestureEvent={onPressHandler} maxDurationMs={10000}>
-      <Animated.View style={[styles.speechBubble, bubbleAnimatedStyle, bubbleStyle]} exiting={FadeOut}>
+      <Animated.View style={[styles.speechBubble, {backgroundColor: theme.colors.speechBubbleBackground}, bubbleAnimatedStyle, bubbleStyle]} exiting={FadeOut}>
         <AnimatedTextComponent {...configProps} speech={speeches[speechIndex]} 
-          onAnimationEnd={onTextEnd} bypassAnimation={bypassAnimation} />
+          onAnimationEnd={onTextEnd} bypassAnimation={bypassAnimation} 
+          textStyle={{color: theme.colors.speechBubbleText}} />
         <Animated.Image style={bounceStyle} source={touchIconSrc} />
       </Animated.View>
     </TapGestureHandler>
   )
-}
+})
 
-const FadeInSpeech = ({ speech, onAnimationEnd }) => {
+const FadeInSpeech = ({ speech, onAnimationEnd, textStyle }) => {
   const [ lastSpeechId, setLastSpeechId ] = React.useState(speech.id)
   const fadeIn = useSharedValue(0)
 
@@ -180,7 +182,7 @@ const FadeInSpeech = ({ speech, onAnimationEnd }) => {
   })
 
   return (
-    <Animated.Text style={[{flex: 1}, fadeInStyle]}>
+    <Animated.Text style={[{flex: 1}, textStyle, fadeInStyle]}>
       {speech.text}
     </Animated.Text>
   )
@@ -321,9 +323,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 50,
-    backgroundColor: 'aliceblue',
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 10,
+    marginRight: 10,
     marginBottom: 10,
     marginTop: 10,
     paddingLeft: 20,

@@ -1,10 +1,12 @@
 import React from 'react';
-import { View } from 'react-native'
-import { Paragraph, Divider, List } from 'react-native-paper';
+import { View, ActivityIndicator } from 'react-native'
+import { Divider, List, withTheme } from 'react-native-paper';
 
 import { ActivityBarChartPicker } from './BarCharts'
 import { default as ActivityCalendarHeatmap } from './CalendarHeatmap'
 import { default as GenericStats } from './GenericStats'
+import { loadedComponent, FullScreenActivityIndicator } from '../components/Loading'
+import { useTranslation } from 'react-i18next'
 
 const StatsPannel = ({ activityId, goalId }) => (
   <View>
@@ -17,4 +19,4 @@ const StatsPannel = ({ activityId, goalId }) => (
   </View>
 )
 
-export default StatsPannel
+export default loadedComponent(StatsPannel, FullScreenActivityIndicator)

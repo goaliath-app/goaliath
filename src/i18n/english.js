@@ -3,7 +3,7 @@ const en = {
     activityListItem: {
       description: {
         todayTimeGoal: 'Goal: {{expressionValue}} {{expressionUnit}}',
-        weekTimeGoal: 'This week: {{weeklyTimeNumber}} of {{expressionValue}} {{expressionUnit}}'
+        weekTimeGoal: 'This week: {{weeklyTimeNumber}} of {{expressionValue}} {{expressionUnit}} done'
       },
       longPressMenu: {
         edit: 'Edit activity',
@@ -50,7 +50,11 @@ const en = {
       closeButton: 'OK'
     },
 
+    loadingStats: 'Loading Stats...',
+    
     activityDetail: {
+      detailsTabLabel: 'Details',
+      statsTabLabel: 'Stats',
       threeDotsMenu: {
         editActivity: 'Edit activity',
         deleteActivity: 'Archive activity',
@@ -64,9 +68,16 @@ const en = {
       changeGoalDialogTitle: "Select target goal",
       changeGoalDialogCancel: "Cancel",
       changeGoalDialogBody: 'Current goal: {{currentGoal}}',
-      changeGoalSnackbar: "Activity moved to other goal",
+      changeGoalSnackbar: "Activity moved to {{goalName}} goal",
       archivedWarning: "This activity is archived",
       restoreButton: "Restore activity",
+      todayStatusCard: {
+        dueToday: 'This activity is scheduled for today',
+        dueThisWeek: 'You can choose to do this activity today from the Today List',
+        notDue: 'You don\'t have to do this activity today',
+        chosenToday: 'You have chosen to do this activity today',
+        goToToday: "Go to Today List",
+      }
     },
 
     basicActivityInfo: {
@@ -124,7 +135,8 @@ const en = {
         noName: 'A name is required',
         noDaysSelected: 'Select at least one day',
         noTime: 'Please enter a time',
-        noFrequency: 'Please select a frequency'
+        noFrequency: 'Please select a frequency',
+        noRepetitions: 'Please enter repetitions',
       },
       frequencyTitle: 'Frequency',
       frequencyLabel: 'Select frequency',
@@ -148,6 +160,17 @@ const en = {
         activityCreated: 'Activity created',
         activityUpdated: 'Activity updated',
       },
+    },
+
+    aboutUs:{
+      title: 'Goaliath team',
+      description: "We are Jimena and Óliver, the creators of Goaliath.\n\nIn 2021 we were in a period of self-learning in different subjects. But we couldn't do everything we set out to do and our progress was slow.\n\nIn response we came up with Goaliath. A simple but powerful tool that helped us achieve our goals without getting lost in the intricate path. And now we've published it so it can help you too.\n\nIf you have any suggestions or see something wrong, you can let us know from the settings.\n\n",
+      jimena: 'Jimena',
+      oliver: 'Óliver',
+      goaliath: 'Source code',
+      jimenaLink: "https://www.linkedin.com/in/jimena-andrea/",
+      oliverLink: "https://twitter.com/oliverlsanz",
+      goaliathLink: "https://github.com/goaliath-app/goaliath"  
     },
     
     calendar: {
@@ -216,6 +239,7 @@ const en = {
 
     settings: {
       headerTitle: 'Settings',
+      darkTheme: 'Dark theme',
       startHour: 'Start of the next day',
       todaySnackbar: 'Today will end at {{startHour}} tomorrow.',
       yesterdaySnackbar: 'You have returned to yesterday. It ends at {{startHour}} today.',
@@ -246,7 +270,12 @@ const en = {
       dailyNotification: 'Daily notification',
       dailyNotificationDescription: 'Receive a reminder to use Goaliath',
       dailyNotificationHour: 'Daily notification hour',
-
+      aboutUs: 'Meet the team',
+      aboutGoaliath: {
+        title: 'Learn about the Goaliath method',
+        description: "You'll be redirected to the web",
+        blogURL: 'https://goaliath-app.github.io/',
+      },
     },
     
     today: {
@@ -264,13 +293,15 @@ const en = {
 
     addTasks: {
       title: 'Add One Time Tasks',
+      placeholder: 'Task name',
       description: 'The tasks will be added to this day as "do once" activities.',
     },
 
     taskList: {
       longPressMenu: {
         paragraph: 'This is a one time task',
-        delete: 'Delete Task',
+        deleteTitle: 'Delete Task',
+        deleteDescription: "This action can't be undone.",
         deleteSnackbar: 'Task deleted',
       }
     },
@@ -282,6 +313,10 @@ const en = {
       timeLeft: '{{timeExprValue}} {{timeExprLocaleUnit}} left',
       checkCompleted: 'Completed: {{weeklyTimes}} days done',
       timedCompleted: 'Completed: {{unit}} {{expression}} dedicated',
+      selectedCaption: 'Today I will work on',
+      dueCaption: 'Today I won\'t',
+      completedCaption: 'Completed',
+      noSelectedActivities: 'Choose activities from below, or press ✓ if you won\'t do any weekly activities today',
     },
 
     activityHandler: {
@@ -293,7 +328,7 @@ const en = {
         },
         doNTimesEachWeek: {
           frequencyString: '{{repetitions}} repetitions each week',
-          listItemDescription: '{{todayReps}} done today - {{repsLeft}} of {{weeklyRepsGoal}} left this week',
+          listItemDescription: '{{todayReps}} done today - {{totalReps}} of {{weeklyRepsGoal}} done this week',
           weeklyCompletedDescription: '{{repetitionsGoal}} repetitions goal met this week',
           timesLeft: '{{repetitionsLeft}} repetitions left',
           completed: 'Completed'
@@ -306,7 +341,8 @@ const en = {
           frequencyString: '{{days}} days each week',
           frequencyStringSingular: '{{days}} day each week',
           completed: 'Completed',
-          daysLeft: '{{daysLeft}} days left'
+          daysLeft: '{{daysLeft}} days left',
+          daysLeftSingular: '{{daysLeft}} day left',
         }
       },
       dailyGoals: {
@@ -314,11 +350,11 @@ const en = {
         // frequencyStrings of their corresponding activityType
         doNSeconds: {
           frequencyString: '{{value}} {{unit}}',
-          listItemDescription: '{{currentTimeValue}} of {{timeGoalValue}} {{unit}}'
+          listItemDescription: '{{currentTimeValue}} of {{timeGoalValue}} {{unit}} done'
         },
         doNTimes: {
           frequencyString: '{{repetitions}} times',
-          listItemDescription: '{{todayReps}} of {{repsGoal}} repetitions',
+          listItemDescription: '{{todayReps}} of {{repsGoal}} repetitions done',
         },
         doOneTime: {
           frequencyString: 'Do',
@@ -441,6 +477,10 @@ const en = {
     },
 
     tutorial: {
+      sampleActivity: {
+        name: 'Work on {{goalName}}',
+        description: 'Dedicate 10 focused, uninterrupted minutes to your goal. Think of ways you can work on it, investigate and start taking action. \n\n If you do this for several days, you will start to find your own way. \n\n This is a good base activity if you don\'t know how to start. Feel free to replace this when you feel ready.',
+      },
       TodayScreenIntroduction: {
         // "remind you OF the actions" or "remind you the actions"
         1: 'Welcome! Here I will remind you of the actions you need to take to advance towards your goals.',

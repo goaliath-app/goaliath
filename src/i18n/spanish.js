@@ -1,14 +1,14 @@
 const es= {
   translation: {
     activityListItem: {
-        description: {
-          todayTimeGoal: 'Objetivo: {{expressionValue}} {{expressionUnit}}',
-          weekTimeGoal: 'Esta semana: {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
-        },
-        longPressMenu: {
-          edit: 'Editar actividad',
-          viewGoal: 'Ver meta'
-        },
+      description: {
+        todayTimeGoal: 'Objetivo: {{expressionValue}} {{expressionUnit}}',
+        weekTimeGoal: 'Esta semana: hecho {{weeklyTimeNumber}} de {{expressionValue}} {{expressionUnit}}',
+      },
+      longPressMenu: {
+        edit: 'Editar actividad',
+        viewGoal: 'Ver meta'
+      },
     },
 
     dayContent: {
@@ -50,7 +50,11 @@ const es= {
         closeButton: 'OK'
     },
   
+    loadingStats: 'Cargando Estadísticas...',
+    
     activityDetail: {
+      detailsTabLabel: 'Detalles',
+      statsTabLabel: 'Estadísticas',
       threeDotsMenu: {
         editActivity: 'Editar actividad',
         deleteActivity: 'Archivar actividad',
@@ -64,9 +68,16 @@ const es= {
       changeGoalDialogTitle: "Seleccionar nueva meta",
       changeGoalDialogCancel: "Cancelar",
       changeGoalDialogBody: 'Meta actual: {{currentGoal}}',
-      changeGoalSnackbar: "Actividad movida a otra meta",
+      changeGoalSnackbar: "Actividad movida a la meta {{goalName}}",
       archivedWarning: "Esta actividad está archivada",
       restoreButton: "Restaurar actividad",
+      todayStatusCard: {
+        dueToday: 'Esta actividad está programada para hoy',
+        dueThisWeek: 'Puedes elegir hacer hoy esta actividad desde la lista de hoy',
+        notDue: 'No tienes que hacer esta actividad hoy',
+        chosenToday: 'Has elegido hacer esta actividad hoy',
+        goToToday: "Ir a Hoy",
+      }
     },
   
     basicActivityInfo: {
@@ -75,20 +86,20 @@ const es= {
     },
   
     stats: {
-        genericStats: {
-          title: 'Estadísticas Globales',
-          timeDedicated: '{{expressionValue}} {{expressionUnit}} dedicados en total',
-          daysCompleted: ' actividades completadas',
-          repetitions: ' repeticiones realizadas',
-          filterByGoal: 'Filtrar por meta',
-          allGoals: 'Todas las metas'
-        },
-        weekStats: {
-          title: 'Esta semana',
-          hoursDedicated: ' horas totales dedicadas',
-          daysCompleted: ' actividades completadas'
-  
-        }
+      genericStats: {
+        title: 'Estadísticas Globales',
+        timeDedicated: '{{expressionValue}} {{expressionUnit}} dedicados en total',
+        daysCompleted: ' actividades completadas',
+        repetitions: ' repeticiones realizadas',
+        filterByGoal: 'Filtrar por meta',
+        allGoals: 'Todas las metas'
+      },
+      weekStats: {
+        title: 'Esta semana',
+        hoursDedicated: ' horas totales dedicadas',
+        daysCompleted: ' actividades completadas'
+
+      }
     },
 
     barchart: {
@@ -116,56 +127,66 @@ const es= {
     },
 
     activityForm: {
-        headerTitle: 'Nueva actividad',
-        nameInputLabel: 'Nombre de la actividad',
-        descriptionInputLabel: 'Descripción (opcional)',
-        weeklyDaysLabel: 'Días a la semana',
-        weekdaysTitle: 'Días de la semana',
-        errors: {
-          noName: 'Es necesario un nombre para tu actividad',
-          noDaysSelected: 'Selecciona al menos un día',
-          noTime: 'Por favor introduce el tiempo a dedicar',
-          noFrequency: 'Por favor selecciona una frecuencia'
-        },
-        frequencyTitle: 'Frecuencia',
-        frequencyLabel: 'Selecciona una frecuencia',
-        switch: {
-          multipleTimes: 'Objetivo de repeticiones',
-          repetitionsGoal: 'Repeticiones diarias',
-          timeGoal: 'Objetivo de tiempo'
-        },
-        dailyRepetitions: 'Repeticiones diarias',
-        weeklyRepetitions: 'Repeticiones semanales',
-        dialog: {
-          title: 'Selecciona la frecuencia',
-          dailyTitle: 'Actividad diaria',
-          dailyDescription: 'Selecciona qué días de la semana quieres hacerla',
-          freeTitle: 'Actividad libre',
-          freeDescription: 'Hazla un cierto número de días a la semana, puedes decidir cuales sobre la marcha.',
-          weeklyTitle: 'Total semanal',
-          weeklyDescription: 'Alcanza un total de tiempo o repeticiones cada semana'
-        },
-        snackbar: {
-          activityCreated: 'Actividad creada',
-          activityUpdated: 'Actividad editada',
-        },
+      headerTitle: 'Nueva actividad',
+      nameInputLabel: 'Nombre de la actividad',
+      descriptionInputLabel: 'Descripción (opcional)',
+      weeklyDaysLabel: 'Días a la semana',
+      weekdaysTitle: 'Días de la semana',
+      errors: {
+        noName: 'Es necesario un nombre para tu actividad',
+        noDaysSelected: 'Selecciona al menos un día',
+        noTime: 'Por favor introduce el tiempo a dedicar',
+        noFrequency: 'Por favor selecciona una frecuencia',
+        noRepetitions: 'Por favor introduce las repeticiones',
       },
+      frequencyTitle: 'Frecuencia',
+      frequencyLabel: 'Selecciona una frecuencia',
+      switch: {
+        multipleTimes: 'Objetivo de repeticiones',
+        repetitionsGoal: 'Objetivo de repeticiones',
+        timeGoal: 'Objetivo de tiempo'
+      },
+      dailyRepetitions: 'Repeticiones diarias',
+      weeklyRepetitions: 'Repeticiones semanales',
+      dialog: {
+        title: 'Selecciona la frecuencia',
+        dailyTitle: 'Actividad diaria',
+        dailyDescription: 'Selecciona qué días de la semana quieres hacerla',
+        freeTitle: 'Actividad libre',
+        freeDescription: 'Hazla un cierto número de días a la semana, puedes decidir cuales sobre la marcha.',
+        weeklyTitle: 'Total semanal',
+        weeklyDescription: 'Alcanza un total de tiempo o repeticiones cada semana'
+      },
+      snackbar: {
+        activityCreated: 'Actividad creada',
+        activityUpdated: 'Actividad editada',
+      },
+    },
+
+    aboutUs:{
+      title: 'El equipo detrás de Goaliath',
+      description: "Somos Jimena y Óliver, los creadores de Goaliath.\n\nEn 2021 nos encontrábamos en un periodo de autoaprendizaje en distintas materias. Pero no podíamos con todo lo que nos propusimos y nuestro progreso era lento.\n\nComo respuesta ideamos Goaliath. Una herramienta simple pero potente que nos ayudó a conseguir nuestros objetivos sin perdernos en el intrincado camino. Y ahora la hemos publicado para que también pueda ayudarte a ti.\n\nSi tienes alguna sugerencia o ves algo que no funciona bien, puedes decírnoslo desde los ajustes.\n\n",
+      jimena: 'Jimena',
+      oliver: 'Óliver',
+      goaliath: 'Código fuente',
+      jimenaLink: "https://www.linkedin.com/in/jimena-andrea/",
+      oliverLink: "https://twitter.com/oliverlsanz",
+      goaliathLink: "https://github.com/goaliath-app/goaliath"  
+    },
       
     calendar: {
-        headerTitle: 'Calendario',
-        //stats: '{{completedActivities}} tareas hechas, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicado\n{{undoneActivities}} tareas sin hacer, {{timeLeftValue}} {{timeLeftUnit}} quedan por hacer',
-        dayView: {
-          header: '{{day}} de {{month}} , {{year}}'
-        },
-        weekView: {
-          header: '{{weekStartDate}} - {{weekEndDate}} {{year}}',
-          sortByGoal: 'Ordenar por meta',
-          sortByActivity: 'Ordenar por actividad'
-        },
+      headerTitle: 'Calendario',
+      //stats: '{{completedActivities}} tareas hechas, {{timeDedicatedValue}} {{timeDedicatedUnit}} dedicado\n{{undoneActivities}} tareas sin hacer, {{timeLeftValue}} {{timeLeftUnit}} quedan por hacer',
+      dayView: {
+        header: '{{day}} de {{month}} , {{year}}'
+      },
+      weekView: {
+        header: '{{weekStartDate}} - {{weekEndDate}} {{year}}',
+        sortByGoal: 'Ordenar por meta',
+        sortByActivity: 'Ordenar por actividad'
+      },
     },
   
-    
-
     goalForm: {
       nameError: "Introduce un nombre",
       descriptionHelpDialogTitle: "Motivación",
@@ -181,7 +202,7 @@ const es= {
       motivation: 'Motivación',
       threeDotsMenu: {
         editGoal: 'Editar meta',
-        deleteGoal: 'Eliminar meta',
+        deleteGoal: 'Archivar meta',
         viewArchivedActivities: 'Ver actividades archivadas',
       },
       deleteDialog: {
@@ -200,53 +221,60 @@ const es= {
     },
 
     goals: {
-        headerTitle: 'Metas',
-        goalDescription: '{{activitiesNumber}} actividades activas',
-        infoTitle: 'No hay metas',
-        infoContent: "Crea una nueva meta pulsando el icono +",
-        menu: {
-          viewArchived: "View archived goals",
-        },
-        longPressMenu: {
-          add: "Añadir nueva actividad",
-          edit: "Editar",
-          archive: "Archivar",
-          viewArchivedActivities: "Ver actividades archivadas",
-        }
+      headerTitle: 'Metas',
+      goalDescription: '{{activitiesNumber}} actividades activas',
+      infoTitle: 'No hay metas',
+      infoContent: "Crea una nueva meta pulsando el icono +",
+      menu: {
+        viewArchived: "Ver metas archivadas",
+      },
+      longPressMenu: {
+        add: "Añadir nueva actividad",
+        edit: "Editar",
+        archive: "Archivar",
+        viewArchivedActivities: "Ver actividades archivadas",
+      }
     },
 
     settings: {
-        headerTitle: 'Ajustes',
-        startHour: 'Hora de inicio del día',
-        todaySnackbar: 'El día de hoy terminará a las {{startHour}} de mañana.',
-        yesterdaySnackbar: 'Has regresado al día de ayer. Terminará a las {{startHour}} de hoy.',
-        startHourDescription: 'A esta hora se reiniciarán las actividades diarias' ,
-        feedback: 'Mándanos tus sugerencias',
-        feedbackDescription: 'Manda un mensaje a los desarrolladores',
-        share: 'Compartir',
-        shareDescription: 'Preséntanos a tus amigos',
-        shareMessage: "Goaliath es una aplicación para conseguir tus metas, ¡pruébala!\n\nAún no está diponible en la play store, pero puedes descargarla aquí: (android)\nhttps://anonfiles.com/r4G5B4raue/Goaliath-1ac4cc84001d4f32980c40e9869c79d9-signed_apk \n\nEs de código abierto, puedes revisarlo aquí: \nhttps://github.com/OliverLSanz/routines-app",
-        export: 'Exportar',
-        exportDescription: 'Guarda tus datos',
-        import: 'Importar',
-        importDescription: 'Tienes una copia de seguridad? Restaura tus datos',
-        language: 'Idioma',
-        languageDescription: 'Sólo cambiaran los textos por defecto',
-        importDialog: {
-          title: '¿Quieres importar tus datos?',
-          content: "Esta acción no podrá ser deshecha, los datos de la app se sobreescribirán.",
-          buttonAcept: 'Importar',
-          buttonCancel: 'Cancelar'
-        },
-        languageDialog: {
-          title: 'Selecciona un idioma',
-          english: 'Inglés',
-          spanish: 'Español',
-        },
-        languageLocale: 'Español',
-        dailyNotification: 'Notificación diaria',
-        dailyNotificationDescription: 'Recibirás un recordatorio para usar Goaliath',
-        dailyNotificationHour: 'Hora de la notificación diaria',
+      headerTitle: 'Ajustes',
+      darkTheme: 'Tema oscuro',
+      startHour: 'Hora de inicio del día',
+      todaySnackbar: 'El día de hoy terminará a las {{startHour}} de mañana.',
+      yesterdaySnackbar: 'Has regresado al día de ayer. Terminará a las {{startHour}} de hoy.',
+      startHourDescription: 'A esta hora se reiniciarán las actividades diarias' ,
+      feedback: 'Mándanos tus sugerencias',
+      feedbackDescription: 'Manda un mensaje a los desarrolladores',
+      share: 'Compartir',
+      shareDescription: 'Preséntanos a tus amigos',
+      shareMessage: "Goaliath es una aplicación para conseguir tus metas, ¡pruébala!\n\nAún no está diponible en la play store, pero puedes descargarla aquí: (android)\nhttps://anonfiles.com/r4G5B4raue/Goaliath-1ac4cc84001d4f32980c40e9869c79d9-signed_apk \n\nEs de código abierto, puedes revisarlo aquí: \nhttps://github.com/OliverLSanz/routines-app",
+      export: 'Exportar',
+      exportDescription: 'Guarda tus datos',
+      import: 'Importar',
+      importDescription: '¿Tienes una copia de seguridad? Restaura tus datos',
+      language: 'Idioma',
+      languageDescription: 'Sólo cambiaran los textos por defecto',
+      importDialog: {
+        title: '¿Quieres importar tus datos?',
+        content: "Esta acción no podrá ser deshecha, los datos de la app se sobreescribirán.",
+        buttonAcept: 'Importar',
+        buttonCancel: 'Cancelar'
+      },
+      languageDialog: {
+        title: 'Selecciona un idioma',
+        english: 'Inglés',
+        spanish: 'Español',
+      },
+      languageLocale: 'Español',
+      dailyNotification: 'Notificación diaria',
+      dailyNotificationDescription: 'Recibirás un recordatorio para usar Goaliath',
+      dailyNotificationHour: 'Hora de la notificación diaria',
+      aboutUs: 'Conoce al equipo',
+      aboutGoaliath: {
+        title: 'Aprende sobre el método de Goaliath',
+        description: "Serás redirigido a la web",
+        blogURL: 'https://goaliath-app.github.io/es/',
+      },
     },
 
     today: {
@@ -264,13 +292,15 @@ const es= {
 
     addTasks: {
       title: 'Añade Tareas Puntuales',
+      placeholder: 'Nombre de la tarea',
       description: 'Las tareas aparencerán en este día como actividades que hacer solo una vez.',
     },
 
     taskList: {
       longPressMenu: {
         paragraph: 'Tarea puntual',
-        delete: 'Eliminar tarea',
+        deleteTitle: 'Eliminar tarea',
+        deleteDescription: 'Esta acción no podrá ser deshecha.',
         deleteSnackbar: 'Tarea eliminada',
       }
     },
@@ -282,6 +312,10 @@ const es= {
       timeLeft: 'Quedan {{timeExprValue}} {{timeExprLocaleUnit}}',
       checkCompleted: 'Hecho: {{weeklyTimes}} días completado',
       timedCompleted: 'Hecho: {{unit}} {{expression}} dedicada/os',
+      selectedCaption: 'Hoy trabajaré en',
+      dueCaption: 'Para otro día',
+      completedCaption: 'Completadas',
+      noSelectedActivities: 'Selecciona actividades más abajo, o pulsa ✓ si hoy no vas a hacer ninguna actividad semanal',
     },
 
     activityHandler: {
@@ -293,7 +327,7 @@ const es= {
         },
         doNTimesEachWeek: {
           frequencyString: '{{repetitions}} repeticiones a la semana',
-          listItemDescription: '{{todayReps}} reps hoy - {{repsLeft}} de {{weeklyRepsGoal}} esta semana',
+          listItemDescription: '{{todayReps}} reps hoy - Hecho {{totalReps}} de {{weeklyRepsGoal}} esta semana',
           weeklyCompletedDescription: '{{repetitionsGoal}} repeticiones completadas',
           timesLeft: 'Quedan {{repetitionsLeft}} repeticiones',
           completed: 'Completada'
@@ -306,7 +340,8 @@ const es= {
           frequencyString: '{{days}} días a la semana',
           frequencyStringSingular: '{{days}} día a la semana',
           completed: 'Completada',
-          daysLeft: 'Quedan {{daysLeft}} días'
+          daysLeft: 'Quedan {{daysLeft}} días',
+          daysLeftSingular: 'Queda {{daysLeft}} día',
         }
       },
       dailyGoals: {
@@ -314,11 +349,11 @@ const es= {
         // frequencyStrings of their corresponding activityType
         doNSeconds: {
           frequencyString: '{{value}} {{unit}}',
-          listItemDescription: '{{currentTimeValue}} de {{timeGoalValue}} {{unit}}',
+          listItemDescription: 'Hecho {{currentTimeValue}} de {{timeGoalValue}} {{unit}}',
         },
         doNTimes: {
           frequencyString: '{{repetitions}} veces',
-          listItemDescription: '{{todayReps}} de {{repsGoal}} repeticiones',
+          listItemDescription: 'Hecho {{todayReps}} de {{repsGoal}} repeticiones',
         },
         doOneTime: {
           frequencyString: 'Hacer',
@@ -441,6 +476,10 @@ const es= {
     },
 
     tutorial: {
+      sampleActivity: {
+        name: 'Trabajar en {{goalName}}',
+        description: 'Dedica 10 minutos ininterrumpidos a tu meta. Piensa en cómo puedes trabajar en ella, investiga y comienza a tomar acción. \n\nHaz esto durante varios días y verás que empiezan a surgir las ideas.\n\n Esta es una buena actividad cuando no sabes por donde empezar. Puedes sustituirla por otras cuando lo creas oportuno.',
+      },
       TodayScreenIntroduction: {
         1: '¡Bienvenido! Cada día te recordaré aquí qué debes hacer para avanzar hacia tus metas.',
         2: 'Vayamos a la lista de metas.'

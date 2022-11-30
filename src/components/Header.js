@@ -1,34 +1,33 @@
 import React from 'react';
-import { Appbar, IconButton } from 'react-native-paper';
-import { HeaderColor } from '../styles/Colors';
+import { Appbar, IconButton, withTheme } from 'react-native-paper';
 import { IconHighlighter } from '../components';
 
-const Header = ({ title, subtitle, left, navigation, buttons }) => {
+const Header = withTheme(({ theme, title, subtitle, left, navigation, buttons }) => {
     let leftComponent;
 
     if(left === 'back'){
         leftComponent = (
-            <Appbar.BackAction onPress={navigation.goBack} />
+            <Appbar.BackAction onPress={navigation.goBack} style={{ height: 48, width: 48 }} color={theme.colors.headerContent} />
         )
     }else if( left == 'highlightedBack'){
         leftComponent = (
-            <IconHighlighter highlightStyle={{backgroundColor: 'white'}}>
-                <Appbar.BackAction color={HeaderColor.icon} onPress={navigation.goBack} />
+            <IconHighlighter highlightStyle={{backgroundColor: theme.colors.headerContent}}>
+                <Appbar.BackAction color={theme.colors.headerContent} onPress={navigation.goBack} style={{ height: 48, width: 48 }} />
             </IconHighlighter>
         )
     }else if(left == 'hamburger'){
         leftComponent = (
-            <IconButton icon='menu' color={HeaderColor.icon} onPress={navigation.openDrawer}/>
+            <IconButton icon='menu' color={theme.colors.headerContent} onPress={navigation.openDrawer}/>
         )
     }
 
     return (
-        <Appbar>
+        <Appbar style={{backgroundColor: theme.colors.headerBackground}}>
             {leftComponent}
-            <Appbar.Content title={title} subtitle={subtitle} />
+            <Appbar.Content title={title} subtitle={subtitle} titleStyle={{color: theme.colors.headerContent}} />
             {buttons}
         </Appbar>
     )
-}
+})
 
 export default Header;

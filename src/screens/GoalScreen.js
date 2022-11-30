@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { View, FlatList, Pressable, ScrollView } from 'react-native';
-import { List, Switch, Appbar, Menu, Paragraph, Divider, Button, Card, Title, Portal, Dialog } from 'react-native-paper';
+import { List, Switch, Appbar, Menu, Paragraph, Divider, Button, Card,
+  Title, Portal, Dialog, withTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -13,11 +14,11 @@ import {
 import { selectAllActivities, selectGoalById, toggleActivity, restoreGoal, 
   setActivity, selectTutorialState, setTutorialState } from '../redux'
 import { hasSomethingToShow, isBetween } from '../util'
-import { GeneralColor, GoalColor, HeaderColor } from '../styles/Colors';
 import { getFrequencyString } from '../activityHandler'
 import tutorialStates from '../tutorialStates'
+import Color from 'color'
 
-const Activity = ({ name, active, id, activity, goal }) => {
+const Activity = withTheme(({ name, active, id, activity, goal, theme }) => {
   const navigation = useNavigation();
   const { t, i18 } = useTranslation();
   const dispatch = useDispatch();
@@ -45,6 +46,7 @@ const Activity = ({ name, active, id, activity, goal }) => {
             disabled={ goal.archived || tutorialState != tutorialStates.Finished }
             onValueChange={() => dispatch(toggleActivity(id))} 
             value={active}
+            style={{ height: 48, width: 48 }}
           />
         )}
         description={frequencyString} 
@@ -53,7 +55,9 @@ const Activity = ({ name, active, id, activity, goal }) => {
 
       {/* Long press menu */}
       <Portal>
-        <Dialog visible={isLongPressDialogVisible} onDismiss={() => {setLongPressDialogVisible(false)}}>
+        <Dialog visible={isLongPressDialogVisible} 
+          onDismiss={() => {setLongPressDialogVisible(false)}}
+          style={{backgroundColor: theme.colors.dialogBackground}}>
           <Dialog.Title>{name}</Dialog.Title>
             <Dialog.Content>
               <Divider />
@@ -89,7 +93,7 @@ const Activity = ({ name, active, id, activity, goal }) => {
       />
     </View>
   );
-}
+})
 
 const ArchivedWarning = ({ goal }) => {
   const { t, i18n } = useTranslation()
@@ -113,7 +117,7 @@ const ArchivedWarning = ({ goal }) => {
   )
 }
 
-const GoalScreen = ({ activities, goal, navigation }) => {
+const GoalScreen = withTheme(({ activities, goal, navigation, theme }) => {
   const [menuVisible, setMenuVisible] = React.useState(false);
   const [deleteDialogVisible, setDeleteDialogVisible] = React.useState(false)
   const [motivationCollapsed, setMotivationCollapsed] = React.useState(true)
@@ -141,21 +145,23 @@ const GoalScreen = ({ activities, goal, navigation }) => {
     goal.archived? null :
       <>
         { tutorialState == tutorialStates.Finished ?
-          <Appbar.Action icon='pencil' color={HeaderColor.icon} onPress={() => {
+          <Appbar.Action icon='pencil' color={theme.colors.headerContent} onPress={() => {
               setMenuVisible(false)
               navigation.navigate('GoalForm', { id: goal.id } )
             }}
+            style={{ height: 48, width: 48 }}
           />
           :
-          <Appbar.Action icon='pencil' color={HeaderColor.icon} style={{opacity: 0.5}} />
+          <Appbar.Action icon='pencil' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
         }
 
         { tutorialState <= tutorialStates.SampleActivityCreated ? 
-          <Appbar.Action icon='plus' color={HeaderColor.icon} style={{opacity: 0.5}} />
+          <Appbar.Action icon='plus' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
           : 
-          <Appbar.Action icon='plus' color={HeaderColor.icon} onPress={() => {
+          <Appbar.Action icon='plus' color={theme.colors.headerContent} onPress={() => {
             navigation.navigate('ActivityForm', { goalId: goal.id })
           }}
+          style={{ height: 48, width: 48 }}
         />
         }
         
@@ -167,7 +173,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
             visible={menuVisible} 
           />
           :
-          <Appbar.Action icon='dots-vertical' color={HeaderColor.icon} style={{opacity: 0.5}} />
+          <Appbar.Action icon='dots-vertical' color={theme.colors.headerContent} style={{opacity: 0.5, height: 48, width: 48}} />
         }
       </>
   )
@@ -190,7 +196,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
 
   return (
     <>
-      <View style={{flex: 1, backgroundColor: GeneralColor.screenBackground}}>
+      <View style={{flex: 1, backgroundColor: theme.colors.goalScreenBackground}}>
         <Header title={goal.name} left={headerIcon} navigation={navigation} buttons={headerButtons}/>
         {/* ArchivedWarning only shows if the goal is archived */}
         <ArchivedWarning goal={goal}/>
@@ -209,7 +215,8 @@ const GoalScreen = ({ activities, goal, navigation }) => {
                       dispatch(setActivity({
                         archived: false,
                         active: true,
-                        name: `Work on ${goal.name}`, 
+                        name: t('tutorial.sampleActivity.name', {goalName: goal.name}), 
+                        description: t('tutorial.sampleActivity.description'),
                         goalId: goal.id, 
                         type: 'doFixedDays', 
                         params: { 
@@ -262,7 +269,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
           {goal.motivation?
           <View style={{ flexGrow: 1 }} >
             <View style={{ flex: 1 }}></View>
-            <View style={{ flex: -1 , borderTopWidth: 1,  borderColor: GoalColor.motivationBorder }}>
+            <View style={{ flex: -1 , borderTopWidth: 1,  borderColor: Color(theme.colors.onSurface).alpha(0.3).string() }}>
               <Pressable 
                 onPress={()=> setMotivationCollapsed(!motivationCollapsed)} 
                 style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}
@@ -275,7 +282,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
               <View >
                 <ScrollView style={{ flexGrow: 0}}>
                   <Paragraph 
-                    style={{color: GoalColor.motivationParagraph, padding: 15, paddingTop: 0}}
+                    style={{padding: 15, paddingTop: 0}}
                   >
                     {goal.motivation}
                   </Paragraph>
@@ -295,7 +302,7 @@ const GoalScreen = ({ activities, goal, navigation }) => {
       />
     </>
   )
-}
+})
 
 const mapStateToProps = (state, ownProps) => {
   const { goalId } = ownProps.route.params
