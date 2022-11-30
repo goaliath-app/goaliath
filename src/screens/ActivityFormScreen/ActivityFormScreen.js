@@ -1,16 +1,57 @@
 import React from 'react';
 import { connect, useSelector, useDispatch } from 'react-redux'
 import { Keyboard, Pressable, View, StyleSheet } from 'react-native';
-import { Appbar, TextInput, HelperText, Subheading, Portal, Dialog, Divider, List, Switch, Text } from 'react-native-paper';
+import { 
+  Appbar, TextInput, HelperText, Subheading, Portal, Dialog, Divider, List, 
+  Switch, Text, Paragraph 
+} from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
-import { Header, TimeInput, BottomScreenPadding } from '../../components';
+import { Header, TimeInput, BottomScreenPadding, InfoCard } from '../../components';
 import { setActivity, selectActivityById } from '../../redux'
 import { GeneralColor, ActivityFormColor } from '../../styles/Colors';
 import NumberOfWeeklyDaysInput from './NumberOfWeeklyDaysInput'
 import WeekdaySelector from './WeekdaySelector'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Context } from '../../../App'
+import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
+import { getFrequencyString } from './../../activityHandler'
 
+// Previews a frequency string of an activity that has not yet been created by 
+// puting it in a fake redux state and using the getFrequencyString selector
+// over that state
+function previewFrequencyString(activity, t){
+  const id = 0
+  const date = "2022-01-02T00:00:00.000+01:00"
+
+  const state = {
+    activities: {
+      ids: [
+        id
+      ],
+      entities: {
+        [id]: {
+          id: id,
+          entries: {
+            ids: [
+              date
+            ],
+            entities: {
+              [date]: {
+                ...activity,
+                id: date
+              }
+            }
+          }
+        }
+      },
+    },
+  }
+
+  return getFrequencyString(state, id, t, date)
+}
 
 const ActivityFormScreen = ({ route, navigation }) => {
 
@@ -46,19 +87,19 @@ const ActivityFormScreen = ({ route, navigation }) => {
   )
 
   const initialDailySeconds = (
-    activity && activity.type == "doFixedDays" && activity.params.dailyGoal == "doNSeconds"?
+    activity && activity.type == "doFixedDays" && activity.params.dailyGoal.type == "doNSeconds"?
       activity.params.dailyGoal.params.seconds
       : 0
   )
 
   const initialFreeSeconds = (
-    activity && activity.type == "doNDaysEachWeek" && activity.params.dailyGoal == "doNSeconds"?
+    activity && activity.type == "doNDaysEachWeek" && activity.params.dailyGoal.type == "doNSeconds"?
     activity.params.dailyGoal.params.seconds
     : 0
   )
 
   const initialWeeklySeconds = (
-    activity && activity.type == "doNSecondsEachWeek" & activity.params.seconds?
+    activity && activity.type == "doNSecondsEachWeek" && activity.params.seconds?
     activity.params.seconds
     : 0
   )
@@ -67,7 +108,7 @@ const ActivityFormScreen = ({ route, navigation }) => {
   const initialRepetitions = (
     activity?.params.repetitions? activity.params.repetitions :
     activity?.params.dailyGoal?.params.repetitions? activity.params.dailyGoal.params.repetitions :
-    '1'
+    '2'
   )
   const initialMultipleTimesSwitch = (
     activity?.params.dailyGoal?.type == 'doNTimes'
@@ -154,66 +195,75 @@ const ActivityFormScreen = ({ route, navigation }) => {
     }
   }
 
+  // Generate new activity object based on input values
+  const type = (
+    frequencySelector=='daily'? 'doFixedDays'
+      : frequencySelector=='free'? 'doNDaysEachWeek'
+      : frequencySelector=='weekly' && repetitionsGoalSwitch? 'doNTimesEachWeek'
+      : frequencySelector=='weekly' && timeGoalSwitch? 'doNSecondsEachWeek'
+      : null
+  )
+
+  let params
+
+  if(type == 'doFixedDays'){
+    let dailyGoal
+
+    if(timeGoalSwitch){
+      dailyGoal = {
+        type: 'doNSeconds',
+        params: { seconds: dailySeconds }
+      }
+    }else if(multipleTimesSwitch){
+      dailyGoal = {
+        type: 'doNTimes',
+        params: { repetitions }
+      }
+    }else{
+      dailyGoal = {
+        type: 'doOneTime',
+        params: {}
+      }
+    }
+
+    params = {
+      daysOfWeek, 
+      dailyGoal
+    }
+
+  }else if(type == 'doNDaysEachWeek'){
+    params = {
+      days: Number.parseInt(days), 
+      dailyGoal: (
+        timeGoalSwitch? {type: 'doNSeconds', params: { seconds: freeSeconds } } :
+          {type: 'doOneTime', params:  {}}
+      )
+    }
+  }else if(type == 'doNTimesEachWeek'){
+    params = { repetitions }
+  }else if(type == 'doNSecondsEachWeek'){
+    params = { seconds: weeklySeconds }
+  }
+
+  const newActivity = { 
+    name, 
+    description,
+    goalId, 
+    type, 
+    params, 
+  }
+
+  let activityPreviewText = ""
+  
+  try{
+    activityPreviewText = previewFrequencyString(newActivity, t)
+  }catch (e){
+    console.log(e)
+  }
+
   const headerButtons = (
     <Appbar.Action icon='check' onPress={() => {
         Keyboard.dismiss()
-
-        const type = (
-          frequencySelector=='daily'? 'doFixedDays'
-            : frequencySelector=='free'? 'doNDaysEachWeek'
-            : frequencySelector=='weekly' && repetitionsGoalSwitch? 'doNTimesEachWeek'
-            : frequencySelector=='weekly' && timeGoalSwitch? 'doNSecondsEachWeek'
-            : null
-        )
-
-        let params
-
-        if(type == 'doFixedDays'){
-          let dailyGoal
-
-          if(timeGoalSwitch){
-            dailyGoal = {
-              type: 'doNSeconds',
-              params: { seconds: dailySeconds }
-            }
-          }else if(multipleTimesSwitch){
-            dailyGoal = {
-              type: 'doNTimes',
-              params: { repetitions }
-            }
-          }else{
-            dailyGoal = {
-              type: 'doOneTime',
-              params: {}
-            }
-          }
-
-          params = {
-            daysOfWeek, 
-            dailyGoal
-          }
-
-        }else if(type == 'doNDaysEachWeek'){
-          params = {
-            days: Number.parseInt(days), 
-            dailyGoal: (
-              timeGoalSwitch? {type: 'doNSeconds', params: { seconds: freeSeconds } } :
-                {type: 'doOneTime', params:  {}}
-            )
-          }
-        }else if(type == 'doNTimesEachWeek'){
-          params = { repetitions }
-        }else if(type == 'doNSecondsEachWeek'){
-          params = { seconds: weeklySeconds }
-        }
-
-        const newActivity = { 
-          name, 
-          description,
-          goalId, 
-          type, 
-          params, 
-        }
 
         if(validate()){
           if(activityId !== undefined){
@@ -266,24 +316,39 @@ const ActivityFormScreen = ({ route, navigation }) => {
         />
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
-        <Pressable style={{borderWidth: 1, margin: 20, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {
+        <Pressable style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10}} onPress={() => {
           Keyboard.dismiss()
           setFrequencyVisible(true)
           setNoFrequencyError(false)
         }}>
+          { frequencySelector=='daily'? <FontAwesomeIcon style={{alignSelf: 'center', marginRight: 10}} size={28}  icon={faCalendarCheck}/> :
+            frequencySelector=='free'? <FeatherIcon style={{alignSelf: 'center', marginRight: 10}} name={"feather"} size={28} /> :
+            frequencySelector=='weekly'? <EntypoIcon style={{alignSelf: 'center', marginRight: 10}} size={30} name={"bar-graph"}/> :
+            null }
+            <View>
           <Text style={{ fontSize: 16 }}>{!frequencySelector? t('activityForm.frequencyLabel')
             :frequencySelector=='daily'? t('activityForm.dialog.dailyTitle')
             :frequencySelector=='free'? t('activityForm.dialog.freeTitle')
             :frequencySelector=='weekly'? t('activityForm.dialog.weeklyTitle')
             : null
           }</Text>
+          { activityPreviewText.length > 0 && <Text style={{ fontSize: 14 }}>{activityPreviewText}</Text> }
+          </View>
         </Pressable>
         <HelperText style={{paddingLeft:25}} type="error" visible={noFrequencyError}>
           {t('activityForm.errors.noFrequency')}
         </HelperText>
+        {/* Another alternative to show the activity frequency preview 
+        <InfoCard 
+          style={{marginVertical: 0}}
+          cardStyle={{marginVertical: 0}}
+          paragraphStyle={{marginVertical: 0, fontSize: 16, textAlign: 'center'}}
+          paragraph={"Due "+activityPreviewText} 
+        /> */}
 
         {frequencySelector=='daily'?
           <View> 
+            <Subheading style={{marginLeft: 10, marginBottom: 10}}>{t('activityForm.weekdaysTitle')}</Subheading>
             <WeekdaySelector 
               state='select'
               weekDays={daysOfWeek} 
@@ -439,15 +504,15 @@ const ActivityFormScreen = ({ route, navigation }) => {
         
 
         <Portal>
-          <Dialog visible={isFrecuencyVisible} onDismiss={() => {setFrequencyVisible(false)}}>
+          <Dialog style={{marginHorizontal: 12}} visible={isFrecuencyVisible} onDismiss={() => {setFrequencyVisible(false)}}>
             <Dialog.Title>{t('activityForm.dialog.title')}</Dialog.Title>
               <Dialog.Content>
                 <Divider />
-                <List.Item title={t('activityForm.dialog.dailyTitle')} description={t('activityForm.dialog.dailyDescription')} onPress={() => {setFrequencySelector('daily'), setFrequencyVisible(false)}} />
+                <List.Item left={() => <FontAwesomeIcon style={{alignSelf: 'center'}} size={30} icon={faCalendarCheck}/>} title={t('activityForm.dialog.dailyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.dailyDescription')} onPress={() => {setFrequencySelector('daily'), setFrequencyVisible(false)}} />
                 <Divider />
-                <List.Item title={t('activityForm.dialog.freeTitle')} description={t('activityForm.dialog.freeDescription')} onPress={() => {setFrequencySelector('free'), setFrequencyVisible(false)}} />
+                <List.Item left={() => <FeatherIcon style={{alignSelf: 'center'}} name={"feather"} size={32}/>} title={t('activityForm.dialog.freeTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.freeDescription')} onPress={() => {setFrequencySelector('free'), setFrequencyVisible(false)}} />
                 <Divider />
-                <List.Item title={t('activityForm.dialog.weeklyTitle')} description={t('activityForm.dialog.weeklyDescription')} onPress={() => {
+                <List.Item left={() => <EntypoIcon style={{alignSelf: 'center'}} size={30} name={"bar-graph"}/>} title={t('activityForm.dialog.weeklyTitle')} descriptionNumberOfLines={4} description={t('activityForm.dialog.weeklyDescription')} onPress={() => {
                   setFrequencySelector('weekly')
                   setFrequencyVisible(false)
                   if (!repetitionsGoalSwitch && !timeGoalSwitch) {

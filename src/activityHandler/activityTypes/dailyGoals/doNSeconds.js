@@ -2,7 +2,9 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { View } from 'react-native'
 import { IconButton } from 'react-native-paper'
-import { getTodayTime, isActivityRunning, getPreferedExpression } from '../../../util'
+import { 
+  getTodayTime, isActivityRunning, getPreferedExpression, secondsToUnit,
+ } from '../../../util'
 import { toggleCompleted, stopTodayTimer, startTodayTimer, selectEntryByActivityIdAndDate, selectActivityByIdAndDate, getTodaySelector } from '../../../redux'
 import PlayFilledIcon from '../../../../assets/play-filled'
 import PlayOutlinedIcon from '../../../../assets/play-outlined'
@@ -39,6 +41,12 @@ const TodayScreenItem = ({ activityId, date }) => {
   const progress = Math.min(secondsDedicated / secondsGoal, 1)
   const timerIsRunning = isActivityRunning(entry.intervals)
   const secondsRemaining = secondsGoal - secondsDedicated
+  const { value: timeGoalValue, unit, localeUnit } = getPreferedExpression(secondsGoal, t)
+  const currentTimeValue = secondsToUnit(secondsDedicated, unit)
+  const description = t(
+    'activityHandler.dailyGoals.doNSeconds.listItemDescription', 
+    { currentTimeValue, timeGoalValue, unit: localeUnit }
+  )
  
   // function definitions
   function onPressPause(){
@@ -108,6 +116,7 @@ const TodayScreenItem = ({ activityId, date }) => {
         entry={entry}
         date={date}
         left={()=>leftSlot}
+        description={description}
       />
       { timerIsRunning? 
         <DoubleProgressBar 
@@ -124,8 +133,8 @@ const TodayScreenItem = ({ activityId, date }) => {
 function getFrequencyString(state, activityId, t, date=null){
   const activity = selectActivityByIdAndDate(state, activityId, date)
   const seconds = activity.params.dailyGoal.params.seconds
-  const { value, unit } = getPreferedExpression(seconds, t)
-  return t('activityHandler.dailyGoals.doNSeconds.frequencyString', { value, unit })
+  const { value, localeUnit } = getPreferedExpression(seconds, t)
+  return t('activityHandler.dailyGoals.doNSeconds.frequencyString', { value, unit: localeUnit })
 }
 
 function getDayActivityCompletionRatio(state, activityId, date){

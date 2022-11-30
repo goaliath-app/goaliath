@@ -1,12 +1,13 @@
 import React from 'react';
-import { connect, useDispatch } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { View, StyleSheet } from 'react-native'
 import { Appbar, TextInput, Subheading, Paragraph, HelperText, Title } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
-import { Header, HelpIcon } from '../components'
-import { setGoal, selectGoalById } from '../redux';
+import { Header, HelpIcon, SpeechBubble } from '../components'
+import { setGoal, selectGoalById, selectTutorialState, setTutorialState } from '../redux';
 import { GeneralColor } from '../styles/Colors';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import tutorialStates from '../tutorialStates'
 
 const GoalFormScreen = ({ navigation, goal=null }) => {
   const { t, i18n } = useTranslation()
@@ -17,6 +18,8 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
   const [motivation, setMotivation] = React.useState(goal?.motivation?goal.motivation:'')
 
   const [nameInputError, setNameInputError] = React.useState(false)
+
+  const tutorialState = useSelector(selectTutorialState)
   
   function validate(newGoal){
     if(!newGoal.name){
@@ -33,6 +36,9 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
       onPress={() => {
         const newGoal = {name: name, motivation: motivation}
         if(validate(newGoal)){
+          if(tutorialState == tutorialStates.FirstGoalCreation){
+            dispatch(setTutorialState(tutorialStates.GoalScreenIntroduction))
+          }
           if(goal){
             dispatch(setGoal({...goal, ...newGoal, id: goal.id}))
           }else{
@@ -70,6 +76,14 @@ const GoalFormScreen = ({ navigation, goal=null }) => {
         <HelperText style={{paddingLeft:15}} type="error" visible={nameInputError}>
           {t('goalForm.nameError')}
         </HelperText>
+        { tutorialState == tutorialStates.FirstGoalCreation ?
+          <SpeechBubble 
+            speeches={[
+              {id: 0, text: t('tutorial.FirstGoalCreation.2')},
+            ]}
+            bubbleStyle={{height: 80, marginLeft: 0, marginRight: 0}}
+          />
+          : null}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
           <Subheading style={styles.subheading}>{t('goalForm.goalMotivationSubheading')}</Subheading>
           <HelpIcon dialogContent={

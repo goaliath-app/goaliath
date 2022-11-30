@@ -23,3 +23,10 @@ export { default as Dialog } from './Dialog'
 export { default as MoveToGoalDialog } from './MoveToGoalDialog'
 export { DeleteGoalDialog, DeleteActivityDialog } from './DeleteDialog'
 export { default as BottomScreenPadding } from './BottomScreenPadding'
+export { default as SpeechBubble } from './SpeechBubble'
+export { 
+  TodayScreenIcon, GoalsScreenIcon, GoalsScreenButton, CalendarScreenIcon, CalendarScreenButton,
+  StatsScreenIcon, StatsScreenButton,
+} from './TabBarComponents'
+export { IconHighlighter, ViewHighlighter } from './PulsatingHighlight'
+export { default as StateMonitor } from './StateMonitor'

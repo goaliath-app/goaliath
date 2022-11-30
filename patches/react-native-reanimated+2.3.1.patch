@@ -1,0 +1,33 @@
+diff --git a/node_modules/react-native-reanimated/src/reanimated2/Colors.ts b/node_modules/react-native-reanimated/src/reanimated2/Colors.ts
+index 66e5c13..fc1d52d 100644
+--- a/node_modules/react-native-reanimated/src/reanimated2/Colors.ts
++++ b/node_modules/react-native-reanimated/src/reanimated2/Colors.ts
+@@ -694,11 +694,6 @@ const getInterpolateCacheRGBA = (
+   colors: readonly (string | number)[]
+ ): InterpolateCacheRGBA => {
+   'worklet';
+-  const hash = colors.join('');
+-  const cache = interpolateCacheRGBA[hash];
+-  if (cache !== undefined) {
+-    return cache;
+-  }
+ 
+   const r = [];
+   const g = [];
+@@ -715,15 +710,7 @@ const getInterpolateCacheRGBA = (
+       a.push(opacity(proocessedColor));
+     }
+   }
+-  const newCache = { r, g, b, a };
+-  const overrideHash = hashOrderRGBA[curentHashIndexRGBA];
+-  if (overrideHash) {
+-    delete interpolateCacheRGBA[overrideHash];
+-  }
+-  interpolateCacheRGBA[hash] = newCache;
+-  hashOrderRGBA[curentHashIndexRGBA] = hash;
+-  curentHashIndexRGBA = (curentHashIndexRGBA + 1) % BUFFER_SIZE;
+-  return newCache;
++  return { r, g, b, a };
+ };
+ 
+ interface InterpolateCacheHSV {

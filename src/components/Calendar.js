@@ -13,7 +13,6 @@ import { CalendarColor } from '../styles/Colors';
 // TODO: make startOfWeek prop functional
 const Calendar = ({ 
   startOfWeek=1,
-  onWeekPress=()=>{},     // this function will receive a date of that week as argument, as a Luxon DateTime
   onDayPress=()=>{},      // this function will receive a date of that day as argument, as a Luxon DateTime
   onDayLongPress=()=>{},  // this function will receive a date of that day as argument, as a Luxon DateTime
 }) => {
@@ -71,7 +70,6 @@ const Calendar = ({
       {weekData.map( date => 
         <CalendarWeekItem 
           date={date} startOfWeek={startOfWeek} currentMonth={selectedDate} 
-          onWeekPress={onWeekPress}
           onDayPress={onDayPress}
           onDayLongPress={onDayLongPress}
         />

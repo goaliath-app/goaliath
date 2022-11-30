@@ -27,7 +27,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/sling-adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "useNextNotificationsApi": true,
@@ -35,6 +35,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "jsEngine": "hermes"
   }
 }

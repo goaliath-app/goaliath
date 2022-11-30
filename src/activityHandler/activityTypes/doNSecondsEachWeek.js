@@ -186,8 +186,8 @@ function SelectWeekliesItemCompleted({ activity, today, isSelected, onPress }){
 function getFrequencyString(state, activityId, t, date=null){
   const activity = selectActivityByIdAndDate(state, activityId, date)
   const seconds = activity.params.seconds
-  const { value, unit } = getPreferedExpression(seconds, t)
-  return t('activityHandler.activityTypes.doNSecondsEachWeek.frequencyString', {expressionValue: value, expressionUnit: unit})
+  const { value, localeUnit } = getPreferedExpression(seconds, t)
+  return t('activityHandler.activityTypes.doNSecondsEachWeek.frequencyString', {expressionValue: value, expressionUnit: localeUnit})
 }
 
 function getWeekProgressString(state, activityId, date, t){
