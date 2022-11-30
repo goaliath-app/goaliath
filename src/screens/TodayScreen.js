@@ -2,13 +2,41 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View } from 'react-native'
-import { DayContent, Dialog, Header, SpeechBubble } from '../components'
+import { DayContent, Dialog, Header, InfoCard, SpeechBubble } from '../components'
 import { getToday, isBetween } from '../util'
 import { useTranslation } from 'react-i18next'
 import { useFocusEffect } from '@react-navigation/native';
-import { Appbar, withTheme } from 'react-native-paper'
-import { updateLogs, setTutorialState, selectTutorialState } from '../redux'
+import { Appbar, withTheme, Paragraph, Text } from 'react-native-paper'
+import { 
+  updateLogs, setTutorialState, selectTutorialState, selectAllActivities,
+  selectEntriesByDay, getTodaySelector, selectAllActiveActivities,
+} from '../redux'
 import tutorialStates from '../tutorialStates'
+import { areTherePendingWeeklyActivities } from '../activityHandler'
+import { faTrophy } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+
+
+function selectTodayScreenState(state) {
+  const today = getTodaySelector(state)
+  
+  if( selectAllActivities(state).length == 0) {
+    return 'no-activities'
+  }
+  
+  if( selectAllActiveActivities(state).length == 0 ){
+    return 'no-active-activities'
+  }
+
+  if( selectEntriesByDay(state, today).length == 0 ) {
+    if( areTherePendingWeeklyActivities(state, today) ) {
+      return 'only-weekly-activities'
+    }
+    return 'nothing-for-today'
+  }
+
+  return 'normal'
+}
 
 const TodayScreen = withTheme(({ navigation, theme }) => {
   const dispatch = useDispatch()
@@ -27,6 +55,7 @@ const TodayScreen = withTheme(({ navigation, theme }) => {
   const tutorialState = useSelector(selectTutorialState)
   const dayStartHour = useSelector(state => state.settings.dayStartHour)
   const today = getToday(dayStartHour)
+  const todayScreenState = useSelector(selectTodayScreenState)
 
   const [ date, setDate ] = useState(today)
   const [ dayChangeDialogVisible, setDayChangeDialogVisible ] = useState(false)
@@ -109,7 +138,54 @@ const TodayScreen = withTheme(({ navigation, theme }) => {
         />
         : null
       }
+      
+      { todayScreenState=='no-activities' && tutorialState==tutorialStates.Finished ?
+        <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
+          <InfoCard title={t('today.noActivitiesInfoCard.title')} 
+            // paragraph={t('today.noActivitiesInfoCard.content')}
+            extraContent={
+              <Paragraph style={{overflow: 'visible'}}>
+                <Text>{t('today.noActivitiesInfoCard.contentBeforeIcon')}</Text>
+                {/* If you know a better way of properly aligning the icon to 
+                the text, PLEASE let me know (already tried all the obviuous
+                ways I knew) */}
+                <View style={{width: 20, alignItems: 'center'}}>
+                  <View style={{position: 'absolute', top: -13}}>
+                    <FontAwesomeIcon icon={faTrophy} size={16} color={theme.colors.onSurface} />
+                  </View>
+                </View>
+                <Text>{t('today.noActivitiesInfoCard.contentAfterIcon')}</Text>
+              </Paragraph>}
+            // extraContent={<Paragraph style={{overflow: 'visible'}}>Go to the Goals <FontAwesomeIcon icon={faTrophy} size={16} color={theme.colors.onSurface} /> section to plan your daily actions</Paragraph>}
+          />
+        </View> 
+        : null 
+      }
+
+      { todayScreenState=='no-active-activities' && tutorialState==tutorialStates.Finished ?
+        <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
+          <InfoCard title={t('today.noActiveActivitiesInfoCard.title')} 
+            paragraph={t('today.noActiveActivitiesInfoCard.content')} /> 
+        </View> 
+        : null 
+      }
+      {/* { todayScreenState=='only-weekly-activities' && tutorialState==tutorialStates.Finished ?
+        <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
+          <InfoCard title={t('today.onlyWeeklyActivitiesInfoCard.title')} 
+            paragraph={t('today.onlyWeeklyActivitiesInfoCard.content')} /> 
+        </View> 
+        : null 
+      } */}
+      { todayScreenState=='nothing-for-today' && tutorialState==tutorialStates.Finished ?
+        <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
+          <InfoCard title={t('today.nothingForTodayInfoCard.title')} 
+            paragraph={t('today.nothingForTodayInfoCard.content')} /> 
+        </View>
+        : null 
+      }
+
       <DayContent date={date} />
+
       <Dialog 
         visible={dayChangeDialogVisible} 
         setVisible={setDayChangeDialogVisible}

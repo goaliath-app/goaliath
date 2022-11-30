@@ -28,7 +28,10 @@ export const IconHighlighter = ({ children, active=true, style={}, highlightStyl
   )
 }
 
-export const ViewHighlighter = withTheme(({ theme, children, active=true, animated=true, style={}, highlightStyle={} }) => {
+export const ViewHighlighter = withTheme(({ 
+  theme, children, active=true, animated=true, style={}, highlightStyle={},
+  containerStyle={},
+}) => {
   const pulseValue = useSharedValue(0)
 
   const styles = StyleSheet.create({
@@ -66,7 +69,7 @@ export const ViewHighlighter = withTheme(({ theme, children, active=true, animat
   })
   
   return(
-    <View>
+    <View style={containerStyle}>
       <Animated.View style={[styles.viewHighlight, style, pulseStyle]} />
       {children}
     </View>

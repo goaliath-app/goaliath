@@ -1,25 +1,38 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { StyleSheet, View, useWindowDimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, IconButton, Text, Portal, Dialog, Divider, withTheme } from 'react-native-paper'
 import * as Progress from 'react-native-progress';
-import { getTodayTime, isActivityRunning, getPreferedExpression, roundValue } from '../util'
-import { toggleCompleted, startTodayTimer, stopTodayTimer, selectAllActivities } from '../redux'
-import PlayFilledIcon from '../../assets/play-filled'
-import PlayOutlinedIcon from '../../assets/play-outlined'
-import PauseFilledIcon from '../../assets/pause-filled'
-import PauseOutlinedIcon from '../../assets/pause-outlined'
+import { getTodayTime, isActivityRunning } from '../util'
+import { selectAllActivities } from '../redux'
 import { useTranslation } from 'react-i18next'
 import MaterialCommunityIcons  from 'react-native-vector-icons/MaterialCommunityIcons'
-import Checkbox from './Checkbox'
-import { useSelector } from 'react-redux';
 import { usesSelectWeekliesScreen, getFreeActivitiesWeekCompletionRatio } from '../activityHandler'
 import { TodayPannelModal } from '../screens/ActivityDetailScreen/TodayPannel';
+import { useTooltip } from '.';
+import { TooltipChildrenContext } from 'react-native-walkthrough-tooltip';
 
+
+export const ActivityListItemLeftTooltip = withTheme(({ content, theme, children, name='ActivityListItemLeftIcon', tooltipKey }) => {
+  const LeftIconTooltip = useTooltip(name, tooltipKey)
+
+  return(
+    <LeftIconTooltip displayInsets={{left: 4, right: 0, top: 0, bottom: 0}} content={content}>
+      <TooltipChildrenContext.Consumer>
+      {({ tooltipDuplicate }) => (
+        <View style={ tooltipDuplicate ? {backgroundColor: theme.colors.activityBackground, borderRadius: 90} : {}}>
+          {children}
+        </View>
+      )}
+      </TooltipChildrenContext.Consumer>
+    </LeftIconTooltip>
+  )
+})
 
 export const ActivityListItem = withTheme(({ 
-  theme, activity, entry, date, left, description, bottom, style
+  theme, activity, entry, date, left, description, bottom, style,
+  leftTooltipText, leftTooltipName, leftTooltipKey,
 }) => {
   const { t, i18n } = useTranslation()
 
@@ -63,6 +76,9 @@ export const ActivityListItem = withTheme(({
           setTodayPannelVisible(true)
         }}
         bottom={bottom}
+        leftTooltipName={leftTooltipName}
+        leftTooltipText={leftTooltipText}
+        leftTooltipKey={leftTooltipKey}
       />
 
       {/* ActivityDetail modal */}
@@ -99,29 +115,42 @@ export const ActivityListItem = withTheme(({
   )
 })
 
+// This logic is implemented as a separate selector to avoid unnecesary re-renders
+// caused by reference comparison of diferent useSelector results
+function selectNumberOfWeeklyActivities(state){
+  const activities = selectAllActivities(state)
+  const weekActivities = activities.filter( activity => usesSelectWeekliesScreen(state, activity.id) )
+  return weekActivities.length
+}
 
 export const SelectWeekliesListItem = withTheme(({ theme, date, checked, navigation, disabled=false, style}) => {
   const { t, i18n } = useTranslation()
 
-  const state = useSelector((state) => state)
-  const activities = selectAllActivities(state)
-  const weekActivities = activities.filter( activity => usesSelectWeekliesScreen(state, activity.id) )
+  const Tooltip = useTooltip('selectWeekliesListItem', 'selectWeekliesListItem')
 
-  const weekActivitiesNumber = weekActivities.length
-  const weekProgress = getFreeActivitiesWeekCompletionRatio(state, date)
+  // selectors
+  const weekActivitiesNumber = useSelector(selectNumberOfWeeklyActivities)
+  const weekProgress = useSelector(state => getFreeActivitiesWeekCompletionRatio(state, date))
 
   return(
-    <StylishListItem
-      left={() => <IconButton icon={() => checked? 
-        <MaterialCommunityIcons color={theme.colors.todayCompletedIcon} name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
-        : <MaterialCommunityIcons color={theme.colors.todayDueIcon} name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
-        } />
-      }
-      title={t('today.selectWeekliesTitle')}
-      description={t('today.selectWeekliesDescription', {weekActivitiesNumber: weekActivitiesNumber, weekProgress: Math.round(weekProgress * 100)})}
-      onPress={() => {disabled ? ()=>{} : navigation.navigate('SelectWeeklyActivities')}}
-      style={style}
-    />
+    <Tooltip
+      content={<Text style={{fontSize: 16}}>{t('tooltips.selectWeekliesListItem')}</Text>}
+      displayInsets={{top: 0, bottom: 0, left: 50, right: 50}}
+      placement="bottom"
+      childrenWrapperStyle={{width: '100%'}}
+    >
+      <StylishListItem
+        left={() => <IconButton icon={() => checked? 
+          <MaterialCommunityIcons color={theme.colors.todayCompletedIcon} name={"plus-box"} style={{ alignSelf: 'center'}} size={25} />
+          : <MaterialCommunityIcons color={theme.colors.todayDueIcon} name={"plus-box-outline"} style={{ alignSelf: 'center'}} size={25} />
+          } />
+        }
+        title={t('today.selectWeekliesTitle')}
+        description={t('today.selectWeekliesDescription', {weekActivitiesNumber: weekActivitiesNumber, weekProgress: Math.round(weekProgress * 100)})}
+        onPress={() => {disabled ? ()=>{} : navigation.navigate('SelectWeeklyActivities')}}
+        style={style}
+      />
+    </Tooltip>
   )
 })
 
@@ -170,9 +199,22 @@ export const StylishListItem = withTheme(({
   right,
   theme,
   bottom,
+  leftTooltipText="",
+  leftTooltipName="stylishListItemLeftTooltip",
+  leftTooltipKey="",
 }) => {
+  if(leftTooltipText && left){
+    const leftElement = left()
+    left = () => (
+      <ActivityListItemLeftTooltip name={leftTooltipName} content={<Text style={{fontSize: 16}}>{leftTooltipText}</Text>} tooltipKey={leftTooltipKey}>
+        {leftElement}
+      </ActivityListItemLeftTooltip>
+    )
+  }
+
   return(
     <View style={[{ 
+      width: '100%',
       backgroundColor: theme.colors.activityBackground, 
       borderRadius: 15, 
       marginHorizontal: 1, 

@@ -27,11 +27,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
 import { selectAllActivityEntries, selectActivityById, getTodaySelector, selectAllActivities } from './../redux'
-import { View, Text, Dimensions, FlatList } from 'react-native'
+import { View, FlatList } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { getDayActivityCompletionRatio } from './../activityHandler'
-import { withTheme } from 'react-native-paper'
+import { withTheme, Text } from 'react-native-paper'
 
 const ActivityCalendarHeatmap = withTheme(({ theme, activityId, goalId }) => {
   const colors = {
@@ -108,7 +108,7 @@ const ActivityCalendarHeatmap = withTheme(({ theme, activityId, goalId }) => {
 
 export default ActivityCalendarHeatmap
 
-export const CalendarHeatmap = ({
+export const CalendarHeatmap = withTheme(({
   /* data: array containing the data points 
       each data point is an object with keys:
       * date: a string date corresponding to the day of the data point.
@@ -142,6 +142,9 @@ export const CalendarHeatmap = ({
     colors: a list of text representations of colors. Data points will be
     categorized in as many categories as colors based on its value, and each 
     category will be represented by a color. 
+    NOTE: since the legend was added at the bottom of this component,
+    we assume that the colors array has exactly 4 elements. To make it
+    generic again, the legend should be improved.
   */
   colors = ['#9BE9A8', '#40C463', '#30A14E', '#216E39'],
   /*
@@ -151,6 +154,7 @@ export const CalendarHeatmap = ({
   emptyColor = '#EBEDF0',
   boxSize = 15,
   borderColor = '#EBEDF0',
+  theme
 }) => {
   const { t, i18 } = useTranslation()
 
@@ -281,29 +285,42 @@ export const CalendarHeatmap = ({
   ] 
 
   return (
-    <View 
-      style={{
-        alignItems: 'center', 
-        justifyContent: 'center',
-        flexDirection: 'row',
-      }}
-    >
-      <LabelColumn size={boxSize} labels={labelColumnLabels} />
-      {
-      weekData.map(item => {
-        const label = getWeekLabel(item, monthNames)
-        return (
-          <WeekColumn 
-            data={dataDict} startDate={item.startDate} endDate={item.endDate} 
-            weekStart={weekStart} emptyColor={emptyColor} boxSize={boxSize}
-            label={label} borderColor={borderColor}
-          />
-        )
-      })
-      }
+    <View style={{alignItems: 'center'}}>
+      <View style={{alignItems: 'flex-end'}}>
+        <View 
+        style={{
+          alignItems: 'center', 
+          justifyContent: 'center',
+          flexDirection: 'row',
+        }}
+        >
+          <LabelColumn size={boxSize} labels={labelColumnLabels} />
+          {
+            weekData.map(item => {
+            const label = getWeekLabel(item, monthNames)
+            return (
+              <WeekColumn 
+              data={dataDict} startDate={item.startDate} endDate={item.endDate} 
+              weekStart={weekStart} emptyColor={emptyColor} boxSize={boxSize}
+              label={label} borderColor={borderColor}
+              />
+              )
+            })
+          }
+          </View>
+            <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 10, marginRight: -5}}>
+              <Text style={{marginHorizontal: 5}}>Less</Text>
+              <DayBox color={theme.colors.heatmapSkipped} size={boxSize}/>
+              <DayBox color={colors[0]} size={boxSize}/>
+              <DayBox color={colors[1]} size={boxSize}/>
+              <DayBox color={colors[2]} size={boxSize}/>
+              <DayBox color={colors[3]} size={boxSize}/>
+            <Text style={{marginHorizontal: 5}}>More</Text>
+        </View>
+      </View>
     </View>
   )
-}
+})
 
 const WeekColumn = ({ 
   /* 

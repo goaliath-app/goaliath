@@ -23,6 +23,8 @@ export const darkPlacements = {
 
   completedWeekliesSelector: 'neutral60',
 
+  infoCardViewBackground: 'surface',
+
   // SelectWeekliesScreen
     // Checkboxes use values in TodayScreen
   completedCheckbox: 'onSurface', //Same color as todayCompletedIcon
@@ -44,7 +46,7 @@ export const darkPlacements = {
   heatmap4: 'accent30',
   heatmapSkipped: 'primaryContainer',
   heatmapEmptyBackground: 'surface',
-  heatmapEmptyBorder: 'accent40',
+  heatmapEmptyBorder: 'neutral20',
   heatmapLabels: 'onSurface',
 
   // Calendar
@@ -63,6 +65,11 @@ export const darkPlacements = {
   weekPressedBackground: 'accent50',
   calendarLongPressBackground: 'accent50',
 
+  //Onboarding
+  dots: 'primaryContainer',
+  activeDot: 'accent',
+  buttons: 'accent',
+
   // Tutorial
     // Waiting to new tutorial. TODO
   todayItemHighlight: 'primaryContainer',
@@ -70,6 +77,7 @@ export const darkPlacements = {
   pulsatingHighlight: 'primary',
   speechBubbleBackground: 'primaryContainer',
   speechBubbleText: 'onPrimaryContainer',
+  tooltipBackground: 'surfaceVariant',
 
   // Miscellaneous
   helpIcon: 'accent',
@@ -109,7 +117,7 @@ export const darkPlacements = {
   //ActivityFormScreen
   frequencySelectorBorder: 'onSurface',
   frequencySelectorIcons: 'onPrimaryContainer',
-  textInputSelected: 'accent',
+  textInputSelected: 'primary',
 
   // value used by react-native-paper
   text: 'onSurface',
