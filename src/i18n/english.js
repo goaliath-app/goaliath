@@ -173,7 +173,7 @@ const en = {
       oliver: 'Óliver',
       goaliath: 'Source code',
       jimenaLink: "https://www.linkedin.com/in/jimena-andrea/",
-      oliverLink: "https://twitter.com/oliverlsanz",
+      oliverLink: "oliverlsanz@gmail.com",
       goaliathLink: "https://github.com/goaliath-app/goaliath"  
     },
     

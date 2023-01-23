@@ -3,18 +3,19 @@
     "version": ">= 0.41.0"
   },
   "build": {
-    "development": {
+    "dev-client": {
       "developmentClient": true,
       "distribution": "internal"
     },
-    "preview": {
+    "staging-apk": {
       "distribution": "internal",
+      "releaseChannel": "staging",
       "android": {
         "buildType": "apk"
       }
     },
-    "beta": {
-      "releaseChannel": "beta"
+    "staging": {
+      "releaseChannel": "staging"
     },
     "production": {
       "releaseChannel": "production"
