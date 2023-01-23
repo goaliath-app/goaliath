@@ -30,7 +30,6 @@
         "foregroundImage": "./assets/adaptive-icon-crown-smaller.png",
         "backgroundColor": "#536BAC"
       },
-      "useNextNotificationsApi": true,
       "package": "app.goaliath",
       "versionCode": 7
     },
