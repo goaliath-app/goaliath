@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 import MaterialCommunityIcons  from 'react-native-vector-icons/MaterialCommunityIcons'
 import { usesSelectWeekliesScreen, getFreeActivitiesWeekCompletionRatio } from '../activityHandler'
 import { TodayPannelModal } from '../screens/ActivityDetailScreen/TodayPannel';
-import { useTooltip } from '.';
+import { DeleteGoalDialog, useTooltip } from '.';
 import { TooltipChildrenContext } from 'react-native-walkthrough-tooltip';
 
 
@@ -31,7 +31,7 @@ export const ActivityListItemLeftTooltip = withTheme(({ content, theme, children
 })
 
 export const ActivityListItem = withTheme(({ 
-  theme, activity, entry, date, left, description, bottom, style,
+  theme, activity, goal, entry, date, left, description, bottom, style,
   leftTooltipText, leftTooltipName, leftTooltipKey,
 }) => {
   const { t, i18n } = useTranslation()
@@ -86,6 +86,7 @@ export const ActivityListItem = withTheme(({
         date={date}
         entry={entry}
         activity={activity}
+        goal={goal}
         visible={isTodayPannelVisible}
         onDismiss={()=>setTodayPannelVisible(false)}
       />

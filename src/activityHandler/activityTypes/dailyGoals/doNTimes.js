@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { 
   selectEntryByActivityIdAndDate, toggleCompleted, upsertEntry, 
-  selectActivityByIdAndDate, setRepetitions
+  selectActivityByIdAndDate, setRepetitions, selectGoalById
 } from '../../../redux'
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native'
@@ -18,6 +18,7 @@ const TodayScreenItem = withTheme(({ activityId, date, theme }) => {
   
   // selector hooks
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
+  const goal = useSelector((state) => selectGoalById(state, activity.goalId))
   const entry = useSelector((state) => selectEntryByActivityIdAndDate(state, activityId, date))
   
   // alias values
@@ -59,6 +60,7 @@ const TodayScreenItem = withTheme(({ activityId, date, theme }) => {
     <View>
       <ActivityListItem
         activity={activity}
+        goal={goal}
         entry={entry}
         date={date}
         left={leftSlot}
