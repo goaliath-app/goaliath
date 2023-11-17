@@ -293,10 +293,10 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
         left='back' navigation={navigation} 
         buttons={headerButtons}
       />
-      <KeyboardAwareScrollView style={{flex: 1}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
+      <KeyboardAwareScrollView style={{flex: 1, paddingHorizontal: 15}} overScrollMode='never' contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps='handled' >
         <TextInput 
           error={nameInputError} 
-          style={{paddingHorizontal: 15, paddingTop: 10, fontSize: 16, backgroundColor: theme.colors.textInputBackground}} 
+          style={{marginTop: 15, fontSize: 16, backgroundColor: theme.colors.textInputBackground}} 
           mode= 'outlined' 
           label={t('activityForm.nameInputLabel')}
           value={name} 
@@ -312,7 +312,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
             </HelperText> : null
         }
         <TextInput 
-          style={{paddingHorizontal: 15, paddingTop: 10, paddingBottom: 10, fontSize: 16, backgroundColor: theme.colors.textInputBackground}} 
+          style={{marginTop: 10, marginBottom: 15, fontSize: 16, backgroundColor: theme.colors.textInputBackground}} 
           mode= 'outlined' 
           multiline={true}
           label={t('activityForm.descriptionInputLabel')}
@@ -323,7 +323,7 @@ const ActivityFormScreen = withTheme(({ theme, route, navigation }) => {
         />
 
         <Subheading style={{marginLeft: 10}}>{t('activityForm.frequencyTitle')}</Subheading>
-        <Pressable style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, marginHorizontal: 16, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10, height: 60, borderRadius: 5, borderColor: theme.colors.frequencySelectorBorder}} onPress={() => {
+        <Pressable style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, marginTop: 10, paddingHorizontal: 15, paddingVertical: 10, height: 60, borderRadius: 5, borderColor: theme.colors.frequencySelectorBorder}} onPress={() => {
           Keyboard.dismiss()
           setFrequencyVisible(true)
           setNoFrequencyError(false)
