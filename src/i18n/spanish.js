@@ -117,7 +117,6 @@ const es= {
     },
 
     statsScreen: {
-      drawerTitle: 'Estadísticas',
       headerTitle: 'Estadísticas',
     },
     
@@ -399,17 +398,6 @@ const es= {
         },
       }
     },
-  
-    app: {
-      drawer: {
-        today: 'Hoy',
-        week: 'Semana',
-        goals: 'Metas',
-        calendar: 'Calendario',
-        settings: 'Ajustes',
-        stats: 'Estadísticas',
-      }
-    },
 
     units: {
       time: {
@@ -484,12 +472,6 @@ const es= {
         saturday: 'S',
         sunday: 'D'
       }
-    },
-
-    drawer: {
-      blog: 'Sitio web',
-      blogURL: 'https://goaliath-app.github.io/es/',
-      appName: 'Goaliath'
     },
 
     notifications: {

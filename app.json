@@ -38,7 +38,8 @@
     },
     "jsEngine": "hermes",
     "plugins": [
-      "sentry-expo"
+      "sentry-expo",
+      "expo-localization"
     ],
     "hooks": {
       "postPublish": [
