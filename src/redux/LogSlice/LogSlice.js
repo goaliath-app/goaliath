@@ -51,55 +51,59 @@ An entry is:
 
 */
 
+function getOrCreateDay(state, date){
+  const day = state.entities[date]
+  if(day){
+    return day
+  }
+  const log = {
+    id: date.toISO ? date.toISO() : date,
+    weekliesSelected: false,
+    entries: entryAdapter.getInitialState(),
+  }
+  logAdapter.addOne(state, log)
+  return log
+}
+
 const logSlice = createSlice({
   name: 'logs',
   initialState,
   reducers: {
     /* All reducer's date payloads are expected to be a luxon DateTime 
     from the natural beggining of a day (i.e. hour 00:00:00) */
-    createLog(state, action){
-      /* create empty daily log for the specified date */
-      const { date } = action.payload
-      const log= {
-        id: date.toISO(),
-        weekliesSelected: false,
-        entries: entryAdapter.getInitialState(),
-      }
-      logAdapter.addOne(state, log)
-    },
     setWeekliesSelected(state, action){
       const { date, value } = action.payload
-      const selectedDay = state.entities[date.toISO()]
+      const selectedDay = getOrCreateDay(state, date)
       selectedDay.weekliesSelected = value
     },
     addEntry(state, action){
       /* add a single entry to a daily log */
       const { date, entry } = action.payload
-      const selectedDay = state.entities[date.toISO()]
+      const selectedDay = getOrCreateDay(state, date.toISO())
       entryAdapter.addOne(selectedDay.entries, entry)
     },
     upsertEntry(state, action){
       const { date, entry } = action.payload
       const day = date.toISO()
-      const dayLog = state.entities[day].entries
+      const dayLog = getOrCreateDay(state, day).entries
       entryAdapter.upsertOne(dayLog, entry)
     },
     replaceEntry(state, action){
       const { date, entry } = action.payload
       const day = date.toISO()
-      const dayLog = state.entities[day].entries.entities
+      const dayLog = getOrCreateDay(state, day).entries.entities
       dayLog[entry.id] = entry
     },
     deleteEntry(state, action){
       const { date, entryId } = action.payload
       const today = date.toISO()
-      const todaysLog = state.entities[today].entries
+      const todaysLog = getOrCreateDay(state, today).entries
       entryAdapter.removeOne(todaysLog, entryId)
     },
     toggleCompleted(state, action){
       // select data
       const { date, id } = action.payload
-      const log = state.entities[date.toISO()].entries
+      const log = getOrCreateDay(state, date.toISO()).entries
       let entry = log.entities[id]
       
       // get index of the first completed entry in that date
@@ -128,7 +132,7 @@ const logSlice = createSlice({
     startTimer(state, action){
       const { date, id } = action.payload
       const today = date.toISO()
-      const todaysLog = state.entities[today]
+      const todaysLog = getOrCreateDay(state, today)
       for(let entry of Object.values(todaysLog.entries.entities)){
         if(isActivityRunning(entry.intervals)){
           stopActivity(entry)
@@ -144,14 +148,14 @@ const logSlice = createSlice({
     stopTimer(state, action){
       const { date, id } = action.payload
       const today = date.toISO()
-      const todaysLog = state.entities[today]
+      const todaysLog = getOrCreateDay(state, today)
       const activityEntry = todaysLog.entries.entities[id]
       stopActivity(activityEntry)
     },
     sortLog(state, action){
       const { date } = action.payload
       const today = date.toISO()
-      const todaysLog = state.entities[today].entries
+      const todaysLog = getOrCreateDay(state, today).entries
       todaysLog.ids.sort((idA, idB) => {return compareEntries(todaysLog.entities[idA], todaysLog.entities[idB])})
     },
     setState(state, action){
@@ -164,7 +168,7 @@ const logSlice = createSlice({
     },
     capAllTimers(state, action){
       const { isoDate, capIsoDate } = action.payload
-      const log = state.entities[isoDate]
+      const log = getOrCreateDay(state, isoDate)
       const entries = log.entries.entities
 
       for(let entryId in entries){
@@ -187,7 +191,7 @@ const logSlice = createSlice({
     },
     setRepetitions(state, action){
       const { date, id, repetitions } = action.payload
-      const log = state.entities[date.toISO()].entries
+      const log = getOrCreateDay(state, date.toISO()).entries
       let entry = log.entities[id]
 
       if(!entry){
@@ -209,7 +213,7 @@ const logSlice = createSlice({
 })
 
 export const { 
-  createLog, addEntry, deleteEntry, toggleCompleted, startTimer, 
+  addEntry, deleteEntry, toggleCompleted, startTimer, 
   stopTimer, sortLog, upsertEntry, setState, deleteLog, replaceEntry,
   capAllTimers, setWeekliesSelected, setRepetitions,
 } = logSlice.actions

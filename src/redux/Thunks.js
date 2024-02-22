@@ -15,11 +15,11 @@ import {
 
 import { 
   deleteOneTodaysEntry, upsertEntry, sortLog, selectEntryByActivityIdAndDate, selectLogById, deleteEntry,
-  createLog, addEntry, sortTodayLog, setState as setLogsState, selectEntriesByDay, deleteLog, replaceEntry,
+  addEntry, sortTodayLog, setState as setLogsState, selectEntriesByDay, deleteLog, replaceEntry,
   capAllTimers,
 } from './LogSlice'
 
-import { setState as setTasksState, initDate as initTasksDate } from './TasksSlice'
+import { setState as setTasksState } from './TasksSlice'
 import { setState as setSettingsState } from './SettingsSlice'
 import { setState as setGuideState } from './GuideSlice'
 
@@ -159,30 +159,14 @@ export function updateLogs(){
       newestActivityEntryDate = selectLatestActivityEntryDate(state)
     }
 
-    // there are no logs
-    if(newestLogDate.toISO() == epoch.toISO()){
-      // create the today log as the first one
-      dispatch(initDate(today))
-
-    // there are logs, but today log has not been created yet
-    }else{
+    // if there are logs
+    if(newestLogDate.toISO() != epoch.toISO()){
       // cap all open timers of the previous day
       dispatch(capAllTimers({ date: newestLogDate }))
-
-      // from next day of newestLogDate to today (including both), create and update logs.
-      for(let date = newestLogDate.plus({ days: 1 }); date <= today; date = date.plus({ days: 1 })){
-        dispatch(initDate(date))
-      }
     }
   }
 }
 
-export function initDate(date){
-  return function(dispatch, getState){
-    dispatch(createLog({ date }))  // init date for logSlice
-    dispatch(initTasksDate({ date }))  // init date for tasks slice
-  }
-}
 
 export function archiveOrDeleteEntry(date, entryId){
   /* Archives an entry if it has been completed or has any interval recorded.

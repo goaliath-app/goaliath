@@ -34,44 +34,45 @@ A task is:
 const entityAdapter = createEntityAdapter();
 const initialState = entityAdapter.getInitialState();
 
+function getOrCreateDay(state, date){
+  const existingDateEntry = state.entities[toDateTime(date).toISO()]
+  if(existingDateEntry){
+    return existingDateEntry
+  }
+  const dateEntry = {
+    id: toDateTime(date).toISO(),
+    tasksAdded: false,
+    tasks: entityAdapter.getInitialState({nextId: 0}),
+  }
+  entityAdapter.addOne(state, dateEntry)
+  return dateEntry
+}
+
 const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    initDate(state, action){
-      /* create empty entry for the specified date if it does not exist */
-      const { date } = action.payload
-      const existingDateEntry = state.entities[toDateTime(date).toISO()]
-      if(!existingDateEntry){
-        const dateEntry = {
-          id: toDateTime(date).toISO(),
-          tasksAdded: false,
-          tasks: entityAdapter.getInitialState({nextId: 0}),
-        }
-        entityAdapter.addOne(state, dateEntry)
-      }
-    },
     setTasksAdded(state, action){
       const { date, value } = action.payload
-      const selectedDay = state.entities[toDateTime(date).toISO()]
+      const selectedDay = getOrCreateDay(state, toDateTime(date).toISO())
       selectedDay.tasksAdded = value
     },
     addTask(state, action){
       const { date, task } = action.payload
-      const selectedDay = state.entities[toDateTime(date).toISO()]
+      const selectedDay = getOrCreateDay(state, toDateTime(date).toISO())
       entityAdapter.addOne(selectedDay.tasks, {...task, id: selectedDay.tasks.nextId})
       selectedDay.tasks.nextId += 1
     },
     toggleTask(state, action){
       const { date, id } = action.payload
-      const selectedDay = state.entities[toDateTime(date).toISO()]
+      const selectedDay = getOrCreateDay(state, toDateTime(date).toISO())
       const task = selectedDay.tasks.entities[id]
       const completed = task.completed? null : DateTime.now().toISO()
       entityAdapter.updateOne(selectedDay.tasks, {id: task.id, changes: { completed }})
     },
     deleteTask(state, action){
       const { date, id } = action.payload
-      const selectedDay = state.entities[toDateTime(date).toISO()]
+      const selectedDay = getOrCreateDay(state, toDateTime(date).toISO())
       entityAdapter.removeOne(selectedDay.tasks, id)
     },
     setState(state, action){
@@ -81,7 +82,7 @@ const tasksSlice = createSlice({
   }
 })
 
-export const { setState, initDate } = tasksSlice.actions
+export const { setState } = tasksSlice.actions
 
 export default tasksSlice.reducer
 
@@ -145,7 +146,6 @@ export function tasksAddedToday(){
 
 export function toggleTask(date, id){
   return function(dispatch, getState){
-    const state = getState()
     dispatch(toggleTaskAction({ date, id }))
   }
 }
