@@ -1,6 +1,6 @@
 import { createSlice, createEntityAdapter, current } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import { isActivityRunning, startOfWeek, getTodayTime } from '../../util'
+import { isActivityRunning, getTodayTime, newEntry } from '../../util'
 import arrayMove from 'array-move'
 import Duration from 'luxon/src/duration.js'
 
@@ -100,7 +100,7 @@ const logSlice = createSlice({
       // select data
       const { date, id } = action.payload
       const log = state.entities[date.toISO()].entries
-      const entry = log.entities[id]
+      let entry = log.entities[id]
       
       // get index of the first completed entry in that date
       let firstCompletedIndex = 0
@@ -112,7 +112,10 @@ const logSlice = createSlice({
       }
       
       // toggle the completed status of the entry
-      if(entry.completed){
+      if(!entry){
+        log.entities[id] = { ...newEntry(id), completed: true }
+        entry = log.entities[id]
+      }else if(entry.completed){
         entry.completed = null
       }else{
         entry.completed = DateTime.now().toISO()
@@ -131,7 +134,11 @@ const logSlice = createSlice({
           stopActivity(entry)
         }
       }
-      const activityEntry = todaysLog.entries.entities[id]
+      let activityEntry = todaysLog.entries.entities[id]
+      if(!activityEntry){
+        todaysLog.entries.entities[id] = { ...newEntry(id) }
+        activityEntry = todaysLog.entries.entities[id]
+      }
       activityEntry.intervals.push({startDate: DateTime.now().toISO()})
     },
     stopTimer(state, action){
@@ -181,7 +188,12 @@ const logSlice = createSlice({
     setRepetitions(state, action){
       const { date, id, repetitions } = action.payload
       const log = state.entities[date.toISO()].entries
-      const entry = log.entities[id]
+      let entry = log.entities[id]
+
+      if(!entry){
+        log.entities[id] = { ...newEntry(id) }
+        entry = log.entities[id]
+      }
 
       if(entry.repetitions == undefined) return
 
@@ -220,7 +232,7 @@ export function selectEntriesByDay(state, day){
 export function selectEntryByActivityIdAndDate(state, activityId, date){
   const { dayStartHour } = state.settings
   const thatDaysLog = state.logs.entities[date.toISO()]
-  return thatDaysLog?.entries.entities[activityId]
+  return thatDaysLog?.entries.entities[activityId] ?? newEntry(activityId, true)
 }
 
 export function selectAllWeekEntriesByActivityId(state, activityId, date){

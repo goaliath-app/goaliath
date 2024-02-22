@@ -58,8 +58,6 @@ export const ActivityListItem = withTheme(({
   const [todayTime, setTodayTime] = React.useState(getTodayTime(entry.intervals))
 
   return(
-    entry.archived?
-    null :
     <>
       <StylishListItem
         style={[isActivityRunning(entry.intervals)?{backgroundColor: theme.colors.runningActivityBackground} : {}, style]}

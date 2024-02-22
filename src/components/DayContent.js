@@ -9,9 +9,9 @@ import {
 } from '../components';
 import { 
   areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay, 
-  selectTutorialState, selectAllTasksByDate
+  selectTutorialState, selectAllTasksByDate, selectAllActiveActivitiesByDate, selectEntryByActivityIdAndDate
 } from '../redux'
-import { areThereWeeklyActivities, areTherePendingWeeklyActivities } from '../activityHandler'
+import { areThereWeeklyActivities, areTherePendingWeeklyActivities, dueToday, dueThisWeek } from '../activityHandler'
 import { useTranslation } from 'react-i18next'
 import { getToday } from '../util'
 import tutorialStates from '../tutorialStates'
@@ -69,6 +69,24 @@ const DayContent = withTheme(({ theme, date }) => {
   );
 })
 
+function selectVisibleActivities(state, date){
+  const activities = selectAllActiveActivitiesByDate(state, date)
+
+  const visibleActivities = activities.filter(a => {
+    if(dueToday(state, a.id, date)){
+      return true
+    }
+    if(dueThisWeek(state, a.id, date)){
+      const entry = selectEntryByActivityIdAndDate(state, a.id, date)
+      if(!entry.archived){
+        return true
+      }
+    }
+    return false
+  })
+  return visibleActivities
+}
+
 const DayContentList = ({ date }) => {
     // setup hooks
     const navigation = useNavigation()
@@ -76,8 +94,9 @@ const DayContentList = ({ date }) => {
     // selectors
     // using getToday because on day change getTodaySelector was still returning the previous day
     const today      = getToday(useSelector(state => state.settings.dayStartHour))
-    const entryList  = useSelector((state) => selectEntriesByDay(state, date))
     const taskList   = useSelector(state => selectAllTasksByDate(state, date))
+
+    const visibleActivities = useSelector(state => selectVisibleActivities(state, date))
 
     const tasksAdded = useSelector(state => areTasksAdded(state, date))
     const areWeekliesSelectedTodayResult = useSelector(areWeekliesSelectedToday)
@@ -137,7 +156,7 @@ const DayContentList = ({ date }) => {
 
 
 
-    const activityItems = entryList.map(item => ({ type: 'activity', item: item, completed: item.completed }))
+    const activityItems = visibleActivities.map(item => ({ type: 'activity', id: item.id, completed: false }))
     const taskItems = taskList.map(item => ({ type: 'task', item: item, completed: item.completed }))
 
     let listItems = activityItems.concat(taskItems)
@@ -165,7 +184,7 @@ const DayContentList = ({ date }) => {
 
     function renderItem(item){
       if (item.type == 'activity'){
-        return <TodayScreenItem activityId={item.item.id} date={date} key={'activity'+item.item.id} />
+        return <TodayScreenItem activityId={item.id} date={date} key={'activity'+item.id} />
       } else if (item.type == 'task'){
         return <TaskListItem task={item.item} date={date} key={'task'+item.item.name}/>
       } else if (item.type == 'raw'){

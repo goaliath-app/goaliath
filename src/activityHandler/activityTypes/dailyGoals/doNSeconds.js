@@ -15,13 +15,6 @@ import { ActivityListItem, DoubleProgressBar } from '../../../components'
 import { useTranslation } from 'react-i18next'
 import Notifications from '../../../notifications';
 
-// addEntryThunk to add the repetitions field to entries of this activity type
-function addEntryThunk( activityId, date ){
-  return (dispatch, getState) => {
-    dispatch(createOrUnarchiveEntry(date, activityId))
-  }
-}
-
 const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
   const dispatch = useDispatch()
 
@@ -85,7 +78,9 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
       }, 1000)
       return () => clearInterval(intervalId)
     }
-  }, [entry.intervals, entry.completed, secondsGoal])
+  }, [
+    entry.intervals.length == 0 || entry.intervals, entry.completed, secondsGoal, timerIsRunning
+  ])
 
 
   // get the correct left component

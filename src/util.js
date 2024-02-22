@@ -80,14 +80,17 @@ export function secondsToUnit(seconds, unit){
   return value
 }
 
-export function newEntry(activity){
+export function newEntry(activityId, placeholder=false){
+  // Placeholder = true if this function is used to generate a
+  // placeholder entry when there is not an entry for that activity
+  // and date
   return(
     {
       intervals: [],
       repetitions: [],
-      completed: null, 
-      id: activity.id,
-      archived: false
+      completed: null,
+      id: activityId,
+      archived: placeholder,
     }
   )
 }
