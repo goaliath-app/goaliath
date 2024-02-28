@@ -15,6 +15,7 @@ import tutorialStates from '../tutorialStates'
 import { areTherePendingWeeklyActivities } from '../activityHandler'
 import { faTrophy } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { selectVisibleActivities } from '../redux/selectors';
 
 
 function selectTodayScreenState(state) {
@@ -28,7 +29,7 @@ function selectTodayScreenState(state) {
     return 'no-active-activities'
   }
 
-  if( selectEntriesByDay(state, today).length == 0 ) {
+  if( selectVisibleActivities(state, today).length == 0 ) {
     if( areTherePendingWeeklyActivities(state, today) ) {
       return 'only-weekly-activities'
     }

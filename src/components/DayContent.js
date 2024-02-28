@@ -17,6 +17,7 @@ import { getToday } from '../util'
 import tutorialStates from '../tutorialStates'
 import Animated, { Layout } from 'react-native-reanimated'
 import { TodayScreenItem } from '../activityHandler'
+import { selectVisibleActivities } from '../redux/selectors';
 
 
 const FutureWarning = () => {
@@ -45,7 +46,6 @@ const DayContent = withTheme(({ theme, date }) => {
   // selectors
   // using getToday because on day change getTodaySelector was still returning the previous day
   const today      = getToday(useSelector(state => state.settings.dayStartHour))
-  const entryList  = useSelector((state) => selectEntriesByDay(state, date))
 
   // compute values
   const timeStatus = (
@@ -54,56 +54,35 @@ const DayContent = withTheme(({ theme, date }) => {
     'future'
   )
 
-  const completedActivities = entryList.filter(entry => !entry.archived && entry.completed)
-  const pendingActivities   = entryList.filter(entry => !entry.archived && !entry.completed)
+  const visibleActivities = useSelector(state => selectVisibleActivities(state, date))
+  const taskList   = useSelector(state => selectAllTasksByDate(state, date))
 
   return (
     <Animated.View style={{flex: 1}} layout={Layout.delay(100)}>
       <ScrollView style={{flex: 1}}>
-        { timeStatus == 'past' && completedActivities.length == 0 && pendingActivities.length == 0 ? <EmptyPastWarning /> : null }
+        { timeStatus == 'past' && visibleActivities.length == 0 && taskList.length == 0 ? <EmptyPastWarning /> : null }
         { timeStatus == 'future' ? <FutureWarning /> : null }
-        <DayContentList date={date} />
+        <DayContentList date={date} today={today} visibleActivities={visibleActivities} taskList={taskList} />
         <BottomScreenPadding />  
       </ScrollView>
     </Animated.View>
   );
 })
 
-function selectVisibleActivities(state, date){
-  const activities = selectAllActiveActivitiesByDate(state, date)
-
-  const visibleActivities = activities.filter(a => {
-    if(dueToday(state, a.id, date)){
-      return true
-    }
-    if(dueThisWeek(state, a.id, date)){
-      const entry = selectEntryByActivityIdAndDate(state, a.id, date)
-      if(!entry.archived){
-        return true
-      }
-    }
-    return false
-  })
-  return visibleActivities
-}
-
-const DayContentList = ({ date }) => {
+const DayContentList = ({ date, today, visibleActivities, taskList }) => {
     // setup hooks
     const navigation = useNavigation()
-  
+
     // selectors
     // using getToday because on day change getTodaySelector was still returning the previous day
-    const today      = getToday(useSelector(state => state.settings.dayStartHour))
-    const taskList   = useSelector(state => selectAllTasksByDate(state, date))
-
-    const visibleActivities = useSelector(state => selectVisibleActivities(state, date))
 
     const tasksAdded = useSelector(state => areTasksAdded(state, date))
+
     const areWeekliesSelectedTodayResult = useSelector(areWeekliesSelectedToday)
     const areTherePendingWeeklyActivitiesResult = useSelector((state) => areTherePendingWeeklyActivities(state, date))
     const areThereWeeklyActivitiesResult = useSelector(areThereWeeklyActivities)
     const tutorialState = useSelector(selectTutorialState)
-  
+
     // compute values
     const timeStatus = (
       today.toISO() == date.toISO() ? 'today' :
