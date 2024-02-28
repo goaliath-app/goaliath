@@ -2,7 +2,7 @@ import React from 'react';
 import { withTheme } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { toggleCompleted, selectEntryByActivityIdAndDate, selectActivityByIdAndDate } from '../../../redux'
+import { toggleCompleted, selectEntryByActivityIdAndDate, selectActivityByIdAndDate, selectGoalById } from '../../../redux'
 import { Checkbox, ActivityListItem } from '../../../components'
 import { useTranslation } from 'react-i18next'
 
@@ -10,12 +10,14 @@ const TodayScreenItem = withTheme(({ activityId, date, theme }) => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
+  const goal = useSelector((state) => selectGoalById(state, activity.goalId))
   const entry = useSelector((state) => selectEntryByActivityIdAndDate(state, activityId, date))
   const { t, i18 } = useTranslation()
   
   return(
     <ActivityListItem
       activity={activity}
+      goal={goal}
       entry={entry}
       date={date}
       left={() => (

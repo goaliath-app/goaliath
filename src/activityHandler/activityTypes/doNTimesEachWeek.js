@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { 
   selectEntryByActivityIdAndDate, createOrUnarchiveEntry, toggleCompleted, 
   selectActivityByIdAndDate, getWeeklyStats, getTodaySelector, setRepetitions,
-  isActiveSelector, archiveOrDeleteEntry, getPeriodStats,
+  isActiveSelector, archiveOrDeleteEntry, getPeriodStats, selectGoalById,
 } from '../../redux'
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
@@ -20,6 +20,7 @@ const TodayScreenItem = withTheme(({ activityId, date, theme }) => {
   
   // selector hooks
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
+  const goal = useSelector((state) => selectGoalById(state, activity.goalId))
   const entry = useSelector((state) => selectEntryByActivityIdAndDate(state, activityId, date))
   const todayDate = useSelector(getTodaySelector)
   const { repetitionsCount } = useSelector((state) => getWeeklyStats(state, date, activityId))
@@ -61,6 +62,7 @@ const TodayScreenItem = withTheme(({ activityId, date, theme }) => {
     <View>
       <ActivityListItem
         activity={activity}
+        goal={goal}
         entry={entry}
         date={date}
         left={leftSlot}
@@ -128,7 +130,6 @@ const SelectWeekliesItemCompleted = withTheme(({ activity, today, theme, isSelec
         onCheckboxPress={onPress}
         date={today}
         checkboxColor={theme.colors.completedCheckbox}
-        onCheckboxPress={()=>{}}
       /> 
       :
       null

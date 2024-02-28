@@ -6,7 +6,7 @@ import {
   getTodayTime, isActivityRunning, getPreferedExpression, secondsToUnit,
  } from '../../../util'
 import { toggleCompleted, stopTodayTimer, startTodayTimer, selectEntryByActivityIdAndDate, 
-  selectActivityByIdAndDate, getTodaySelector } from '../../../redux'
+  selectActivityByIdAndDate, getTodaySelector, selectGoalById } from '../../../redux'
 import PlayFilledIcon from '../../../../assets/play-filled'
 import PlayOutlinedIcon from '../../../../assets/play-outlined'
 import PauseFilledIcon from '../../../../assets/pause-filled'
@@ -29,6 +29,7 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
 
   // selector hooks
   const activity = useSelector((state) => selectActivityByIdAndDate(state, activityId, date))
+  const goal = useSelector((state) => selectGoalById(state, activity.goalId))
   const entry = useSelector((state) => selectEntryByActivityIdAndDate(state, activityId, date))
   const todayDate = useSelector(getTodaySelector)
 
@@ -113,6 +114,7 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
     <View>
       <ActivityListItem
         activity={activity}
+        goal={goal}
         entry={entry}
         date={date}
         left={leftSlot}

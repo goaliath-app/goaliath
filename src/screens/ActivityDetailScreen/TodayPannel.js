@@ -25,7 +25,7 @@ import { useNavigation } from '@react-navigation/native';
 
 
 export const TodayPannelModal = withTheme(({ 
-  date, activity, entry, theme, timerDisabled=false, visible=true, onDismiss=()=>{}
+  date, activity, goal, entry, theme, timerDisabled=false, visible=true, onDismiss=()=>{}
 }) => {
   const dayStartHour = useSelector(state => state.settings.dayStartHour)
   const navigation = useNavigation()
@@ -58,9 +58,9 @@ export const TodayPannelModal = withTheme(({
         style={{marginHorizontal: 15, marginTop: 0, backgroundColor: theme.colors.dialogBackground}}>
         <Dialog.Content style={{margin: 0, padding: 0, paddingRight: 0, paddingTop: 0, paddingLeft: 0}}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15}} >
-              <View style={{marginTop: 18, marginLeft: 18}}>
+              <View style={{margin: 18}}>
                 <Title>{activity.name}</Title>
-                <Caption>Japanese</Caption>
+                <Caption>{goal.name}</Caption>
               </View>
             <View style={{flexDirection: 'row', marginTop: 8}}>
               <IconButton 
