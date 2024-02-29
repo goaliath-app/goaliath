@@ -1747,10 +1747,10 @@
     mv "~2"
     safe-json-stringify "~1"
 
-"@expo/cli@0.17.5":
-  version "0.17.5"
-  resolved "https://registry.yarnpkg.com/@expo/cli/-/cli-0.17.5.tgz#b409d0ea330b3c1283b9d239bb747de9284d119e"
-  integrity sha512-9cMquL/5bBfV73CbZcWipk3KZSo8mBqdgvkoWCtEtnnlm/879ayxzMWjVIgT5yV4w+X7+N6KkBSUIIj4t9Xqew==
+"@expo/cli@0.17.6":
+  version "0.17.6"
+  resolved "https://registry.yarnpkg.com/@expo/cli/-/cli-0.17.6.tgz#dac94f99f297601b1996daa283f91f236916309a"
+  integrity sha512-vpwQOyhkqQ5Ao96AGaFntRf6dX7h7/e9T7oKZ5KfJiaLRgfmNa/yHFu5cpXG76T2R7Q6aiU4ik0KU3P7nFMzEw==
   dependencies:
     "@babel/runtime" "^7.20.0"
     "@expo/code-signing-certificates" "0.0.5"
@@ -1950,7 +1950,33 @@
     json5 "^2.2.2"
     write-file-atomic "^2.3.0"
 
-"@expo/metro-config@0.17.4", "@expo/metro-config@~0.17.0":
+"@expo/metro-config@0.17.5":
+  version "0.17.5"
+  resolved "https://registry.yarnpkg.com/@expo/metro-config/-/metro-config-0.17.5.tgz#cd135147f0cb938ec33b40751688827a74203e4b"
+  integrity sha512-2YUebeIwr6gFxcIRSVAjWK5D8YSaXBzQoRRl3muJWsH8AC8a+T60xbA3cGhsEICD2zKS5zwnL2yobgs41Ur7nQ==
+  dependencies:
+    "@babel/core" "^7.20.0"
+    "@babel/generator" "^7.20.5"
+    "@babel/parser" "^7.20.0"
+    "@babel/types" "^7.20.0"
+    "@expo/config" "~8.5.0"
+    "@expo/env" "~0.2.0"
+    "@expo/json-file" "~8.3.0"
+    "@expo/spawn-async" "^1.7.2"
+    babel-preset-fbjs "^3.4.0"
+    chalk "^4.1.0"
+    debug "^4.3.2"
+    find-yarn-workspace-root "~2.0.0"
+    fs-extra "^9.1.0"
+    getenv "^1.0.0"
+    glob "^7.2.3"
+    jsc-safe-url "^0.2.4"
+    lightningcss "~1.19.0"
+    postcss "~8.4.32"
+    resolve-from "^5.0.0"
+    sucrase "3.34.0"
+
+"@expo/metro-config@~0.17.0":
   version "0.17.4"
   resolved "https://registry.yarnpkg.com/@expo/metro-config/-/metro-config-0.17.4.tgz#3896d65f779963a8ce7069a4bae4546b6541219c"
   integrity sha512-PxqDMuVjXQeboa6Aj8kNj4iTxIpwpfoYlF803qOjf1LE1ePlREnWNwqy65ESCBnCmekYIO5hhm1Nksa+xCvuyg==
@@ -2745,6 +2771,34 @@
     component-type "^1.2.1"
     join-component "^1.1.0"
 
+"@sentry-internal/feedback@7.100.1":
+  version "7.100.1"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/feedback/-/feedback-7.100.1.tgz#99585ba6f71eca3e7afe918273dd55b12f3aac8a"
+  integrity sha512-yqcRVnjf+qS+tC4NxOKLJOaSJ+csHmh/dHUzvCTkf5rLsplwXYRnny2r0tqGTQ4tuXMxwgSMKPYwicg81P+xuw==
+  dependencies:
+    "@sentry/core" "7.100.1"
+    "@sentry/types" "7.100.1"
+    "@sentry/utils" "7.100.1"
+
+"@sentry-internal/replay-canvas@7.100.1":
+  version "7.100.1"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/replay-canvas/-/replay-canvas-7.100.1.tgz#d37228575931b869d2ad415af46b342d83dd0fd7"
+  integrity sha512-TnqxqJGhbFhhYRhTG2WLFer+lVieV7mNGeIxFBiw1L4kuj8KGl+C0sknssKyZSRVJFSahhHIosHJGRMkkD//7g==
+  dependencies:
+    "@sentry/core" "7.100.1"
+    "@sentry/replay" "7.100.1"
+    "@sentry/types" "7.100.1"
+    "@sentry/utils" "7.100.1"
+
+"@sentry-internal/tracing@7.100.1":
+  version "7.100.1"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/tracing/-/tracing-7.100.1.tgz#4329492e50c390567197a4acbf7e3672b1db7820"
+  integrity sha512-+u9RRf5eL3StiyiRyAHZmdkAR7GTSGx4Mt4Lmi5NEtCcWlTGZ1QgW2r8ZbhouVmTiJkjhQgYCyej3cojtazeJg==
+  dependencies:
+    "@sentry/core" "7.100.1"
+    "@sentry/types" "7.100.1"
+    "@sentry/utils" "7.100.1"
+
 "@sentry-internal/tracing@7.81.1":
   version "7.81.1"
   resolved "https://registry.yarnpkg.com/@sentry-internal/tracing/-/tracing-7.81.1.tgz#1180365cd8a9e18cb0f92e1ea970161840ec0e2e"
@@ -2753,6 +2807,19 @@
     "@sentry/core" "7.81.1"
     "@sentry/types" "7.81.1"
     "@sentry/utils" "7.81.1"
+
+"@sentry/browser@7.100.1":
+  version "7.100.1"
+  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-7.100.1.tgz#146ffca94cc187ecbf49915ef3100f6037316110"
+  integrity sha512-IxHQ08ixf0bmaWpe4yt1J4UUsOpg02fxax9z3tOQYXw5MSzz5pDXn8M8DFUVJB3wWuyXhHXTub9yD3VIP9fnoA==
+  dependencies:
+    "@sentry-internal/feedback" "7.100.1"
+    "@sentry-internal/replay-canvas" "7.100.1"
+    "@sentry-internal/tracing" "7.100.1"
+    "@sentry/core" "7.100.1"
+    "@sentry/replay" "7.100.1"
+    "@sentry/types" "7.100.1"
+    "@sentry/utils" "7.100.1"
 
 "@sentry/browser@7.81.1":
   version "7.81.1"
@@ -2819,6 +2886,14 @@
     "@sentry/cli-win32-i686" "2.25.2"
     "@sentry/cli-win32-x64" "2.25.2"
 
+"@sentry/core@7.100.1":
+  version "7.100.1"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-7.100.1.tgz#7b8e101a931af8e8b3b2449534749f882772df4f"
+  integrity sha512-f+ItUge/o9AjlveQq0ZUbQauKlPH1FIJbC1TRaYLJ4KNfOdrsh8yZ29RmWv0cFJ/e+FGTr603gWpRPObF5rM8Q==
+  dependencies:
+    "@sentry/types" "7.100.1"
+    "@sentry/utils" "7.100.1"
+
 "@sentry/core@7.81.1":
   version "7.81.1"
   resolved "https://registry.yarnpkg.com/@sentry/core/-/core-7.81.1.tgz#082fd9122bf9a488c8e05b1754724ddbc2d5cf30"
@@ -2826,6 +2901,15 @@
   dependencies:
     "@sentry/types" "7.81.1"
     "@sentry/utils" "7.81.1"
+
+"@sentry/hub@7.100.1":
+  version "7.100.1"
+  resolved "https://registry.yarnpkg.com/@sentry/hub/-/hub-7.100.1.tgz#aacc7608c5b6c056f1ca83ae877de6a9c122d403"
+  integrity sha512-zdt7f1k+5JE5FAunzBZUEFbvK5YP/LekLMeogTonaRObB07J6fJ9FD4mtNk7pV0utrTDwR+n942qmp+LbWauWA==
+  dependencies:
+    "@sentry/core" "7.100.1"
+    "@sentry/types" "7.100.1"
+    "@sentry/utils" "7.100.1"
 
 "@sentry/hub@7.81.1":
   version "7.81.1"
@@ -2835,6 +2919,16 @@
     "@sentry/core" "7.81.1"
     "@sentry/types" "7.81.1"
     "@sentry/utils" "7.81.1"
+
+"@sentry/integrations@7.100.1":
+  version "7.100.1"
+  resolved "https://registry.yarnpkg.com/@sentry/integrations/-/integrations-7.100.1.tgz#f0361a437877a33af389424313b58d5a57d7ad27"
+  integrity sha512-RUyZHcsN3Plc8G4hJN3BCMdbwS8ljUY3E3iLjzucA4HroBsGk5AMc6n7Pp/QqFIRgxrPjKEgA52Wgy5Nq6dSvw==
+  dependencies:
+    "@sentry/core" "7.100.1"
+    "@sentry/types" "7.100.1"
+    "@sentry/utils" "7.100.1"
+    localforage "^1.8.1"
 
 "@sentry/integrations@7.81.1":
   version "7.81.1"
@@ -2860,6 +2954,31 @@
     "@sentry/types" "7.81.1"
     "@sentry/utils" "7.81.1"
 
+"@sentry/react-native@5.19.1":
+  version "5.19.1"
+  resolved "https://registry.yarnpkg.com/@sentry/react-native/-/react-native-5.19.1.tgz#31635328fd6578daaf815be4fe3a9bf5bbaff7b4"
+  integrity sha512-i2vfbvTkohsXvvMMCozeVOrwS07zVtvwYsvooEZOvQIgq/c41QQ4LmbZK7efLrfUsxkk3MsISwMVma+MncqTHA==
+  dependencies:
+    "@sentry/browser" "7.100.1"
+    "@sentry/cli" "2.25.2"
+    "@sentry/core" "7.100.1"
+    "@sentry/hub" "7.100.1"
+    "@sentry/integrations" "7.100.1"
+    "@sentry/react" "7.100.1"
+    "@sentry/types" "7.100.1"
+    "@sentry/utils" "7.100.1"
+
+"@sentry/react@7.100.1":
+  version "7.100.1"
+  resolved "https://registry.yarnpkg.com/@sentry/react/-/react-7.100.1.tgz#a8621f2124848b6a7bb1fc6279167f5e3cbc44f1"
+  integrity sha512-EdrBtrXVLK2LSx4Rvz/nQP7HZUZQmr+t3GHV8436RAhF6vs5mntACVMBoQJRWiUvtZ1iRo3rIsIdah7DLiFPgQ==
+  dependencies:
+    "@sentry/browser" "7.100.1"
+    "@sentry/core" "7.100.1"
+    "@sentry/types" "7.100.1"
+    "@sentry/utils" "7.100.1"
+    hoist-non-react-statics "^3.3.2"
+
 "@sentry/react@7.81.1":
   version "7.81.1"
   resolved "https://registry.yarnpkg.com/@sentry/react/-/react-7.81.1.tgz#6a94e8e373a5bf27330cea2eb1a603ae0eb0b8ba"
@@ -2869,6 +2988,16 @@
     "@sentry/types" "7.81.1"
     "@sentry/utils" "7.81.1"
     hoist-non-react-statics "^3.3.2"
+
+"@sentry/replay@7.100.1":
+  version "7.100.1"
+  resolved "https://registry.yarnpkg.com/@sentry/replay/-/replay-7.100.1.tgz#d9af5f8e92ce0f93cef89f5aef74d91a8d12c3eb"
+  integrity sha512-B1NFjzGEFaqejxBRdUyEzH8ChXc2kfiqlA/W/Lg0aoWIl2/7nuMk+l4ld9gW5F5bIAXDTVd5vYltb1lWEbpr7w==
+  dependencies:
+    "@sentry-internal/tracing" "7.100.1"
+    "@sentry/core" "7.100.1"
+    "@sentry/types" "7.100.1"
+    "@sentry/utils" "7.100.1"
 
 "@sentry/replay@7.81.1":
   version "7.81.1"
@@ -2880,10 +3009,22 @@
     "@sentry/types" "7.81.1"
     "@sentry/utils" "7.81.1"
 
+"@sentry/types@7.100.1":
+  version "7.100.1"
+  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-7.100.1.tgz#1349b77269cecf4e80c087842575bd1a001e9995"
+  integrity sha512-fLM+LedHuKzOd8IhXBqaQuym+AA519MGjeczBa5kGakes/BbAsUMwsNfjsKQedp7Kh44RgYF99jwoRPK2oDrXw==
+
 "@sentry/types@7.81.1":
   version "7.81.1"
   resolved "https://registry.yarnpkg.com/@sentry/types/-/types-7.81.1.tgz#2b2551fc291e1089651fd574a68f7c4175878bd5"
   integrity sha512-dvJvGyctiaPMIQqa46k56Re5IODWMDxiHJ1UjBs/WYDLrmWFPGrEbyJ8w8CYLhYA+7qqrCyIZmHbWSTRIxstHw==
+
+"@sentry/utils@7.100.1":
+  version "7.100.1"
+  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-7.100.1.tgz#6e26f3b06b1e485a2180f464ab3374ecb8d5e407"
+  integrity sha512-Ve6dXr1o6xiBe3VCoJgiutmBKrugryI65EZAbYto5XI+t+PjiLLf9wXtEMF24ZrwImo4Lv3E9Uqza+fWkEbw6A==
+  dependencies:
+    "@sentry/types" "7.100.1"
 
 "@sentry/utils@7.81.1":
   version "7.81.1"
@@ -4804,10 +4945,15 @@ expo-eas-client@~0.11.0:
   resolved "https://registry.yarnpkg.com/expo-eas-client/-/expo-eas-client-0.11.2.tgz#2e8d6f347dcea38b58c2b6a21db7c632383fb1ba"
   integrity sha512-SY7rVFxb4ut/OMTgR7A39Jg+8+hXwQNRpZd+RBpB+B5XV2STj/pWXHnGFhBayEF4umI4SxrOvisY90rlPWVO9Q==
 
-expo-file-system@~16.0.0, expo-file-system@~16.0.6:
+expo-file-system@~16.0.0:
   version "16.0.6"
   resolved "https://registry.yarnpkg.com/expo-file-system/-/expo-file-system-16.0.6.tgz#07a140a7bcb44b42bd3f0b465e7583cc7f7d7078"
   integrity sha512-ATCHL7nEg2WwKeamW/SDTR9jBEqM5wncFq594ftKS5QFmhKIrX48d9jyPFGnNq+6h8AGPg4QKh2KCA4OY49L4g==
+
+expo-file-system@~16.0.7:
+  version "16.0.7"
+  resolved "https://registry.yarnpkg.com/expo-file-system/-/expo-file-system-16.0.7.tgz#0b3bd920a602b1c474d57a6b51202986113e1ef8"
+  integrity sha512-BELr1Agj6WK0PKVMcD0rqC3fP5unKfp2KW8/sNhtTHgdzQ/F0Pylq9pTk9u7KEu0ZbEdTpk5EMarLMPwffi3og==
 
 expo-font@~11.10.3:
   version "11.10.3"
@@ -4931,20 +5077,20 @@ expo-updates@~0.24.11:
     fbemitter "^3.0.0"
     resolve-from "^5.0.0"
 
-expo@^50.0.0:
-  version "50.0.7"
-  resolved "https://registry.yarnpkg.com/expo/-/expo-50.0.7.tgz#d32e6f05e03e7b97d53571f5b3a453a1c4d72fde"
-  integrity sha512-lTqIrKOUTKHLdTuAaJzZihi1v7F8Ix1dOXVWMpToDy9zPC/s+fet0fbyXdFUxYsCUyuEDIB9tvejrTYZk8Hm0Q==
+expo@~50.0.8:
+  version "50.0.8"
+  resolved "https://registry.yarnpkg.com/expo/-/expo-50.0.8.tgz#2a5c5699be8da9dfb8fd9c6cae7daae28149cc43"
+  integrity sha512-8yXsoMbFRjWyEDNuFRtH0vTFvEjFnnwP+LceS6xmXGp+IW1hKdN1X6Bj1EUocFtepH0ruHDPCof1KvPoWfUWkw==
   dependencies:
     "@babel/runtime" "^7.20.0"
-    "@expo/cli" "0.17.5"
+    "@expo/cli" "0.17.6"
     "@expo/config" "8.5.4"
     "@expo/config-plugins" "7.8.4"
-    "@expo/metro-config" "0.17.4"
+    "@expo/metro-config" "0.17.5"
     "@expo/vector-icons" "^14.0.0"
     babel-preset-expo "~10.0.1"
     expo-asset "~9.0.2"
-    expo-file-system "~16.0.6"
+    expo-file-system "~16.0.7"
     expo-font "~11.10.3"
     expo-keep-awake "~12.8.2"
     expo-modules-autolinking "1.10.3"
