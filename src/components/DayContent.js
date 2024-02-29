@@ -3,30 +3,33 @@ import { useSelector } from 'react-redux';
 import { View, ScrollView } from 'react-native'
 import { withTheme } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native';
-import { 
+import { useTranslation } from 'react-i18next'
+import Animated, { Layout } from 'react-native-reanimated'
+import {
   SelectWeekliesListItem, SelectTasksListItem, InfoCard,
   TaskListItem, BottomScreenPadding
 } from '../components';
-import { 
-  areWeekliesSelectedToday, areTasksAdded, selectEntriesByDay, 
-  selectTutorialState, selectAllTasksByDate, selectAllActiveActivitiesByDate, selectEntryByActivityIdAndDate
+import {
+  areWeekliesSelectedToday, areTasksAdded, selectAllTasksByDate
 } from '../redux'
-import { areThereWeeklyActivities, areTherePendingWeeklyActivities, dueToday, dueThisWeek } from '../activityHandler'
-import { useTranslation } from 'react-i18next'
-import { getToday } from '../util'
-import tutorialStates from '../tutorialStates'
-import Animated, { Layout } from 'react-native-reanimated'
+import {
+  areThereWeeklyActivities, areTherePendingWeeklyActivities
+} from '../activityHandler'
 import { TodayScreenItem } from '../activityHandler'
 import { selectVisibleActivities } from '../redux/selectors';
+import { getToday } from '../util';
+import { Paragraph, Text } from 'react-native-paper';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faTrophy } from '@fortawesome/free-solid-svg-icons';
 
 
 const FutureWarning = () => {
   const { t, i18n } = useTranslation()
 
   return (
-      <InfoCard 
+      <InfoCard
         title={t("dayContent.futureWarningTitle")}
-        paragraph={t("dayContent.futureWarningSubtitle")} 
+        paragraph={t("dayContent.futureWarningSubtitle")}
       />
   )
 }
@@ -35,105 +38,179 @@ const EmptyPastWarning = () => {
   const { t, i18n } = useTranslation()
 
   return (
-    <InfoCard 
+    <InfoCard
       title={t("dayContent.emptyPastWarningTitle")}
-      paragraph={t("dayContent.emptyPastWarningSubtitle")} 
+      paragraph={t("dayContent.emptyPastWarningSubtitle")}
     />
   )
 }
 
-const DayContent = withTheme(({ theme, date }) => {
-  // selectors
-  // using getToday because on day change getTodaySelector was still returning the previous day
-  const today      = getToday(useSelector(state => state.settings.dayStartHour))
+const NoActivitiesWarning = withTheme(({ theme }) => {
+  const { t, i18n } = useTranslation()
 
-  // compute values
+  return (
+    <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
+      <InfoCard title={t('today.noActivitiesInfoCard.title')}
+        extraContent={
+          <Paragraph style={{overflow: 'visible'}}>
+            <Text>{t('today.noActivitiesInfoCard.contentBeforeIcon')}</Text>
+            {/* If you know a better way of properly aligning the icon to
+            the text, PLEASE let me know (already tried all the obviuous
+            ways I knew) */}
+            <View style={{width: 20, alignItems: 'center'}}>
+              <View style={{position: 'absolute', top: -13}}>
+                <FontAwesomeIcon icon={faTrophy} size={16} color={theme.colors.onSurface} />
+              </View>
+            </View>
+            <Text>{t('today.noActivitiesInfoCard.contentAfterIcon')}</Text>
+          </Paragraph>}
+          // This is not properly aligned:
+          // extraContent={<Paragraph style={{overflow: 'visible'}}>Go to the Goals <FontAwesomeIcon icon={faTrophy} size={16} color={theme.colors.onSurface} /> section to plan your daily actions</Paragraph>}
+      />
+    </View>
+  )
+})
+
+const NoActiveActivitiesWarning = withTheme(({ theme }) => {
+  const { t, i18n } = useTranslation()
+
+  return (
+    <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
+      <InfoCard title={t('today.noActiveActivitiesInfoCard.title')}
+        paragraph={t('today.noActiveActivitiesInfoCard.content')} />
+    </View>
+  )
+})
+
+const NothingForTodayWarning = withTheme(({ theme }) => {
+  const { t, i18n } = useTranslation()
+
+  return (
+    <View style={{backgroundColor: theme.colors.infoCardViewBackground}}>
+      <InfoCard title={t('today.nothingForTodayInfoCard.title')}
+        paragraph={t('today.nothingForTodayInfoCard.content')} />
+    </View>
+  )
+})
+
+function dayContentSelector(state, date){
+  const dayStartHour = state.settings.dayStartHour
+  const visibleActivities = selectVisibleActivities(state, date)
+
+  let todayScreenState;
+  if(visibleActivities.length != 0){
+    todayScreenState = 'normal'
+  } else if (areTherePendingWeeklyActivities(state, date)) {
+    todayScreenState = 'only-weekly-activities'
+  } else if (selectAllActivities(state).length == 0) {
+    todayScreenState = 'no-activities'
+  } else if (selectAllActiveActivities(state).length == 0) {
+    todayScreenState = 'no-active-activities'
+  } else {
+    todayScreenState = 'nothing-for-today'
+  }
+
+  return {
+    dayStartHour,
+    visibleActivities,
+    todayScreenState,
+    today: getToday(dayStartHour),
+    taskList: selectAllTasksByDate(state, date),
+    tasksAdded: areTasksAdded(state, date),
+    areWeekliesSelectedTodayResult: areWeekliesSelectedToday(state),
+    areTherePendingWeeklyActivitiesResult: areTherePendingWeeklyActivities(state, date),
+    areThereWeeklyActivitiesResult: areThereWeeklyActivities(state)
+  }
+}
+
+const DayContent = ({ date }) => {
+  const {
+    taskList,
+    visibleActivities,
+    todayScreenState,
+    today,
+    tasksAdded,
+    areWeekliesSelectedTodayResult,
+    areTherePendingWeeklyActivitiesResult,
+    areThereWeeklyActivitiesResult,
+  } = useSelector(state => dayContentSelector(state, date))
+
   const timeStatus = (
     today.toISO() == date.toISO() ? 'today' :
     today > date ? 'past' :
     'future'
   )
 
-  const visibleActivities = useSelector(state => selectVisibleActivities(state, date))
-  const taskList   = useSelector(state => selectAllTasksByDate(state, date))
-
   return (
     <Animated.View style={{flex: 1}} layout={Layout.delay(100)}>
       <ScrollView style={{flex: 1}}>
         { timeStatus == 'past' && visibleActivities.length == 0 && taskList.length == 0 ? <EmptyPastWarning /> : null }
         { timeStatus == 'future' ? <FutureWarning /> : null }
-        <DayContentList date={date} today={today} visibleActivities={visibleActivities} taskList={taskList} />
-        <BottomScreenPadding />  
+        { timeStatus == 'today' && todayScreenState=='no-activities' ? <NoActivitiesWarning /> : null }
+        { timeStatus == 'today' && todayScreenState=='no-active-activities' ? <NoActiveActivitiesWarning /> : null }
+        { timeStatus == 'today' && todayScreenState=='nothing-for-today' ? <NothingForTodayWarning/> : null }
+
+        <DayContentList
+          date={date}
+          visibleActivities={visibleActivities}
+          taskList={taskList}
+          tasksAdded={tasksAdded}
+          areWeekliesSelectedTodayResult={areWeekliesSelectedTodayResult}
+          areTherePendingWeeklyActivitiesResult={areTherePendingWeeklyActivitiesResult}
+          areThereWeeklyActivitiesResult={areThereWeeklyActivitiesResult}
+          timeStatus={timeStatus}
+        />
+        <BottomScreenPadding />
       </ScrollView>
     </Animated.View>
   );
-})
+}
 
-const DayContentList = ({ date, today, visibleActivities, taskList }) => {
+const DayContentList = withTheme(({
+  theme,
+  date,
+  visibleActivities,
+  taskList,
+  tasksAdded,
+  areWeekliesSelectedTodayResult,
+  areTherePendingWeeklyActivitiesResult,
+  areThereWeeklyActivitiesResult,
+  timeStatus
+}) => {
     // setup hooks
     const navigation = useNavigation()
 
-    // selectors
-    // using getToday because on day change getTodaySelector was still returning the previous day
-
-    const tasksAdded = useSelector(state => areTasksAdded(state, date))
-
-    const areWeekliesSelectedTodayResult = useSelector(areWeekliesSelectedToday)
-    const areTherePendingWeeklyActivitiesResult = useSelector((state) => areTherePendingWeeklyActivities(state, date))
-    const areThereWeeklyActivitiesResult = useSelector(areThereWeeklyActivities)
-    const tutorialState = useSelector(selectTutorialState)
-
-    // compute values
-    const timeStatus = (
-      today.toISO() == date.toISO() ? 'today' :
-      today > date ? 'past' :
-      'future'
-    )
-  
     const weekliesSelectorItem = (
-        timeStatus == 'today' && areThereWeeklyActivitiesResult 
-      || 
-        tutorialState >= tutorialStates.ChooseWeekliesIntroduction 
-        && tutorialState < tutorialStates.Finished
+        timeStatus == 'today' && areThereWeeklyActivitiesResult
       ?
         [{
-          type: 'raw', 
+          type: 'raw',
           completed: areWeekliesSelectedTodayResult || !areTherePendingWeeklyActivitiesResult,
-          item: <SelectWeekliesListItem 
-                  date={date} 
-                  checked={areWeekliesSelectedTodayResult || !areTherePendingWeeklyActivitiesResult} 
-                  navigation={navigation} 
-                  disabled={timeStatus != 'today'} 
-                  style={
-                    tutorialState == tutorialStates.ChooseWeekliesIntroduction?
-                      {backgroundColor: theme.colors.todayItemHighlight} : {}
-                    } 
+          item: <SelectWeekliesListItem
+                  date={date}
+                  checked={areWeekliesSelectedTodayResult || !areTherePendingWeeklyActivitiesResult}
+                  navigation={navigation}
+                  disabled={timeStatus != 'today'}
                   { ...(areTherePendingWeeklyActivitiesResult ? {} : {color: theme.colors.completedWeekliesSelector})}
                   key='selectWeekliesItem'
                 />
-        }] 
+        }]
         : []
     )
 
     const tasksSelectorItem = (
-      timeStatus == 'today' && tutorialState >= tutorialStates.OneTimeTasksIntroduction ?
+      timeStatus == 'today' ?
         [{
           type: 'raw',
           completed: tasksAdded,
           item: <SelectTasksListItem
                   checked={tasksAdded}
                   onPress={() => {navigation.navigate('AddTasks')}}
-                  style={
-                    tutorialState == tutorialStates.OneTimeTasksIntroduction?
-                      {backgroundColor: theme.colors.todayItemHighlight} : {}
-                    }
                   key='tasksSelectorItem'
                 />
         }]
         : []
     )
-
-
 
     const activityItems = visibleActivities.map(item => ({ type: 'activity', id: item.id, completed: false }))
     const taskItems = taskList.map(item => ({ type: 'task', item: item, completed: item.completed }))
@@ -141,7 +218,7 @@ const DayContentList = ({ date, today, visibleActivities, taskList }) => {
     let listItems = activityItems.concat(taskItems)
     listItems = listItems.concat(weekliesSelectorItem)
     listItems = listItems.concat(tasksSelectorItem)
-    
+
     // sort items
     listItems.sort((a, b) => {
       // sort by completion
@@ -170,14 +247,12 @@ const DayContentList = ({ date, today, visibleActivities, taskList }) => {
         return item.item
       }
     }
-    
+
     return (
       <View>
-        {
-          listItems.map(item => renderItem(item))
-        }
+        { listItems.map(item => renderItem(item)) }
       </View>
     )
-}
+})
 
 export default DayContent
