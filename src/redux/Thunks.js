@@ -159,9 +159,10 @@ export function updateLogs(){
       newestActivityEntryDate = selectLatestActivityEntryDate(state)
     }
 
-    // if there are logs
-    if(newestLogDate.toISO() != epoch.toISO()){
+    // TODO: set condition so the thunk only runs if there is need to
+    if(false && newestLogDate.toISO() != epoch.toISO()){
       // cap all open timers of the previous day
+      // console.log("capAllTimers")
       dispatch(capAllTimers({ date: newestLogDate }))
     }
   }
