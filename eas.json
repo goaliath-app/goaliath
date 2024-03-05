@@ -5,20 +5,21 @@
   "build": {
     "dev-client": {
       "developmentClient": true,
+      "autoIncrement": true,
       "distribution": "internal"
     },
-    "staging-apk": {
+    "production-apk": {
+      "channel": "production",
       "distribution": "internal",
-      "releaseChannel": "staging",
+      "autoIncrement": true,
       "android": {
         "buildType": "apk"
       }
     },
-    "staging": {
-      "releaseChannel": "staging"
-    },
     "production": {
-      "releaseChannel": "production"
+      "channel": "production",
+      "distribution": "store",
+      "autoIncrement": true
     }
   },
   "submit": {
