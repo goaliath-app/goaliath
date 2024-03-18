@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 
-import { newEntry, getNewestDate } from './../util'
+import { serializeDate, newEntry, getNewestDate } from './../util'
 
 import {
   selectAllActivities, setActivity, selectActivityById, 
@@ -137,7 +137,7 @@ export function updateLogs(){
     // if tomorrows log already exists (due to a daystarthour change)
     while(newestLogDate > today){
       // hard delete it and repeat
-      dispatch(deleteLog({ isoDate: newestLogDate.toISO() }))
+      dispatch(deleteLog({ isoDate: serializeDate(newestLogDate) }))
       state = getState()
       const { logs: { ids: newLoggedDatesISO } } = state
       newestLogDate = getNewestDate(newLoggedDatesISO)
@@ -159,7 +159,7 @@ export function updateLogs(){
       newestActivityEntryDate = selectLatestActivityEntryDate(state)
     }
 
-    if(newestLogDate < today && areThereOpenTimers(state, newestLogDate.toISO())){
+    if(newestLogDate < today && areThereOpenTimers(state, serializeDate(newestLogDate))){
       // cap all open timers of the previous day
       dispatch(capAllTimers({ date: newestLogDate }))
     }

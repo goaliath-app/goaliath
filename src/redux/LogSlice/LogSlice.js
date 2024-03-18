@@ -1,6 +1,6 @@
 import { createSlice, createEntityAdapter, current } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import { isActivityRunning, getTodayTime, newEntry } from '../../util'
+import { serializeDate, isActivityRunning, getTodayTime, newEntry, deserializeDate } from '../../util'
 import arrayMove from 'array-move'
 import Duration from 'luxon/src/duration.js'
 
@@ -57,7 +57,7 @@ function getOrCreateDay(state, date){
     return day
   }
   const log = {
-    id: date.toISO ? date.toISO() : date,
+    id: serializeDate(date),
     weekliesSelected: false,
     entries: entryAdapter.getInitialState(),
   }
@@ -88,31 +88,31 @@ const logSlice = createSlice({
     addEntry(state, action){
       /* add a single entry to a daily log */
       const { date, entry } = action.payload
-      const selectedDay = getOrCreateDay(state, date.toISO())
+      const selectedDay = getOrCreateDay(state, serializeDate(date))
       entryAdapter.addOne(selectedDay.entries, entry)
     },
     upsertEntry(state, action){
       const { date, entry } = action.payload
-      const day = date.toISO()
+      const day = serializeDate(date)
       const dayLog = getOrCreateDay(state, day).entries
       entryAdapter.upsertOne(dayLog, entry)
     },
     replaceEntry(state, action){
       const { date, entry } = action.payload
-      const day = date.toISO()
+      const day = serializeDate(date)
       const dayLog = getOrCreateDay(state, day).entries.entities
       dayLog[entry.id] = entry
     },
     deleteEntry(state, action){
       const { date, entryId } = action.payload
-      const today = date.toISO()
+      const today = serializeDate(date)
       const todaysLog = getOrCreateDay(state, today).entries
       entryAdapter.removeOne(todaysLog, entryId)
     },
     toggleCompleted(state, action){
       // select data
       const { date, id } = action.payload
-      const log = getOrCreateDay(state, date.toISO())
+      const log = getOrCreateDay(state, serializeDate(date))
       // get index of the first completed entry in that date
       let firstCompletedIndex = 0
       for(let i = 0; i < log.entries.ids.length; i++){
@@ -130,7 +130,7 @@ const logSlice = createSlice({
       }else if(entry.completed){
         entry.completed = null
       }else{
-        entry.completed = DateTime.now().toISO()
+        entry.completed = serializeDate(DateTime.now())
       }
 
       // move the entry to its new position
@@ -139,7 +139,7 @@ const logSlice = createSlice({
     },
     startTimer(state, action){
       const { date, id } = action.payload
-      const today = date.toISO()
+      const today = serializeDate(date)
       const todaysLog = getOrCreateDay(state, today)
       for(let entry of Object.values(todaysLog.entries.entities)){
         if(isActivityRunning(entry.intervals)){
@@ -147,18 +147,18 @@ const logSlice = createSlice({
         }
       }
       let activityEntry = getOrCreateEntry(id, todaysLog)
-      activityEntry.intervals = [ ...activityEntry.intervals, {startDate: DateTime.now().toISO()} ]
+      activityEntry.intervals = [ ...activityEntry.intervals, {startDate: serializeDate(DateTime.now())} ]
     },
     stopTimer(state, action){
       const { date, id } = action.payload
-      const today = date.toISO()
+      const today = serializeDate(date)
       const todaysLog = getOrCreateDay(state, today)
       const activityEntry = todaysLog.entries.entities[id]
       stopActivity(activityEntry)
     },
     sortLog(state, action){
       const { date } = action.payload
-      const today = date.toISO()
+      const today = serializeDate(date)
       const todaysLog = getOrCreateDay(state, today).entries
       todaysLog.ids.sort((idA, idB) => {return compareEntries(todaysLog.entities[idA], todaysLog.entities[idB])})
     },
@@ -181,7 +181,7 @@ const logSlice = createSlice({
         // remove all open intrevals that start past the cap date
         entry.intervals = entry.intervals.filter((interval => (
           interval.endDate ||
-          DateTime.fromISO(interval.startDate) < DateTime.fromISO(capIsoDate)
+          deserializeDate(interval.startDate) < deserializeDate(capIsoDate)
         )))
 
         // set open interval's endDate to capIsoDate
@@ -195,14 +195,14 @@ const logSlice = createSlice({
     },
     setRepetitions(state, action){
       const { date, id, repetitions } = action.payload
-      const log = getOrCreateDay(state, date.toISO())
+      const log = getOrCreateDay(state, serializeDate(date))
       let entry = getOrCreateEntry(id, log)
 
       if(entry.repetitions == undefined) return
 
       if( entry.repetitions.length < repetitions ){
         for(let i = entry.repetitions.length; i < repetitions; i++){
-          entry.repetitions.push(DateTime.now().toISO())
+          entry.repetitions.push(serializeDate(DateTime.now()))
         }
       }else if( entry.repetitions.length > repetitions ){
         entry.repetitions = entry.repetitions.slice(0, repetitions)
@@ -222,7 +222,7 @@ export const {
 } = logAdapter.getSelectors(state => state.logs)
 
 export function selectEntriesByDay(state, day){
-  const thatDayLog = selectLogById(state, DateTime.fromISO(day).toISO())
+  const thatDayLog = selectLogById(state, serializeDate(deserializeDate(day)))
   const entrySelectors = entryAdapter.getSelectors()
   if(thatDayLog){
     const todayEntries = entrySelectors.selectAll(thatDayLog.entries)
@@ -234,7 +234,7 @@ export function selectEntriesByDay(state, day){
 
 export function selectEntryByActivityIdAndDate(state, activityId, date){
   const { dayStartHour } = state.settings
-  const thatDaysLog = state.logs.entities[date.toISO()]
+  const thatDaysLog = state.logs.entities[serializeDate(date)]
   return thatDaysLog?.entries.entities[activityId] ?? newEntry(activityId, true)
 }
 
@@ -274,11 +274,11 @@ function getStartOfWeekDay(date, weekDayNumber){
 
 function stopActivity(entry){
   const lastInterval = entry.intervals.slice(-1)[0]
-  lastInterval.endDate = DateTime.now().toISO()
+  lastInterval.endDate = serializeDate(DateTime.now())
 }
 
 function selectTodayLog(state){
-  const log = selectLogById(state, getTodaySelector(state).toISO())
+  const log = selectLogById(state, serializeDate(getTodaySelector(state)))
   return log
 }
 
@@ -317,7 +317,7 @@ export function getPeriodStats(state, startDate, endDate, activityId){
 }
 
 export function getLifeTimeStats(state, activityId){
-  const firstLogDateTime = DateTime.fromISO(state.logs.ids[0])
+  const firstLogDateTime = deserializeDate(state.logs.ids[0])
   const today = getTodaySelector(state)
 
   if(!firstLogDateTime) return null

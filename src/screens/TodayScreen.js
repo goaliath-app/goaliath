@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useFocusEffect } from '@react-navigation/native';
 import { Appbar, withTheme } from 'react-native-paper'
 import { DayContent, Dialog, Header } from '../components'
-import { getToday } from '../util'
+import { getToday, serializeDate } from '../util'
 import { updateLogs } from '../redux'
 
 
@@ -28,7 +28,7 @@ const TodayScreen = withTheme(({ navigation, theme }) => {
   const { dayStartHour, today } = useSelector(todayScreenSelector)
 
   function updateDay(){
-    if(date.toISO() != today.toISO()) {
+    if(serializeDate(date) != serializeDate(today)) {
       setDate(today)
       setDayChangeDialogVisible(true)
     }
@@ -39,7 +39,7 @@ const TodayScreen = withTheme(({ navigation, theme }) => {
 
   useEffect(() => {
     setDate(today)
-  }, [today.toISO()])
+  }, [serializeDate(today)])
 
   // effect to check every minute if current day has changed
   useEffect(() => {
@@ -47,7 +47,7 @@ const TodayScreen = withTheme(({ navigation, theme }) => {
         updateDay()
       }, 60000)
       return () => clearInterval(intervalId)  // this function executes before running the effect again
-  }, [today.toISO(), date.toISO(), dayStartHour])
+  }, [serializeDate(today), serializeDate(date), dayStartHour])
 
   useFocusEffect(
     React.useCallback(() => {

@@ -11,7 +11,7 @@ import {
   areThereWeeklyActivities, areTherePendingWeeklyActivities
 } from '../../activityHandler'
 import { selectVisibleActivities } from '../../redux/selectors';
-import { getToday } from '../../util';
+import { getToday, serializeDate } from '../../util';
 import { EmptyPastWarning, FutureWarning, NoActivitiesWarning, NothingForTodayWarning, NoActiveActivitiesWarning } from './warnings'
 import { selectAllActiveActivities } from '../../redux/selectors';
 import { selectAllActivities } from '../../redux';
@@ -61,7 +61,7 @@ export const DayContent = ({ date }) => {
   } = useSelector(state => dayContentSelector(state, date))
 
   const timeStatus = (
-    today.toISO() == date.toISO() ? 'today' :
+    serializeDate(today) == serializeDate(date) ? 'today' :
     today > date ? 'past' :
     'future'
   )

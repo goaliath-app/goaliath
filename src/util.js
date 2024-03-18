@@ -18,11 +18,11 @@ export function getTodayTime(intervals){
   let todayTime = 0
   for(let interval of intervals){
     if(interval.startDate && interval.endDate){
-      const startDate = DateTime.fromISO(interval.startDate)
-      const endDate = DateTime.fromISO(interval.endDate)
+      const startDate = deserializeDate(interval.startDate)
+      const endDate = deserializeDate(interval.endDate)
       todayTime += Math.floor(endDate.diff(startDate, 'seconds').get('seconds'))
     }else if(interval.startDate && !interval.endDate){
-      const startDate = DateTime.fromISO(interval.startDate)
+      const startDate = deserializeDate(interval.startDate)
       todayTime -= Math.floor(startDate.diffNow("seconds").get('seconds'))  // this returns a negative number
     }
   }
@@ -98,26 +98,26 @@ export function newEntry(activityId, placeholder=false){
 export function isToday(date, dayStartDate){
   /* accepts both ISO and DateTime as arguments */
   if(!date) return false
-  date = DateTime.fromISO(date)
-  dayStartDate = DateTime.fromISO(dayStartDate)
+  date = deserializeDate(date)
+  dayStartDate = deserializeDate(dayStartDate)
   const today = getToday(dayStartDate)
-  return today.toISO() == date.toISO()
+  return serializeDate(today) == serializeDate(date)
 }
 
 export function isFuture(date, dayStartDate){
   /* accepts both ISO and DateTime as arguments */
   if(!date) return false
-  date = DateTime.fromISO(date)
-  dayStartDate = DateTime.fromISO(dayStartDate)
+  date = deserializeDate(date)
+  dayStartDate = deserializeDate(dayStartDate)
   const today = getToday(dayStartDate)
-  return today.toISO() < date.toISO()
+  return serializeDate(today) < serializeDate(date)
 }
 
 export function startOfDay(date, dayStartDate){
   /* accepts both ISO and DateTime as arguments
   returns DateTime */
-  const dayStart = DateTime.fromISO(dayStartDate)
-  date = DateTime.fromISO(date)
+  const dayStart = deserializeDate(dayStartDate)
+  date = deserializeDate(date)
   const naturalStartOfDay = date.startOf('day')
   if( date.hour < dayStart.hour
     || date.hour == dayStart.hour && date.minute < dayStart.minute ){
@@ -140,16 +140,14 @@ export function getToday(dayStartHour){
   return startOfDay(DateTime.now(), dayStartHour)
 }
 
-export function toDateTime(date){
-  /* accepts ISO and DateTime as arguments
-  returns DateTime */
-  return DateTime.fromISO(date)
-}
-
-export function toISODate(date){
+export function serializeDate(date){
   /* accepts ISO and DateTime as arguments
   returns ISO */
   return DateTime.fromISO(date).toISO()
+}
+
+export function deserializeDate(value){
+  return DateTime.fromISO(value)
 }
 
 export function isActive(activity, activityGoal){
@@ -197,7 +195,7 @@ function getItemPreviousToValue(array, value, isLessThan){
 
 export function getPreviousDate(datesArray, date){
   function isLessThan(a, b){
-    return DateTime.fromISO(a) < DateTime.fromISO(b)
+    return deserializeDate(a) < deserializeDate(b)
   }
 
   return getItemPreviousToValue(datesArray, date, isLessThan)
@@ -206,7 +204,7 @@ export function getPreviousDate(datesArray, date){
 export function getNewestDate(isoDatesList){
   const epoch = DateTime.fromMillis(0)
 
-  const loggedDateTimes = isoDatesList.map((isoDate) => DateTime.fromISO(isoDate))
+  const loggedDateTimes = isoDatesList.map((isoDate) => deserializeDate(isoDate))
   
   const newestLogDate = loggedDateTimes.reduce((curr, prev) => {
     return curr>=prev? curr : prev

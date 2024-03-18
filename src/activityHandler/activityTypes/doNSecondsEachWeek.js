@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { 
-  selectActivityById, selectEntryByActivityIdAndDate, toggleCompleted, 
-  stopTodayTimer, startTodayTimer, selectActivityByIdAndDate, getWeeklyStats, 
+import {
+  selectEntryByActivityIdAndDate, toggleCompleted,
+  stopTodayTimer, startTodayTimer, selectActivityByIdAndDate, getWeeklyStats,
   getTodaySelector, isActiveSelector, archiveOrDeleteEntry, getPeriodStats, selectGoalById,
 } from '../../redux'
-import { isActivityRunning, getPreferedExpression, getTodayTime, roundValue } from '../../util'
+import { serializeDate, isActivityRunning, getPreferedExpression, getTodayTime, roundValue } from '../../util'
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import Duration from 'luxon/src/duration.js'
@@ -43,7 +43,7 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
   // function definitions
   function onPressPause(){
     //Stop Timer
-    if(date.toISO() == todayDate.toISO()){
+    if(serializeDate(date) == serializeDate(todayDate)){
       dispatch(stopTodayTimer( activityId ))
     }
     //Dismiss notifications
@@ -52,7 +52,7 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
 
   function onPressStart(){
     //Start Timer
-    if(date.toISO() == todayDate.toISO()){
+    if(serializeDate(date) == serializeDate(todayDate)){
      dispatch(startTodayTimer( activityId ))
     }
     //Send timer notifications

@@ -4,6 +4,7 @@ import { View } from 'react-native'
 import { IconButton, withTheme } from 'react-native-paper'
 import { 
   getTodayTime, isActivityRunning, getPreferedExpression, secondsToUnit,
+  serializeDate
  } from '../../../util'
 import { toggleCompleted, stopTodayTimer, startTodayTimer, selectEntryByActivityIdAndDate, 
   selectActivityByIdAndDate, getTodaySelector, selectGoalById } from '../../../redux'
@@ -45,7 +46,7 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
   // function definitions
   function onPressPause(){
     //Stop timer
-    if(date.toISO() == todayDate.toISO()){
+    if(serializeDate(date) == serializeDate(todayDate)){
       dispatch(stopTodayTimer( activityId ))
     }
     //Dismiss notifications
@@ -54,7 +55,7 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
 
   function onPressStart(){
     //Start Timer
-    if(date.toISO() == todayDate.toISO()){
+    if(serializeDate(date) == serializeDate(todayDate)){
      dispatch(startTodayTimer( activityId ))
     }
     //Send timer notifications
