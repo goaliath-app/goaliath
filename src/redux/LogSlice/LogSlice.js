@@ -65,6 +65,15 @@ function getOrCreateDay(state, date){
   return log
 }
 
+function getOrCreateEntry(id, dayLog){
+  let entry = dayLog.entries.entities[id]
+  if(!entry){
+    entry = newEntry(id)
+    entryAdapter.addOne(dayLog.entries, entry)
+  }
+  return entry
+}
+
 const logSlice = createSlice({
   name: 'logs',
   initialState,
@@ -103,31 +112,30 @@ const logSlice = createSlice({
     toggleCompleted(state, action){
       // select data
       const { date, id } = action.payload
-      const log = getOrCreateDay(state, date.toISO()).entries
-      let entry = log.entities[id]
-      
+      const log = getOrCreateDay(state, date.toISO())
       // get index of the first completed entry in that date
       let firstCompletedIndex = 0
-      for(let i = 0; i < log.ids.length; i++){
-        if(log.entities[log.ids[i]].completed){
+      for(let i = 0; i < log.entries.ids.length; i++){
+        if(log.entries.entities[log.entries.ids[i]].completed){
           firstCompletedIndex = i
           break
         }
       }
-      
+
+      const entry = getOrCreateEntry(id, log)
+
       // toggle the completed status of the entry
-      if(!entry){
-        log.entities[id] = { ...newEntry(id), completed: true }
-        entry = log.entities[id]
+      if(!entry.completed){
+        entry.completed = true
       }else if(entry.completed){
         entry.completed = null
       }else{
         entry.completed = DateTime.now().toISO()
       }
-      
+
       // move the entry to its new position
       const newPosition = entry.completed? -1 : firstCompletedIndex
-      log.ids = arrayMove(log.ids, log.ids.indexOf(id), newPosition)
+      log.entries.ids = arrayMove(log.entries.ids, log.entries.ids.indexOf(id), newPosition)
     },
     startTimer(state, action){
       const { date, id } = action.payload
@@ -138,12 +146,8 @@ const logSlice = createSlice({
           stopActivity(entry)
         }
       }
-      let activityEntry = todaysLog.entries.entities[id]
-      if(!activityEntry){
-        todaysLog.entries.entities[id] = { ...newEntry(id) }
-        activityEntry = todaysLog.entries.entities[id]
-      }
-      activityEntry.intervals.push({startDate: DateTime.now().toISO()})
+      let activityEntry = getOrCreateEntry(id, todaysLog)
+      activityEntry.intervals = [ ...activityEntry.intervals, {startDate: DateTime.now().toISO()} ]
     },
     stopTimer(state, action){
       const { date, id } = action.payload
@@ -191,13 +195,8 @@ const logSlice = createSlice({
     },
     setRepetitions(state, action){
       const { date, id, repetitions } = action.payload
-      const log = getOrCreateDay(state, date.toISO()).entries
-      let entry = log.entities[id]
-
-      if(!entry){
-        log.entities[id] = { ...newEntry(id) }
-        entry = log.entities[id]
-      }
+      const log = getOrCreateDay(state, date.toISO())
+      let entry = getOrCreateEntry(id, log)
 
       if(entry.repetitions == undefined) return
 
@@ -212,18 +211,18 @@ const logSlice = createSlice({
   }
 })
 
-export const { 
-  addEntry, deleteEntry, toggleCompleted, startTimer, 
+export const {
+  addEntry, deleteEntry, toggleCompleted, startTimer,
   stopTimer, sortLog, upsertEntry, setState, deleteLog, replaceEntry,
   capAllTimers, setWeekliesSelected, setRepetitions,
 } = logSlice.actions
 
-export const { 
+export const {
   selectById: selectLogById
 } = logAdapter.getSelectors(state => state.logs)
 
 export function selectEntriesByDay(state, day){
-  const thatDayLog = selectLogById(state, day.toISO())
+  const thatDayLog = selectLogById(state, DateTime.fromISO(day).toISO())
   const entrySelectors = entryAdapter.getSelectors()
   if(thatDayLog){
     const todayEntries = entrySelectors.selectAll(thatDayLog.entries)
@@ -296,7 +295,7 @@ export function selectDailyDurationById(state, activityId, date){
 export function getPeriodStats(state, startDate, endDate, activityId){
   /* gets stats for the activity in the inclusive period between startDate
   and endDate. */
-  
+
   let loggedTime = Duration.fromMillis(0).shiftTo('hours', 'minutes', 'seconds')
   let daysDoneCount = 0
   let daysDoneList = []

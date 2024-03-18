@@ -159,13 +159,26 @@ export function updateLogs(){
       newestActivityEntryDate = selectLatestActivityEntryDate(state)
     }
 
-    // TODO: set condition so the thunk only runs if there is need to
-    if(false && newestLogDate.toISO() != epoch.toISO()){
+    if(newestLogDate < today && areThereOpenTimers(state, newestLogDate.toISO())){
       // cap all open timers of the previous day
-      // console.log("capAllTimers")
       dispatch(capAllTimers({ date: newestLogDate }))
     }
   }
+}
+
+function areThereOpenTimers(state, date){
+  const entries = selectEntriesByDay(state, date)
+
+  // check each entry
+  for(let entry of entries){
+    // if it has any open intervals
+    if(entry.intervals?.some(interval => !interval.endDate)){
+      // then yes
+      return true
+    }
+  }
+  // otherwise no
+  return false
 }
 
 

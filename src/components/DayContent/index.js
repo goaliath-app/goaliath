@@ -12,7 +12,7 @@ import {
 } from '../../activityHandler'
 import { selectVisibleActivities } from '../../redux/selectors';
 import { getToday } from '../../util';
-import { EmptyPastWarning, FutureWarning, NoActivitiesWarning, NothingForTodayWarning } from './warnings'
+import { EmptyPastWarning, FutureWarning, NoActivitiesWarning, NothingForTodayWarning, NoActiveActivitiesWarning } from './warnings'
 import { selectAllActiveActivities } from '../../redux/selectors';
 import { selectAllActivities } from '../../redux';
 import { DayContentList } from './DayContentList';
