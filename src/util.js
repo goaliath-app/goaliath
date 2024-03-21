@@ -13,6 +13,11 @@ export function hasSomethingToShow(list){
   return false
 }
 
+/**
+ * Given a list of time intervals of the form {startDate, endDate}
+ * Return a Luxon Duration object with the total time between all the
+ * intervals.
+ */
 export function getTodayTime(intervals){
   if(!intervals) {return Duration.fromObject({seconds: 0}).shiftTo('hours', 'minutes', 'seconds')}
   let todayTime = 0
@@ -113,6 +118,11 @@ export function isFuture(date, dayStartDate){
   return serializeDate(today) < serializeDate(date)
 }
 
+/**
+ * If the HH:MM of date is later than that of
+ * dayStartDate, returns date with the hour set to 00:00.
+ * Else, returns date minus one day set to 00:00.
+ */
 export function startOfDay(date, dayStartDate){
   /* accepts both ISO and DateTime as arguments
   returns DateTime */
@@ -127,6 +137,10 @@ export function startOfDay(date, dayStartDate){
     }
 }
 
+/**
+ * Returns the date of the week start with HH:MM set to 00:00
+ * having dayStartDate into account (check startOfDay function)
+ */
 export function startOfWeek(date, dayStartDate){
   /* accepts both ISO and DateTime as arguments
   returns DateTime */
@@ -134,19 +148,72 @@ export function startOfWeek(date, dayStartDate){
   return day.startOf('week')
 }
 
+/**
+ * Returns today's date with HH:MM set to 00:00 having
+ * dayStartDate into account (check startOfDay function).
+ */
 export function getToday(dayStartHour){
   /* accepts both ISO and DateTime as arguments
   returns DateTime */
   return startOfDay(DateTime.now(), dayStartHour)
 }
 
+/**
+ * Serializes a luxon datetime into a string DATE (without hour or timezone)
+ * @param {DateTime} date Luxon DateTime
+ * @returns A string of the form "YYYY-MM-DD"
+ */
 export function serializeDate(date){
   /* accepts ISO and DateTime as arguments
   returns ISO */
   return DateTime.fromISO(date).toISO()
 }
 
+/**
+ * @param {string} value A string of the form "YYYY-MM-DD"
+ * @returns A luxon datetime of that date, time 00:00 in the local timezone
+ */
 export function deserializeDate(value){
+  return DateTime.fromISO(value)
+}
+
+/**
+ * UNUSED
+ * @param {DateTime} date Luxon DateTime
+ * @returns A string representing the exact time without time zone information
+ */
+export function serializeTimestamp(date){
+  /* accepts ISO and DateTime as arguments
+  returns ISO */
+  return DateTime.fromISO(date).toISO()
+}
+
+/**
+ * UNUSED
+ * @param {String} date A string representing the exact time without time zone information
+ * @returns A luxon datetime of that moment in the local timezone
+ */
+export function deserializeTimestamp(value){
+  return DateTime.fromISO(value)
+}
+
+/**
+ * UNUSED
+ * @param {DateTime} date Luxon DateTime
+ * @returns A HH:MM:SS string representing the hour of the DateTime in the DateTime timezone
+ */
+export function serializeHour(date){
+  /* accepts ISO and DateTime as arguments
+  returns ISO */
+  return DateTime.fromISO(date).toISO()
+}
+
+/**
+ * UNUSED
+ * @param {String} date A HH:MM:SS string
+ * @returns A luxon datetime of the current day with that HH:MM:SS in the local timezone
+ */
+export function deserializeHour(value){
   return DateTime.fromISO(value)
 }
 
@@ -193,6 +260,11 @@ function getItemPreviousToValue(array, value, isLessThan){
   return array[array.length-1]
 }
 
+/**
+ * Given datesArray (a list of dates) and a date, returns the
+ * latest date in datesArray that is previous to date.
+ * If there is none, returns the epoch date.
+ */
 export function getPreviousDate(datesArray, date){
   function isLessThan(a, b){
     return deserializeDate(a) < deserializeDate(b)
@@ -201,6 +273,9 @@ export function getPreviousDate(datesArray, date){
   return getItemPreviousToValue(datesArray, date, isLessThan)
 }
 
+/**
+ * Given an list of ISO dates, returns the latest date.
+ */
 export function getNewestDate(isoDatesList){
   const epoch = DateTime.fromMillis(0)
 
