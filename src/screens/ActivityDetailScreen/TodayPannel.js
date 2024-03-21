@@ -6,10 +6,8 @@ import {
   Dialog, Title, Caption, IconButton
 } from 'react-native-paper';
 import { TimeInput, SelfManagedThreeDotsMenu } from '../../components';
-import {
-  getTodayTime, isActivityRunning, isToday, startOfDay,
-  serializeDate
-} from '../../util'
+import { isActivityRunning } from '../../util'
+import { getTodayTime, isToday, startOfDay, serializeDate } from '../../time';
 import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
 import {

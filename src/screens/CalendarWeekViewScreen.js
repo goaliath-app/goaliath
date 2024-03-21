@@ -15,7 +15,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useNavigation } from '@react-navigation/native';
-import { serializeDate, deserializeDate } from '../util';
+import { serializeDate, deserializeDate } from '../time';
 
 //TODO: Fix frequency traduction.
       //Fix activity name and activity frequency to show both

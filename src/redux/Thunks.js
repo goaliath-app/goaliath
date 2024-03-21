@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 
-import { serializeDate, newEntry, getNewestDate } from './../util'
+import { serializeDate, getNewestDate } from './../time'
+import { newEntry } from './../util'
 
 import {
   selectAllActivities, setActivity, selectActivityById, 

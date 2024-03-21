@@ -5,7 +5,7 @@ import { withTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { Header } from '../components';
 import { Calendar } from '../components/index'
-import { serializeDate } from '../util';
+import { serializeDate } from '../time';
 
 const CalendarScreen = withTheme(({ navigation, theme }) => {  
   const { t, i18n } = useTranslation()

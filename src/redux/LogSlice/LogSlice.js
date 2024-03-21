@@ -1,6 +1,7 @@
 import { createSlice, createEntityAdapter, current } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
-import { serializeDate, isActivityRunning, getTodayTime, newEntry, deserializeDate } from '../../util'
+import { serializeDate, getTodayTime, deserializeDate } from '../../time'
+import { isActivityRunning, newEntry } from '../../util'
 import arrayMove from 'array-move'
 import Duration from 'luxon/src/duration.js'
 

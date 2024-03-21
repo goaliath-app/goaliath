@@ -1,7 +1,7 @@
 import { createSlice, createEntityAdapter} from '@reduxjs/toolkit'
 import { DateTime } from 'luxon';
 import { getTodaySelector } from './selectors'
-import { serializeDate } from '../util';
+import { serializeDate } from '../time';
 
 /* SLICE DESCRIPTION
 

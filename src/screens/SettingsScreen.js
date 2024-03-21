@@ -18,7 +18,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Notifications from '../notifications';
 import { Context } from '../../App'
-import { serializeDate, deserializeDate } from '../util';
+import { serializeDate, deserializeDate } from '../time';
 
 
 const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, state, importState }) => {

@@ -1,5 +1,5 @@
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit'
-import { serializeDate, getPreviousDate, getNewestDate, deserializeDate } from '../util'
+import { serializeDate, getPreviousDate, getNewestDate, deserializeDate } from '../time'
 import { getTodaySelector } from './selectors'
 
 /* SLICE DESCRIPTION

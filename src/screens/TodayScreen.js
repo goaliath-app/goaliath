@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useFocusEffect } from '@react-navigation/native';
 import { Appbar, withTheme } from 'react-native-paper'
 import { DayContent, Dialog, Header } from '../components'
-import { getToday, serializeDate } from '../util'
+import { getToday, serializeDate } from '../time'
 import { updateLogs } from '../redux'
 
 

@@ -16,7 +16,7 @@ import {
   restoreActivity, selectTutorialState, selectGoalByIdAndDate,
   selectActivityByIdAndDate, getTodaySelector,
 } from '../../redux'
-import { isToday, isFuture, deserializeDate } from '../../util'
+import { isToday, isFuture, deserializeDate } from '../../time'
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import * as Localization from 'expo-localization'
 import tutorialStates from '../tutorialStates'
-import { serializeDate } from '../util'
+import { serializeDate } from '../time'
 
 
 const initialState = {

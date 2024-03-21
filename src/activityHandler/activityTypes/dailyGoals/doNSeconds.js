@@ -2,10 +2,10 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { View } from 'react-native'
 import { IconButton, withTheme } from 'react-native-paper'
-import { 
-  getTodayTime, isActivityRunning, getPreferedExpression, secondsToUnit,
-  serializeDate
- } from '../../../util'
+import { isActivityRunning } from '../../../util'
+import {
+  getTodayTime, serializeDate, getPreferedExpression, secondsToUnit, patata
+} from '../../../time';
 import { toggleCompleted, stopTodayTimer, startTodayTimer, selectEntryByActivityIdAndDate, 
   selectActivityByIdAndDate, getTodaySelector, selectGoalById } from '../../../redux'
 import PlayFilledIcon from '../../../../assets/play-filled'

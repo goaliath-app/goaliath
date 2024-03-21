@@ -4,7 +4,8 @@ import { StyleSheet, View, useWindowDimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { List, IconButton, Text, Portal, Dialog, Divider, withTheme } from 'react-native-paper'
 import * as Progress from 'react-native-progress';
-import { getTodayTime, isActivityRunning } from '../util'
+import { isActivityRunning } from '../util'
+import { getTodayTime } from '../time';
 import { selectAllActivities } from '../redux'
 import { useTranslation } from 'react-i18next'
 import MaterialCommunityIcons  from 'react-native-vector-icons/MaterialCommunityIcons'

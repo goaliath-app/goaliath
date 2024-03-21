@@ -6,7 +6,7 @@ import { selectAllActivitiesByDate, selectActivityByIdAndDate, selectAllActiviti
 import { selectGoalByIdAndDate } from './GoalsSlice'
 import { selectAllWeekEntriesByActivityId } from './LogSlice'
 
-import { getTodayTime, startOfDay } from './../util'
+import { getTodayTime, startOfDay } from './../time'
 
 import { dueToday, dueThisWeek } from '../activityHandler'
 

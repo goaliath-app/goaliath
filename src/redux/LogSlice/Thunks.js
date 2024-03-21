@@ -7,7 +7,7 @@ import {
   capAllTimers as pureCapAllTimers,
   setWeekliesSelected,
 } from './LogSlice'
-import { getToday, serializeDate } from './../../util'
+import { getToday, serializeDate } from './../../time'
 
 export function deleteOneTodaysEntry(entryId){
   return function(dispatch, getState){

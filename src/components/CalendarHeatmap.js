@@ -32,7 +32,7 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { getDayActivityCompletionRatio } from './../activityHandler'
 import { withTheme, Text } from 'react-native-paper'
-import { deserializeDate } from '../util';
+import { deserializeDate } from '../time';
 
 const ActivityCalendarHeatmap = withTheme(({ theme, activityId, goalId }) => {
   const colors = {

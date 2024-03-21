@@ -11,7 +11,7 @@ import {
   areThereWeeklyActivities, areTherePendingWeeklyActivities
 } from '../../activityHandler'
 import { selectVisibleActivities } from '../../redux/selectors';
-import { getToday, serializeDate } from '../../util';
+import { getToday, serializeDate } from '../../time';
 import { EmptyPastWarning, FutureWarning, NoActivitiesWarning, NothingForTodayWarning, NoActiveActivitiesWarning } from './warnings'
 import { selectAllActiveActivities } from '../../redux/selectors';
 import { selectAllActivities } from '../../redux';

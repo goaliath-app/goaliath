@@ -3,7 +3,7 @@ import { View, Text, Dimensions } from 'react-native'
 import { List, Divider, FlatList } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { getLifeTimeStats, selectAllActivities, selectActivityById } from '../redux'
-import { getPreferedExpression } from '../util'
+import { getPreferedExpression } from '../time'
 import { useSelector } from 'react-redux'
 import Duration from 'luxon/src/duration.js'
 

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { withTheme } from 'react-native-paper';
 import { DayContent, Header } from '../components';
 import { useTranslation } from 'react-i18next'
-import { deserializeDate } from '../util';
+import { deserializeDate } from '../time';
 
 const CalendarDayViewScreen = withTheme(({ navigation, route, theme }) => {
   const { t, i18n } = useTranslation()

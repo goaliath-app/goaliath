@@ -5,7 +5,8 @@ import {
   stopTodayTimer, startTodayTimer, selectActivityByIdAndDate, getWeeklyStats,
   getTodaySelector, isActiveSelector, archiveOrDeleteEntry, getPeriodStats, selectGoalById,
 } from '../../redux'
-import { serializeDate, isActivityRunning, getPreferedExpression, getTodayTime, roundValue } from '../../util'
+import { isActivityRunning, roundValue } from '../../util'
+import { serializeDate, getTodayTime, getPreferedExpression } from '../../time';
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import Duration from 'luxon/src/duration.js'
