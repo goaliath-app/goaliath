@@ -41,19 +41,7 @@
       "sentry-expo",
       "expo-localization"
     ],
-    "hooks": {
-      "postPublish": [
-        {
-          "file": "sentry-expo/upload-sourcemaps",
-          "config": {
-            "organization": "goaliath",
-            "project": "goaliath",
-            "authToken": "265a7966561944468d17d179fa676d4338efaaf6f22f469a9dab011a64026909",
-            "setCommits": true
-          }
-        }
-      ]
-    },
+    
     "extra": {
       "eas": {
         "projectId": "a81da208-c572-41f9-b40b-7e7195551825"
