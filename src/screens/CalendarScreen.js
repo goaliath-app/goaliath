@@ -5,6 +5,7 @@ import { withTheme } from 'react-native-paper';
 import { useTranslation } from 'react-i18next'
 import { Header } from '../components';
 import { Calendar } from '../components/index'
+import { serializeDate } from '../time';
 
 const CalendarScreen = withTheme(({ navigation, theme }) => {  
   const { t, i18n } = useTranslation()
@@ -16,8 +17,8 @@ const CalendarScreen = withTheme(({ navigation, theme }) => {
     }}>
       <Header title={t('calendar.headerTitle')} navigation={navigation}/>
       <Calendar
-        onDayPress={weekDate => navigation.navigate('CalendarWeekView', {date: weekDate.toISO()})}
-        onDayLongPress={dayDate => navigation.navigate('CalendarDayView', {date: dayDate.toISO()})}
+        onDayPress={weekDate => navigation.navigate('CalendarWeekView', {date: serializeDate(weekDate)})}
+        onDayLongPress={dayDate => navigation.navigate('CalendarDayView', {date: serializeDate(dayDate)})}
       />
     </View>
   );

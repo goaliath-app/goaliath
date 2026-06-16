@@ -1,8 +1,5 @@
-import { createSlice, createEntityAdapter, current } from '@reduxjs/toolkit'
-import { DateTime } from 'luxon'
-import arrayMove from 'array-move'
-import { toISODate, getPreviousDate, getNewestDate } from '../util'
-
+import { createSlice, createEntityAdapter } from '@reduxjs/toolkit'
+import { serializeDate, getPreviousDate, getNewestDate, deserializeDate } from '../time'
 import { getTodaySelector } from './selectors'
 
 /* SLICE DESCRIPTION
@@ -94,7 +91,7 @@ const activitySlice = createSlice({
       // insert the activity data into the given date
       // ( using custom function because activityAdapter's one wont work
       //   with state created in the same action dispatch )
-      setOne(state.entities[activity.id].entries, {...activity, id: toISODate(date)})
+      setOne(state.entities[activity.id].entries, {...activity, id: serializeDate(date)})
 
       return state
     },
@@ -103,7 +100,7 @@ const activitySlice = createSlice({
       const { date } = action.payload
 
       state.ids.forEach(id => {
-        entityAdapter.removeOne(state.entities[id].entries, toISODate(date))
+        entityAdapter.removeOne(state.entities[id].entries, serializeDate(date))
       })
     },
 
@@ -193,7 +190,7 @@ export function selectActivityByIdAndDate(state, activityId, date){
   const correspondingEntryDate = getPreviousDate(activityState.entries.ids, date)
   if(!correspondingEntryDate) return null
 
-  const entry = activityState.entries.entities[toISODate(correspondingEntryDate)]
+  const entry = activityState.entries.entities[serializeDate(correspondingEntryDate)]
   return { ...entry, id: activityId }
 }
 
@@ -225,7 +222,7 @@ export function selectAllEntriesByDate(state, date){
   const entries = []
 
   state.activities.ids.forEach(id => {
-    const entry = state.activities.entities[id].entries.entities[date.toISO()]
+    const entry = state.activities.entities[id].entries.entities[serializeDate(date)]
     if(entry) entries.push({ ...entry, id: id })
   })
 
@@ -243,7 +240,7 @@ export function selectLatestActivityEntryDate(state){
     latestDates.push( getNewestDate(entryDates) )
   })
 
-  return DateTime.fromISO(getNewestDate(latestDates))
+  return deserializeDate(getNewestDate(latestDates))
 }
 
 /* UTILITY FUNCTIONS */

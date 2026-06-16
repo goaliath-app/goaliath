@@ -2,16 +2,17 @@ import { createSlice } from '@reduxjs/toolkit'
 import { DateTime } from 'luxon'
 import * as Localization from 'expo-localization'
 import tutorialStates from '../tutorialStates'
+import { serializeDate } from '../time'
 
 
 const initialState = {
-    dayStartHour: DateTime.fromObject({hour:0, minute:0}).toISO(),
+    dayStartHour: serializeDate(DateTime.fromObject({hour:0, minute:0})),
     language: Localization.locale,
 
     // we are skipping the old tutorial for now
     tutorialState: tutorialStates.Finished,  
     
-    dailyNotificationHour: DateTime.fromObject({hour:9, minute:0}).toISO(),
+    dailyNotificationHour: serializeDate(DateTime.fromObject({hour:9, minute:0})),
     darkTheme: false,
 }
 

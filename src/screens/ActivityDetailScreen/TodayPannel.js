@@ -1,23 +1,20 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { View } from 'react-native'
-import { 
-  Button, List, Checkbox, Divider, Paragraph, TextInput, withTheme, Portal, 
+import {
+  Button, List, Checkbox, Divider, Paragraph, TextInput, withTheme, Portal,
   Dialog, Title, Caption, IconButton
 } from 'react-native-paper';
 import { TimeInput, SelfManagedThreeDotsMenu } from '../../components';
-import { getTodayTime, isActivityRunning, isToday, startOfDay } from '../../util'
+import { isActivityRunning } from '../../util'
+import { getTodayTime, isToday, startOfDay, serializeDate } from '../../time';
 import { DateTime, Duration } from 'luxon';
 import { useTranslation } from 'react-i18next'
-import { 
-  setRepetitions, toggleCompleted, upsertEntry, startTodayTimer, stopTodayTimer,
-  selectEntryByActivityIdAndDate 
+import {
+  setRepetitions, toggleCompleted, upsertEntry, startTodayTimer, stopTodayTimer
 } from './../../redux'
 import { usesRepetitions, getTimeGoal } from '../../activityHandler'
 import Notifications from '../../notifications';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import { faArrowUpRightFromSquare } from '@fortawesome/free-regular-svg-icons'
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -66,11 +63,11 @@ export const TodayPannelModal = withTheme(({
               <IconButton 
                 style={{marginRight: 0, height: 50, width: 50}}
                 icon={
-                () => <IonIcon color={theme.colors.onSurface} size={30} name={"md-open-outline"}/>
+                () => <IonIcon color={theme.colors.onSurface} size={30} name={"open-outline"}/>
                 } 
                 onPress={() => { 
                   onDismiss()    
-                  navigation.navigate('ActivityDetail', {activityId: activity.id, date: date.toISO()})}
+                  navigation.navigate('ActivityDetail', {activityId: activity.id, date: serializeDate(date)})}
                 }/>
               <SelfManagedThreeDotsMenu items={menuItems} color={theme.colors.onSurface} size={30} />
             </View>
@@ -133,11 +130,11 @@ const TodayPannel = withTheme(({ timerDisabled=false, entry, date, dayStartHour,
   
   function updateTotalTime(seconds){
     const newInterval = dateIsToday?{
-      startDate: DateTime.now().minus({seconds}).toISO(), 
-      endDate: DateTime.now().toISO()
+      startDate: serializeDate(DateTime.now().minus({seconds})), 
+      endDate: serializeDate(DateTime.now())
     }:{
-      startDate: startOfDay(date, dayStartHour).toISO(),
-      endDate: date.plus({seconds}).toISO()
+      startDate: serializeDate(startOfDay(date, dayStartHour)),
+      endDate: serializeDate(date.plus({seconds}))
     }
     dispatch(upsertEntry({date: date, entry: {...entry, intervals: [newInterval]}}))
   }

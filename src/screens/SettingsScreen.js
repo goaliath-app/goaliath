@@ -10,7 +10,7 @@ import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as DocumentPicker from 'expo-document-picker'
 import { useTranslation } from 'react-i18next'
-import { setDayStartHour, importState, setLanguage, setDailyNotificationHour, 
+import { setDayStartHour, importState, setLanguage, setDailyNotificationHour,
   updateLogs, selectDarkTheme,
 } from '../redux'
 import { Header } from '../components'
@@ -18,6 +18,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Notifications from '../notifications';
 import { Context } from '../../App'
+import { serializeDate, deserializeDate } from '../time';
 
 
 const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, state, importState }) => {
@@ -38,7 +39,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
   const changeDayStartHour = (JSDate) => {
     const dateTime = DateTime.fromJSDate(JSDate)
     setStartHourPickerVisibility(false)
-    dispatch(setDayStartHour(dateTime.toISO()))
+    dispatch(setDayStartHour(serializeDate(dateTime)))
     dispatch(updateLogs())
     
     //Snackbar
@@ -47,15 +48,11 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
      : t('settings.todaySnackbar', {startHour: dateTime.toFormat('T').toString()}))
   };
 
-  const readFile = () => {
-    DocumentPicker.getDocumentAsync({type: 'application/oda'})
-      .then(({ type, uri }) => FileSystem.readAsStringAsync(uri)
-        .then((text) => {
-          setImportedStateText(text)
-          setImportDialogVisible(true)
-          }
-        )
-      )
+  const readFile = async () => {
+    const result = await DocumentPicker.getDocumentAsync({type: 'application/oda'})
+    const text = await FileSystem.readAsStringAsync(result.assets[0].uri)
+    setImportedStateText(text)
+    setImportDialogVisible(true)
   }
 
   function importStateFromText(text){
@@ -76,7 +73,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
   const changeDailyNotificationHour = (JSDate, t) => {
     const dateTime = DateTime.fromJSDate(JSDate)
     setNotificationHourPickerVisibility(false)
-    dispatch(setDailyNotificationHour(dateTime.toISO()))
+    dispatch(setDailyNotificationHour(serializeDate(dateTime)))
     Notifications.reminderScheduleNotification(dateTime, t)
   }
 
@@ -89,7 +86,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
     }
     else if(!dailyNotificationSwitch) {
       setDailyNotificationSwitch(true)
-      Notifications.reminderScheduleNotification(DateTime.fromISO(dailyNotificationHour), t)
+      Notifications.reminderScheduleNotification(deserializeDate(dailyNotificationHour), t)
       
     }
   }
@@ -126,7 +123,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         onPress={() => setStartHourPickerVisibility(true)} 
         right={() => 
           <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.settingValueText, fontSize: 17}}>
-            {DateTime.fromISO(settings.dayStartHour).toFormat('HH:mm')}
+            {deserializeDate(settings.dayStartHour).toFormat('HH:mm')}
           </Text>} 
       />
       <Divider />
@@ -191,7 +188,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
             onPress={() => setNotificationHourPickerVisibility(true)} 
             right={() => 
               <Text style={{marginRight: 10, marginTop: 10, color: theme.colors.settingValueText, fontSize: 17, paddingBottom: 7}}>
-                {DateTime.fromISO(settings.dailyNotificationHour).toFormat('HH:mm')}
+                {deserializeDate(settings.dailyNotificationHour).toFormat('HH:mm')}
               </Text>}
             style={{paddingLeft: 20}} 
           />
@@ -221,7 +218,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         mode="time"
         onConfirm={(JSDate) => changeDayStartHour(JSDate)}
         onCancel={() => setStartHourPickerVisibility(false)}
-        date={DateTime.fromISO(settings.dayStartHour).toJSDate()}
+        date={deserializeDate(settings.dayStartHour).toJSDate()}
       />
       {/*Daily Notification Picker*/}
       <DateTimePickerModal
@@ -229,7 +226,7 @@ const SettingsScreen = withTheme(({ theme, settings, setLanguage, navigation, st
         mode="time"
         onConfirm={(JSDate) => changeDailyNotificationHour(JSDate, t)}
         onCancel={() => setNotificationHourPickerVisibility(false)}
-        date={DateTime.fromISO(settings.dailyNotificationHour).toJSDate()}
+        date={deserializeDate(settings.dailyNotificationHour).toJSDate()}
       />
 
       <Portal>

@@ -15,10 +15,6 @@ const Header = withTheme(({ theme, title, subtitle, left, navigation, buttons })
                 <Appbar.BackAction color={theme.colors.headerContent} onPress={navigation.goBack} style={{ height: 48, width: 48 }} />
             </IconHighlighter>
         )
-    }else if(left == 'hamburger'){
-        leftComponent = (
-            <IconButton icon='menu' color={theme.colors.headerContent} onPress={navigation.openDrawer}/>
-        )
     }
 
     return (

@@ -7,7 +7,7 @@ import {
   capAllTimers as pureCapAllTimers,
   setWeekliesSelected,
 } from './LogSlice'
-import { getToday } from './../../util'
+import { getToday, serializeDate } from './../../time'
 
 export function deleteOneTodaysEntry(entryId){
   return function(dispatch, getState){
@@ -47,8 +47,8 @@ export function capAllTimers({ date }){
     const dayStartHour = state.settings.dayStartHour
     const capDate = date.plus({ days: 1, hours: dayStartHour.hours, minutes: dayStartHour.minutes })
     dispatch(pureCapAllTimers({ 
-      isoDate: date.toISO(), 
-      capIsoDate: capDate.toISO() 
+      isoDate: serializeDate(date), 
+      capIsoDate: serializeDate(capDate) 
     }))
   }
 }

@@ -191,7 +191,7 @@ export const ActivityBarChart = ({
           yTickValues = [0, 1]
         }
         for(let date = today.startOf('week'); date <= today.endOf('week'); date = date.plus({days: 1})) {
-          const completions = 0
+          let completions = 0
           activities.forEach(activity => {
             const entry = selectEntryByActivityIdAndDate(state, activity.id, date)
             completions += entry?.completed? 1 : 0
@@ -212,7 +212,7 @@ export const ActivityBarChart = ({
           date <= today.endOf('month'); 
           date = date.plus({days: 7})
         ) {
-          const completions = 0
+          let completions = 0
           activities.forEach(activity => {
             const { daysDoneCount } = getPeriodStats(state, date, date.plus({days: 6}), activity.id)
             completions += daysDoneCount

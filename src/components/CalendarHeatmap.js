@@ -32,6 +32,7 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 import { getDayActivityCompletionRatio } from './../activityHandler'
 import { withTheme, Text } from 'react-native-paper'
+import { deserializeDate } from '../time';
 
 const ActivityCalendarHeatmap = withTheme(({ theme, activityId, goalId }) => {
   const colors = {
@@ -73,7 +74,7 @@ const ActivityCalendarHeatmap = withTheme(({ theme, activityId, goalId }) => {
     const date = key, entries = value
     let totalCompletion = 0
     entries.forEach(entry => {
-      totalCompletion += getDayActivityCompletionRatio(state, entry.id, DateTime.fromISO(date))
+      totalCompletion += getDayActivityCompletionRatio(state, entry.id, deserializeDate(date))
     })
     const averageCompletion = totalCompletion / entries.length
 
@@ -84,7 +85,7 @@ const ActivityCalendarHeatmap = withTheme(({ theme, activityId, goalId }) => {
       strength = averageCompletion
     }
 
-    return { date: DateTime.fromISO(date).toFormat('yyyy-MM-dd'), strength, color }
+    return { date: deserializeDate(date).toFormat('yyyy-MM-dd'), strength, color }
   })
 
   // calculate domain of days to show

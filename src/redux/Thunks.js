@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
 
-import { startOfDay, dueToday, newEntry, isActive, getNewestDate } from './../util'
-import { updateEntryThunk } from '../activityHandler'
+import { serializeDate, getNewestDate } from './../time'
+import { newEntry } from './../util'
+
+import { dismissAllNotificationsAsync } from 'expo-notifications'
 
 import {
   selectAllActivities, setActivity, selectActivityById, 
@@ -16,11 +18,11 @@ import {
 
 import { 
   deleteOneTodaysEntry, upsertEntry, sortLog, selectEntryByActivityIdAndDate, selectLogById, deleteEntry,
-  createLog, addEntry, sortTodayLog, setState as setLogsState, selectEntriesByDay, deleteLog, replaceEntry,
+  addEntry, sortTodayLog, setState as setLogsState, selectEntriesByDay, deleteLog, replaceEntry,
   capAllTimers,
 } from './LogSlice'
 
-import { setState as setTasksState, initDate as initTasksDate } from './TasksSlice'
+import { setState as setTasksState } from './TasksSlice'
 import { setState as setSettingsState } from './SettingsSlice'
 import { setState as setGuideState } from './GuideSlice'
 
@@ -138,13 +140,13 @@ export function updateLogs(){
     // if tomorrows log already exists (due to a daystarthour change)
     while(newestLogDate > today){
       // hard delete it and repeat
-      dispatch(deleteLog({ isoDate: newestLogDate.toISO() }))
+      dispatch(deleteLog({ isoDate: serializeDate(newestLogDate) }))
       state = getState()
       const { logs: { ids: newLoggedDatesISO } } = state
       newestLogDate = getNewestDate(newLoggedDatesISO)
     }
 
-    // move changes to goals and goals from tomorrow to today (if any)
+    // move changes to goals from tomorrow to today (if any)
     let newestGoalEntryDate = selectLatestGoalEntryDate(state)
     while(newestGoalEntryDate > today){
       dispatch(moveAllGoalRecordsOneDayBack(newestGoalEntryDate))
@@ -152,7 +154,7 @@ export function updateLogs(){
       newestGoalEntryDate = selectLatestGoalEntryDate(state)
     }
 
-    // move changes to activities and goals from tomorrow to today (if any)
+    // move changes to activities from tomorrow to today (if any)
     let newestActivityEntryDate = selectLatestActivityEntryDate(state)
     while(newestActivityEntryDate > today){
       dispatch(moveAllActivityRecordsOneDayBack(newestActivityEntryDate))
@@ -160,37 +162,30 @@ export function updateLogs(){
       newestActivityEntryDate = selectLatestActivityEntryDate(state)
     }
 
-    // there are no logs
-    if(newestLogDate.toISO() == epoch.toISO()){
-      // create the today log as the first one
-      dispatch(initDate(today))
-      dispatch(updateLog({ date: today }))
-
-    // today log has already been created
-    }else if(newestLogDate.toISO() == today.toISO()){
-      // update today's log
-      dispatch(updateLog({ date: today }))
-
-    // there are logs, but today log has not been created yet
-    }else{
+    if(newestLogDate < today && areThereOpenTimers(state, serializeDate(newestLogDate))){
       // cap all open timers of the previous day
       dispatch(capAllTimers({ date: newestLogDate }))
-
-      // from next day of newestLogDate to today (including both), create and update logs.
-      for(let date = newestLogDate.plus({ days: 1 }); date <= today; date = date.plus({ days: 1 })){
-        dispatch(initDate(date))
-        dispatch(updateLog({ date }))
-      }
+      // also dismiss the "you are working on" sticky notification
+      dismissAllNotificationsAsync();
     }
   }
 }
 
-export function initDate(date){
-  return function(dispatch, getState){
-    dispatch(createLog({ date }))  // init date for logSlice
-    dispatch(initTasksDate({ date }))  // init date for tasks slice
+function areThereOpenTimers(state, date){
+  const entries = selectEntriesByDay(state, date)
+
+  // check each entry
+  for(let entry of entries){
+    // if it has any open intervals
+    if(entry.intervals?.some(interval => !interval.endDate)){
+      // then yes
+      return true
+    }
   }
+  // otherwise no
+  return false
 }
+
 
 export function archiveOrDeleteEntry(date, entryId){
   /* Archives an entry if it has been completed or has any interval recorded.
@@ -212,25 +207,13 @@ export function createOrUnarchiveEntry(date, activityId){
   return function(dispatch, getState){
     const state = getState()
     const entry = selectEntryByActivityIdAndDate(state, activityId, date)
-    
     if(entry?.archived){
       dispatch(upsertEntry({ date, entry: { ...entry, archived: false }}))
     }else if(!entry){
       const activity = selectActivityById(state, activityId)
-      const entry = { ...newEntry(activity), date }
+      const entry = { ...newEntry(activity.id), date }
       dispatch(addEntry({ date, entry }))
     }
-  }
-}
-
-function updateLog({ date }){
-  return function(dispatch, getState){
-    const state = getState() 
-    
-    for(let activity of selectAllActivities(state)){
-      dispatch( updateEntryThunk( activity.id, date ) )
-    }
-    dispatch(sortLog({ date }))
   }
 }
 

@@ -1,7 +1,7 @@
 import { createSlice, createEntityAdapter} from '@reduxjs/toolkit'
 import { DateTime } from 'luxon';
-import { toDateTime, toISODate } from '../util'
 import { getTodaySelector } from './selectors'
+import { serializeDate } from '../time';
 
 /* SLICE DESCRIPTION
 
@@ -34,45 +34,46 @@ A task is:
 const entityAdapter = createEntityAdapter();
 const initialState = entityAdapter.getInitialState();
 
+function getOrCreateDay(state, date){
+  const existingDateEntry = state.entities[serializeDate(date)]
+  if(existingDateEntry){
+    return existingDateEntry
+  }
+  const dateEntry = {
+    id: serializeDate(date),
+    tasksAdded: false,
+    tasks: entityAdapter.getInitialState({nextId: 0}),
+  }
+  state = entityAdapter.addOne(state, dateEntry)
+  return dateEntry
+}
+
 const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    initDate(state, action){
-      /* create empty entry for the specified date if it does not exist */
-      const { date } = action.payload
-      const existingDateEntry = state.entities[toDateTime(date).toISO()]
-      if(!existingDateEntry){
-        const dateEntry = {
-          id: toDateTime(date).toISO(),
-          tasksAdded: false,
-          tasks: entityAdapter.getInitialState({nextId: 0}),
-        }
-        entityAdapter.addOne(state, dateEntry)
-      }
-    },
     setTasksAdded(state, action){
       const { date, value } = action.payload
-      const selectedDay = state.entities[toDateTime(date).toISO()]
+      const selectedDay = getOrCreateDay(state, serializeDate(date))
       selectedDay.tasksAdded = value
     },
     addTask(state, action){
       const { date, task } = action.payload
-      const selectedDay = state.entities[toDateTime(date).toISO()]
-      entityAdapter.addOne(selectedDay.tasks, {...task, id: selectedDay.tasks.nextId})
+      const selectedDay = getOrCreateDay(state, serializeDate(date))
+      selectedDay.tasks = entityAdapter.addOne(selectedDay.tasks, {...task, id: selectedDay.tasks.nextId})
       selectedDay.tasks.nextId += 1
     },
     toggleTask(state, action){
       const { date, id } = action.payload
-      const selectedDay = state.entities[toDateTime(date).toISO()]
+      const selectedDay = getOrCreateDay(state, serializeDate(date))
       const task = selectedDay.tasks.entities[id]
-      const completed = task.completed? null : DateTime.now().toISO()
-      entityAdapter.updateOne(selectedDay.tasks, {id: task.id, changes: { completed }})
+      const completed = task.completed? null : serializeDate(DateTime.now())
+      selectedDay.tasks = entityAdapter.updateOne(selectedDay.tasks, {id: task.id, changes: { completed }})
     },
     deleteTask(state, action){
       const { date, id } = action.payload
-      const selectedDay = state.entities[toDateTime(date).toISO()]
-      entityAdapter.removeOne(selectedDay.tasks, id)
+      const selectedDay = getOrCreateDay(state, serializeDate(date))
+      selectedDay.tasks = entityAdapter.removeOne(selectedDay.tasks, id)
     },
     setState(state, action){
       const { newState } = action.payload
@@ -81,7 +82,7 @@ const tasksSlice = createSlice({
   }
 })
 
-export const { setState, initDate } = tasksSlice.actions
+export const { setState } = tasksSlice.actions
 
 export default tasksSlice.reducer
 
@@ -97,13 +98,13 @@ const {
 
 /* SELECTORS */
 export function areTasksAdded(state, date){
-  const isoDate = toISODate(date)
+  const isoDate = serializeDate(date)
   const entry = selectEntryById(state, isoDate)
   return entry?.tasksAdded? entry.tasksAdded : false
 }
 
 export function selectAllTasksByDate(state, date){
-  const isoDate = toISODate(date)
+  const isoDate = serializeDate(date)
   
   const tasks = state.tasks.entities[isoDate]?.tasks
   if(!tasks) return []
@@ -145,7 +146,6 @@ export function tasksAddedToday(){
 
 export function toggleTask(date, id){
   return function(dispatch, getState){
-    const state = getState()
     dispatch(toggleTaskAction({ date, id }))
   }
 }

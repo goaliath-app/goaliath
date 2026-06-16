@@ -1,7 +1,6 @@
 import { createSlice, createEntityAdapter} from '@reduxjs/toolkit'
-import { toISODate, getPreviousDate, getNewestDate } from '../util'
+import { serializeDate, getPreviousDate, getNewestDate, deserializeDate } from '../time'
 import { getTodaySelector } from './selectors'
-import { DateTime } from 'luxon'
 
 // TODO: This slice is essentially a copy of ActivitySlice
 // The logic for the slice of entities with change log should be generalized
@@ -84,7 +83,7 @@ const goalsSlice = createSlice({
       // insert the goal data into the given date
       // ( using custom function because goalAdapter's one wont work
       //   with state created in the same action dispatch )
-      setOne(state.entities[goal.id].entries, {...goal, id: toISODate(date)})
+      setOne(state.entities[goal.id].entries, {...goal, id: serializeDate(date)})
 
       return state
     },
@@ -93,7 +92,7 @@ const goalsSlice = createSlice({
       const { date } = action.payload
 
       state.ids.forEach(id => {
-        entityAdapter.removeOne(state.entities[id].entries, toISODate(date))
+        entityAdapter.removeOne(state.entities[id].entries, serializeDate(date))
       })
     },
 
@@ -176,7 +175,7 @@ export function selectGoalByIdAndDate(state, goalId, date){
   const correspondingEntryDate = getPreviousDate(goalState.entries.ids, date)
   if(!correspondingEntryDate) return null
 
-  const entry = goalState.entries.entities[toISODate(correspondingEntryDate)]
+  const entry = goalState.entries.entities[serializeDate(correspondingEntryDate)]
   return { ...entry, id: goalId }
 }
 
@@ -212,7 +211,7 @@ export function selectAllEntriesByDate(state, date){
   const entries = []
 
   state.goals.ids.forEach(id => {
-    const entry = state.goals.entities[id].entries.entities[date.toISO()]
+    const entry = state.goals.entities[id].entries.entities[serializeDate(date)]
     if(entry) entries.push({ ...entry, id: id })
   })
 
@@ -230,7 +229,7 @@ export function selectLatestGoalEntryDate(state){
     latestDates.push( getNewestDate(entryDates) )
   })
 
-  return DateTime.fromISO(getNewestDate(latestDates))
+  return deserializeDate(getNewestDate(latestDates))
 }
 
 

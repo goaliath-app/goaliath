@@ -117,7 +117,6 @@ const es= {
     },
 
     statsScreen: {
-      drawerTitle: 'Estadísticas',
       headerTitle: 'Estadísticas',
     },
     
@@ -174,7 +173,7 @@ const es= {
       oliver: 'Óliver',
       goaliath: 'Código fuente',
       jimenaLink: "https://www.linkedin.com/in/jimena-andrea/",
-      oliverLink: "https://twitter.com/oliverlsanz",
+      oliverLink: "oliverlsanz@gmail.com",
       goaliathLink: "https://github.com/goaliath-app/goaliath"  
     },
       
@@ -399,17 +398,6 @@ const es= {
         },
       }
     },
-  
-    app: {
-      drawer: {
-        today: 'Hoy',
-        week: 'Semana',
-        goals: 'Metas',
-        calendar: 'Calendario',
-        settings: 'Ajustes',
-        stats: 'Estadísticas',
-      }
-    },
 
     units: {
       time: {
@@ -484,12 +472,6 @@ const es= {
         saturday: 'S',
         sunday: 'D'
       }
-    },
-
-    drawer: {
-      blog: 'Sitio web',
-      blogURL: 'https://goaliath-app.github.io/es/',
-      appName: 'Goaliath'
     },
 
     notifications: {

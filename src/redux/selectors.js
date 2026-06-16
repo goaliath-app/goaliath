@@ -6,7 +6,11 @@ import { selectAllActivitiesByDate, selectActivityByIdAndDate, selectAllActiviti
 import { selectGoalByIdAndDate } from './GoalsSlice'
 import { selectAllWeekEntriesByActivityId } from './LogSlice'
 
-import { getTodayTime, startOfDay } from './../util'
+import { getTodayTime, startOfDay } from './../time'
+
+import { dueToday, dueThisWeek } from '../activityHandler'
+
+import { selectEntryByActivityIdAndDate } from './LogSlice'
 
 /* 
   This file defines selectors that use data from more than one slice 
@@ -91,4 +95,22 @@ export function selectAllActivitiesByGoalId(state, goalId){
   })
   
   return thisGoalActivities 
+}
+
+export function selectVisibleActivities(state, date){
+  const activities = selectAllActiveActivitiesByDate(state, date)
+
+  const visibleActivities = activities.filter(a => {
+    if(dueToday(state, a.id, date)){
+      return true
+    }
+    if(dueThisWeek(state, a.id, date)){
+      const entry = selectEntryByActivityIdAndDate(state, a.id, date)
+      if(!entry.archived){
+        return true
+      }
+    }
+    return false
+  })
+  return visibleActivities
 }

@@ -1,5 +1,5 @@
 export {
-    createLog, addEntry, upsertEntry, toggleCompleted, setState, sortLog, deleteEntry, deleteLog,
+    addEntry, upsertEntry, toggleCompleted, setState, sortLog, deleteEntry, deleteLog,
     replaceEntry, setRepetitions,
     selectLogById, areWeekliesSelectedToday, selectAllActivityEntries,
     selectEntriesByDay,

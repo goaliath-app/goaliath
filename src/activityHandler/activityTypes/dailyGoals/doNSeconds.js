@@ -2,9 +2,10 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { View } from 'react-native'
 import { IconButton, withTheme } from 'react-native-paper'
-import { 
-  getTodayTime, isActivityRunning, getPreferedExpression, secondsToUnit,
- } from '../../../util'
+import { isActivityRunning } from '../../../util'
+import {
+  getTodayTime, serializeDate, getPreferedExpression, secondsToUnit, patata
+} from '../../../time';
 import { toggleCompleted, stopTodayTimer, startTodayTimer, selectEntryByActivityIdAndDate, 
   selectActivityByIdAndDate, getTodaySelector, selectGoalById } from '../../../redux'
 import PlayFilledIcon from '../../../../assets/play-filled'
@@ -14,13 +15,6 @@ import PauseOutlinedIcon from '../../../../assets/pause-outlined'
 import { ActivityListItem, DoubleProgressBar } from '../../../components'
 import { useTranslation } from 'react-i18next'
 import Notifications from '../../../notifications';
-
-// addEntryThunk to add the repetitions field to entries of this activity type
-function addEntryThunk( activityId, date ){
-  return (dispatch, getState) => {
-    dispatch(createOrUnarchiveEntry(date, activityId))
-  }
-}
 
 const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
   const dispatch = useDispatch()
@@ -52,7 +46,7 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
   // function definitions
   function onPressPause(){
     //Stop timer
-    if(date.toISO() == todayDate.toISO()){
+    if(serializeDate(date) == serializeDate(todayDate)){
       dispatch(stopTodayTimer( activityId ))
     }
     //Dismiss notifications
@@ -61,7 +55,7 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
 
   function onPressStart(){
     //Start Timer
-    if(date.toISO() == todayDate.toISO()){
+    if(serializeDate(date) == serializeDate(todayDate)){
      dispatch(startTodayTimer( activityId ))
     }
     //Send timer notifications
@@ -85,7 +79,9 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
       }, 1000)
       return () => clearInterval(intervalId)
     }
-  }, [entry.intervals, entry.completed, secondsGoal])
+  }, [
+    entry.intervals.length == 0 || entry.intervals, entry.completed, secondsGoal, timerIsRunning
+  ])
 
 
   // get the correct left component

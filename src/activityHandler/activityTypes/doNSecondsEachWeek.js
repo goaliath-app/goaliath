@@ -1,11 +1,12 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { 
-  selectActivityById, selectEntryByActivityIdAndDate, toggleCompleted, 
-  stopTodayTimer, startTodayTimer, selectActivityByIdAndDate, getWeeklyStats, 
+import {
+  selectEntryByActivityIdAndDate, toggleCompleted,
+  stopTodayTimer, startTodayTimer, selectActivityByIdAndDate, getWeeklyStats,
   getTodaySelector, isActiveSelector, archiveOrDeleteEntry, getPeriodStats, selectGoalById,
 } from '../../redux'
-import { isActivityRunning, getPreferedExpression, getTodayTime, roundValue } from '../../util'
+import { isActivityRunning, roundValue } from '../../util'
+import { serializeDate, getTodayTime, getPreferedExpression } from '../../time';
 import { WeeklyListItem } from '../../components'
 import { useTranslation } from 'react-i18next';
 import Duration from 'luxon/src/duration.js'
@@ -43,7 +44,7 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
   // function definitions
   function onPressPause(){
     //Stop Timer
-    if(date.toISO() == todayDate.toISO()){
+    if(serializeDate(date) == serializeDate(todayDate)){
       dispatch(stopTodayTimer( activityId ))
     }
     //Dismiss notifications
@@ -52,7 +53,7 @@ const TodayScreenItem = withTheme(({ theme, activityId, date }) => {
 
   function onPressStart(){
     //Start Timer
-    if(date.toISO() == todayDate.toISO()){
+    if(serializeDate(date) == serializeDate(todayDate)){
      dispatch(startTodayTimer( activityId ))
     }
     //Send timer notifications
@@ -179,7 +180,6 @@ const SelectWeekliesItemCompleted = withTheme(({ activity, today, theme, isSelec
         checkboxStatus={'checked'} 
         selected={isSelected} 
         onPress={onPress}
-        onCheckboxPress={onPress}
         date={today}
         checkboxColor={theme.colors.completedCheckbox}
       /> 
@@ -251,8 +251,9 @@ function getWeekActivityCompletionRatio(state, activityId, date){
 
   let secondsAccumulator = 0
   for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
+    const activity = selectActivityByIdAndDate(state, activityId, day)
     const entry = selectEntryByActivityIdAndDate(state, activityId, day)
-    if( entry && !entry.archived ){
+    if( activity && entry && !entry.archived ){
       secondsAccumulator += getTodayTime(entry.intervals).as('seconds')
     }
   }

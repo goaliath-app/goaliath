@@ -1,8 +1,7 @@
 import React from 'react';
 import { View } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { List, Divider } from 'react-native-paper';
-import { frequency } from '../../util'
 import { useTranslation } from 'react-i18next'
 import { getFrequencyString } from '../../activityHandler'
 

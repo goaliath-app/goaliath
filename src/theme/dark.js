@@ -146,6 +146,9 @@ export const darkPlacements = {
   activityFormScreenBackground: 'surface',
   aboutUsScreenBackground: 'surface',
   onboardingScreenBackground: 'surface',
+
+  // System
+  systemNavigationBar: 'background'
 }
 
 export const darkAliases = {

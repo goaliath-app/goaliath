@@ -9,11 +9,6 @@ export const ActivityListItemColors = {
     progressBarUnfilledColor: 'transparent'
 }
 
-/*export const DrawerColor = {
-    headerBackground: '#674ffa',
-    headerText: 'white'
-}*/
-
 export const HeaderColor = {
     icon: 'white'
 }

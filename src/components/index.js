@@ -5,7 +5,6 @@ export { default as ThreeDotsMenu, SelfManagedThreeDotsMenu } from './ThreeDotsM
 export { default as DeleteDialog } from './DeleteDialog'
 export { default as HelpIcon } from './HelpIcon'
 export { default as InfoCard } from './InfoCard'
-export { default as Drawer } from './Drawer'
 export { default as Checkbox } from './Checkbox'
 export { SelectWeekliesListItem, SelectTasksListItem, ActivityListItemLeftTooltip } from './ActivityListItem'
 export { ActivityListItem, DoubleProgressBar, StylishListItem } from './ActivityListItem'

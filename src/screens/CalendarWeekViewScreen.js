@@ -1,16 +1,21 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { 
-  selectActivityByIdAndDate, selectAllActiveActivitiesByDate, selectAllActiveGoalsByDate, selectGoalByIdAndDate, selectAllActiveActivitiesByGoalIdAndDate 
+import {
+  selectActivityByIdAndDate, selectAllActiveActivitiesByDate,
+  selectAllActiveGoalsByDate, selectGoalByIdAndDate,
+  selectAllActiveActivitiesByGoalIdAndDate
 } from '../redux'
 import { ScrollView, View } from 'react-native';
 import { List, Text, withTheme } from 'react-native-paper';
 import { CalendarWeekItem, Checkbox, Header } from '../components';
-import { getWeekProgressString, getWeekActivityCompletionRatio, getGoalWeekCompletionRatio } from '../activityHandler';
+import {
+  getWeekProgressString, getWeekActivityCompletionRatio,
+  getGoalWeekCompletionRatio
+} from '../activityHandler';
 import { useTranslation } from 'react-i18next';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useNavigation } from '@react-navigation/native';
-import { DateTime } from 'luxon'
+import { serializeDate, deserializeDate } from '../time';
 
 //TODO: Fix frequency traduction.
       //Fix activity name and activity frequency to show both
@@ -31,7 +36,7 @@ const ActivityWeekView = ({ activityId, date }) => {
         <CalendarWeekItem  
           activityId={activityId} date={date} showDayNumbers={false} 
           showWeekProgress={true} softTodayHighlight={true} 
-          onDayPress={dayDate => navigation.navigate('CalendarDayView', {date: dayDate.toISO()})}
+          onDayPress={dayDate => navigation.navigate('CalendarDayView', {date: serializeDate(dayDate)})}
           animate='day' />
       </View>
     </View>
@@ -86,7 +91,7 @@ function dayLabel(date, t){
 const CalendarWeekViewScreen = withTheme(({ route, theme }) => {
   const { t, i18n } = useTranslation()
 
-  const date = DateTime.fromISO(route.params.date).endOf("week")
+  const date = deserializeDate(route.params.date).endOf("week")
 
   const activities = useSelector((state) => selectAllActiveActivitiesByDate(state, date))
   const state = useSelector(state => state)
@@ -118,7 +123,7 @@ const CalendarWeekViewScreen = withTheme(({ route, theme }) => {
       <ScrollView >
         {/*WeekViewComponent*/}
         <View style={{ paddingVertical: 15, paddingHorizontal: 20 }}>
-          <CalendarWeekItem animate='day' date={date} showDayNumbers={true} onDayPress={dayDate => navigation.navigate('CalendarDayView', {date: dayDate.toISO()})}/>
+          <CalendarWeekItem animate='day' date={date} showDayNumbers={true} onDayPress={dayDate => navigation.navigate('CalendarDayView', {date: serializeDate(dayDate)})}/>
         </View>
 
         {/*Options selectors*/}

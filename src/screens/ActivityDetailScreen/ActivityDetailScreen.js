@@ -1,23 +1,22 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native'
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { 
-  Appbar, Paragraph, Menu, Title, Divider, List, Card, Button, withTheme,
+import {
+  Appbar, Paragraph, Title, Divider, List, Button, withTheme,
   Text
 } from 'react-native-paper';
-import { DateTime } from 'luxon'
 import { useTranslation } from 'react-i18next'
-import { 
-  Header, ThreeDotsMenu, DeleteDialog, HelpIcon, DeleteActivityDialog,
+import {
+  Header, HelpIcon, DeleteActivityDialog,
   BottomScreenPadding,
 } from '../../components';
 import { useNavigation } from '@react-navigation/native';
-import { 
-  selectActivityById, selectGoalById, selectEntryByActivityIdAndDate, 
-  restoreActivity, selectTutorialState, selectGoalByIdAndDate, 
+import {
+  selectActivityById, selectGoalById, selectEntryByActivityIdAndDate,
+  restoreActivity, selectTutorialState, selectGoalByIdAndDate,
   selectActivityByIdAndDate, getTodaySelector,
 } from '../../redux'
-import { isToday, isFuture } from '../../util'
+import { isToday, isFuture, deserializeDate } from '../../time'
 import BasicActivityInfo from './BasicActivityInfo'
 import TodayPannel from './TodayPannel'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -27,13 +26,11 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { SelfManagedThreeDotsMenu } from '../../components/ThreeDotsMenu';
 import { LoadingContainer, FullScreenActivityIndicator } from '../../components/Loading'
 import { dueToday, dueThisWeek, usesSelectWeekliesScreen } from '../../activityHandler';
-import IonIcon from 'react-native-vector-icons/Ionicons';
-
 
 
 const Tab = createMaterialTopTabNavigator();
 
-const ActivityDetailTabs = withTheme(({ 
+const ActivityDetailTabs = withTheme(({
   activity, goal, theme, date
 }) => {
   const { t, i18n } = useTranslation()
@@ -100,7 +97,7 @@ const ActivityDetailScreen = React.memo(withTheme(({
     date: isoDate  // (optional) iso string datetime of the log entry to show
   } = route.params
 
-  const date = isoDate ? DateTime.fromISO(isoDate) : null
+  const date = isoDate ? deserializeDate(isoDate) : null
   
   let activity, goal
   if(date){

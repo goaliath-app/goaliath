@@ -145,6 +145,9 @@ export const lightPlacements = {
   activityFormScreenBackground: 'surface',
   aboutUsScreenBackground: 'surface',
   onboardingScreenBackground: 'surface',
+
+  // System
+  systemNavigationBar: 'background',
 }
 
 export const lightAliases = {

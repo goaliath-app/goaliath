@@ -1,5 +1,5 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';  // this import needs to be at the top.
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { DefaultTheme, Provider as PaperProvider, Snackbar } from 'react-native-paper'
 import { View } from 'react-native'
@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
 import { StatusBar } from 'expo-status-bar'
+import * as NavigationBar from 'expo-navigation-bar';
 import i18n from './src/i18n'
 import { useTranslation } from 'react-i18next'
 import { 
@@ -88,6 +89,10 @@ export default function App() {
     setDarkThemeState(value)
     store.dispatch(setDarkThemeReducer(value))
   }
+
+  useEffect(function changeSystemColors(){
+    NavigationBar.setBackgroundColorAsync(currentTheme.colors.systemNavigationBar);
+  }, [currentTheme.colors.systemNavigationBar])
 
   function finishOnboarding(){
     setNewUser(false)

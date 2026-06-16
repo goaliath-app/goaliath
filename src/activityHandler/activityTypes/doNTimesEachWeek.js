@@ -127,7 +127,6 @@ const SelectWeekliesItemCompleted = withTheme(({ activity, today, theme, isSelec
         checkboxStatus={'checked'} 
         selected={isSelected} 
         onPress={onPress}
-        onCheckboxPress={onPress}
         date={today}
         checkboxColor={theme.colors.completedCheckbox}
       /> 
@@ -209,7 +208,8 @@ function getWeekActivityCompletionRatio(state, activityId, date){
   let repetitionsAccumulator = 0
   for(let day = weekStartDate; day <= weekEndDate; day = day.plus({days: 1})){
     const entry = selectEntryByActivityIdAndDate(state, activityId, day)
-    if( entry && !entry.archived ){
+    const activity = selectActivityByIdAndDate(state, activityId, day)
+    if( activity && entry && !entry.archived ){
       repetitionsAccumulator += entry.repetitions.length
     }
   }
