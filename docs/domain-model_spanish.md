@@ -1,6 +1,6 @@
 # 📘 Modelo de dominio — gestión de tareas (offline-first)
 
-> English version: [domain-model.md](./DOMAIN-MODEL.md)
+> English version: [domain-model.md](./domain-model.md)
 
 Este documento define el modelo de dominio para la reescritura del sistema de
 tareas. Parte de una propuesta inicial (Goal / Task / TaskSchedule /

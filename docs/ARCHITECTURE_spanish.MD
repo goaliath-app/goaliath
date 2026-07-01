@@ -1,6 +1,6 @@
 # Arquitectura del proyecto — Feature-Based + Hexagonal (Offline-First)
 
-> English version: [ARCHITECTURE.md](./ARCHITECTURE.md)
+> English version: [architecture.md](./architecture.md)
 
 > Documento de referencia para saber **dónde va cada fichero**. Si tienes dudas al crear un fichero nuevo, consulta la sección [¿Dónde va esto?](#dónde-va-esto) antes de decidir.
 

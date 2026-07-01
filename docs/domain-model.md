@@ -1,6 +1,6 @@
 # 📘 Domain model — task management (offline-first)
 
-> Versión en español: [domain-model_spanish.md](./DOMAIN-MODEL_spanish.md)
+> Versión en español: [domain-model_spanish.md](./domain-model_spanish.md)
 
 This document defines the domain model for the rewrite of the task system. It
 builds on an initial proposal (Goal / Task / TaskSchedule / RecurrenceRule /

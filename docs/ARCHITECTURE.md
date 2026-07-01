@@ -1,6 +1,6 @@
 # Project Architecture — Feature-Based + Hexagonal (Offline-First)
 
-> Versión en español: [ARCHITECTURE.es.md](./ARCHITECTURE_spanish.md)
+> Versión en español: [architecture_spanish.md](./architecture_spanish.md)
 
 > Reference document to know **where each file belongs**. If you're unsure when creating a new file, check the [Where does this go?](#where-does-this-go) section before deciding.
 
