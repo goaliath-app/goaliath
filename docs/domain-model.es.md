@@ -38,10 +38,15 @@ su dueño.
 ```
 StatusPeriod {
   status: 'active' | 'paused' | 'archived'
-  from: Date
-  to: Date | null   // null = vigente
+  from: Date   // toma efecto aquí y se mantiene hasta la siguiente entrada (o para siempre si es la última)
 }
 ```
+
+No hay **fin explícito**: una entrada se mantiene hasta que empieza la siguiente.
+Las timelines son contiguas (la entidad siempre tiene algún estado una vez existe
+— `archived` es un estado, no un hueco), así que un `to` solo duplicaría el
+`from` de la siguiente entrada y añadiría un invariante que mantener. El fin se
+deriva, y los solapes y huecos quedan irrepresentables.
 
 Este documento describe la forma del **dominio**. La persistencia está
 desacoplada (`expo-sqlite` detrás de un repositorio, para que la UI y el dominio
@@ -121,7 +126,7 @@ Activity {
 
 ## 3. ActivitySchedule (comportamiento temporal versionado)
 
-Un `ActivitySchedule` nunca se edita: se cierra y se crea una nueva versión.
+Un `ActivitySchedule` nunca se edita: se añade una versión nueva que sustituye a la anterior desde su `startDate` (una timeline de puntos de cambio, como `StatusPeriod` en §0).
 Responde dos cosas que siempre van juntas — *cuándo* toca la Activity y *cuánto*
 cuenta como hecho — sin depender de *cómo* es "hacerlo" (eso es el
 `activityType`, §2/§7).
@@ -133,8 +138,7 @@ ActivitySchedule {
   recurrenceRule: RecurrenceRule   // CUÁNDO toca — puramente temporal (§4)
   dayGoal:    number | null        // por día debido/elegido: cantidad (en la métrica del activityType) que hace que ese día cuente como hecho; null = binario "lo hice"
   periodGoal: PeriodGoal | null    // solo para recurrencias `quota`; null para las fijas
-  startDate
-  endDate: Date | null             // null = vigente
+  startDate                        // aplica desde aquí hasta el startDate del siguiente schedule (o la actual si es la última)
 }
 
 PeriodGoal =
@@ -386,8 +390,8 @@ dos canales, separados por *lo que tocan*:
   p.ej. se te murió el móvil) solo escribe/actualiza la `ActivityOccurrence` de
   ese día. Es auto-registro basado en confianza.
 - **El plan solo se edita hacia delante.** Cambiar si/cuándo toca una Activity
-  (su `ActivitySchedule` o `StatusPeriod`) cierra la versión actual y abre una
-  nueva desde hoy (§0, §3). Nunca reescribe el pasado, así que un día que tocaba
+  (su `ActivitySchedule` o `StatusPeriod`) añade una versión nueva con fecha de
+  hoy que sustituye a la anterior (§0, §3). Nunca reescribe el pasado, así que un día que tocaba
   y no se hizo se queda `missed`.
 
 Esto cierra el agujero de responsabilidad — no puedes hacer desaparecer

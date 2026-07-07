@@ -36,10 +36,15 @@ so it needs no owner reference of its own in the domain.
 ```
 StatusPeriod {
   status: 'active' | 'paused' | 'archived'
-  from: Date
-  to: Date | null   // null = current
+  from: Date   // takes effect here and holds until the next entry (or forever if last)
 }
 ```
+
+There is **no explicit end**: an entry holds until the next one begins.
+Timelines are contiguous (the entity always has some status once it exists —
+`archived` is a status, not a gap), so a `to` would only duplicate the next
+entry's `from` and add an invariant to keep consistent. The end is derived, and
+overlaps and gaps become unrepresentable.
 
 This document describes the **domain** shape. Persistence is decoupled
 (`expo-sqlite` behind a repository, so the UI and domain never depend on the
@@ -119,7 +124,7 @@ Activity {
 
 ## 3. ActivitySchedule (versioned temporal behavior)
 
-An `ActivitySchedule` is never edited: it's closed and a new version is created.
+An `ActivitySchedule` is never edited: a new version is appended that supersedes the previous one from its `startDate` (a change-point timeline, like `StatusPeriod` in §0).
 It answers two things that always travel together — *when* the Activity is due
 and *how much* counts as done — while staying independent of *what* the doing
 looks like (that's the `activityType`, §2/§7).
@@ -131,8 +136,7 @@ ActivitySchedule {
   recurrenceRule: RecurrenceRule   // WHEN it's due — purely temporal (§4)
   dayGoal:    number | null        // per due/opted-in day: amount (in the activityType's metric) that makes that day count as done; null = binary "did it"
   periodGoal: PeriodGoal | null    // only for `quota` recurrences; null for fixed ones
-  startDate
-  endDate: Date | null             // null = current
+  startDate                        // applies from here until the next schedule's startDate (or the current one if last)
 }
 
 PeriodGoal =
@@ -378,8 +382,8 @@ exactly two channels, split by *what they touch*:
   phone died) just writes/updates that day's `ActivityOccurrence`. This is
   trusted self-reporting.
 - **The plan is only editable going forward.** Changing whether/when an Activity
-  is due (its `ActivitySchedule` or `StatusPeriod`) closes the current version
-  and opens a new one from today (§0, §3). It never rewrites the past, so a day
+  is due (its `ActivitySchedule` or `StatusPeriod`) appends a new version dated
+  today that supersedes the previous one (§0, §3). It never rewrites the past, so a day
   that was due and not done stays `missed`.
 
 This closes the accountability loophole — you can't retroactively make a due day

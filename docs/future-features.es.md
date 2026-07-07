@@ -145,6 +145,42 @@ al dominio.
 
 ---
 
+## Duplicar una actividad (la respuesta al "reconvertir renombrando")
+
+Los nombres **no se versionan** (domain-model §0): renombrar una Activity o un
+Goal lo cambia en todas partes, pasado incluido. Es lo correcto para el caso
+común (corregir una errata, aclarar una etiqueta), pero deja un caso incómodo —
+el usuario que renombra "Flexiones" a "Dominadas" un mes después esperando que el
+histórico conserve el nombre viejo. El sistema no puede distinguir una errata de
+una reconversión, así que no debe intentarlo.
+
+La respuesta de UX **no** es versionar nombres (haría que la misma actividad se
+llame distinto según el día en el calendario — más confuso para el caso común de
+lo que ayuda al raro). Es hacer **barato crear una actividad nueva** para que el
+camino perezoso sea también el correcto:
+
+- **Qué:** una acción "Duplicar actividad" que crea una Activity nueva con
+  identidad e histórico limpios, copiando la recurrencia/planificación (y
+  opcionalmente goal, tipo, targets) de la original.
+- **Cómo cambia el modelo actual:** nada estructural — un caso de uso de creación
+  que lee una Activity + su `ActivitySchedule` actual y escribe una Activity
+  nueva (`id` nuevo) + una planificación nueva desde hoy. Sin entidad nueva, sin
+  versionar nombres.
+- **Qué ya ayuda:** la identidad es el `id`, nunca el nombre; las ocurrencias se
+  clavan por `(activityId, date)`, así que una actividad duplicada arranca con
+  histórico limpio mientras la original conserva el suyo. `ActivitySchedule` ya
+  es un registro versionado independiente que se puede copiar.
+- **Marco para el usuario:** renombrar = "es lo mismo, con otra etiqueta" (afecta
+  a todo); duplicar/nueva = "una cosa distinta" (con su propia historia). Si
+  ambas son un toque, renombrar-para-reconvertir deja de ser el camino de menor
+  resistencia.
+
+Solo replantear el versionado de nombres si el testeo con usuarios muestra que
+reconvertir es a la vez común y doloroso — ir por ahí después es fácil;
+bloquearse en ello ahora, no.
+
+---
+
 ## Decisiones abiertas de tooling y arquitectura
 
 Decisiones sin cerrar movidas desde [architecture.es.md](./architecture.es.md)
@@ -155,8 +191,6 @@ no features de dominio — **ninguna toca el modelo de dominio.**
   Cuando se elija, documentar el flujo de resolución de conflictos y rellenar
   `shared/infrastructure/sync-engine/`. (Ver "Sincronización offline-first"
   arriba para el lado del modelo de datos del mismo tema.)
-- **Runner de tests** — sin decidir. Recomendación por defecto: Jest +
-  `@testing-library/react-native` (el estándar Expo/RN), pero abierto.
 - **Librería de estado global compartido** (Zustand, Redux, Context + TanStack
   Query, …) — sin decidir. Mientras tanto cada feature gestiona su propio estado
   vía `ui/hooks/`, y solo se promociona a `core/providers/` + una librería global
