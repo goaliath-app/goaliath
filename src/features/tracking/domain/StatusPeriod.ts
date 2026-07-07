@@ -1,0 +1,86 @@
+import type { CalendarDay } from '@/shared/domain/time/CalendarDay';
+
+/** The three lifecycle states shared by Goal and Activity (domain-model §0). */
+export type Status = 'active' | 'paused' | 'archived';
+
+/**
+ * One entry of a Goal's or Activity's **status timeline** (domain-model §0): the
+ * status that takes effect on `from` and holds **until the next entry** (or
+ * forever if it's the last one).
+ *
+ * There is no explicit end. Timelines are contiguous (there are no gaps — the
+ * entity always has some status once it exists), so a `to` would only duplicate
+ * the next entry's `from` and add an invariant to keep consistent. Dropping it
+ * makes overlaps and gaps unrepresentable.
+ *
+ * A timeline is assumed **sorted ascending by `from`**; the last entry is the
+ * current status.
+ */
+export interface StatusPeriod {
+  status: Status;
+  from: CalendarDay;
+}
+
+/**
+ * The entry in effect on `day`: the latest one whose `from <= day`. `from` is
+ * inclusive, so the day a change takes effect already belongs to the new status.
+ *
+ * Returns `null` when `day` is before the first entry — i.e. the entity did not
+ * exist yet (distinct from being `paused` or `archived`).
+ */
+export function periodOn(
+  periods: readonly StatusPeriod[],
+  day: CalendarDay,
+): StatusPeriod | null {
+  let current: StatusPeriod | null = null;
+  for (const period of periods) {
+    if (period.from <= day) {
+      current = period;
+    } else {
+      break; // sorted ascending: no later entry can qualify
+    }
+  }
+  return current;
+}
+
+/** The status on `day`, or `null` if the entity did not exist yet. */
+export function statusOn(
+  periods: readonly StatusPeriod[],
+  day: CalendarDay,
+): Status | null {
+  return periodOn(periods, day)?.status ?? null;
+}
+
+/** Whether the entity was in `active` status on `day`. */
+export function isActiveOn(
+  periods: readonly StatusPeriod[],
+  day: CalendarDay,
+): boolean {
+  return statusOn(periods, day) === 'active';
+}
+
+/**
+ * "Since when do I have this?" — the earliest `from` across the whole timeline.
+ * Stable no matter how many times the recurrence was edited (that lives in a
+ * separate timeline) or how many times it was paused/resumed. `null` if there
+ * are no entries yet.
+ */
+export function startedOn(periods: readonly StatusPeriod[]): CalendarDay | null {
+  return periods.reduce<CalendarDay | null>(
+    (earliest, period) =>
+      earliest === null || period.from < earliest ? period.from : earliest,
+    null,
+  );
+}
+
+/**
+ * "Since when is it active right now?" — the `from` of the current status (the
+ * last entry) when it is `active`, otherwise `null` (it isn't currently active).
+ */
+export function activeSince(periods: readonly StatusPeriod[]): CalendarDay | null {
+  const current = periods[periods.length - 1];
+  if (current && current.status === 'active') {
+    return current.from;
+  }
+  return null;
+}

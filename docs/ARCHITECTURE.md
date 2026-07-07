@@ -333,7 +333,8 @@ module.exports = {
 
 ## Testing
 
-- **Domain** and **use case** tests: co-located in `features/<f>/__tests__/`, with no dependency on React Native or the real database. Use in-memory repositories (fakes) implementing the same `domain/` interface.
+- Runner: **Jest** via the `jest-expo` preset (with its peer `@react-native/jest-preset`). Run `npm test` / `npm run test:watch`; typecheck separately with `npx tsc --noEmit` (Jest transpiles via Babel and does not typecheck). Pure-domain suites run under the `node` environment; the `@/…` alias resolves via `moduleNameMapper`.
+- **Domain** and **use case** tests: in `features/<f>/__tests__/`, with no dependency on React Native or the real database. Use in-memory repositories (fakes) implementing the same `domain/` interface.
 - **Infrastructure** tests (e.g. `SqliteItemRepository`): can live next to the file or in `__tests__/infrastructure/`, and do touch SQLite (in-memory or a mocked driver).
 - **UI** tests: next to the components, or in the feature's `__tests__/ui/`.
 
