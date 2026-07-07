@@ -1,6 +1,6 @@
 # Project Architecture — Feature-Based + Hexagonal (Offline-First)
 
-> Versión en español: [architecture_spanish.md](./architecture_spanish.md)
+> Versión en español: [architecture.es.md](./architecture.es.md)
 
 > Reference document to know **where each file belongs**. If you're unsure when creating a new file, check the [Where does this go?](#where-does-this-go) section before deciding.
 
@@ -81,7 +81,7 @@ src/
 │   ├── infrastructure/
 │   │   ├── db/                   # expo-sqlite connection + generic migration runner (no feature knowledge)
 │   │   ├── api/                  # base HTTP client, interceptors
-│   │   └── sync-engine/          # generic sync engine (still to be defined)
+│   │   └── sync-engine/          # generic sync engine (placeholder for future sync)
 │   └── ui/                       # fully generic components (Button, Modal...)
 │
 ├── core/
@@ -336,7 +336,6 @@ module.exports = {
 - **Domain** and **use case** tests: co-located in `features/<f>/__tests__/`, with no dependency on React Native or the real database. Use in-memory repositories (fakes) implementing the same `domain/` interface.
 - **Infrastructure** tests (e.g. `SqliteItemRepository`): can live next to the file or in `__tests__/infrastructure/`, and do touch SQLite (in-memory or a mocked driver).
 - **UI** tests: next to the components, or in the feature's `__tests__/ui/`.
-- Still pending: pick a runner (Jest is the standard in the Expo/RN ecosystem, but it's open).
 
 ```
 features/items/__tests__/
@@ -368,11 +367,11 @@ test('createItem saves the item', async () => {
 
 ---
 
-## Still to be decided (revisit this document once resolved)
+## Open tooling & architecture decisions
 
-- **Sync engine**: not decided yet (custom vs. library). Once decided, document the conflict-resolution flow here and update `shared/infrastructure/sync-engine/`.
-- **Test runner**: not decided yet. Default recommendation: Jest + `@testing-library/react-native` (the standard in the Expo ecosystem), but it's open.
-- **Shared global state** (Zustand, Redux, Context+TanStack Query, etc.): not defined in this conversation. In the meantime, each feature manages its own state via hooks (`ui/hooks/`), and only gets promoted to `core/providers/` + a global library if real cross-feature state shows up.
+Undecided choices — the sync engine, the test runner, and the shared
+global-state library — are tracked in [future-features.md](./future-features.md),
+so this reference stays limited to what's already in place.
 
 ---
 

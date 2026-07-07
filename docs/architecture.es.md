@@ -81,7 +81,7 @@ src/
 │   ├── infrastructure/
 │   │   ├── db/                   # conexión a expo-sqlite + runner de migraciones genérico (sin conocer features)
 │   │   ├── api/                  # cliente HTTP base, interceptores
-│   │   └── sync-engine/          # motor de sincronización genérico (aún por definir)
+│   │   └── sync-engine/          # motor de sincronización genérico (placeholder para el sync futuro)
 │   └── ui/                       # componentes totalmente genéricos (Button, Modal...)
 │
 ├── core/
@@ -336,7 +336,6 @@ module.exports = {
 - **Tests de domain** y de **use case**: co-ubicados en `features/<f>/__tests__/`, sin dependencia de React Native ni de la base de datos real. Usan repositorios en memoria (fakes) que implementan la misma interfaz de `domain/`.
 - **Tests de infrastructure** (p. ej. `SqliteItemRepository`): pueden vivir junto al fichero o en `__tests__/infrastructure/`, y sí tocan SQLite (en memoria o con un driver mockeado).
 - **Tests de UI**: junto a los componentes, o en `__tests__/ui/` del feature.
-- Pendiente: elegir un runner (Jest es el estándar en el ecosistema Expo/RN, pero está abierto).
 
 ```
 features/items/__tests__/
@@ -368,11 +367,12 @@ test('createItem saves the item', async () => {
 
 ---
 
-## Aún por decidir (revisar este documento cuando se resuelva)
+## Decisiones abiertas de tooling y arquitectura
 
-- **Motor de sincronización**: aún sin decidir (a medida vs. librería). Cuando se decida, documentar aquí el flujo de resolución de conflictos y actualizar `shared/infrastructure/sync-engine/`.
-- **Runner de tests**: aún sin decidir. Recomendación por defecto: Jest + `@testing-library/react-native` (el estándar en el ecosistema Expo), pero está abierto.
-- **Estado global compartido** (Zustand, Redux, Context+TanStack Query, etc.): no definido en esta conversación. Mientras tanto, cada feature gestiona su propio estado vía hooks (`ui/hooks/`), y solo se promociona a `core/providers/` + una librería global si aparece una necesidad real de estado cross-feature.
+Las decisiones sin cerrar — el motor de sincronización, el runner de tests y la
+librería de estado global compartido — se registran en
+[future-features.es.md](./future-features.es.md), para que esta
+referencia se limite a lo que ya está en pie.
 
 ---
 
