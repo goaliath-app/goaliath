@@ -3,6 +3,11 @@
 # dependencies
 node_modules/
 
+# this repo is npm-only — reject other package managers' lockfiles
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
 # Expo
 .expo/
 dist/

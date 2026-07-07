@@ -1,56 +1,65 @@
-# Welcome to your Expo app 👋
+# Goaliath
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Goaliath is a free time and goal management app. It seeks to make you feel proud
+of your daily actions. Goaliath is opinionated and designed to support a specific
+time management strategy — you can learn the method on
+[our website](https://goaliath-app.github.io/guide).
 
-## Get started
+> **This branch is a ground-up rewrite (v2).** v1 shipped as a JavaScript +
+> Redux + AsyncStorage app; this rewrite starts over in **TypeScript** with a
+> hexagonal, offline-first architecture. It is an early work in progress — see
+> [`docs/implementation-notes.md`](docs/implementation-notes.md) for live status.
 
-1. Install dependencies
+## What's different in the rewrite
 
-   ```bash
-   npm install
-   ```
+The interesting part is the **domain model**: the calendar is not the source of
+truth, it's a *projection* rebuilt from stable data (goals, activities,
+schedules) plus a sparse record of deviations. That design carries the risk, so
+it's built and tested as a pure, dependency-free core **before** any persistence
+or UI.
 
-2. Start the app
+## Design docs (the source of truth)
 
-   ```bash
-   npx expo start
-   ```
+Read these before changing anything — each has a Spanish mirror (`*.es.md`):
 
-In the output, you'll find options to open the app in a
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — where every file goes (hexagonal / feature-based).
+- [`docs/domain-model.md`](docs/domain-model.md) — the goal/activity/task model and its behaviour.
+- [`docs/future-features.md`](docs/future-features.md) — anything not built yet.
+- [`docs/implementation-notes.md`](docs/implementation-notes.md) — living status: what's built and what's next.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Stack
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **[React Native](https://github.com/facebook/react-native)** over **[Expo](https://github.com/expo/expo)** (SDK 56), **TypeScript** in strict mode.
+- **[Expo Router](https://docs.expo.dev/router/introduction)** for file-based routing.
+- **[expo-sqlite](https://docs.expo.dev/versions/latest/sdk/sqlite/)** as the local, offline-first data source (behind repository ports — planned, not yet wired).
+- **[Jest](https://jestjs.io/)** via the `jest-expo` preset for tests.
 
-## Get a fresh project
+Cross-cutting choices still open (state library, sync engine) are tracked in
+[`docs/future-features.md`](docs/future-features.md), not baked in yet.
 
-When you're ready, run:
+## Getting started
+
+This repo is **npm-only** (see [`.gitignore`](.gitignore)); don't introduce yarn/pnpm/bun lockfiles.
 
 ```bash
-npm run reset-project
+npm install       # install dependencies
+npx expo start    # run the app
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Development workflow
 
-### Other setup steps
+A change isn't done until **both** of these are green:
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+npm test          # Jest (jest-expo preset); npm run test:watch to watch
+npx tsc --noEmit  # typecheck (Jest runs via Babel and does not typecheck)
+```
 
-## Learn more
+Tests live in a `__tests__/` folder mirroring the source path, e.g.
+`features/tracking/domain/StatusPeriod.ts` →
+`features/tracking/__tests__/domain/StatusPeriod.test.ts`.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Contributors
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- [JimenaAndrea](https://github.com/JimenaAndrea)
+- [OliverLSanz](https://github.com/OliverLSanz)
