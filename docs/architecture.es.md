@@ -116,7 +116,7 @@ Ambos tienen que pasar por `index.ts`. Nada fuera de un feature —ni siquiera `
 
 | Si estás escribiendo... | Va en... |
 |---|---|
-| Una entidad con comportamiento/reglas de negocio (p. ej. `Item.updateStatus()`) | `features/<f>/domain/` |
+| Una entidad con comportamiento/reglas de negocio (p. ej. `updateStatus(item, …)`) | `features/<f>/domain/` |
 | Una interfaz de repositorio (contrato de acceso a datos) | `features/<f>/domain/` |
 | Un caso de uso (p. ej. "crear item", "sincronizar") | `features/<f>/application/` |
 | Una query SQL, una llamada `fetch`, uso de `expo-sqlite` | `features/<f>/infrastructure/` |
@@ -138,6 +138,27 @@ Ambos tienen que pasar por `index.ts`. Nada fuera de un feature —ni siquiera `
 | Providers globales (QueryClientProvider, ThemeProvider...) | `core/providers/` |
 
 **Regla de desempate:** si un fichero podría ir en dos sitios, pregúntate "¿lo usa más de un feature?". Si sí → `shared/`. Si no → dentro del feature.
+
+---
+
+## Estilo del dominio: datos + funciones puras, no clases
+
+Las entidades de dominio se modelan como **datos planos (tipos/interfaces) más
+funciones puras libres**, no como clases con métodos. El comportamiento es una
+función exportada que recibe la entidad como parámetro y devuelve un valor (o una
+entidad nueva) — p. ej. `isActiveOn(periods, day)`,
+`isEffectivelyActive(activity, goal, day)` — nunca `entity.doThing()` con estado
+mutable interno. Esto mantiene el dominio inmutable, sin `this` y trivial de
+testear, y coincide con cómo ya está escrito el core puro (`StatusPeriod`,
+`RecurrenceRule`, `CalendarDay`).
+
+Las clases siguen siendo la herramienta correcta **fuera** del dominio: los
+adapters de infraestructura (repositorios como `SqliteItemRepository`) son clases
+que implementan un puerto del dominio y los inyecta `core/di/`. Así que la
+división es deliberada — *datos + funciones libres en `domain/`, clases en
+`infrastructure/`* — no un accidente de dos estilos mezclados. Los ejemplos con
+métodos en otras partes de este doc (`Item.updateStatus()`) son atajo
+ilustrativo, no un mandato de poner comportamiento en la entidad.
 
 ---
 

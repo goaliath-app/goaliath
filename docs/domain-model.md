@@ -36,9 +36,14 @@ so it needs no owner reference of its own in the domain.
 ```
 StatusPeriod {
   status: 'active' | 'paused' | 'archived'
-  from: Date   // takes effect here and holds until the next entry (or forever if last)
+  from: CalendarDay   // the logical day (§10) this status takes effect on; holds until the next entry (or forever if last)
 }
 ```
+
+`from` is a `CalendarDay` (§10), not a wall-clock `Date`: status changes are
+dated by logical day (a change "takes effect today", §9), and `CalendarDay`
+values compare directly (`<`, `===`), so "which status is in effect on day D" is
+a plain comparison with no time-of-day to reconcile.
 
 There is **no explicit end**: an entry holds until the next one begins.
 Timelines are contiguous (the entity always has some status once it exists —
@@ -135,7 +140,7 @@ ActivitySchedule {
   recurrenceRule: RecurrenceRule   // WHEN it's due — purely temporal (§4)
   dayGoal:    number | null        // per due/opted-in day: amount (in the activityType's metric) that makes that day count as done; null = binary "did it"
   periodGoal: PeriodGoal | null    // only for `quota` recurrences; null for fixed ones
-  startDate                        // applies from here until the next schedule's startDate (or the current one if last)
+  startDate: CalendarDay           // logical day (§10) it applies from, until the next schedule's startDate (or the current one if last)
 }
 
 PeriodGoal =
@@ -313,10 +318,17 @@ The model must be able to grow consistently. The rule is: **a new
 `activityType` is added to a registry (plugin), never by modifying the generic
 model.**
 
-Each registry entry defines:
+A definition is split across **two layers**, because the projection (pure
+domain) consumes the behaviour while only the screens consume the rendering —
+and the domain layer must never import React Native/Expo (see
+[architecture.md](./architecture.md), dependency rule 1). Merging both halves
+into one object would drag a `Component` into `domain/` and break that rule.
+
+**Domain half** — pure, lives in `features/tracking/domain/`, consumed by the
+projection and use cases:
 
 ```
-ActivityTypeDefinition {
+ActivityTypeBehaviour {
   key: string                          // 'counter', 'timer', 'checklist', ...
   metric: 'none' | 'count' | 'duration'   // what a day's progress measures — gives dayGoal/periodGoal their unit
   emptyProgress(): progress
@@ -324,20 +336,30 @@ ActivityTypeDefinition {
   isCompleted(progress, dayGoal): boolean
   computeCompletionRatio(progress, dayGoal): number   // 0..1
   applyUserAction(progress, action): progress   // e.g. "add rep", "start timer", "stop timer"
+}
+```
+
+**UI half** — lives in `features/tracking/ui/`, consumed only by screens, keyed
+by the same `key`:
+
+```
+ActivityTypeView {
+  key: string
   renderTodayItem(occurrence, schedule): Component
   renderFrequencyLabel(schedule, t): string
 }
 ```
 
-`activityType` is the single extension point for progress shape and UI. The
-`metric` + `measure` pair is what lets `periodGoal.aggregate: 'metricSum'` and
-`dayGoal` (§3) work for **any** type without the generic model knowing the type
-— which is exactly why the metric is derived from `activityType` and never
-duplicated on the recurrence.
+Both are keyed by `activityType`, so a new type adds one entry to each registry;
+the domain registry is what keeps the projection type-agnostic while staying
+pure. The `metric` + `measure` pair (domain half) is what lets
+`periodGoal.aggregate: 'metricSum'` and `dayGoal` (§3) work for **any** type
+without the generic model knowing the type — which is exactly why the metric is
+derived from `activityType` and never duplicated on the recurrence.
 
-To add, for example, a "checklist with subtasks" type: create
-`activityTypes/checklistWithSubtasks.js` implementing that interface, register
-it in the index, and neither `Activity`, `ActivitySchedule`,
+To add, for example, a "checklist with subtasks" type: implement its
+`ActivityTypeBehaviour` in the domain registry and its `ActivityTypeView` in the
+UI registry (same `key`), and neither `Activity`, `ActivitySchedule`,
 `ActivityOccurrence`, nor the projection algorithm needs to change.
 
 `Task` (§6) intentionally sits outside this registry: it's always a plain

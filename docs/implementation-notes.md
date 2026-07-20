@@ -18,30 +18,42 @@ SQLite or UI — that's where the design risk concentrates.
 - `src/features/tracking/domain/StatusPeriod.ts` — status timeline:
   `statusOn` / `isActiveOn` (change-point timeline, `from` inclusive), `startedOn`, `activeSince`
   (domain-model §0).
-- `src/features/tracking/domain/RecurrenceRule.ts` — `RecurrenceRule` union +
-  `isDueOn` per fixed kind (daily/weekly/monthly/yearly) + `isFixed` narrowing;
-  `quota` is excluded from `isDueOn` at the type level (domain-model §4). Added
-  `calendarDayParts` / `isoWeekday` (ISO 1=Mon..7=Sun) to `CalendarDay`.
-  Locked in while building: weekday convention is ISO 8601; `monthly`/`yearly`
-  never clamp (a day the month/year lacks simply never matches).
-- `src/features/tracking/domain/Goal.ts` + `Activity.ts` — the two aggregates'
-  entity types (§1, §2), plus `isEffectivelyActive(activity, goal, day)`, the §0
-  composition/cascade rule (goal AND activity active). Guards against being
-  handed a goal that isn't the activity's own. `activityType` is a placeholder
-  union (`checklist`/`counter`/`timer`) until the registry (§7) makes it
-  `keyof typeof registry`.
+
+### Strategy: hybrid (domain-first up to the projection, then a vertical slice)
+Take the pure domain only as far as the projection for the **simplest case**
+(checklist on fixed recurrences), then cut a thin end-to-end slice (SQLite repos
++ DI + a "Today" screen) to de-risk the wiring before widening the domain to
+counter/timer/quota. The projection is the highest-risk piece, so we build just
+enough of it to be real, prove it through a real screen, then extend behind the
+proven seams.
 
 ### Next (rough order)
-1. `ActivitySchedule` (§3): versioned recurrence + `dayGoal`/`periodGoal`; a
+1. `RecurrenceRule` (§4): union + `isDueOn` per fixed kind
+   (daily/weekly/monthly/yearly) + `isFixed` narrowing; `quota` excluded from
+   `isDueOn` at the type level. Add `calendarDayParts` / `isoWeekday`
+   (ISO 1=Mon..7=Sun) to `CalendarDay`. Conventions to lock in: weekday is
+   ISO 8601; `monthly`/`yearly` never clamp (a day the month/year lacks simply
+   never matches).
+2. `Goal` (§1) + `Activity` (§2): the two aggregates' entity types plus
+   `isEffectivelyActive(activity, goal, day)`, the §0 composition/cascade rule
+   (goal AND activity active). `activityType` typed as the registry key set.
+3. `ActivitySchedule` (§3): versioned recurrence + `dayGoal`/`periodGoal`; a
    change-point timeline like `StatusPeriod`, with the `scheduleOn(day)` lookup.
-2. activityType registry (§7): `checklist` / `counter` / `timer` with
-   `metric` / `measure` / `isCompleted` / `emptyProgress`.
-3. `ActivityOccurrence` (§5): the persisted per-day record with polymorphic
-   `progress` keyed by `activityType`.
-4. Projection: build day `D` (§8) + resolve display status
-   (pending / done / missed) — the heart; everything above feeds it.
-5. Only then: infrastructure (expo-sqlite repos + mappers + migrations) and UI.
-   (Candidate point to inject a thin end-to-end vertical slice — see README.)
+4. activityType behaviour for **`checklist` only** (§7), modeled **concretely**
+   (its progress is `{}`, a binary day) — *not* the full plugin registry yet.
+   The registry abstraction is designed better once `counter` gives it a real
+   second case + a real UI consumer; extracting it later is cheap (pure domain
+   with tests). When it is extracted it splits in two (§7): a pure
+   `ActivityTypeBehaviour` in `domain/` and an `ActivityTypeView` in `ui/`, so no
+   `Component` ever leaks into the domain.
+5. `ActivityOccurrence` (§5) + a single **status-policy** module (future-features
+   invariant 2: "counts as done? breaks a streak?" in one place).
+6. Projection `buildDay(D)` (§8) for **fixed kinds only** + resolve display
+   status (pending / done / missed) — the heart. Quota opt-in deferred.
+7. **Vertical slice**: expo-sqlite repos + mappers + migrations + `core/di` +
+   a "Today" screen you can tap. Proves the whole hexagon end-to-end.
+8. Then widen: counter/timer + `RunningTimer` (§11), quota + opt-in (§4/§8),
+   `Task` feature (§6), `DailyStatsSummary` (§12).
 
 ## Decisions taken while building
 - **Feature `tracking`** houses Goal / Activity / ActivitySchedule /

@@ -116,7 +116,7 @@ Both must go through `index.ts`. Nothing outside a feature — not even `core/` 
 
 | If you're writing... | It goes in... |
 |---|---|
-| An entity with behavior/business rules (e.g. `Item.updateStatus()`) | `features/<f>/domain/` |
+| An entity with behavior/business rules (e.g. `updateStatus(item, …)`) | `features/<f>/domain/` |
 | A repository interface (data access contract) | `features/<f>/domain/` |
 | A use case (e.g. "create item", "sync") | `features/<f>/application/` |
 | A SQL query, a `fetch` call, use of `expo-sqlite` | `features/<f>/infrastructure/` |
@@ -138,6 +138,25 @@ Both must go through `index.ts`. Nothing outside a feature — not even `core/` 
 | Global providers (QueryClientProvider, ThemeProvider...) | `core/providers/` |
 
 **Tie-breaker rule:** if a file could go in two places, ask yourself "does more than one feature use it?". If yes → `shared/`. If no → inside the feature.
+
+---
+
+## Domain style: data + pure functions, not classes
+
+Domain entities are modeled as **plain data (types/interfaces) plus pure free
+functions**, not classes with methods. Behavior is an exported function that
+takes the entity as a parameter and returns a value (or a new entity) — e.g.
+`isActiveOn(periods, day)`, `isEffectivelyActive(activity, goal, day)` — never
+`entity.doThing()` with internal mutable state. This keeps the domain immutable,
+`this`-free, and trivially testable, and it matches how the pure core is already
+written (`StatusPeriod`, `RecurrenceRule`, `CalendarDay`).
+
+Classes are still the right tool **outside** the domain: infrastructure adapters
+(repositories like `SqliteItemRepository`) are classes that implement a domain
+port and get injected by `core/di/`. So the split is deliberate — *data + free
+functions in `domain/`, classes in `infrastructure/`* — not an accident of two
+mixed styles. Method-style examples elsewhere in this doc (`Item.updateStatus()`)
+are illustrative shorthand, not a mandate to put behavior on the entity.
 
 ---
 

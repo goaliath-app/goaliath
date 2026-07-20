@@ -38,9 +38,14 @@ su dueño.
 ```
 StatusPeriod {
   status: 'active' | 'paused' | 'archived'
-  from: Date   // toma efecto aquí y se mantiene hasta la siguiente entrada (o para siempre si es la última)
+  from: CalendarDay   // el día lógico (§10) en que este estado toma efecto; se mantiene hasta la siguiente entrada (o para siempre si es la última)
 }
 ```
+
+`from` es un `CalendarDay` (§10), no un `Date` de reloj: los cambios de estado se
+fechan por día lógico (un cambio "toma efecto hoy", §9), y los `CalendarDay` se
+comparan directamente (`<`, `===`), así que "qué estado rige el día D" es una
+comparación simple sin hora del día que reconciliar.
 
 No hay **fin explícito**: una entrada se mantiene hasta que empieza la siguiente.
 Las timelines son contiguas (la entidad siempre tiene algún estado una vez existe
@@ -137,7 +142,7 @@ ActivitySchedule {
   recurrenceRule: RecurrenceRule   // CUÁNDO toca — puramente temporal (§4)
   dayGoal:    number | null        // por día debido/elegido: cantidad (en la métrica del activityType) que hace que ese día cuente como hecho; null = binario "lo hice"
   periodGoal: PeriodGoal | null    // solo para recurrencias `quota`; null para las fijas
-  startDate                        // aplica desde aquí hasta el startDate del siguiente schedule (o la actual si es la última)
+  startDate: CalendarDay           // día lógico (§10) desde el que aplica, hasta el startDate del siguiente schedule (o la actual si es la última)
 }
 
 PeriodGoal =
@@ -319,10 +324,18 @@ El modelo debe poder crecer de forma consistente. La regla es: **un
 `activityType` nuevo se añade a un registro (plugin), nunca modificando el
 modelo genérico.**
 
-Cada entrada del registro define:
+Una definición se reparte en **dos capas**, porque la proyección (dominio puro)
+consume el comportamiento mientras que solo las pantallas consumen el render —
+y la capa de dominio nunca debe importar React Native/Expo (ver
+[architecture.md](./architecture.md), regla de dependencia 1). Fusionar ambas
+mitades en un solo objeto arrastraría un `Component` a `domain/` y rompería esa
+regla.
+
+**Mitad de dominio** — pura, vive en `features/tracking/domain/`, consumida por
+la proyección y los casos de uso:
 
 ```
-ActivityTypeDefinition {
+ActivityTypeBehaviour {
   key: string                          // 'counter', 'timer', 'checklist', ...
   metric: 'none' | 'count' | 'duration'   // qué mide el progreso de un día — da la unidad a dayGoal/periodGoal
   emptyProgress(): progress
@@ -330,21 +343,32 @@ ActivityTypeDefinition {
   isCompleted(progress, dayGoal): boolean
   computeCompletionRatio(progress, dayGoal): number   // 0..1
   applyUserAction(progress, action): progress   // p.ej. "add rep", "start timer", "stop timer"
+}
+```
+
+**Mitad de UI** — vive en `features/tracking/ui/`, consumida solo por las
+pantallas, con la misma `key`:
+
+```
+ActivityTypeView {
+  key: string
   renderTodayItem(occurrence, schedule): Component
   renderFrequencyLabel(schedule, t): string
 }
 ```
 
-`activityType` es el único punto de extensión para la forma del progreso y la
-UI. El par `metric` + `measure` es lo que permite que `periodGoal.aggregate:
-'metricSum'` y `dayGoal` (§3) funcionen para **cualquier** tipo sin que el
-modelo genérico conozca el tipo — que es justo por qué la métrica se deriva del
-`activityType` y nunca se duplica en la recurrencia.
+Ambas se indexan por `activityType`, así que un tipo nuevo añade una entrada a
+cada registro; el registro de dominio es lo que mantiene la proyección agnóstica
+del tipo sin dejar de ser pura. El par `metric` + `measure` (mitad de dominio)
+es lo que permite que `periodGoal.aggregate: 'metricSum'` y `dayGoal` (§3)
+funcionen para **cualquier** tipo sin que el modelo genérico conozca el tipo —
+que es justo por qué la métrica se deriva del `activityType` y nunca se duplica
+en la recurrencia.
 
-Para añadir, por ejemplo, un tipo "checklist con subtareas": se crea
-`activityTypes/checklistWithSubtasks.js` implementando esa interfaz, se registra
-en el índice, y no se toca `Activity`, `ActivitySchedule`, `ActivityOccurrence`
-ni el algoritmo de proyección.
+Para añadir, por ejemplo, un tipo "checklist con subtareas": se implementa su
+`ActivityTypeBehaviour` en el registro de dominio y su `ActivityTypeView` en el
+registro de UI (misma `key`), y no se toca `Activity`, `ActivitySchedule`,
+`ActivityOccurrence` ni el algoritmo de proyección.
 
 `Task` (§6) queda deliberadamente fuera de este registro: por definición
 siempre es un simple ítem de checklist, así que no necesita `activityType`.
