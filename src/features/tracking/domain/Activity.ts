@@ -9,12 +9,12 @@ import { isActiveOn, type StatusPeriod } from './StatusPeriod';
 export type ActivityId = string & { readonly __activityId: unique symbol };
 
 /**
- * The activity-type key (domain-model §2/§7). A **placeholder union** for now:
- * once the activityType registry (§7) exists this becomes the set of registered
- * keys (`keyof typeof registry`). Only `checklist` is modeled concretely so far;
- * `counter`/`timer` are listed to fix intent, not yet implemented.
+ * The activity-type key (domain-model §2/§7): the set of **implemented** types.
+ * `checklist` and `counter` are modeled; `timer` joins the union when it's built
+ * (adding it is one entry here plus its behaviour/view modules). Eventually this
+ * becomes `keyof typeof registry` once the registry is extracted.
  */
-export type ActivityType = 'checklist' | 'counter' | 'timer';
+export type ActivityType = 'checklist' | 'counter';
 
 /**
  * An Activity describes **what** the user wants to do, never **when** (that's the

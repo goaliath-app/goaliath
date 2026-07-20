@@ -1,22 +1,16 @@
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import type { ActivityId } from '../../domain/Activity';
-import type { DayItem } from '../../domain/projection';
+import { Fragment } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { activityTypeViews } from '../activityTypes/activityTypeViews';
 import { useTodayView } from '../hooks/useTodayView';
 
 /**
- * The "Today" screen — the thin end of the vertical slice. Renders the projected
- * day and lets you check a checklist activity off. All logic lives in the hook /
- * use cases / projection; this file is presentation only.
+ * The "Today" screen. Presentation only: it loads the projected day and, for
+ * each item, dispatches to the matching row via the activityType view registry —
+ * it never switches on the type itself. All logic lives in the hook / use cases
+ * / projection.
  */
 export function TodayScreen() {
-  const { items, today, toggle } = useTodayView();
+  const { items, today, actions } = useTodayView();
 
   return (
     <View style={styles.screen}>
@@ -32,34 +26,16 @@ export function TodayScreen() {
       ) : (
         <ScrollView contentContainerStyle={styles.list}>
           {items.map((item) => (
-            <DayRow
-              key={item.activity.id}
-              item={item}
-              onToggle={() => toggle(item.activity.id as ActivityId)}
-            />
+            <Fragment key={item.activity.id}>
+              {activityTypeViews[item.activity.activityType].renderRow({
+                item,
+                actions,
+              })}
+            </Fragment>
           ))}
         </ScrollView>
       )}
     </View>
-  );
-}
-
-function DayRow({ item, onToggle }: { item: DayItem; onToggle: () => void }) {
-  const done = item.displayStatus === 'done';
-  return (
-    <Pressable
-      style={styles.row}
-      onPress={onToggle}
-      accessibilityRole="checkbox"
-      accessibilityState={{ checked: done }}
-    >
-      <View style={[styles.checkbox, done && styles.checkboxDone]}>
-        {done ? <Text style={styles.check}>✓</Text> : null}
-      </View>
-      <Text style={[styles.rowTitle, done && styles.rowTitleDone]}>
-        {item.activity.title}
-      </Text>
-    </Pressable>
   );
 }
 
@@ -70,26 +46,4 @@ const styles = StyleSheet.create({
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   empty: { fontSize: 16, color: '#8a8a8e', marginTop: 24 },
   list: { gap: 12, paddingBottom: 24 },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    backgroundColor: '#f2f2f7',
-    gap: 14,
-  },
-  checkbox: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    borderWidth: 2,
-    borderColor: '#c7c7cc',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkboxDone: { backgroundColor: '#34c759', borderColor: '#34c759' },
-  check: { color: '#ffffff', fontSize: 16, fontWeight: '700', lineHeight: 20 },
-  rowTitle: { fontSize: 17, color: '#1c1c1e' },
-  rowTitleDone: { color: '#8a8a8e', textDecorationLine: 'line-through' },
 });

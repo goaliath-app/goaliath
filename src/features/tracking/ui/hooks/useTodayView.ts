@@ -2,15 +2,16 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDependencies } from '@/core/di/DependencyProvider';
 import { getCalendarDay } from '@/shared/domain/time/CalendarDay';
 import { getDayView } from '../../application/getDayView';
+import { logCounterRepetition } from '../../application/logCounterRepetition';
 import { toggleChecklistDone } from '../../application/toggleChecklistDone';
 import type { ActivityId } from '../../domain/Activity';
 import type { DayItem } from '../../domain/projection';
+import type { TodayActions } from '../activityTypes/activityTypeViews';
 
 /**
- * UI hook for the Today screen: loads the projected day view and exposes a
- * toggle for checking a checklist item off. It only wires container deps into
- * the use cases — no business logic lives here (rule 4: `ui/` calls
- * `application/` through hooks).
+ * UI hook for the Today screen: loads the projected day view and exposes the
+ * per-type actions the rows call. It only wires container deps into the use
+ * cases — no business logic here (rule 4: `ui/` calls `application/` via hooks).
  */
 export function useTodayView() {
   const deps = useDependencies();
@@ -37,18 +38,25 @@ export function useTodayView() {
     void load();
   }, [load]);
 
-  const toggle = useCallback(
-    async (activityId: ActivityId) => {
-      const action = toggleChecklistDone({
-        schedules: deps.activityScheduleRepository,
-        occurrences: deps.activityOccurrenceRepository,
-        now: deps.now,
-      });
-      await action({ activityId, day: today });
-      await load();
-    },
-    [deps, today, load],
-  );
+  const actions = useMemo<TodayActions>(() => {
+    const scheduleAndOccurrenceDeps = {
+      schedules: deps.activityScheduleRepository,
+      occurrences: deps.activityOccurrenceRepository,
+      now: deps.now,
+    };
+    const toggle = toggleChecklistDone(scheduleAndOccurrenceDeps);
+    const increment = logCounterRepetition(scheduleAndOccurrenceDeps);
+    return {
+      toggleChecklist: async (activityId: ActivityId) => {
+        await toggle({ activityId, day: today });
+        await load();
+      },
+      incrementCounter: async (activityId: ActivityId) => {
+        await increment({ activityId, day: today });
+        await load();
+      },
+    };
+  }, [deps, today, load]);
 
-  return { items, today, toggle };
+  return { items, today, actions };
 }

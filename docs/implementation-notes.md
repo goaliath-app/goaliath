@@ -104,16 +104,23 @@ domain): counter/timer + registry extraction, quota opt-in, `Task`, stats.
   checklist toggle, which sets status directly). Counter progress round-trips
   through the occurrence mapper (tested).
 
-**Registry finding (why it's still deferred):** adding a real second type shows
-the registry that's *forced* now is the **UI dispatch** one (`ActivityTypeView`,
-§7's UI half — the Today screen must render checkbox vs counter rows). The pure
-**domain** registry (`ActivityTypeBehaviour` with a generic `measure`/
-`isCompleted`) is **not** forced yet: write paths are type-specific use cases,
-and the projection reads `status`, not progress. It's forced later by quota's
-`metricSum` and stats. And §7's `measure(progress): number` signature doesn't fit
-`checklist` (whose "measure" is status-based — progress is `{}`); that's a real
-sign the interface needs adjusting when it's built — exactly the mis-design
-deferring avoided. So: build the UI dispatch registry next; keep the domain
+- `ui/activityTypes/activityTypeViews.tsx` — the **UI-half registry**
+  (`ActivityTypeView`, §7): `Record<ActivityType, { renderRow }>` with the
+  checklist (checkbox) and counter (count / dayGoal + "+") rows. `TodayScreen`
+  dispatches through it and no longer switches on type; `useTodayView` exposes a
+  `TodayActions` bundle (`toggleChecklist` + `incrementCounter`). `ActivityType`
+  narrowed to the **implemented** set (`checklist | counter`); `timer` rejoins
+  when built. Seed adds a counter activity (Push-ups, goal 10). Verified by an
+  iOS Metro bundle (exit 0).
+
+**Registry finding (why the domain half stays deferred):** a real second type
+shows the registry *forced* now is the **UI dispatch** one (above). The pure
+**domain** registry (`ActivityTypeBehaviour` with generic `measure`/`isCompleted`)
+is **not** forced yet: write paths are type-specific use cases and the projection
+reads `status`, not progress. It's forced later by quota's `metricSum` and stats.
+And §7's `measure(progress): number` signature doesn't fit `checklist` (whose
+"measure" is status-based — progress is `{}`); a real sign the interface needs
+adjusting when built — the mis-design deferring avoided. Keep the domain
 behaviour registry deferred until quota/stats.
 
 ### Strategy: hybrid (domain-first up to the projection, then a vertical slice)

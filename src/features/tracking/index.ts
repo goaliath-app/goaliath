@@ -22,6 +22,7 @@ export { SqliteActivityOccurrenceRepository } from './infrastructure/SqliteActiv
 // Use cases.
 export { getDayView } from './application/getDayView';
 export { toggleChecklistDone } from './application/toggleChecklistDone';
+export { logCounterRepetition } from './application/logCounterRepetition';
 
 // View types the UI consumes.
 export type { DayItem, DisplayStatus } from './domain/projection';
