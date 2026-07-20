@@ -28,6 +28,12 @@ SQLite or UI — that's where the design risk concentrates.
   `isEffectivelyActive(activity, goal, day)`, the §0 cascade (goal AND activity
   active) with a guard against a foreign goal. `activityType` is a placeholder
   union until the registry (§7).
+- `src/features/tracking/domain/ActivitySchedule.ts` — versioned recurrence +
+  `dayGoal`/`periodGoal` (§3), modeled as `FixedSchedule | QuotaSchedule` so the
+  "`periodGoal` iff `quota`" invariant is type-level. `scheduleOn(day)` lookup.
+- `src/shared/domain/time/changePointTimeline.ts` — `latestOnOrBefore`, the
+  shared change-point-timeline lookup extracted from `StatusPeriod.periodOn` and
+  reused by `scheduleOn` (both are "latest entry with `start <= day`", §0/§3).
 
 ### Strategy: hybrid (domain-first up to the projection, then a vertical slice)
 Take the pure domain only as far as the projection for the **simplest case**
@@ -38,22 +44,20 @@ enough of it to be real, prove it through a real screen, then extend behind the
 proven seams.
 
 ### Next (rough order)
-1. `ActivitySchedule` (§3): versioned recurrence + `dayGoal`/`periodGoal`; a
-   change-point timeline like `StatusPeriod`, with the `scheduleOn(day)` lookup.
-2. activityType behaviour for **`checklist` only** (§7), modeled **concretely**
+1. activityType behaviour for **`checklist` only** (§7), modeled **concretely**
    (its progress is `{}`, a binary day) — *not* the full plugin registry yet.
    The registry abstraction is designed better once `counter` gives it a real
    second case + a real UI consumer; extracting it later is cheap (pure domain
    with tests). When it is extracted it splits in two (§7): a pure
    `ActivityTypeBehaviour` in `domain/` and an `ActivityTypeView` in `ui/`, so no
    `Component` ever leaks into the domain.
-3. `ActivityOccurrence` (§5) + a single **status-policy** module (future-features
+2. `ActivityOccurrence` (§5) + a single **status-policy** module (future-features
    invariant 2: "counts as done? breaks a streak?" in one place).
-4. Projection `buildDay(D)` (§8) for **fixed kinds only** + resolve display
+3. Projection `buildDay(D)` (§8) for **fixed kinds only** + resolve display
    status (pending / done / missed) — the heart. Quota opt-in deferred.
-5. **Vertical slice**: expo-sqlite repos + mappers + migrations + `core/di` +
+4. **Vertical slice**: expo-sqlite repos + mappers + migrations + `core/di` +
    a "Today" screen you can tap. Proves the whole hexagon end-to-end.
-6. Then widen: counter/timer + `RunningTimer` (§11), quota + opt-in (§4/§8),
+5. Then widen: counter/timer + `RunningTimer` (§11), quota + opt-in (§4/§8),
    `Task` feature (§6), `DailyStatsSummary` (§12).
 
 ## Decisions taken while building

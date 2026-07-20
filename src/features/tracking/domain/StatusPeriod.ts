@@ -1,4 +1,5 @@
 import type { CalendarDay } from '@/shared/domain/time/CalendarDay';
+import { latestOnOrBefore } from '@/shared/domain/time/changePointTimeline';
 
 /** The three lifecycle states shared by Goal and Activity (domain-model §0). */
 export type Status = 'active' | 'paused' | 'archived';
@@ -32,15 +33,7 @@ export function periodOn(
   periods: readonly StatusPeriod[],
   day: CalendarDay,
 ): StatusPeriod | null {
-  let current: StatusPeriod | null = null;
-  for (const period of periods) {
-    if (period.from <= day) {
-      current = period;
-    } else {
-      break; // sorted ascending: no later entry can qualify
-    }
-  }
-  return current;
+  return latestOnOrBefore(periods, day, (period) => period.from);
 }
 
 /** The status on `day`, or `null` if the entity did not exist yet. */
