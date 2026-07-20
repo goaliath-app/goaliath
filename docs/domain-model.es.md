@@ -61,9 +61,9 @@ si **ella y su Goal** están en estado `active` en esa fecha. Se resuelve con
 una función pura `isEffectivelyActive(activity, goal, date)`, sin necesidad de
 duplicar el flag en dos sitios.
 
-Los campos puramente cosméticos (`title`, `description`, `color`, `icon`,
-`priority`, `tags`, `estimatedDuration`...) **no se versionan**. Si el usuario
-lo renombra, el histórico simplemente muestra el nombre actual. Es una
+Los campos puramente cosméticos (`title`, `motivation`, `description`) **no se
+versionan**. Si el usuario lo renombra, el histórico simplemente muestra el
+nombre actual. Es una
 simplificación deliberada: nadie necesita que las estadísticas de hace 3 meses
 muestren un nombre antiguo, y evitamos versionar datos que no afectan a si un
 día cuenta o no para una racha/estadística.
@@ -80,8 +80,7 @@ y esa cascada necesita ser consistente con el histórico.
 Goal {
   id
   title
-  motivation / description
-  color, icon
+  motivation
   statusPeriods: StatusPeriod[]   // active | paused | archived
 }
 ```
@@ -102,7 +101,7 @@ es puntual.
 Activity {
   id
   goalId: id                // el Goal al que pertenece la Activity (obligatorio)
-  title, description, priority, color, icon, estimatedDuration, tags
+  title, description
 
   activityType: string      // clave de registro ('checklist' | 'counter' | 'timer' | ...); validada contra el registro, no texto libre
   statusPeriods: StatusPeriod[]   // active | paused | archived
@@ -206,7 +205,7 @@ más, sin tocar targets, progreso ni la lógica por-día de la proyección.
 ```
 RecurrenceRule =
   | { kind: 'daily' }
-  | { kind: 'weekly',  daysOfWeek:  number[] }   // 1..7 (días fijos)
+  | { kind: 'weekly',  daysOfWeek:  number[] }   // ISO 1..7 (lun..dom), días fijos
   | { kind: 'monthly', daysOfMonth: number[] }   // 1..31 (días fijos)
   | { kind: 'yearly',  datesOfYear: { month, day }[] }
   | { kind: 'quota',   period: 'week' | 'month' | 'year' }

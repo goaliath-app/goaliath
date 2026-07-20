@@ -59,8 +59,8 @@ it and its Goal** are in `active` status on that date. This is resolved with a
 pure function `isEffectivelyActive(activity, goal, date)`, with no need to
 duplicate the flag in two places.
 
-Purely cosmetic fields (`title`, `description`, `color`, `icon`, `priority`,
-`tags`, `estimatedDuration`...) **are not versioned**. If the user renames it,
+Purely cosmetic fields (`title`, `motivation`, `description`) **are not
+versioned**. If the user renames it,
 the history simply shows the current name. This is a deliberate simplification:
 nobody needs stats from 3 months ago to show an old name, and we avoid
 versioning data that doesn't affect whether a day counts or not for a
@@ -78,8 +78,7 @@ that cascade needs to be consistent with the historical record.
 Goal {
   id
   title
-  motivation / description
-  color, icon
+  motivation
   statusPeriods: StatusPeriod[]   // active | paused | archived
 }
 ```
@@ -100,7 +99,7 @@ item.
 Activity {
   id
   goalId: id                // the Goal this Activity belongs to (required)
-  title, description, priority, color, icon, estimatedDuration, tags
+  title, description
 
   activityType: string      // registry key ('checklist' | 'counter' | 'timer' | ...); validated against the registry, not free-form
   statusPeriods: StatusPeriod[]   // active | paused | archived
@@ -204,7 +203,7 @@ touching targets, progress, or the projection's per-day logic.
 ```
 RecurrenceRule =
   | { kind: 'daily' }
-  | { kind: 'weekly',  daysOfWeek:  number[] }   // 1..7 (fixed days)
+  | { kind: 'weekly',  daysOfWeek:  number[] }   // ISO 1..7 (Mon..Sun), fixed days
   | { kind: 'monthly', daysOfMonth: number[] }   // 1..31 (fixed days)
   | { kind: 'yearly',  datesOfYear: { month, day }[] }
   | { kind: 'quota',   period: 'week' | 'month' | 'year' }

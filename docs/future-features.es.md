@@ -145,6 +145,47 @@ al dominio.
 
 ---
 
+## Inicio de semana configurable (lunes vs domingo), sembrado desde el dispositivo
+
+En qué día empieza la semana — importa **solo** para recurrencias `quota` con
+`period: 'week'` (las actividades "N veces por semana") y para cualquier
+stat/heatmap semanal. Las fijas `daily`/`weekly`/`monthly`/`yearly` y las
+`quota month`/`quota year` son independientes de la frontera, así que el radio de
+impacto es estrecho.
+
+- **Cómo cambia el modelo actual:** canalizar *toda* la lógica de "¿a qué semana
+  pertenece este día?" por una única función pura (p.ej. `weekOf(day, weekStart)`),
+  igual que `getCalendarDay` es el único punto para los días lógicos
+  ([domain-model.es.md §10](./domain-model.es.md)). La proyección de quota y las
+  stats semanales la llaman; nada calcula fronteras de semana ad hoc.
+  `weekStartDay` es un ajuste guardado, **sembrado desde el dispositivo** en el
+  primer arranque (leído vía `expo-localization` en la capa de infraestructura —
+  ojo: su numeración es domingo=1, frente al ISO lunes=1 del dominio; mapéalo en
+  el adaptador, no lo filtres hacia dentro). El dominio recibe un número plano
+  como parámetro y nunca lee el dispositivo, así la proyección sigue pura y
+  determinista.
+- **Cambiarlo debe ser hacia delante, nunca un recálculo global silencioso.**
+  Como las semanas son proyección, mover la frontera re-agrupa las ocurrencias
+  `quota week` pasadas y puede hacer que una semana pase de "cumplida" a "fallada"
+  (las mismas marcas, otra agrupación) — alterando el histórico en silencio, algo
+  que [§9](./domain-model.es.md) prohíbe. Si el ajuste se hace cambiable a mitad
+  de vida, modelarlo como change-point timeline (como `ActivitySchedule`): las
+  semanas anteriores al cambio conservan la frontera vieja. Leer el dispositivo
+  *en vivo* reintroduciría esto como cambio *involuntario* (el usuario viaja, el
+  SO cambia dom↔lun) — por eso se siembra una vez y se persiste, y como mucho se
+  *ofrece* actualizar, nunca se sigue al dispositivo en silencio.
+- **Qué ya ayuda:** las ocurrencias se clavan por día lógico, nunca por semana
+  ([domain-model.es.md §5](./domain-model.es.md)) — así que cambiar `weekStart`
+  **no toca ningún dato guardado** (a diferencia de `dayStartHour`, que reetiqueta
+  las fechas de las ocurrencias, §10); es pura re-derivación. Y el precedente de
+  `getCalendarDay`/§10 significa que el patrón de "canalizar una frontera de
+  calendario por una sola función" ya está establecido. `legacy/v1` es el caso de
+  aviso: esparció el `startOf('week')` de Luxon (clavado a lunes) por ~6 ficheros
+  y dejó un `// TODO: make startOfWeek prop functional` que nunca terminó —
+  precisamente porque no había un punto único donde cambiarlo.
+
+---
+
 ## Duplicar una actividad (la respuesta al "reconvertir renombrando")
 
 Los nombres **no se versionan** (domain-model §0): renombrar una Activity o un

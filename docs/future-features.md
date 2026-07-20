@@ -144,6 +144,45 @@ to add to the domain.
 
 ---
 
+## Configurable week start (Monday vs Sunday), seeded from the device
+
+Which day a week begins on — matters **only** for `quota` recurrences with
+`period: 'week'` (the "N times a week" activities) and any weekly stats/heatmap.
+Fixed `daily`/`weekly`/`monthly`/`yearly` and `quota month`/`quota year` are
+boundary-independent, so the blast radius is narrow.
+
+- **How it changes the current model:** route *all* "which week does this day
+  belong to?" logic through a single pure function (e.g. `weekOf(day, weekStart)`),
+  exactly like `getCalendarDay` is the one chokepoint for logical days
+  ([domain-model.md §10](./domain-model.md)). The quota projection and weekly
+  stats call it; nothing computes week boundaries ad hoc. `weekStartDay` is a
+  stored setting, **seeded from the device** at first run (read via
+  `expo-localization` in the infrastructure layer — note its numbering is
+  Sunday=1, vs the domain's ISO Monday=1; map it in the adapter, don't leak it
+  inward). The domain receives a plain number as a parameter and never reads the
+  device, so the projection stays pure and deterministic.
+- **Changing it must be forward-only, never a silent global recompute.** Because
+  weeks are a projection, moving the boundary re-buckets past `quota week`
+  occurrences and can flip a past week from "met" to "missed" (same check-marks,
+  different grouping) — silently altering history, which
+  [§9](./domain-model.md) forbids. If the setting is ever made changeable
+  mid-life, model it as a change-point timeline (like `ActivitySchedule`): weeks
+  before the change keep the old boundary. Reading the device *live* would
+  reintroduce this as an *involuntary* change (user travels, OS flips Sun↔Mon) —
+  which is why we seed once and persist, and only ever *offer* to update, never
+  follow the device silently.
+- **What already helps:** occurrences are keyed by logical day, never by week
+  ([domain-model.md §5](./domain-model.md)) — so changing `weekStart` touches
+  **no stored data** (unlike `dayStartHour`, which relabels occurrence dates,
+  §10); it's pure re-derivation. And the `getCalendarDay`/§10 precedent means the
+  pattern of "funnel a calendar boundary through one function" is already
+  established. `legacy/v1` is the cautionary tale: it scattered Luxon
+  `startOf('week')` (hardwired to Monday) across ~6 files and left a
+  `// TODO: make startOfWeek prop functional` it never finished — precisely
+  because there was no single point to change.
+
+---
+
 ## Duplicate an activity (the answer to "repurposing by renaming")
 
 Names are **not versioned** (domain-model §0): renaming an Activity or Goal
