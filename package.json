@@ -51,6 +51,9 @@
     "roots": [
       "<rootDir>/src"
     ],
+    "testMatch": [
+      "**/*.test.[jt]s?(x)"
+    ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     }

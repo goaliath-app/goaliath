@@ -50,6 +50,16 @@ SQLite or UI — that's where the design risk concentrates.
   deferred); input is an object (`{ day, today, activities }`) so the two
   same-typed `CalendarDay`s can't be swapped. This closes Phase 1 (pure domain up
   to the projection) — the hybrid milestone.
+- `src/features/tracking/domain/ports/` — the four repository interfaces
+  (Goal / Activity / ActivitySchedule / ActivityOccurrence), grouped in a
+  `ports/` subfolder (convention now fixed in architecture.md: model files flat
+  in `domain/`, outbound contracts under `domain/ports/`).
+- `src/features/tracking/application/` — the slice's two use cases:
+  `getDayView` (fetch + delegate to `buildDay`; injected `now()` clock and
+  `dayStartHour`) and `toggleChecklistDone` (upsert the `(activityId, date)`
+  occurrence, done ↔ pending). Tested against in-memory fakes in
+  `__tests__/support/trackingFakes.ts` (shared builders + fake repos; Jest
+  `testMatch` narrowed to `*.test.*` so support files don't run as suites).
 
 ### Strategy: hybrid (domain-first up to the projection, then a vertical slice)
 Take the pure domain only as far as the projection for the **simplest case**

@@ -53,7 +53,8 @@ src/
 │   ├── items/
 │   │   ├── domain/               # Entidades, value objects, interfaces (puertos)
 │   │   │   ├── Item.ts
-│   │   │   ├── ItemRepository.ts   # interfaz, NO una implementación
+│   │   │   ├── ports/              # contratos hacia fuera que el dominio exige al exterior
+│   │   │   │   └── ItemRepository.ts   # interfaz, NO una implementación
 │   │   │   └── errors.ts
 │   │   ├── application/          # Casos de uso (orquestan domain + repository)
 │   │   │   ├── createItem.ts
@@ -117,7 +118,7 @@ Ambos tienen que pasar por `index.ts`. Nada fuera de un feature —ni siquiera `
 | Si estás escribiendo... | Va en... |
 |---|---|
 | Una entidad con comportamiento/reglas de negocio (p. ej. `updateStatus(item, …)`) | `features/<f>/domain/` |
-| Una interfaz de repositorio (contrato de acceso a datos) | `features/<f>/domain/` |
+| Una interfaz de repositorio (contrato de acceso a datos) | `features/<f>/domain/ports/` |
 | Un caso de uso (p. ej. "crear item", "sincronizar") | `features/<f>/application/` |
 | Una query SQL, una llamada `fetch`, uso de `expo-sqlite` | `features/<f>/infrastructure/` |
 | Un mapper entre una fila de BD/DTO de API y una entidad de dominio | `features/<f>/infrastructure/mappers/` |
@@ -271,7 +272,7 @@ export function createContainer(): Container {
 }
 ```
 
-Fíjate en que el import viene de `@/features/items` (su `index.ts`), no de `@/features/items/domain/ItemRepository` ni de `.../infrastructure/SqliteItemRepository` directamente — esos son ficheros internos. `ItemRepository` y `SqliteItemRepository` tienen que formar parte de los exports de cara al DI del feature para que esto funcione sin un import directo a un fichero interno.
+Fíjate en que el import viene de `@/features/items` (su `index.ts`), no de `@/features/items/domain/ports/ItemRepository` ni de `.../infrastructure/SqliteItemRepository` directamente — esos son ficheros internos. `ItemRepository` y `SqliteItemRepository` tienen que formar parte de los exports de cara al DI del feature para que esto funcione sin un import directo a un fichero interno.
 
 ```tsx
 // core/di/DependencyProvider.tsx

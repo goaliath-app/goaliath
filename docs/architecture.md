@@ -53,7 +53,8 @@ src/
 │   ├── items/
 │   │   ├── domain/               # Entities, value objects, interfaces (ports)
 │   │   │   ├── Item.ts
-│   │   │   ├── ItemRepository.ts   # interface, NOT an implementation
+│   │   │   ├── ports/              # outbound contracts the domain demands of the outside
+│   │   │   │   └── ItemRepository.ts   # interface, NOT an implementation
 │   │   │   └── errors.ts
 │   │   ├── application/          # Use cases (orchestrate domain + repository)
 │   │   │   ├── createItem.ts
@@ -117,7 +118,7 @@ Both must go through `index.ts`. Nothing outside a feature — not even `core/` 
 | If you're writing... | It goes in... |
 |---|---|
 | An entity with behavior/business rules (e.g. `updateStatus(item, …)`) | `features/<f>/domain/` |
-| A repository interface (data access contract) | `features/<f>/domain/` |
+| A repository interface (data access contract) | `features/<f>/domain/ports/` |
 | A use case (e.g. "create item", "sync") | `features/<f>/application/` |
 | A SQL query, a `fetch` call, use of `expo-sqlite` | `features/<f>/infrastructure/` |
 | A mapper between a DB row/API DTO and a domain entity | `features/<f>/infrastructure/mappers/` |
@@ -269,7 +270,7 @@ export function createContainer(): Container {
 }
 ```
 
-Note the import comes from `@/features/items` (its `index.ts`), not from `@/features/items/domain/ItemRepository` or `.../infrastructure/SqliteItemRepository` directly — those are internal files. `ItemRepository` and `SqliteItemRepository` must be part of the feature's DI-facing exports for this to work without a deep import.
+Note the import comes from `@/features/items` (its `index.ts`), not from `@/features/items/domain/ports/ItemRepository` or `.../infrastructure/SqliteItemRepository` directly — those are internal files. `ItemRepository` and `SqliteItemRepository` must be part of the feature's DI-facing exports for this to work without a deep import.
 
 ```tsx
 // core/di/DependencyProvider.tsx
