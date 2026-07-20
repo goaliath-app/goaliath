@@ -44,6 +44,12 @@ SQLite or UI — that's where the design risk concentrates.
   now), + `isComplete`.
 - `src/features/tracking/domain/occurrenceStatusPolicy.ts` — the single
   status-policy module (`countsAsDone`), future-features invariant 2.
+- `src/features/tracking/domain/projection.ts` — **`buildDay`** (§8), the heart:
+  cascade → schedule in effect → `isDueOn` → replace with the persisted
+  occurrence → resolve `pending`/`done`/`missed`. Fixed kinds only (quota opt-in
+  deferred); input is an object (`{ day, today, activities }`) so the two
+  same-typed `CalendarDay`s can't be swapped. This closes Phase 1 (pure domain up
+  to the projection) — the hybrid milestone.
 
 ### Strategy: hybrid (domain-first up to the projection, then a vertical slice)
 Take the pure domain only as far as the projection for the **simplest case**
@@ -54,15 +60,18 @@ enough of it to be real, prove it through a real screen, then extend behind the
 proven seams.
 
 ### Next (rough order)
-1. Projection `buildDay(D)` (§8) for **fixed kinds only** + resolve display
-   status (pending / done / missed) — the heart. Everything above feeds it.
-   Quota opt-in deferred. When the registry is extracted (once counter arrives)
-   it splits in two (§7): a pure `ActivityTypeBehaviour` in `domain/` and an
-   `ActivityTypeView` in `ui/`, so no `Component` ever leaks into the domain.
-2. **Vertical slice**: expo-sqlite repos + mappers + migrations + `core/di` +
-   a "Today" screen you can tap. Proves the whole hexagon end-to-end.
-3. Then widen: counter/timer + `RunningTimer` (§11), quota + opt-in (§4/§8),
-   `Task` feature (§6), `DailyStatsSummary` (§12).
+1. **Vertical slice** — the point of the hybrid strategy: prove the whole hexagon
+   end-to-end before widening the domain. expo-sqlite repos (Goal / Activity /
+   ActivitySchedule / ActivityOccurrence) + mappers + per-feature migrations +
+   `shared` runner + `core/di` container/provider + a thin "Today" screen that
+   renders `buildDay` and lets you check a checklist off. First Expo-touching
+   step → read the v56 docs before writing UI/infra. Needs a `dayStartHour`
+   source: inject a default now (settings feature comes later); the projection
+   already takes `today`/`day` as params, so keep it pure.
+2. Then widen: counter/timer + `RunningTimer` (§11), quota + opt-in (§4/§8),
+   `Task` feature (§6), `DailyStatsSummary` (§12). When counter lands, extract
+   the activityType registry, split in two (§7): pure `ActivityTypeBehaviour` in
+   `domain/`, `ActivityTypeView` in `ui/` — no `Component` in the domain.
 
 ## Decisions taken while building
 - **Feature `tracking`** houses Goal / Activity / ActivitySchedule /
