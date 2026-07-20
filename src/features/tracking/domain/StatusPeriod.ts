@@ -60,17 +60,14 @@ export function isActiveOn(
 }
 
 /**
- * "Since when do I have this?" — the earliest `from` across the whole timeline.
- * Stable no matter how many times the recurrence was edited (that lives in a
- * separate timeline) or how many times it was paused/resumed. `null` if there
- * are no entries yet.
+ * "Since when do I have this?" — the `from` of the first entry. Because the
+ * timeline is sorted ascending (the invariant `periodOn` and `activeSince` also
+ * rely on), the first entry is the earliest, so this is stable no matter how
+ * many times it was later paused/resumed or its recurrence edited (that lives in
+ * a separate timeline). `null` if there are no entries yet.
  */
 export function startedOn(periods: readonly StatusPeriod[]): CalendarDay | null {
-  return periods.reduce<CalendarDay | null>(
-    (earliest, period) =>
-      earliest === null || period.from < earliest ? period.from : earliest,
-    null,
-  );
+  return periods[0]?.from ?? null;
 }
 
 /**

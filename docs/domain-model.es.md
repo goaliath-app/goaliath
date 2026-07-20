@@ -433,11 +433,26 @@ un único punto:
 - Una función pura `getCalendarDay(instant, dayStartHour)` es la **única**
   forma de convertir un instante en "la fecha lógica" del sistema. Ningún otro
   código calcula fechas por su cuenta.
-- Cambiar `dayStartHour` es una operación de migración explícita y aislada:
-  re-etiqueta las `ActivityOccurrence` recientes y los timers abiertos a su
-  nuevo día lógico. Al vivir todo en un único almacén de `ActivityOccurrence`,
-  esta migración se implementa **una sola vez**, no una por cada tipo de
-  entidad.
+- `dayStartHour` es en sí un **ajuste de punto de cambio, aplicado solo hacia
+  adelante**: un instante se etiqueta con el `dayStartHour` que estaba vigente
+  *en ese instante*, así que las `ActivityOccurrence` pasadas conservan el día
+  lógico bajo el que ya estaban archivadas. Cambiar el corte nunca recalcula la
+  historia guardada — eso reorganizaría qué días cuentan y podría volver `missed`
+  un día pasado, justo la reescritura retroactiva que
+  [§9](#9-editar-el-pasado-vs-cambiar-el-plan) prohíbe. Así que, igual que
+  `ActivitySchedule`/`StatusPeriod`, el límite se versiona por tiempo: los días
+  anteriores al cambio conservan el corte viejo, los posteriores usan el nuevo.
+- Lo **único** que se re-etiqueta al cambiar es un **timer en marcha** (§11): es
+  estado operativo vivo, no historia, así que resolver "¿a qué día lógico
+  pertenece este timer abierto?" con el corte nuevo no reescribe nada de lo que
+  ya pasó.
+
+> Ejemplo — corte a las 04:00, una repetición registrada a las 02:00 de hoy, y a
+> las 15:00 el usuario baja el corte a la 01:00. Ese instante de las 02:00 cae
+> *entre* los dos cortes: bajo 04:00 se archivó como **ayer**, y **se queda en
+> ayer**. El nuevo corte de la 01:00 solo aplica desde el cambio en adelante, así
+> que "hoy" empieza a contar limpio y ningún día pasado cambia de resultado en
+> silencio.
 
 ---
 

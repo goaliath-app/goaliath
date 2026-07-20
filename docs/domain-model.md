@@ -423,10 +423,24 @@ single point:
 - A pure function `getCalendarDay(instant, dayStartHour)` is the **only** way
   to convert an instant into the system's "logical date." No other code
   computes dates on its own.
-- Changing `dayStartHour` is an explicit, isolated migration operation: it
-  re-labels recent `ActivityOccurrence`s and open timers into their new logical
-  day. Since everything lives in a single `ActivityOccurrence` store, this
-  migration is implemented **once**, not once per entity type.
+- `dayStartHour` is itself a **change-point setting, applied forward-only**: an
+  instant is labelled with whichever `dayStartHour` was in effect *at that
+  instant*, so past `ActivityOccurrence`s keep the logical day they were already
+  filed under. Changing the cutoff never recomputes stored history — that would
+  reshuffle which days count and could flip a past day to `missed`, exactly the
+  retroactive rewrite [§9](#9-editing-the-past-vs-changing-the-plan) forbids. So
+  like `ActivitySchedule`/`StatusPeriod`, the boundary is versioned by time: days
+  before the change keep the old cutoff, days after use the new one.
+- The **only** thing re-labelled on change is a **running timer** (§11): it's
+  live operational state, not history, so resolving "which logical day does this
+  open timer belong to?" under the new cutoff rewrites nothing that already
+  happened.
+
+> Worked example — cutoff at 04:00, a rep logged at 02:00 today, then at 15:00
+> the user lowers the cutoff to 01:00. That 02:00 instant sits *between* the two
+> cutoffs: under 04:00 it was filed as **yesterday**, and it **stays yesterday**.
+> The new 01:00 cutoff applies only from the change onward, so "today" begins
+> counting cleanly and no past day silently changes outcome.
 
 ---
 

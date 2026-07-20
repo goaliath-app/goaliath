@@ -175,9 +175,12 @@ impacto es estrecho.
   SO cambia dom↔lun) — por eso se siembra una vez y se persiste, y como mucho se
   *ofrece* actualizar, nunca se sigue al dispositivo en silencio.
 - **Qué ya ayuda:** las ocurrencias se clavan por día lógico, nunca por semana
-  ([domain-model.es.md §5](./domain-model.es.md)) — así que cambiar `weekStart`
-  **no toca ningún dato guardado** (a diferencia de `dayStartHour`, que reetiqueta
-  las fechas de las ocurrencias, §10); es pura re-derivación. Y el precedente de
+  ([domain-model.es.md §5](./domain-model.es.md)) — la pertenencia a una semana
+  **nunca se guarda**, así que cambiar `weekStart` es pura re-derivación sobre los
+  datos existentes. (`dayStartHour` es el precedente más cercano: su día lógico
+  *sí* se materializa en cada ocurrencia, por eso se aplica **solo hacia
+  adelante** —§10— en vez de recalcularse; `weekStart` lo tiene aún más fácil,
+  porque no hay nada materializado que respetar.) Y el precedente de
   `getCalendarDay`/§10 significa que el patrón de "canalizar una frontera de
   calendario por una sola función" ya está establecido. `legacy/v1` es el caso de
   aviso: esparció el `startOf('week')` de Luxon (clavado a lunes) por ~6 ficheros

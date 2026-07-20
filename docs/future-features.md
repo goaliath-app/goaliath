@@ -172,9 +172,11 @@ boundary-independent, so the blast radius is narrow.
   which is why we seed once and persist, and only ever *offer* to update, never
   follow the device silently.
 - **What already helps:** occurrences are keyed by logical day, never by week
-  ([domain-model.md §5](./domain-model.md)) — so changing `weekStart` touches
-  **no stored data** (unlike `dayStartHour`, which relabels occurrence dates,
-  §10); it's pure re-derivation. And the `getCalendarDay`/§10 precedent means the
+  ([domain-model.md §5](./domain-model.md)) — week membership is **never stored**,
+  so changing `weekStart` is pure re-derivation over existing data. (`dayStartHour`
+  is the closer precedent: its logical day *is* materialized on each occurrence,
+  so it's applied **forward-only** — §10 — rather than recomputed; `weekStart` has
+  it easier still, since there's nothing materialized to leave alone.) And the
   pattern of "funnel a calendar boundary through one function" is already
   established. `legacy/v1` is the cautionary tale: it scattered Luxon
   `startOf('week')` (hardwired to Monday) across ~6 files and left a
