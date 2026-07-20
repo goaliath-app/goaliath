@@ -60,6 +60,20 @@ SQLite or UI — that's where the design risk concentrates.
   occurrence, done ↔ pending). Tested against in-memory fakes in
   `__tests__/support/trackingFakes.ts` (shared builders + fake repos; Jest
   `testMatch` narrowed to `*.test.*` so support files don't run as suites).
+- **SQLite infrastructure** (`expo-sqlite ~56.0.5` added):
+  `shared/infrastructure/db/connection.ts` (lazy singleton, WAL + foreign keys)
+  and `runner.ts` (generic `runMigrations` over `PRAGMA user_version`, unique
+  positive versions enforced, one transaction per migration, zero feature
+  knowledge). Tracking's `infrastructure/`: migration `0001` (6 tables —
+  normalized status-period tables per §0; occurrences PK `(activity_id, date)`;
+  `recurrence_rule`/`period_goal`/`progress` as JSON text), pure mappers
+  (row ↔ domain; the schedule mapper re-establishes the "periodGoal iff quota"
+  union at the storage boundary, failing loudly on corrupt rows), and the four
+  `Sqlite*Repository` adapters (occurrence save is an upsert; timeline queries
+  `ORDER BY` ascending per the change-point invariant). Feature barrel
+  `index.ts` with the DI-facing exports. Mappers are pure (no expo-sqlite
+  import) and tested in the node env; adapters get exercised through the app in
+  the next chunk (DI + Today screen).
 
 ### Strategy: hybrid (domain-first up to the projection, then a vertical slice)
 Take the pure domain only as far as the projection for the **simplest case**
