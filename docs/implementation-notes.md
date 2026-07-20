@@ -93,6 +93,29 @@ SQLite through the full hexagon (UI → hook → use case → projection/domain 
 repository port → SQLite adapter → migration). Next is Phase 3 (widen the
 domain): counter/timer + registry extraction, quota opt-in, `Task`, stats.
 
+### Phase 3 in progress: `counter`
+- `domain/activityTypes/counter.ts` — `CounterProgress` (timestamped reps as ISO
+  strings so progress JSON round-trips without type-aware revival),
+  `emptyCounterProgress`, `addRepetition`, `countRepetitions`,
+  `isCounterComplete(progress, dayGoal)`. `OccurrenceProgress` widened to
+  `Checklist | Counter`.
+- `application/logCounterRepetition.ts` — write path: append a rep and **derive**
+  `status` from `isCounterComplete` vs the schedule's `dayGoal` (contrast the
+  checklist toggle, which sets status directly). Counter progress round-trips
+  through the occurrence mapper (tested).
+
+**Registry finding (why it's still deferred):** adding a real second type shows
+the registry that's *forced* now is the **UI dispatch** one (`ActivityTypeView`,
+§7's UI half — the Today screen must render checkbox vs counter rows). The pure
+**domain** registry (`ActivityTypeBehaviour` with a generic `measure`/
+`isCompleted`) is **not** forced yet: write paths are type-specific use cases,
+and the projection reads `status`, not progress. It's forced later by quota's
+`metricSum` and stats. And §7's `measure(progress): number` signature doesn't fit
+`checklist` (whose "measure" is status-based — progress is `{}`); that's a real
+sign the interface needs adjusting when it's built — exactly the mis-design
+deferring avoided. So: build the UI dispatch registry next; keep the domain
+behaviour registry deferred until quota/stats.
+
 ### Strategy: hybrid (domain-first up to the projection, then a vertical slice)
 Take the pure domain only as far as the projection for the **simplest case**
 (checklist on fixed recurrences), then cut a thin end-to-end slice (SQLite repos

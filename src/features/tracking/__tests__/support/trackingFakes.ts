@@ -56,6 +56,20 @@ export const buildDailyChecklistSchedule = (
   ...over,
 });
 
+/** A daily counter schedule with a numeric per-day goal (reps). */
+export const buildDailyCounterSchedule = (
+  dayGoal: number,
+  over: Partial<Pick<ActivitySchedule, 'id' | 'activityId' | 'startDate'>> = {},
+): ActivitySchedule => ({
+  id: asScheduleId('schedule-1'),
+  activityId: asActivityId('activity-1'),
+  recurrenceRule: { kind: 'daily' },
+  dayGoal,
+  periodGoal: null,
+  startDate: asDay('2024-01-01'),
+  ...over,
+});
+
 // --- in-memory repositories (fakes implementing the domain ports) ----------
 export class InMemoryGoalRepository implements GoalRepository {
   constructor(private readonly goals: Goal[] = []) {}

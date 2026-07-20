@@ -2,6 +2,7 @@ import type { CalendarDay } from '@/shared/domain/time/CalendarDay';
 import type { ActivityId } from './Activity';
 import type { ScheduleId } from './ActivitySchedule';
 import type { ChecklistProgress } from './activityTypes/checklist';
+import type { CounterProgress } from './activityTypes/counter';
 import { countsAsDone } from './occurrenceStatusPolicy';
 
 /**
@@ -20,10 +21,11 @@ export type OccurrenceOrigin = 'recurrence' | 'quotaOptIn' | 'manual';
 
 /**
  * Progress is polymorphic, defined by the Activity's `activityType` (§5/§7), not
- * by the generic model. Only `checklist` exists so far; counter/timer widen this
- * union later **without** changing the occurrence's shape.
+ * by the generic model — the occurrence carries no discriminant of its own, so
+ * which member applies is known from the owning activity's type. `timer` widens
+ * this union later **without** changing the occurrence's shape.
  */
-export type OccurrenceProgress = ChecklistProgress;
+export type OccurrenceProgress = ChecklistProgress | CounterProgress;
 
 /**
  * The persisted state of one activity-day (domain-model §5). Identified by

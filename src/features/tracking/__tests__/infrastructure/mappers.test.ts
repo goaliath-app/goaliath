@@ -110,4 +110,20 @@ describe('ActivityOccurrenceMapper', () => {
       occurrence,
     );
   });
+
+  it('round-trips counter progress (timestamped repetitions) through JSON', () => {
+    const counterRow: ActivityOccurrenceRow = {
+      ...doneRow,
+      progress: JSON.stringify({
+        repetitions: [{ at: '2024-06-15T07:00:00.000Z' }],
+      }),
+    };
+    const occurrence = toActivityOccurrence(counterRow);
+    expect(occurrence.progress).toEqual({
+      repetitions: [{ at: '2024-06-15T07:00:00.000Z' }],
+    });
+    expect(toActivityOccurrence(toActivityOccurrenceRow(occurrence))).toEqual(
+      occurrence,
+    );
+  });
 });
