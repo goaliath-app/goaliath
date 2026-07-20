@@ -4,10 +4,11 @@ Where the build is and what's next. **Update this as you go.** Design rationale
 lives in `domain-model.md` / `architecture.md`; this file is just the running
 state so any agent (or human) can pick up.
 
-## Current phase: pure domain core (no persistence, no UI)
+## Current phase: vertical slice complete (SQLite + DI + UI)
 
-Building and testing the domain model as pure functions **before** committing to
-SQLite or UI — that's where the design risk concentrates.
+The domain core is in place and the tracking slice is now wired end to end
+through SQLite, dependency injection, and a Today screen. The next work is
+widening the domain further (counter/timer, quota, task/stats support).
 
 ### Done
 - **Toolchain**: Jest (`jest-expo` + `@react-native/jest-preset`), `node` test
@@ -74,6 +75,23 @@ SQLite or UI — that's where the design risk concentrates.
   `index.ts` with the DI-facing exports. Mappers are pure (no expo-sqlite
   import) and tested in the node env; adapters get exercised through the app in
   the next chunk (DI + Today screen).
+- **DI + UI (slice closed)**: `core/di/` — `container` (wires the four Sqlite
+  adapters + `now`/`dayStartHour` config), `migrations` (collects feature
+  migrations for the runner), `seedDevData` (dev-only demo goal + two daily
+  checklists), and `DependencyProvider` (opens DB → migrate → seed → build
+  container → provide; async loading state). `features/tracking/ui/` —
+  `useTodayView` hook + `TodayScreen`. `app/_layout.tsx` wraps the provider;
+  `app/index.tsx` renders the screen. Verified by an **iOS Metro bundle**
+  (`expo export -p ios`, exit 0): the whole graph resolves, incl. the `@/` alias
+  (Expo's built-in tsconfig-paths support — no metro/babel resolver needed).
+  Known caveat: `expo export -p web` fails inside `expo-sqlite/web` resolving its
+  `wa-sqlite.wasm` — a web-only packaging quirk, irrelevant to this mobile-first
+  app; revisit only if web is targeted.
+
+**Phase 2 (vertical slice) is complete**: a tappable Today screen backed by
+SQLite through the full hexagon (UI → hook → use case → projection/domain →
+repository port → SQLite adapter → migration). Next is Phase 3 (widen the
+domain): counter/timer + registry extraction, quota opt-in, `Task`, stats.
 
 ### Strategy: hybrid (domain-first up to the projection, then a vertical slice)
 Take the pure domain only as far as the projection for the **simplest case**

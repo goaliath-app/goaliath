@@ -1,5 +1,10 @@
-import { Stack } from "expo-router";
+import { Stack } from 'expo-router';
+import { DependencyProvider } from '@/core/di/DependencyProvider';
 
 export default function RootLayout() {
-  return <Stack />;
+  return (
+    <DependencyProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </DependencyProvider>
+  );
 }
