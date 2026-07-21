@@ -10,6 +10,8 @@ import type { ActivityScheduleRepository } from '@/features/tracking/domain/port
 import { emptyChecklistProgress } from '@/features/tracking/domain/activityTypes/checklist';
 import type { Goal, GoalId } from '@/features/tracking/domain/Goal';
 import type { GoalRepository } from '@/features/tracking/domain/ports/GoalRepository';
+import type { RunningTimer } from '@/features/tracking/domain/RunningTimer';
+import type { RunningTimerRepository } from '@/features/tracking/domain/ports/RunningTimerRepository';
 import type { StatusPeriod } from '@/features/tracking/domain/StatusPeriod';
 import type { CalendarDay } from '@/shared/domain/time/CalendarDay';
 
@@ -143,6 +145,30 @@ export class InMemoryActivityOccurrenceRepository
 
   async save(occurrence: ActivityOccurrence): Promise<void> {
     this.store.set(keyOf(occurrence.activityId, occurrence.date), occurrence);
+  }
+}
+
+export class InMemoryRunningTimerRepository implements RunningTimerRepository {
+  private readonly timers = new Map<string, RunningTimer>();
+
+  constructor(seed: RunningTimer[] = []) {
+    seed.forEach((timer) => this.timers.set(timer.activityId, timer));
+  }
+
+  async findAll(): Promise<RunningTimer[]> {
+    return [...this.timers.values()];
+  }
+
+  async findByActivityId(activityId: ActivityId): Promise<RunningTimer | null> {
+    return this.timers.get(activityId) ?? null;
+  }
+
+  async save(timer: RunningTimer): Promise<void> {
+    this.timers.set(timer.activityId, timer);
+  }
+
+  async remove(activityId: ActivityId): Promise<void> {
+    this.timers.delete(activityId);
   }
 }
 

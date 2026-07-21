@@ -144,6 +144,27 @@ domain): counter/timer + registry extraction, quota opt-in, `Task`, stats.
   so `buildDay` stays free of calendar-boundary configuration. `weekStart` is
   injected from the container (ISO Monday) until a `settings` feature exists;
   changing it must be forward-only (future-features).
+### Phase 3: `timer` — domain + use cases (infra/UI pending)
+- `domain/activityTypes/timer.ts` — `TimerProgress` as **closed** intervals
+  (ISO strings, like counter's reps), `appendInterval` (rejects end < start),
+  `totalSeconds` (floored, so a partial second never rounds a day into
+  complete), `isTimerComplete(progress, dayGoal)`.
+- `domain/RunningTimer.ts` + its port — live state kept **outside** the
+  historical model (§11), modeled as a **collection**; `elapsedSeconds` helper.
+- `application/startTimer` + `stopTimer` — stopping closes the interval, appends
+  it to the occurrence and clears the live record; starting enforces the
+  one-at-a-time rule **at write time** via an `ENFORCE_SINGLE_TIMER` flag, so
+  parallel timers later is a flag flip, not a migration. Time is credited to the
+  timer's own `occurrenceDate`, so a session crossing the day cutoff still lands
+  on the day it began (tested).
+- **Doc fix**: §5 said a running session lived in `progress` as `end: null`
+  while §11 said it lived in `RunningTimer` — two representations of the same
+  fact. Resolved in favour of §11 (intervals always closed); domain-model and
+  its mirror updated.
+- **Pending for timer**: `running_timers` migration + SQLite adapter, the UI row
+  (start/stop + live elapsed), adding `timer` to the `ActivityType` union and its
+  entry in the UI view registry, and a seeded timer activity.
+
 - **Still deferred**: `metricSum` period goals. Summing a metric across days
   needs each activityType's `measure(progress)` generically — the domain
   behaviour registry (§7). `quotaPeriodProgress` returns `null` for them rather

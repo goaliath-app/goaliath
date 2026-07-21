@@ -4,6 +4,7 @@ import type { ActivitySchedule, ScheduleId } from './ActivitySchedule';
 import { isDueOn, isFixed } from './RecurrenceRule';
 import type { ChecklistProgress } from './activityTypes/checklist';
 import type { CounterProgress } from './activityTypes/counter';
+import type { TimerProgress } from './activityTypes/timer';
 import { countsAsDone } from './occurrenceStatusPolicy';
 
 /**
@@ -23,10 +24,12 @@ export type OccurrenceOrigin = 'recurrence' | 'quotaOptIn' | 'manual';
 /**
  * Progress is polymorphic, defined by the Activity's `activityType` (§5/§7), not
  * by the generic model — the occurrence carries no discriminant of its own, so
- * which member applies is known from the owning activity's type. `timer` widens
- * this union later **without** changing the occurrence's shape.
+ * which member applies is known from the owning activity's type.
  */
-export type OccurrenceProgress = ChecklistProgress | CounterProgress;
+export type OccurrenceProgress =
+  | ChecklistProgress
+  | CounterProgress
+  | TimerProgress;
 
 /**
  * The persisted state of one activity-day (domain-model §5). Identified by

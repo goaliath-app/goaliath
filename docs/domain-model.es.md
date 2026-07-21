@@ -272,8 +272,12 @@ ActivityOccurrence {         // identidad: (activityId, date) — como mucho una
 - `activityType: 'counter'` → `progress: { repetitions: [timestamp, ...] }`.
   Se guarda cada repetición con su hora porque las estadísticas la usan
   (rachas, conteos por rango de fechas).
-- `activityType: 'timer'` → `progress: { intervals: [{start, end|null}] }`.
-  `end: null` en el último intervalo significa "corriendo ahora mismo".
+- `activityType: 'timer'` → `progress: { intervals: [{start, end}] }`. Los
+  intervalos están siempre **cerrados**: una sesión en curso no se guarda aquí,
+  vive en el registro `RunningTimer` (§11) y su intervalo se añade al pararla.
+  Así el progress es un historial de trabajo terminado sin estados a medias, y
+  "¿está corriendo?" tiene una única fuente de verdad en lugar de dos que
+  mantener sincronizadas.
 
 Un par plano `status` + `duración real` no podría representar un cronómetro en
 marcha ni repeticiones individuales con marca de tiempo; por eso el progreso es

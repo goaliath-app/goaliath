@@ -269,8 +269,12 @@ ActivityOccurrence {         // identity: (activityId, date) — at most one per
 - `activityType: 'counter'` → `progress: { repetitions: [timestamp, ...] }`.
   Each repetition is stored with its timestamp because stats rely on it
   (streaks, counts over a date range).
-- `activityType: 'timer'` → `progress: { intervals: [{start, end|null}] }`.
-  `end: null` on the last interval means "currently running."
+- `activityType: 'timer'` → `progress: { intervals: [{start, end}] }`. Intervals
+  are always **closed**: a session in progress is not stored here at all, it
+  lives in the `RunningTimer` record (§11) and its interval is appended when it
+  stops. So progress is a history of finished work with no half-open state, and
+  "is it running?" has exactly one source of truth instead of two to keep in
+  sync.
 
 A flat `status` + `realDuration` pair couldn't represent a running timer or
 individual timestamped repetitions, which is why progress is polymorphic.
