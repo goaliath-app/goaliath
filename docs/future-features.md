@@ -219,6 +219,45 @@ and painful — going that way later is easy; blocking on it now is not.
 
 ---
 
+## Accidental duplicates — noticing and merging "the same thing" twice
+
+Two entities the user considers the same thing, existing side by side. It arrives
+by two different routes that end in the same place:
+
+- **Locally**: you forget "Meditate" already exists and create it again.
+- **Through sync**: two devices create it independently while offline.
+
+Nothing breaks — identity is the `id`, never the name (see the entry above), so
+both are perfectly valid entities. The damage is human: two identical-looking
+rows in Today, and a history **split across two entities**, so neither shows the
+real streak.
+
+Note the tension this must respect: **duplicates have to stay allowed.**
+"Duplicate an activity" is the *prescribed* answer to repurposing, so a
+uniqueness rule on names would break a feature we deliberately want. The goal is
+"make accidental duplicates easy to notice and undo", never "make them
+impossible".
+
+- **How it would change the current model:** nothing structural for the
+  *detection* half — a create flow can compare normalised titles (trimmed,
+  case- and accent-insensitive) and **warn**, never block. The *merge* half is
+  where the real work is: occurrences are keyed `(activityId, date)`, so merging
+  means re-keying one entity's occurrences onto the other, and deciding what
+  happens when **both have an occurrence on the same day**. That resolution is
+  per-`activityType` — summing two counters' repetitions is right, "both are
+  done" for a checklist is trivial, and two timers' intervals concatenate — so it
+  belongs in the domain half of the activityType registry (§7), as a "combine two
+  days' progress" operation alongside `measure`.
+- **What already helps:** identity is the `id`, so a duplicate is a valid entity
+  rather than corrupt data — there is nothing to repair, only to consolidate.
+  Occurrences keyed by `(activityId, date)` keep each entity's history cleanly
+  separable, making a merge a **re-key** rather than an untangling. The registry
+  is already the place where per-type behaviour lives, so the same-day resolution
+  has an obvious home. And names aren't versioned, so renaming after a merge
+  costs nothing.
+
+---
+
 ## Undecided tooling & architecture choices
 
 Open decisions moved out of [architecture.md](./architecture.md) so that doc

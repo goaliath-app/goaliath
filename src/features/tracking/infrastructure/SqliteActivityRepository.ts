@@ -1,4 +1,4 @@
-import type { SQLiteDatabase } from 'expo-sqlite';
+import type { SqlDatabase } from '@/shared/infrastructure/db/SqlDatabase';
 import type { Activity } from '../domain/Activity';
 import type { ActivityRepository } from '../domain/ports/ActivityRepository';
 import { toActivity, type ActivityRow } from './mappers/ActivityMapper';
@@ -10,7 +10,7 @@ interface ActivityStatusPeriodRow extends StatusPeriodRow {
 
 /** SQLite adapter for `ActivityRepository`. */
 export class SqliteActivityRepository implements ActivityRepository {
-  constructor(private readonly database: SQLiteDatabase) {}
+  constructor(private readonly database: SqlDatabase) {}
 
   async findAll(): Promise<Activity[]> {
     const activityRows = await this.database.getAllAsync<ActivityRow>(
@@ -32,5 +32,41 @@ export class SqliteActivityRepository implements ActivityRepository {
     return activityRows.map((row) =>
       toActivity(row, periodsByActivity.get(row.id) ?? []),
     );
+  }
+
+  /**
+   * Writes the activity **and** its status timeline (two tables, §0). Plain
+   * statements: the caller owns the atomic boundary via `TransactionRunner`, and
+   * SQLite can't nest transactions.
+   *
+   * Timeline entries are **upserted, never deleted first** — see
+   * `SqliteGoalRepository.save` for the reasoning: the timeline only grows, and
+   * a failed save should leave existing history intact rather than wipe it.
+   */
+  async save(activity: Activity): Promise<void> {
+    await this.database.runAsync(
+      `INSERT INTO activities (id, goal_id, title, description, activity_type)
+       VALUES (?, ?, ?, ?, ?)
+       ON CONFLICT (id) DO UPDATE SET
+         goal_id = excluded.goal_id,
+         title = excluded.title,
+         description = excluded.description,
+         activity_type = excluded.activity_type`,
+      activity.id,
+      activity.goalId,
+      activity.title,
+      activity.description,
+      activity.activityType,
+    );
+
+    for (const period of activity.statusPeriods) {
+      await this.database.runAsync(
+        `INSERT INTO activity_status_periods (activity_id, status, from_day) VALUES (?, ?, ?)
+         ON CONFLICT (activity_id, from_day) DO UPDATE SET status = excluded.status`,
+        activity.id,
+        period.status,
+        period.from,
+      );
+    }
   }
 }

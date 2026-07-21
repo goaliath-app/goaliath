@@ -25,6 +25,8 @@ export { SqliteRunningTimerRepository } from './infrastructure/SqliteRunningTime
 export { getDayView } from './application/getDayView';
 export { toggleChecklistDone } from './application/toggleChecklistDone';
 export { logCounterRepetition } from './application/logCounterRepetition';
+export { createGoal } from './application/createGoal';
+export { createActivity, type GoalSelection } from './application/createActivity';
 export { startTimer } from './application/startTimer';
 export { stopTimer } from './application/stopTimer';
 

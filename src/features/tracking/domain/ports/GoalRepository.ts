@@ -8,4 +8,11 @@ import type { Goal, GoalId } from '../Goal';
  */
 export interface GoalRepository {
   findById(id: GoalId): Promise<Goal | null>;
+  /**
+   * Every goal, whatever its status. Which ones a picker offers is a product
+   * rule (see the create flow), not a query concern — the same reasoning as
+   * `ActivityRepository.findAll`.
+   */
+  findAll(): Promise<Goal[]>;
+  save(goal: Goal): Promise<void>;
 }

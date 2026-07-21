@@ -1,4 +1,4 @@
-import type { SQLiteDatabase } from 'expo-sqlite';
+import type { SqlDatabase } from '@/shared/infrastructure/db/SqlDatabase';
 import type { ActivityId } from '../domain/Activity';
 import type { ActivityOccurrence } from '../domain/ActivityOccurrence';
 import type { ActivityOccurrenceRepository } from '../domain/ports/ActivityOccurrenceRepository';
@@ -13,7 +13,7 @@ import {
 export class SqliteActivityOccurrenceRepository
   implements ActivityOccurrenceRepository
 {
-  constructor(private readonly database: SQLiteDatabase) {}
+  constructor(private readonly database: SqlDatabase) {}
 
   async findByActivityAndDate(
     activityId: ActivityId,

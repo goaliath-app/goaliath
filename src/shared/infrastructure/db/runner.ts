@@ -1,4 +1,4 @@
-import type { SQLiteDatabase } from 'expo-sqlite';
+import type { SqlDatabase } from './SqlDatabase';
 
 /**
  * One schema migration. Features own the **content** of their migrations; the
@@ -9,7 +9,7 @@ import type { SQLiteDatabase } from 'expo-sqlite';
 export interface Migration {
   version: number; // unique across the whole app, > 0
   name: string; // human-readable, for error messages
-  up(database: SQLiteDatabase): Promise<void>;
+  up(database: SqlDatabase): Promise<void>;
 }
 
 /**
@@ -20,7 +20,7 @@ export interface Migration {
  * never advances past it.
  */
 export async function runMigrations(
-  database: SQLiteDatabase,
+  database: SqlDatabase,
   migrations: readonly Migration[],
 ): Promise<void> {
   const ordered = [...migrations].sort(
@@ -35,7 +35,7 @@ export async function runMigrations(
 
   for (const migration of ordered) {
     if (migration.version <= appliedVersion) continue;
-    await database.withTransactionAsync(async () => {
+    await database.withExclusiveTransactionAsync(async () => {
       await migration.up(database);
       // Not injectable, but safe: an integer we validated ourselves above.
       await database.execAsync(`PRAGMA user_version = ${migration.version}`);

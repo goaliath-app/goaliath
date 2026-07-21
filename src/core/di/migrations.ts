@@ -1,4 +1,4 @@
-import type { SQLiteDatabase } from 'expo-sqlite';
+import type { SqlDatabase } from '@/shared/infrastructure/db/SqlDatabase';
 import { trackingMigrations } from '@/features/tracking';
 import { runMigrations } from '@/shared/infrastructure/db/runner';
 
@@ -8,7 +8,7 @@ import { runMigrations } from '@/shared/infrastructure/db/runner';
  * exports them through its `index.ts`; this collects them and the generic runner
  * applies them in ascending `version` order (and rejects duplicate versions).
  */
-export function bootstrapDatabase(database: SQLiteDatabase): Promise<void> {
+export function bootstrapDatabase(database: SqlDatabase): Promise<void> {
   const all = [...trackingMigrations];
   return runMigrations(database, all);
 }

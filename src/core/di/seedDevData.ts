@@ -1,4 +1,4 @@
-import type { SQLiteDatabase } from 'expo-sqlite';
+import type { SqlDatabase } from '@/shared/infrastructure/db/SqlDatabase';
 
 /**
  * Dev-only bootstrap: makes sure a small set of demo goals/activities/schedules
@@ -14,8 +14,8 @@ import type { SQLiteDatabase } from 'expo-sqlite';
  * Raw SQL on purpose: throwaway seeding, not domain logic, so it doesn't go
  * through the repositories (which have no writes for goals/activities anyway).
  */
-export async function seedDevData(database: SQLiteDatabase): Promise<void> {
-  await database.withTransactionAsync(async () => {
+export async function seedDevData(database: SqlDatabase): Promise<void> {
+  await database.withExclusiveTransactionAsync(async () => {
     await database.execAsync(`
       INSERT OR IGNORE INTO goals (id, title, motivation)
         VALUES ('goal-health', 'Health', 'Feel good every day');

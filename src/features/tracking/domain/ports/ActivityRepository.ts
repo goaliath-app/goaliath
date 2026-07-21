@@ -8,4 +8,5 @@ import type { Activity } from '../Activity';
  */
 export interface ActivityRepository {
   findAll(): Promise<Activity[]>;
+  save(activity: Activity): Promise<void>;
 }

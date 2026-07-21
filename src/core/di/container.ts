@@ -1,4 +1,8 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
+import type { IdGenerator } from '@/shared/domain/ports/IdGenerator';
+import type { TransactionRunner } from '@/shared/domain/ports/TransactionRunner';
+import { ExpoIdGenerator } from '@/shared/infrastructure/ExpoIdGenerator';
+import { SqliteTransactionRunner } from '@/shared/infrastructure/db/SqliteTransactionRunner';
 import {
   SqliteActivityOccurrenceRepository,
   SqliteActivityRepository,
@@ -24,6 +28,8 @@ export interface Container {
   activityScheduleRepository: ActivityScheduleRepository;
   activityOccurrenceRepository: ActivityOccurrenceRepository;
   runningTimerRepository: RunningTimerRepository;
+  ids: IdGenerator;
+  transactions: TransactionRunner;
   now: () => Date;
   dayStartHour: number;
   weekStart: number; // ISO weekday (1 = Monday … 7 = Sunday)
@@ -36,6 +42,8 @@ export function createContainer(database: SQLiteDatabase): Container {
     activityScheduleRepository: new SqliteActivityScheduleRepository(database),
     activityOccurrenceRepository: new SqliteActivityOccurrenceRepository(database),
     runningTimerRepository: new SqliteRunningTimerRepository(database),
+    ids: new ExpoIdGenerator(),
+    transactions: new SqliteTransactionRunner(database),
     now: () => new Date(),
     dayStartHour: 0, // TODO: from a future `settings` feature; default = calendar midnight
     // TODO: seed from the device once `settings` exists (mapping its Sunday=1

@@ -1,4 +1,4 @@
-import type { SQLiteDatabase } from 'expo-sqlite';
+import type { SqlDatabase } from '@/shared/infrastructure/db/SqlDatabase';
 import type { ActivityId } from '../domain/Activity';
 import type { RunningTimer } from '../domain/RunningTimer';
 import type { RunningTimerRepository } from '../domain/ports/RunningTimerRepository';
@@ -10,7 +10,7 @@ import {
 
 /** SQLite adapter for `RunningTimerRepository` (domain-model §11). */
 export class SqliteRunningTimerRepository implements RunningTimerRepository {
-  constructor(private readonly database: SQLiteDatabase) {}
+  constructor(private readonly database: SqlDatabase) {}
 
   async findAll(): Promise<RunningTimer[]> {
     const rows = await this.database.getAllAsync<RunningTimerRow>(

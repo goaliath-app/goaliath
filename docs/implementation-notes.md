@@ -29,20 +29,50 @@ and won't catch a module that fails to resolve in the app.
 
 ## Technical debt
 
-- **SQLite adapters have no automated tests.** `expo-sqlite` is a native module
-  and doesn't run in the `node` test env, so the five `Sqlite*Repository` classes
-  are only verified by running the app. The mappers — where the translation logic
-  actually lives — *are* tested. If adapter bugs start biting, the fix is an
-  integration test against a real SQLite handle, not more mocking.
+- **The `expo-sqlite` binding itself is still unverified.** Adapters depend on
+  the narrow `SqlDatabase` interface, and their SQL *is* exercised against a real
+  engine (`node:sqlite`) in `__tests__/infrastructure/persistence.test.ts`. What
+  those tests can't cover is Expo's native binding — if a statement behaves
+  differently there, only running the app will show it.
+- **Two status changes on the same day break the save.** `StatusPeriod` entries
+  are keyed `(owner, from_day)` in the schema, but nothing in the domain stops a
+  timeline holding two entries for one logical day — pause a goal in the morning
+  and resume it in the afternoon and the insert violates the primary key.
+  `latestOnOrBefore` couldn't disambiguate them either (it breaks ties by list
+  order, not by time). Not reachable yet — there's no pause/resume UI — but it's
+  the first thing that flow will hit.
+  **Decided fix**: keep **one entry per logical day, the most recent change
+  wins**. That belongs in the *domain* — an "append a status change, replacing
+  any entry already dated that day" operation — not in the persistence layer.
+  With the domain honouring it, the primary key stops being an obstacle and
+  becomes a guard that mirrors the invariant.
+- **`save` on an aggregate must run inside a transaction**, because it writes two
+  tables (the entity and its status timeline, §0). A crash between them leaves an
+  entity with no status, which `statusOn` reads as "did not exist yet" — present
+  but invisible. Every caller is transactional today, but nothing enforces it:
+  it's an implicit contract on the port.
+  (Timeline entries are upserted rather than deleted-and-reinserted, so a failed
+  save no longer *destroys* existing history — the worst case is that the new
+  entry didn't land. That also keeps row identity stable, which matters once sync
+  adds `updatedAt`/tombstones.)
+- **11 moderate npm audit findings remain, and they are not fixable.** The three
+  *high* ones (`brace-expansion`, `js-yaml`, `shell-quote`) were resolved by a
+  lockfile update. What's left is the `@expo/config-plugins` chain (`@expo/cli`,
+  `@expo/metro-config`, `@expo/prebuild-config`, `expo-splash-screen`, `uuid`,
+  `xcode`), and npm's proposed fix is to **downgrade `expo` from 56 to 46** — ten
+  major SDK versions backwards, which would take expo-router, the expo-sqlite v56
+  API and everything built on them with it. The cure is orders of magnitude worse
+  than the disease.
+  Mitigating context: these are **build/CLI tooling**, not code that ships in the
+  app bundle, and `npx expo install --check` reports everything correctly aligned
+  with SDK 56. So: **never run `npm audit fix --force` here.** Re-check when Expo
+  publishes SDK updates that carry the fixes forward.
 - **`eslint-plugin-boundaries` isn't set up.** `architecture.md` prescribes it by
   the second or third feature; the layering is currently convention only. Worth
   doing when `tasks` lands and there are two features to keep apart.
 - **`getDayView` does N+1 queries** — per activity it fetches the goal, the
   schedule timeline, the day's occurrence, and (for quotas) the period's
   occurrences. Fine at demo scale, worth batching when activity counts grow.
-- **No `.gitattributes`.** Git reports CRLF/LF conversion warnings on every
-  commit from this Windows checkout. Cosmetic, but a one-line file would silence
-  it and avoid future line-ending churn.
 - **Web bundling fails** inside `expo-sqlite/web` resolving `wa-sqlite.wasm`. A
   web-only packaging quirk; irrelevant while the app is mobile-only, but it means
   `expo export -p web` can't be used as a check.
@@ -53,10 +83,40 @@ and won't catch a module that fails to resolve in the app.
 
 - **Forgotten running timer.** A session left running across days banks its whole
   elapsed time to the day it started — a 3-day-old timer would write a 72-hour
-  interval. Neither §11 nor `future-features` covers it. Options weighed: clamp
-  the interval to the end of its own logical day (cheap domain guard), and/or
-  prompt on reopen when a session is suspiciously long (honest, matches §9's
-  self-reporting stance, needs UI). Recommendation was "both"; undecided.
+  interval. Neither §11 nor `future-features` covers it.
+  "Clamp it at the day's cutoff and tell the user on reopen" was **built and then
+  reverted**: it punishes the legitimate case of starting a session shortly
+  before the cutoff and wanting to finish it, which is a normal thing to do and
+  indistinguishable from the forgotten case by elapsed time alone.
+  It also surfaced a **bigger missing piece** (below) that should probably be
+  designed first, since it changes what the right answer is: if a timer day can
+  be completed by hand, "the app cut your session short" stops being the only
+  remedy available.
+- **Who owns a measurable day's outcome — the user or the computation?** This is
+  one decision wearing two faces, and both are missing today:
+  1. *A timer activity can only be completed by running the timer.* Twenty
+     minutes of reading away from the phone can't be recorded at all.
+  2. *A day can't be marked done below its goal.* 15 of 20 minutes is never
+     "done", even if you consider it so.
+
+  Both clash with §9, whose whole stance is that the **outcome of a day is
+  editable, including in the past**. And the split is visible in the code: a
+  `checklist` day's status is set **by the user** (`toggleChecklistDone` writes it
+  directly), while `counter`/`timer` **recompute it from progress** on every write
+  (`status: complete ? 'done' : 'pending'`).
+
+  That recomputation is what makes a manual override fragile rather than
+  impossible: the projection reads the stored `status` and would honour a manual
+  `done` immediately (no change needed there), but the next `stopTimer` or
+  `logCounterRepetition` would silently overwrite it. The cheap trick — "progress
+  may only promote to done, never demote" — **conflicts with removing counter
+  repetitions**, where dropping below the goal *should* un-complete the day.
+
+  So it needs a real answer: most likely recording that the user stated this
+  day's outcome, so later progress writes respect it. That's one small field (a
+  cheap migration, the runner exists) plus a condition in two use cases — not
+  much work, but do it **as one piece**, or the two faces end up with two
+  different mechanisms for the same question.
 - **Removing counter repetitions.** Designed and deliberately not built. Agreed
   shape: remove the *last* repetition (a plain edit), not an append-only
   add/remove log — a `-1` event would break the per-repetition timestamps stats

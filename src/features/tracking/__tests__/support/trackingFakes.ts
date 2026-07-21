@@ -13,6 +13,8 @@ import type { GoalRepository } from '@/features/tracking/domain/ports/GoalReposi
 import type { RunningTimer } from '@/features/tracking/domain/RunningTimer';
 import type { RunningTimerRepository } from '@/features/tracking/domain/ports/RunningTimerRepository';
 import type { StatusPeriod } from '@/features/tracking/domain/StatusPeriod';
+import type { IdGenerator } from '@/shared/domain/ports/IdGenerator';
+import type { TransactionRunner } from '@/shared/domain/ports/TransactionRunner';
 import type { CalendarDay } from '@/shared/domain/time/CalendarDay';
 
 // --- branded-id / day cast helpers -----------------------------------------
@@ -92,12 +94,27 @@ export class InMemoryGoalRepository implements GoalRepository {
   async findById(id: GoalId): Promise<Goal | null> {
     return this.goals.find((goal) => goal.id === id) ?? null;
   }
+  async findAll(): Promise<Goal[]> {
+    return [...this.goals];
+  }
+  async save(goal: Goal): Promise<void> {
+    const existing = this.goals.findIndex((candidate) => candidate.id === goal.id);
+    if (existing === -1) this.goals.push(goal);
+    else this.goals[existing] = goal;
+  }
 }
 
 export class InMemoryActivityRepository implements ActivityRepository {
   constructor(private readonly activities: Activity[] = []) {}
   async findAll(): Promise<Activity[]> {
     return this.activities;
+  }
+  async save(activity: Activity): Promise<void> {
+    const existing = this.activities.findIndex(
+      (candidate) => candidate.id === activity.id,
+    );
+    if (existing === -1) this.activities.push(activity);
+    else this.activities[existing] = activity;
   }
 }
 
@@ -106,9 +123,40 @@ export class InMemoryActivityScheduleRepository
 {
   constructor(private readonly schedules: ActivitySchedule[] = []) {}
   async findByActivityId(activityId: ActivityId): Promise<ActivitySchedule[]> {
-    return this.schedules.filter(
-      (schedule) => schedule.activityId === activityId,
+    return this.schedules
+      .filter((schedule) => schedule.activityId === activityId)
+      .sort((first, second) => first.startDate.localeCompare(second.startDate));
+  }
+  async save(schedule: ActivitySchedule): Promise<void> {
+    const existing = this.schedules.findIndex(
+      (candidate) => candidate.id === schedule.id,
     );
+    if (existing === -1) this.schedules.push(schedule);
+    else this.schedules[existing] = schedule;
+  }
+}
+
+/** Deterministic ids so tests can assert on them: `id-1`, `id-2`, … */
+export class SequentialIdGenerator implements IdGenerator {
+  private issued = 0;
+  constructor(private readonly prefix = 'id') {}
+  newId(): string {
+    this.issued += 1;
+    return `${this.prefix}-${this.issued}`;
+  }
+}
+
+/**
+ * Runs the work directly and records that it was asked to. It can't simulate a
+ * rollback (the in-memory repos have no undo) — real atomicity is SQLite's job.
+ * What it *can* verify is that the use case wrapped its writes at all, and that
+ * validation happens before any of them.
+ */
+export class PassthroughTransactionRunner implements TransactionRunner {
+  transactions = 0;
+  async runInTransaction<Result>(work: () => Promise<Result>): Promise<Result> {
+    this.transactions += 1;
+    return work();
   }
 }
 

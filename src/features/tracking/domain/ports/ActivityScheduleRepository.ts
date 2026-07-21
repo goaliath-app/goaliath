@@ -8,4 +8,6 @@ import type { ActivitySchedule } from '../ActivitySchedule';
  */
 export interface ActivityScheduleRepository {
   findByActivityId(activityId: ActivityId): Promise<ActivitySchedule[]>;
+  /** Appends a new version, or updates one by id (§3 versions are never edited). */
+  save(schedule: ActivitySchedule): Promise<void>;
 }

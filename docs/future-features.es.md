@@ -225,6 +225,46 @@ bloquearse en ello ahora, no.
 
 ---
 
+## Duplicados accidentales — detectar y fusionar "la misma cosa" dos veces
+
+Dos entidades que el usuario considera la misma, conviviendo. Llega por dos
+caminos distintos que acaban en el mismo sitio:
+
+- **En local**: te olvidas de que "Meditar" ya existe y la creas otra vez.
+- **Por sincronización**: dos dispositivos la crean por separado estando offline.
+
+No se rompe nada — la identidad es el `id`, nunca el nombre (ver la entrada
+anterior), así que ambas son entidades perfectamente válidas. El daño es humano:
+dos filas idénticas en "Hoy", y un historial **partido entre dos entidades**, de
+forma que ninguna refleja la racha real.
+
+Ojo a la tensión que hay que respetar: **los duplicados deben seguir permitidos.**
+"Duplicar una actividad" es la respuesta *prescrita* para reconvertir, así que
+una regla de unicidad por nombre rompería una función que queremos a propósito.
+El objetivo es "que un duplicado accidental sea fácil de detectar y deshacer",
+nunca "que sea imposible".
+
+- **Cómo cambiaría el modelo actual:** nada estructural para la mitad de
+  *detección* — el flujo de creación puede comparar títulos normalizados (sin
+  espacios sobrantes, ignorando mayúsculas y acentos) y **avisar**, nunca
+  bloquear. La mitad de *fusión* es donde está el trabajo: las occurrences se
+  clavan por `(activityId, date)`, así que fusionar significa re-clavar las de
+  una entidad sobre la otra, y decidir qué pasa cuando **ambas tienen occurrence
+  el mismo día**. Esa resolución es **por `activityType`** — sumar las
+  repeticiones de dos counters es lo correcto, "ambas hechas" en un checklist es
+  trivial, y los intervalos de dos timers se concatenan —, así que pertenece a la
+  mitad de dominio del registry de activityType (§7), como una operación
+  "combina el progreso de dos días" junto a `measure`.
+- **Qué ayuda ya:** la identidad es el `id`, así que un duplicado es una entidad
+  válida y no datos corruptos — no hay nada que reparar, solo que consolidar. Las
+  occurrences clavadas por `(activityId, date)` mantienen el historial de cada
+  entidad limpiamente separable, lo que convierte la fusión en un **re-clavado**
+  y no en un desenredo. El registry ya es el sitio donde vive el comportamiento
+  por tipo, así que la resolución del mismo día tiene un hogar obvio. Y los
+  nombres no se versionan, así que renombrar tras fusionar no cuesta nada.
+
+---
+
 ## Decisiones abiertas de tooling y arquitectura
 
 Decisiones sin cerrar movidas desde [architecture.es.md](./architecture.es.md)
