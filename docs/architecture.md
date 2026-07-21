@@ -159,6 +159,43 @@ functions in `domain/`, classes in `infrastructure/`* — not an accident of two
 mixed styles. Method-style examples elsewhere in this doc (`Item.updateStatus()`)
 are illustrative shorthand, not a mandate to put behavior on the entity.
 
+### Make illegal states unrepresentable — where you can
+
+When the data carries the discriminant, encode the invariant in the type instead
+of checking it at runtime: a schedule is `FixedSchedule | QuotaSchedule` so
+"`periodGoal` exists iff the recurrence is a quota" simply can't be built wrong,
+and `quota` is excluded from `isDueOn`'s parameter type so asking it is a compile
+error rather than a branch.
+
+Where the discriminant **isn't** available this doesn't work, and pretending
+otherwise is worse than admitting it. An `ActivityOccurrence`'s `progress` has no
+type tag — which shape applies is known from the owning activity's type — so each
+consumer casts at a boundary that says so in a comment. Keep those boundaries few
+and named.
+
+### Instants: `Date` at the edges, ISO strings inside blobs
+
+First-class entity fields that hold an instant (`completedAt`, `startedAt`) are
+`Date`s, revived by the mapper. Instants **inside** a JSON blob (a counter's
+repetitions, a timer's intervals) stay ISO strings, so the blob round-trips
+through storage without the mapper needing to know its shape. Logical days are
+never `Date`s at all — see `CalendarDay`.
+
+### Calendar boundaries go through one function
+
+Anything that decides "which day/week/period does this belong to?" is funnelled
+through a single pure function — `getCalendarDay` for logical days,
+`shared/domain/time/calendarRange` for periods. Nothing computes them ad hoc.
+`legacy/v1` is the cautionary tale: it scattered `startOf('week')` across ~6
+files and could never make the week start configurable.
+
+### Configuration is injected, never read from the domain
+
+Values like `dayStartHour`, `weekStart` and the current time arrive as
+parameters from `core/di/`; the domain and application layers never read a
+device API or a global clock. That's what keeps the projection pure and its
+tests deterministic.
+
 ---
 
 ## Naming conventions
@@ -357,6 +394,12 @@ module.exports = {
 - **Domain** and **use case** tests: in `features/<f>/__tests__/`, with no dependency on React Native or the real database. Use in-memory repositories (fakes) implementing the same `domain/` interface.
 - **Infrastructure** tests (e.g. `SqliteItemRepository`): can live next to the file or in `__tests__/infrastructure/`, and do touch SQLite (in-memory or a mocked driver).
 - **UI** tests: next to the components, or in the feature's `__tests__/ui/`.
+- **Shared fakes and builders** live in `features/<f>/__tests__/support/`. Jest's
+  `testMatch` is narrowed to `*.test.*` precisely so files in there aren't picked
+  up as (empty) test suites.
+- Passing `npm test` does **not** prove the app bundles: Jest transpiles with
+  Babel and never resolves the way Metro does. A module that fails to resolve in
+  the app still passes the suite — check with `npx expo export --platform ios`.
 
 ```
 features/items/__tests__/

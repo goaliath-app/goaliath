@@ -161,6 +161,44 @@ división es deliberada — *datos + funciones libres en `domain/`, clases en
 métodos en otras partes de este doc (`Item.updateStatus()`) son atajo
 ilustrativo, no un mandato de poner comportamiento en la entidad.
 
+### Haz irrepresentables los estados inválidos — cuando se pueda
+
+Cuando el dato lleva el discriminante, codifica el invariante en el tipo en vez
+de comprobarlo en runtime: un schedule es `FixedSchedule | QuotaSchedule`, así
+que "`periodGoal` existe ⟺ la recurrencia es quota" no se puede construir mal; y
+`quota` está excluido del tipo del parámetro de `isDueOn`, así que pedírselo es
+un error de compilación en vez de una rama.
+
+Donde el discriminante **no** está disponible esto no funciona, y fingir lo
+contrario es peor que admitirlo. El `progress` de una `ActivityOccurrence` no
+lleva etiqueta de tipo —cuál aplica se sabe por el tipo de la activity dueña—,
+así que cada consumidor castea en una frontera que lo dice en un comentario.
+Mantén esas fronteras pocas y con nombre.
+
+### Instantes: `Date` en los bordes, strings ISO dentro de los blobs
+
+Los campos de primera clase que guardan un instante (`completedAt`, `startedAt`)
+son `Date`, revividos por el mapper. Los instantes **dentro** de un blob JSON
+(las repeticiones de un counter, los intervalos de un timer) se quedan como
+strings ISO, para que el blob viaje por el almacenamiento sin que el mapper
+necesite conocer su forma. Los días lógicos no son `Date` en ningún caso — ver
+`CalendarDay`.
+
+### Las fronteras de calendario pasan por una sola función
+
+Todo lo que decide "¿a qué día/semana/periodo pertenece esto?" se canaliza por
+una única función pura — `getCalendarDay` para días lógicos,
+`shared/domain/time/calendarRange` para periodos. Nada las calcula por su
+cuenta. `legacy/v1` es el caso de aviso: desperdigó `startOf('week')` por ~6
+ficheros y nunca pudo hacer configurable el inicio de semana.
+
+### La configuración se inyecta, nunca se lee desde el dominio
+
+Valores como `dayStartHour`, `weekStart` y la hora actual llegan como parámetros
+desde `core/di/`; las capas de dominio y aplicación nunca leen una API del
+dispositivo ni un reloj global. Eso es lo que mantiene la proyección pura y sus
+tests deterministas.
+
 ---
 
 ## Convenciones de nombres
@@ -359,6 +397,12 @@ module.exports = {
 - **Tests de domain** y de **use case**: en `features/<f>/__tests__/`, sin dependencia de React Native ni de la base de datos real. Usan repositorios en memoria (fakes) que implementan la misma interfaz de `domain/`.
 - **Tests de infrastructure** (p. ej. `SqliteItemRepository`): pueden vivir junto al fichero o en `__tests__/infrastructure/`, y sí tocan SQLite (en memoria o con un driver mockeado).
 - **Tests de UI**: junto a los componentes, o en `__tests__/ui/` del feature.
+- **Los fakes y builders compartidos** viven en `features/<f>/__tests__/support/`.
+  El `testMatch` de Jest está acotado a `*.test.*` precisamente para que los
+  ficheros de ahí no se recojan como suites (vacías).
+- Que pase `npm test` **no** demuestra que la app empaquete: Jest transpila con
+  Babel y no resuelve como Metro. Un módulo que no resuelve en la app sigue
+  pasando la suite — compruébalo con `npx expo export --platform ios`.
 
 ```
 features/items/__tests__/
