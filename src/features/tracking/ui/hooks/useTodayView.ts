@@ -30,6 +30,7 @@ export function useTodayView() {
       occurrences: deps.activityOccurrenceRepository,
       now: deps.now,
       dayStartHour: deps.dayStartHour,
+      weekStart: deps.weekStart,
     });
     setItems(await view(today));
   }, [deps, today]);

@@ -4,6 +4,7 @@ import { scheduleOn, type ActivitySchedule } from './ActivitySchedule';
 import { isComplete, type ActivityOccurrence } from './ActivityOccurrence';
 import type { Goal } from './Goal';
 import { isDueOn, isFixed } from './RecurrenceRule';
+import { quotaPeriodProgress, type PeriodProgress } from './quotaProgress';
 
 /**
  * The status a day is **shown** as (domain-model §8). `pending`/`done` mirror the
@@ -18,6 +19,13 @@ export interface ActivityDayInput {
   goal: Goal; // the activity's own Goal, for the §0 cascade
   schedules: readonly ActivitySchedule[]; // the activity's schedule timeline
   occurrence: ActivityOccurrence | null; // the persisted occurrence for the day, if any
+  /**
+   * For a **quota** activity, the occurrences inside the period `day` falls in —
+   * what scores the `periodGoal`. Empty for fixed recurrences. The caller
+   * computes the period's span (it owns `weekStart`), so the projection stays
+   * free of calendar-boundary configuration.
+   */
+  periodOccurrences?: readonly ActivityOccurrence[];
 }
 
 export interface BuildDayInput {
@@ -33,6 +41,8 @@ export interface DayItem {
   occurrence: ActivityOccurrence | null;
   due: boolean; // whether the recurrence actually made this day due
   displayStatus: DisplayStatus;
+  /** Quota only: progress against the period goal. `null` for fixed recurrences. */
+  periodProgress: PeriodProgress | null;
 }
 
 /**
@@ -47,7 +57,13 @@ export interface DayItem {
 export function buildDay({ day, today, activities }: BuildDayInput): DayItem[] {
   const items: DayItem[] = [];
 
-  for (const { activity, goal, schedules, occurrence } of activities) {
+  for (const {
+    activity,
+    goal,
+    schedules,
+    occurrence,
+    periodOccurrences = [],
+  } of activities) {
     // 1. Cascade (§0): skip anything not effectively active on the day.
     if (!isEffectivelyActive(activity, goal, day)) continue;
 
@@ -76,6 +92,10 @@ export function buildDay({ day, today, activities }: BuildDayInput): DayItem[] {
       occurrence,
       due,
       displayStatus: resolveDisplayStatus({ day, today, due, occurrence }),
+      periodProgress:
+        schedule.periodGoal === null
+          ? null // a fixed recurrence has no period target (§3)
+          : quotaPeriodProgress(periodOccurrences, schedule.periodGoal),
     });
   }
 

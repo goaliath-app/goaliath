@@ -35,6 +35,7 @@ export const activityTypeViews: Record<ActivityType, ActivityTypeView> = {
 
 function ChecklistRow({ item, actions }: ActivityRowProps) {
   const done = item.displayStatus === 'done';
+  const { periodProgress } = item;
   return (
     <Pressable
       style={styles.row}
@@ -45,9 +46,16 @@ function ChecklistRow({ item, actions }: ActivityRowProps) {
       <View style={[styles.checkbox, done && styles.checkboxDone]}>
         {done ? <Text style={styles.check}>✓</Text> : null}
       </View>
-      <Text style={[styles.title, done && styles.titleMuted]}>
-        {item.activity.title}
-      </Text>
+      <View style={styles.label}>
+        <Text style={[styles.title, done && styles.titleMuted]}>
+          {item.activity.title}
+        </Text>
+        {periodProgress === null ? null : (
+          <Text style={styles.meta}>
+            {periodProgress.completed} of {periodProgress.target} this period
+          </Text>
+        )}
+      </View>
     </Pressable>
   );
 }
@@ -104,6 +112,8 @@ const styles = StyleSheet.create({
   },
   checkboxDone: { backgroundColor: '#34c759', borderColor: '#34c759' },
   check: { color: '#ffffff', fontSize: 16, fontWeight: '700', lineHeight: 20 },
+  label: { flex: 1, gap: 2 },
+  meta: { fontSize: 14, color: '#8a8a8e' },
   counterLabel: { flex: 1, gap: 2 },
   counterMeta: { fontSize: 14, color: '#8a8a8e' },
   plus: {

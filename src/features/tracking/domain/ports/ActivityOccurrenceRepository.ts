@@ -12,5 +12,17 @@ export interface ActivityOccurrenceRepository {
     activityId: ActivityId,
     date: CalendarDay,
   ): Promise<ActivityOccurrence | null>;
+
+  /**
+   * Every occurrence of one activity within an **inclusive** span of days — what
+   * a quota needs to score its period (§3): the days it already completed
+   * between the period's first and last day.
+   */
+  findByActivityInRange(
+    activityId: ActivityId,
+    from: CalendarDay,
+    to: CalendarDay,
+  ): Promise<ActivityOccurrence[]>;
+
   save(occurrence: ActivityOccurrence): Promise<void>;
 }

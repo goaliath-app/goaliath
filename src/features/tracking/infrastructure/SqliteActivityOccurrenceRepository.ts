@@ -28,6 +28,25 @@ export class SqliteActivityOccurrenceRepository
     return row === null ? null : toActivityOccurrence(row);
   }
 
+  async findByActivityInRange(
+    activityId: ActivityId,
+    from: CalendarDay,
+    to: CalendarDay,
+  ): Promise<ActivityOccurrence[]> {
+    // `date` is a zero-padded YYYY-MM-DD string, so BETWEEN compares it
+    // chronologically without any date parsing.
+    const rows = await this.database.getAllAsync<ActivityOccurrenceRow>(
+      `SELECT activity_id, date, schedule_id, status, completed_at, notes, origin, progress
+         FROM activity_occurrences
+        WHERE activity_id = ? AND date BETWEEN ? AND ?
+        ORDER BY date`,
+      activityId,
+      from,
+      to,
+    );
+    return rows.map(toActivityOccurrence);
+  }
+
   async save(occurrence: ActivityOccurrence): Promise<void> {
     const row = toActivityOccurrenceRow(occurrence);
     // Upsert on the (activity_id, date) identity (§5): editing a day updates its

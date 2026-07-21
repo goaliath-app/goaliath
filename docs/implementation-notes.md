@@ -124,11 +124,30 @@ domain): counter/timer + registry extraction, quota opt-in, `Task`, stats.
   the day in), fixed+due → `recurrence`, otherwise → `manual`. Both write use
   cases now use it instead of their earlier `schedule ? 'recurrence' : 'manual'`
   approximation. Seed adds a quota activity ("Go for a run", 3 days/week).
-- **Still to do for quota**: period progress ("2 of 3 this week"). That needs
-  period boundaries (the `weekOf(day, weekStart)` chokepoint future-features
-  describes, plus the weekStart decision), an occurrence query over a date range
-  (new repository method), and — for `metricSum` targets — the domain behaviour
-  registry. That's the step that finally forces it.
+- **Period boundaries (the chokepoint)** — `shared/domain/time/calendarRange.ts`:
+  `weekRangeOf(day, weekStart)` / `monthRangeOf` / `yearRangeOf` / `rangeContains`
+  over an inclusive `DayRange`, plus the `calendarDayFrom` (overflow-normalising)
+  and `addDays` primitives on `CalendarDay`. This is the single place that
+  answers "which week does this day belong to?", the discipline future-features
+  demands (`legacy/v1` scattered `startOf('week')` across ~6 files and could
+  never change it). `weekStart` is an ISO weekday **passed in as a number** —
+  never read from the device here, so the domain stays pure; an adapter will map
+  the device's own numbering later. `domain/quotaPeriod.ts` dispatches a quota's
+  `period` to the right range; only `week` depends on `weekStart`, which is what
+  keeps that setting's blast radius narrow.
+- **Period progress** — `ActivityOccurrenceRepository.findByActivityInRange`
+  (fake + SQLite adapter; `date` is a padded `YYYY-MM-DD` so SQL `BETWEEN`
+  compares chronologically with no parsing). `domain/quotaProgress.ts` scores a
+  period from the occurrences inside it; `DayItem.periodProgress` carries it and
+  the checklist row renders "N of M this period". `getDayView` resolves the
+  period's span (it owns `weekStart`) and hands the projection the occurrences —
+  so `buildDay` stays free of calendar-boundary configuration. `weekStart` is
+  injected from the container (ISO Monday) until a `settings` feature exists;
+  changing it must be forward-only (future-features).
+- **Still deferred**: `metricSum` period goals. Summing a metric across days
+  needs each activityType's `measure(progress)` generically — the domain
+  behaviour registry (§7). `quotaPeriodProgress` returns `null` for them rather
+  than guessing, so nothing silently reports a wrong number.
 
 **Registry finding (why the domain half stays deferred):** a real second type
 shows the registry *forced* now is the **UI dispatch** one (above). The pure

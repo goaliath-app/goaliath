@@ -126,6 +126,21 @@ export class InMemoryActivityOccurrenceRepository
     return this.store.get(keyOf(activityId, date)) ?? null;
   }
 
+  async findByActivityInRange(
+    activityId: ActivityId,
+    from: CalendarDay,
+    to: CalendarDay,
+  ): Promise<ActivityOccurrence[]> {
+    return [...this.store.values()]
+      .filter(
+        (occurrence) =>
+          occurrence.activityId === activityId &&
+          occurrence.date >= from &&
+          occurrence.date <= to,
+      )
+      .sort((first, second) => first.date.localeCompare(second.date));
+  }
+
   async save(occurrence: ActivityOccurrence): Promise<void> {
     this.store.set(keyOf(occurrence.activityId, occurrence.date), occurrence);
   }

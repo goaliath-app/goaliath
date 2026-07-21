@@ -23,6 +23,7 @@ export interface Container {
   activityOccurrenceRepository: ActivityOccurrenceRepository;
   now: () => Date;
   dayStartHour: number;
+  weekStart: number; // ISO weekday (1 = Monday … 7 = Sunday)
 }
 
 export function createContainer(database: SQLiteDatabase): Container {
@@ -33,5 +34,9 @@ export function createContainer(database: SQLiteDatabase): Container {
     activityOccurrenceRepository: new SqliteActivityOccurrenceRepository(database),
     now: () => new Date(),
     dayStartHour: 0, // TODO: from a future `settings` feature; default = calendar midnight
+    // TODO: seed from the device once `settings` exists (mapping its Sunday=1
+    // numbering to ISO), and only ever change it forward-only — moving the
+    // boundary re-buckets past quota weeks (future-features).
+    weekStart: 1, // ISO Monday
   };
 }

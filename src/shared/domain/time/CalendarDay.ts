@@ -80,3 +80,32 @@ export function isoWeekday(day: CalendarDay): number {
   const jsDay = new Date(Date.UTC(year, month - 1, dayOfMonth, 12)).getUTCDay();
   return jsDay === 0 ? 7 : jsDay; // JS: 0=Sun..6=Sat → ISO: 1=Mon..7=Sun
 }
+
+/**
+ * Build a `CalendarDay` from calendar parts, **normalising overflow**: month 13
+ * rolls into the next year, day 0 becomes the last day of the previous month,
+ * day 32 rolls forward. That makes range math (last-day-of-month, ±N days) fall
+ * out of one primitive instead of needing per-case branches.
+ *
+ * All arithmetic is done in **UTC**: a `CalendarDay` is an already-resolved
+ * logical date, so shifting it is pure calendar math with no timezone or DST to
+ * account for (unlike `getCalendarDay`, which converts a real instant and must
+ * use local wall-clock components).
+ */
+export function calendarDayFrom(
+  year: number,
+  month: number,
+  dayOfMonth: number,
+): CalendarDay {
+  const normalised = new Date(Date.UTC(year, month - 1, dayOfMonth, 12));
+  const value = `${normalised.getUTCFullYear()}-${padTwoDigits(
+    normalised.getUTCMonth() + 1,
+  )}-${padTwoDigits(normalised.getUTCDate())}`;
+  return value as CalendarDay;
+}
+
+/** The logical day `delta` days after (or before, if negative) `day`. */
+export function addDays(day: CalendarDay, delta: number): CalendarDay {
+  const { year, month, day: dayOfMonth } = calendarDayParts(day);
+  return calendarDayFrom(year, month, dayOfMonth + delta);
+}

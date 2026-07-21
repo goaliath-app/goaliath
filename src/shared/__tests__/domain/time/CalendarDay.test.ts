@@ -1,4 +1,6 @@
 import {
+  addDays,
+  calendarDayFrom,
   calendarDayParts,
   getCalendarDay,
   isoWeekday,
@@ -104,6 +106,41 @@ describe('calendarDayParts', () => {
       month: 3,
       day: 5,
     });
+  });
+});
+
+describe('calendarDayFrom', () => {
+  it('builds a zero-padded day from parts', () => {
+    expect(calendarDayFrom(2024, 3, 5)).toBe('2024-03-05');
+  });
+
+  it('normalises day 0 to the last day of the previous month', () => {
+    expect(calendarDayFrom(2024, 3, 0)).toBe('2024-02-29'); // leap year
+    expect(calendarDayFrom(2023, 3, 0)).toBe('2023-02-28');
+  });
+
+  it('normalises overflow into the next month and year', () => {
+    expect(calendarDayFrom(2024, 1, 32)).toBe('2024-02-01');
+    expect(calendarDayFrom(2024, 13, 1)).toBe('2025-01-01');
+  });
+});
+
+describe('addDays', () => {
+  it('moves forward and backward', () => {
+    expect(addDays(day('2024-06-15'), 1)).toBe('2024-06-16');
+    expect(addDays(day('2024-06-15'), -1)).toBe('2024-06-14');
+    expect(addDays(day('2024-06-15'), 0)).toBe('2024-06-15');
+  });
+
+  it('crosses month and year boundaries', () => {
+    expect(addDays(day('2024-06-30'), 1)).toBe('2024-07-01');
+    expect(addDays(day('2024-12-31'), 1)).toBe('2025-01-01');
+    expect(addDays(day('2024-01-01'), -1)).toBe('2023-12-31');
+  });
+
+  it('accounts for leap days', () => {
+    expect(addDays(day('2024-02-28'), 1)).toBe('2024-02-29');
+    expect(addDays(day('2023-02-28'), 1)).toBe('2023-03-01');
   });
 });
 
