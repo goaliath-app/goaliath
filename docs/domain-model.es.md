@@ -342,13 +342,22 @@ la proyección y los casos de uso:
 ActivityTypeBehaviour {
   key: string                          // 'counter', 'timer', 'checklist', ...
   metric: 'none' | 'count' | 'duration'   // qué mide el progreso de un día — da la unidad a dayGoal/periodGoal
-  emptyProgress(): progress
-  measure(progress): number            // escalar para sumas y ratios (checklist → 0|1, counter → reps, timer → segundos)
-  isCompleted(progress, dayGoal): boolean
-  computeCompletionRatio(progress, dayGoal): number   // 0..1
-  applyUserAction(progress, action): progress   // p.ej. "add rep", "start timer", "stop timer"
+  measure(progress): number | null     // escalar para sumas (counter → reps, timer → segundos); null cuando la métrica es 'none'
 }
 ```
+
+**`measure` es `null` para los tipos cuya métrica es `none`.** Un día de
+`checklist` no tiene cantidad — su resultado es el `status` de la occurrence, no
+su progress (vacío) — así que un `measure(progress): number` uniforme le
+obligaría a inventarse un número. Que sea nulable hace explícito el "no
+medible", y es lo que le dice a un formulario de creación que `metricSum` no es
+válido para ese tipo (en vez de puntuar 0 en silencio).
+
+Derivar `done` del progreso (`isCompleted`) queda deliberadamente **fuera** de
+este registro: es cosa del camino de escritura de cada tipo medible, en su
+propio caso de uso, y nada genérico lo necesita. Las acciones que mutan el
+progreso ("add rep", "stop timer") son igualmente casos de uso propios del tipo.
+Mantén esta interfaz en lo que el código genérico consume de verdad.
 
 **Mitad de UI** — vive en `features/tracking/ui/`, consumida solo por las
 pantallas, con la misma `key`:

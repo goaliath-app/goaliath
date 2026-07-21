@@ -175,10 +175,25 @@ domain): counter/timer + registry extraction, quota opt-in, `Task`, stats.
 timer). Next natural step: the create flow (goals/activities), which needs write
 methods on those repositories plus an `IdGenerator` port.
 
-- **Still deferred**: `metricSum` period goals. Summing a metric across days
-  needs each activityType's `measure(progress)` generically — the domain
-  behaviour registry (§7). `quotaPeriodProgress` returns `null` for them rather
-  than guessing, so nothing silently reports a wrong number.
+### Phase 3: activityType registry (domain half) + `metricSum` — done
+- `domain/activityTypes/registry.ts` — `behaviourFor(type)` giving `metric` and
+  `measure`. Extracted **after** three real types existed, which is what showed
+  §7's sketch was wrong: `measure` is **`null`** when the metric is `none`
+  (a checklist day has no quantity; its outcome is `status`, not its empty
+  progress). `isCompleted` and the progress-mutating actions stayed **out** —
+  they're each type's write-path concern and nothing generic consumes them.
+- `quotaPeriodProgress` now scores `metricSum` too (summing the metric across the
+  period) and returns `null` only for the genuinely invalid pairing
+  (`metricSum` on a non-measurable type). `PeriodProgress.completed` renamed to
+  `current`: with a metric sum, "completed: 930 seconds" was a lie.
+- `supportsMetricSum(type)` is what a **create form** should use to decide which
+  goal shapes to offer, so it can't produce an activity nothing can score.
+- domain-model §7 and its mirror updated to the real interface.
+
+**All three activity types are complete, and every goal shape in §3's grid is now
+scoreable.** Remaining type-level deferrals (neither blocks creation): removing
+counter repetitions, and a guard for a forgotten running timer (a session left
+running across days currently banks its whole elapsed time to its start day).
 
 **Registry finding (why the domain half stays deferred):** a real second type
 shows the registry *forced* now is the **UI dispatch** one (above). The pure

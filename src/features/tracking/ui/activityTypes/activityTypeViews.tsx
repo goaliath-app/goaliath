@@ -64,7 +64,7 @@ function ChecklistRow({ item, actions }: ActivityRowProps) {
         </Text>
         {periodProgress === null ? null : (
           <Text style={styles.meta}>
-            {periodProgress.completed} of {periodProgress.target} this period
+            {periodProgress.current} of {periodProgress.target} this period
           </Text>
         )}
       </View>

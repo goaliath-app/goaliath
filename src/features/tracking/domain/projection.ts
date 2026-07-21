@@ -4,6 +4,7 @@ import { scheduleOn, type ActivitySchedule } from './ActivitySchedule';
 import { isComplete, type ActivityOccurrence } from './ActivityOccurrence';
 import type { Goal } from './Goal';
 import { isDueOn, isFixed } from './RecurrenceRule';
+import { behaviourFor } from './activityTypes/registry';
 import { quotaPeriodProgress, type PeriodProgress } from './quotaProgress';
 
 /**
@@ -95,7 +96,11 @@ export function buildDay({ day, today, activities }: BuildDayInput): DayItem[] {
       periodProgress:
         schedule.periodGoal === null
           ? null // a fixed recurrence has no period target (§3)
-          : quotaPeriodProgress(periodOccurrences, schedule.periodGoal),
+          : quotaPeriodProgress(
+              periodOccurrences,
+              schedule.periodGoal,
+              behaviourFor(activity.activityType),
+            ),
     });
   }
 

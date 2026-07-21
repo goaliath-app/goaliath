@@ -92,7 +92,7 @@ describe('getDayView — quota period progress', () => {
       doneOn('2024-06-12'), // Wed, in the week
     ]);
     const [item] = await getDayView(quotaDeps(occurrences))(asDay('2024-06-15'));
-    expect(item.periodProgress).toEqual({ completed: 2, target: 3 });
+    expect(item.periodProgress).toEqual({ current: 2, target: 3 });
   });
 
   it('ignores days outside the period', async () => {
@@ -102,7 +102,7 @@ describe('getDayView — quota period progress', () => {
       doneOn('2024-06-17'), // Monday of the following week
     ]);
     const [item] = await getDayView(quotaDeps(occurrences))(asDay('2024-06-15'));
-    expect(item.periodProgress).toEqual({ completed: 1, target: 3 });
+    expect(item.periodProgress).toEqual({ current: 1, target: 3 });
   });
 
   it('leaves periodProgress null for a fixed recurrence', async () => {

@@ -335,13 +335,21 @@ projection and use cases:
 ActivityTypeBehaviour {
   key: string                          // 'counter', 'timer', 'checklist', ...
   metric: 'none' | 'count' | 'duration'   // what a day's progress measures — gives dayGoal/periodGoal their unit
-  emptyProgress(): progress
-  measure(progress): number            // scalar for sums & ratios (checklist → 0|1, counter → reps, timer → seconds)
-  isCompleted(progress, dayGoal): boolean
-  computeCompletionRatio(progress, dayGoal): number   // 0..1
-  applyUserAction(progress, action): progress   // e.g. "add rep", "start timer", "stop timer"
+  measure(progress): number | null     // scalar for sums (counter → reps, timer → seconds); null when metric is 'none'
 }
 ```
+
+**`measure` is `null` for types whose metric is `none`.** A `checklist` day has
+no quantity — its outcome is the occurrence's `status`, not its (empty)
+progress — so a uniform `measure(progress): number` would force it to invent a
+number. Nullable makes "not measurable" explicit, and it's what tells a create
+form that `metricSum` is invalid for that type (rather than silently scoring 0).
+
+Deriving `done` from progress (`isCompleted`) is deliberately **not** in this
+registry: it's a write-path concern each measurable type handles in its own use
+case, and nothing generic needs it. Progress-mutating actions ("add rep", "stop
+timer") are likewise the type's own use cases. Keep this interface at what
+generic code actually consumes.
 
 **UI half** — lives in `features/tracking/ui/`, consumed only by screens, keyed
 by the same `key`:

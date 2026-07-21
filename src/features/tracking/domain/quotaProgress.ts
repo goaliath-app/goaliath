@@ -1,27 +1,47 @@
 import { isComplete, type ActivityOccurrence } from './ActivityOccurrence';
 import type { PeriodGoal } from './ActivitySchedule';
+import type { ActivityTypeBehaviour } from './activityTypes/registry';
 
-/** How a quota is doing against its `periodGoal` so far (domain-model §3). */
+/**
+ * How a quota is doing against its `periodGoal` so far (domain-model §3).
+ *
+ * `current` is deliberately generic: for `completedDays` it counts days, for
+ * `metricSum` it's the summed metric (reps, seconds…) in the activityType's
+ * unit. Naming it `completed` would have been a lie for the second case.
+ */
 export interface PeriodProgress {
-  completed: number; // reached so far within the period
-  target: number; // what the periodGoal asks for
+  current: number;
+  target: number;
 }
 
 /**
  * Score a quota's period from the occurrences that fall inside it.
  *
- * Only `completedDays` is computed for now. `metricSum` needs each
- * activityType's `measure(progress)` to sum a metric across days, and that's
- * precisely the generic behaviour the domain-side activityType registry (§7)
- * will provide — so it returns `null` ("not scored yet") rather than guessing.
+ * Returns `null` when the goal can't be scored for this type — a `metricSum`
+ * target on a non-measurable type such as `checklist` (its metric is `none`).
+ * That pairing is invalid rather than zero, so it reports "unscoreable" instead
+ * of a misleading 0; `supportsMetricSum` is what stops it being created.
  */
 export function quotaPeriodProgress(
   occurrencesInPeriod: readonly ActivityOccurrence[],
   periodGoal: PeriodGoal,
+  behaviour: ActivityTypeBehaviour,
 ): PeriodProgress | null {
-  if (periodGoal.aggregate !== 'completedDays') return null;
+  if (periodGoal.aggregate === 'completedDays') {
+    return {
+      current: occurrencesInPeriod.filter(isComplete).length,
+      target: periodGoal.amount,
+    };
+  }
+
+  const { measure } = behaviour;
+  if (measure === null) return null; // metricSum on a type with no metric
+
   return {
-    completed: occurrencesInPeriod.filter(isComplete).length,
+    current: occurrencesInPeriod.reduce(
+      (total, occurrence) => total + measure(occurrence.progress),
+      0,
+    ),
     target: periodGoal.amount,
   };
 }
