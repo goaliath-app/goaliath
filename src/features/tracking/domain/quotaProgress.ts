@@ -20,7 +20,7 @@ export interface PeriodProgress {
  * Returns `null` when the goal can't be scored for this type — a `metricSum`
  * target on a non-measurable type such as `checklist` (its metric is `none`).
  * That pairing is invalid rather than zero, so it reports "unscoreable" instead
- * of a misleading 0; `supportsMetricSum` is what stops it being created.
+ * of a misleading 0; `isMeasurable` is what stops it being created.
  */
 export function quotaPeriodProgress(
   occurrencesInPeriod: readonly ActivityOccurrence[],

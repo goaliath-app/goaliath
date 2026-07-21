@@ -50,10 +50,13 @@ export function behaviourFor(activityType: ActivityType): ActivityTypeBehaviour 
 }
 
 /**
- * Whether a `metricSum` period goal is meaningful for this type — what a create
- * form should use to decide which goal shapes to offer, so it can't produce an
- * activity nothing can score.
+ * Whether a day of this type produces a **quantity** (its metric isn't `none`).
+ *
+ * One predicate answers both questions that depend on it: whether a `dayGoal`
+ * ("reach N today") is meaningful, and whether a `metricSum` period goal ("N
+ * across the period") can be scored. A create form uses it to decide which goal
+ * shapes to offer, so it can't produce an activity nothing can score.
  */
-export function supportsMetricSum(activityType: ActivityType): boolean {
+export function isMeasurable(activityType: ActivityType): boolean {
   return behaviourFor(activityType).measure !== null;
 }

@@ -3,7 +3,7 @@ import type { ActivityOccurrence } from '@/features/tracking/domain/ActivityOccu
 import type { ScheduleId } from '@/features/tracking/domain/ActivitySchedule';
 import {
   behaviourFor,
-  supportsMetricSum,
+  isMeasurable,
 } from '@/features/tracking/domain/activityTypes/registry';
 import { quotaPeriodProgress } from '@/features/tracking/domain/quotaProgress';
 import type { CalendarDay } from '@/shared/domain/time/CalendarDay';
@@ -47,10 +47,10 @@ describe('registry', () => {
     expect(behaviourFor('timer').metric).toBe('duration');
   });
 
-  it('only measurable types support a metricSum goal', () => {
-    expect(supportsMetricSum('checklist')).toBe(false);
-    expect(supportsMetricSum('counter')).toBe(true);
-    expect(supportsMetricSum('timer')).toBe(true);
+  it('identifies which types produce a measurable quantity', () => {
+    expect(isMeasurable('checklist')).toBe(false);
+    expect(isMeasurable('counter')).toBe(true);
+    expect(isMeasurable('timer')).toBe(true);
   });
 });
 

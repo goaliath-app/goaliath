@@ -79,11 +79,31 @@ closed the app and confirmed it resumes.
 
 ## Next
 
-**The create flow for goals and activities.** It needs: write methods on those
-repositories, an `IdGenerator` **port** (the first outbound port that isn't a
-repository), domain constructors that validate and open the `active` status
-period today, use cases (an activity and its first schedule should be created
-atomically — §3 says every activity always has one), and a form. The form must
-use `supportsMetricSum` so it can't create an activity nothing can score.
+**The create flow for goals and activities.** The domain half is done
+(`createGoal`, `createActivity` — the latter returns the activity *with* its
+first schedule and enforces the §3 invariants the type system can't). Remaining:
+
+- an `IdGenerator` **port** — the first outbound port that isn't a repository —
+  plus its adapter;
+- a **`TransactionRunner` port** (`runInTransaction(fn)`). Creation writes
+  several aggregates at once — a goal (optionally), an activity and its first
+  schedule — so each repository keeps saving only **its own** aggregate and the
+  *use case* declares the atomic boundary. (An earlier plan folded this into one
+  `ActivityRepository.create(activity, schedule)` method; adding inline goal
+  creation would have made that method write goals too, crossing aggregate
+  boundaries.)
+- **writes on the repositories** (`save` per aggregate) and
+  `GoalRepository.findAll` for the picker;
+- the `createGoal` (standalone) and `createActivity` **use cases**. The latter
+  takes a goal as `{ kind: 'existing', goalId } | { kind: 'new', title, … }` so
+  "pick one or create one" can't be violated, and it must **verify an existing
+  goal exists** — an activity pointing at a missing goal is skipped by
+  `getDayView`, i.e. invisible and unfixable from the app, the same hazard class
+  as an activity with no schedule;
+- the **form**, this repo's first multi-screen work (one route today, so it needs
+  Expo Router navigation). Use `isMeasurable` to decide which goal shapes to
+  offer. The goal picker must include **paused** goals; assigning one is valid but
+  the activity won't appear in Today until the goal resumes (the §0 cascade), so
+  the form should say so. Archived goals are excluded by default.
 
 After that: the `Task` feature (§6), then stats / `DailyStatsSummary` (§12).
