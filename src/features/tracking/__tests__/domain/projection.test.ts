@@ -174,15 +174,6 @@ describe('buildDay — which activities appear', () => {
     expect(items).toHaveLength(0);
   });
 
-  it('skips quota schedules for now (opt-in deferred)', () => {
-    const items = buildDay({
-      day: TODAY,
-      today: TODAY,
-      activities: [daily({ schedules: [schedule({ kind: 'quota', period: 'week' })] })],
-    });
-    expect(items).toHaveLength(0);
-  });
-
   it('drops an activity with no schedule in effect yet (day before its first startDate)', () => {
     const items = buildDay({
       day: day('2023-12-31'),
@@ -203,5 +194,52 @@ describe('buildDay — which activities appear', () => {
       activities: [daily(), other],
     });
     expect(items).toHaveLength(2);
+  });
+});
+
+describe('buildDay — quota recurrences (§4/§8)', () => {
+  const quota = (over: Partial<ActivityDayInput> = {}): ActivityDayInput =>
+    daily({ schedules: [schedule({ kind: 'quota', period: 'week' })], ...over });
+
+  it('offers today as a candidate even with nothing recorded, and never as due', () => {
+    const [item] = buildDay({ day: TODAY, today: TODAY, activities: [quota()] });
+    expect(item.due).toBe(false); // a quota never makes a day obligatory
+    expect(item.displayStatus).toBe('pending');
+  });
+
+  it('offers future days as candidates too', () => {
+    const [item] = buildDay({
+      day: day('2024-06-20'),
+      today: TODAY,
+      activities: [quota()],
+    });
+    expect(item.displayStatus).toBe('pending');
+  });
+
+  it('does not offer past days you never opted into', () => {
+    const items = buildDay({
+      day: day('2024-06-10'),
+      today: TODAY,
+      activities: [quota()],
+    });
+    expect(items).toHaveLength(0);
+  });
+
+  it('shows a past day that was opted into and completed', () => {
+    const items = buildDay({
+      day: day('2024-06-10'),
+      today: TODAY,
+      activities: [quota({ occurrence: occurrence('done') })],
+    });
+    expect(items[0].displayStatus).toBe('done');
+  });
+
+  it('never reads as missed: a past opted-in day left pending stays pending', () => {
+    const [item] = buildDay({
+      day: day('2024-06-10'),
+      today: TODAY,
+      activities: [quota({ occurrence: occurrence('pending') })],
+    });
+    expect(item.displayStatus).toBe('pending');
   });
 });

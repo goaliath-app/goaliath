@@ -3,6 +3,7 @@ import {
   asActivityId,
   asDay,
   buildDailyChecklistSchedule,
+  buildQuotaWeekSchedule,
   InMemoryActivityOccurrenceRepository,
   InMemoryActivityScheduleRepository,
 } from '../support/trackingFakes';
@@ -42,6 +43,23 @@ describe('toggleChecklistDone', () => {
     const saved = await occurrences.findByActivityAndDate(activityId, day);
     expect(saved?.status).toBe('pending');
     expect(saved?.completedAt).toBeNull();
+  });
+
+  it('records a quota day as an opt-in, not as a recurrence-generated day', async () => {
+    const occurrences = new InMemoryActivityOccurrenceRepository();
+    const toggle = toggleChecklistDone({
+      schedules: new InMemoryActivityScheduleRepository([
+        buildQuotaWeekSchedule(3),
+      ]),
+      occurrences,
+      now: at('2024-06-15T09:00:00Z'),
+    });
+
+    await toggle({ activityId, day });
+
+    const saved = await occurrences.findByActivityAndDate(activityId, day);
+    expect(saved?.origin).toBe('quotaOptIn');
+    expect(saved?.status).toBe('done');
   });
 
   it('toggles a pending occurrence to done', async () => {

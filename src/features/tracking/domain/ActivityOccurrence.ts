@@ -1,6 +1,7 @@
 import type { CalendarDay } from '@/shared/domain/time/CalendarDay';
 import type { ActivityId } from './Activity';
-import type { ScheduleId } from './ActivitySchedule';
+import type { ActivitySchedule, ScheduleId } from './ActivitySchedule';
+import { isDueOn, isFixed } from './RecurrenceRule';
 import type { ChecklistProgress } from './activityTypes/checklist';
 import type { CounterProgress } from './activityTypes/counter';
 import { countsAsDone } from './occurrenceStatusPolicy';
@@ -56,4 +57,24 @@ export interface ActivityOccurrence {
  */
 export function isComplete(occurrence: ActivityOccurrence): boolean {
   return countsAsDone(occurrence.status);
+}
+
+/**
+ * Which `origin` a newly written occurrence should carry for `day`
+ * (domain-model §5), derived from the schedule in effect:
+ *
+ * - **quota** → `quotaOptIn`: the recurrence never made the day due, so writing
+ *   one *is* the user opting that day into the period's quota (§4).
+ * - **fixed and due** → `recurrence`: the schedule generated this day.
+ * - **anything else** (no schedule, or a fixed day that wasn't due) → `manual`:
+ *   an off-schedule record, allowed on any date (future-features invariant 3).
+ */
+export function occurrenceOriginFor(
+  schedule: ActivitySchedule | null,
+  day: CalendarDay,
+): OccurrenceOrigin {
+  if (schedule === null) return 'manual';
+  const rule = schedule.recurrenceRule;
+  if (!isFixed(rule)) return 'quotaOptIn';
+  return isDueOn(rule, day) ? 'recurrence' : 'manual';
 }

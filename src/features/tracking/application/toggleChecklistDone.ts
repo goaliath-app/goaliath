@@ -1,6 +1,9 @@
 import type { CalendarDay } from '@/shared/domain/time/CalendarDay';
 import type { ActivityId } from '../domain/Activity';
-import type { ActivityOccurrence } from '../domain/ActivityOccurrence';
+import {
+  occurrenceOriginFor,
+  type ActivityOccurrence,
+} from '../domain/ActivityOccurrence';
 import type { ActivityOccurrenceRepository } from '../domain/ports/ActivityOccurrenceRepository';
 import type { ActivityScheduleRepository } from '../domain/ports/ActivityScheduleRepository';
 import { scheduleOn } from '../domain/ActivitySchedule';
@@ -48,7 +51,7 @@ export function toggleChecklistDone(deps: ToggleChecklistDoneDeps) {
       status: 'done',
       completedAt: deps.now(),
       notes: existing?.notes ?? null,
-      origin: schedule !== null ? 'recurrence' : 'manual',
+      origin: occurrenceOriginFor(schedule, day),
       progress: existing?.progress ?? emptyChecklistProgress(),
     };
     await deps.occurrences.save(occurrence);

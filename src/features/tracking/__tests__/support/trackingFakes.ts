@@ -56,6 +56,20 @@ export const buildDailyChecklistSchedule = (
   ...over,
 });
 
+/** A weekly-quota schedule: N completed days per week, no fixed due days (§4). */
+export const buildQuotaWeekSchedule = (
+  completedDays: number,
+  over: Partial<Pick<ActivitySchedule, 'id' | 'activityId' | 'startDate'>> = {},
+): ActivitySchedule => ({
+  id: asScheduleId('schedule-1'),
+  activityId: asActivityId('activity-1'),
+  recurrenceRule: { kind: 'quota', period: 'week' },
+  dayGoal: null,
+  periodGoal: { aggregate: 'completedDays', amount: completedDays },
+  startDate: asDay('2024-01-01'),
+  ...over,
+});
+
 /** A daily counter schedule with a numeric per-day goal (reps). */
 export const buildDailyCounterSchedule = (
   dayGoal: number,

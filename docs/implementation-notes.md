@@ -113,6 +113,23 @@ domain): counter/timer + registry extraction, quota opt-in, `Task`, stats.
   when built. Seed adds a counter activity (Push-ups, goal 10). Verified by an
   iOS Metro bundle (exit 0).
 
+### Phase 3: `quota` — candidacy + origin (period progress still pending)
+- `projection.buildDay` no longer skips quota: a quota **offers** the day as a
+  candidate (§4/§8) instead of making it due — `due` is always `false` for it, so
+  a quota day can never read as `missed`. Candidacy is offered **only from today
+  onward**: past days you never opted into were never a commitment, so they'd be
+  noise. A past quota day still appears if something was recorded on it.
+- `domain/ActivityOccurrence.occurrenceOriginFor(schedule, day)` — the origin a
+  new occurrence should carry (§5): quota → `quotaOptIn` (writing one *is* opting
+  the day in), fixed+due → `recurrence`, otherwise → `manual`. Both write use
+  cases now use it instead of their earlier `schedule ? 'recurrence' : 'manual'`
+  approximation. Seed adds a quota activity ("Go for a run", 3 days/week).
+- **Still to do for quota**: period progress ("2 of 3 this week"). That needs
+  period boundaries (the `weekOf(day, weekStart)` chokepoint future-features
+  describes, plus the weekStart decision), an occurrence query over a date range
+  (new repository method), and — for `metricSum` targets — the domain behaviour
+  registry. That's the step that finally forces it.
+
 **Registry finding (why the domain half stays deferred):** a real second type
 shows the registry *forced* now is the **UI dispatch** one (above). The pure
 **domain** registry (`ActivityTypeBehaviour` with generic `measure`/`isCompleted`)

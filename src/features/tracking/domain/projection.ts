@@ -55,14 +55,20 @@ export function buildDay({ day, today, activities }: BuildDayInput): DayItem[] {
     const schedule = scheduleOn(schedules, day);
     if (schedule === null) continue;
 
-    // 3. Only fixed recurrences are projected for now; quota opt-in is deferred.
+    // 3. A fixed recurrence names its due days; a quota never does — it can't
+    //    decide by itself which day counts, so the user opts in day by day (§4).
     const rule = schedule.recurrenceRule;
-    if (!isFixed(rule)) continue;
+    const due = isFixed(rule) ? isDueOn(rule, day) : false;
 
-    // 4. Include the item if the day is due, or if something was already recorded
-    //    on it (a manual/off-schedule occurrence can exist on any day, inv. 3).
-    const due = isDueOn(rule, day);
-    if (!due && occurrence === null) continue;
+    // A quota therefore *offers* the day instead of requiring it — but only from
+    // today onward: past days you never opted into were never a commitment, so
+    // they'd only be noise (and, with `due` false, can never read as `missed`).
+    const offersCandidate = !isFixed(rule) && day >= today;
+
+    // 4. Include the item if the day is due, if a quota offers it, or if
+    //    something was already recorded on it (an off-schedule occurrence can
+    //    exist on any day, future-features invariant 3).
+    if (!due && !offersCandidate && occurrence === null) continue;
 
     items.push({
       activity,
