@@ -14,7 +14,7 @@ export type ActivityId = string & { readonly __activityId: unique symbol };
  * (adding it is one entry here plus its behaviour/view modules). Eventually this
  * becomes `keyof typeof registry` once the registry is extracted.
  */
-export type ActivityType = 'checklist' | 'counter';
+export type ActivityType = 'checklist' | 'counter' | 'timer';
 
 /**
  * An Activity describes **what** the user wants to do, never **when** (that's the

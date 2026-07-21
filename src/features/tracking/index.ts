@@ -12,17 +12,21 @@ export type { GoalRepository } from './domain/ports/GoalRepository';
 export type { ActivityRepository } from './domain/ports/ActivityRepository';
 export type { ActivityScheduleRepository } from './domain/ports/ActivityScheduleRepository';
 export type { ActivityOccurrenceRepository } from './domain/ports/ActivityOccurrenceRepository';
+export type { RunningTimerRepository } from './domain/ports/RunningTimerRepository';
 
 // SQLite adapters.
 export { SqliteGoalRepository } from './infrastructure/SqliteGoalRepository';
 export { SqliteActivityRepository } from './infrastructure/SqliteActivityRepository';
 export { SqliteActivityScheduleRepository } from './infrastructure/SqliteActivityScheduleRepository';
 export { SqliteActivityOccurrenceRepository } from './infrastructure/SqliteActivityOccurrenceRepository';
+export { SqliteRunningTimerRepository } from './infrastructure/SqliteRunningTimerRepository';
 
 // Use cases.
 export { getDayView } from './application/getDayView';
 export { toggleChecklistDone } from './application/toggleChecklistDone';
 export { logCounterRepetition } from './application/logCounterRepetition';
+export { startTimer } from './application/startTimer';
+export { stopTimer } from './application/stopTimer';
 
 // View types the UI consumes.
 export type { DayItem, DisplayStatus } from './domain/projection';

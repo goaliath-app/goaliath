@@ -4,10 +4,12 @@ import {
   SqliteActivityRepository,
   SqliteActivityScheduleRepository,
   SqliteGoalRepository,
+  SqliteRunningTimerRepository,
   type ActivityOccurrenceRepository,
   type ActivityRepository,
   type ActivityScheduleRepository,
   type GoalRepository,
+  type RunningTimerRepository,
 } from '@/features/tracking';
 
 /**
@@ -21,6 +23,7 @@ export interface Container {
   activityRepository: ActivityRepository;
   activityScheduleRepository: ActivityScheduleRepository;
   activityOccurrenceRepository: ActivityOccurrenceRepository;
+  runningTimerRepository: RunningTimerRepository;
   now: () => Date;
   dayStartHour: number;
   weekStart: number; // ISO weekday (1 = Monday … 7 = Sunday)
@@ -32,6 +35,7 @@ export function createContainer(database: SQLiteDatabase): Container {
     activityRepository: new SqliteActivityRepository(database),
     activityScheduleRepository: new SqliteActivityScheduleRepository(database),
     activityOccurrenceRepository: new SqliteActivityOccurrenceRepository(database),
+    runningTimerRepository: new SqliteRunningTimerRepository(database),
     now: () => new Date(),
     dayStartHour: 0, // TODO: from a future `settings` feature; default = calendar midnight
     // TODO: seed from the device once `settings` exists (mapping its Sunday=1

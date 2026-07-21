@@ -10,7 +10,7 @@ import { useTodayView } from '../hooks/useTodayView';
  * / projection.
  */
 export function TodayScreen() {
-  const { items, today, actions } = useTodayView();
+  const { items, today, actions, runningTimerFor, nowMs } = useTodayView();
 
   return (
     <View style={styles.screen}>
@@ -30,6 +30,8 @@ export function TodayScreen() {
               {activityTypeViews[item.activity.activityType].renderRow({
                 item,
                 actions,
+                runningTimer: runningTimerFor(item.activity.id),
+                nowMs,
               })}
             </Fragment>
           ))}

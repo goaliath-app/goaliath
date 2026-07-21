@@ -161,9 +161,19 @@ domain): counter/timer + registry extraction, quota opt-in, `Task`, stats.
   while §11 said it lived in `RunningTimer` — two representations of the same
   fact. Resolved in favour of §11 (intervals always closed); domain-model and
   its mirror updated.
-- **Pending for timer**: `running_timers` migration + SQLite adapter, the UI row
-  (start/stop + live elapsed), adding `timer` to the `ActivityType` union and its
-  entry in the UI view registry, and a seeded timer activity.
+- **Infrastructure + UI (timer complete)**: migration `0002` (`running_timers`,
+  PK on `activity_id`), its mapper (`startedAt` revived to a `Date` — a
+  first-class field, unlike progress internals) and SQLite adapter, wired in the
+  container. `ActivityType` now includes `timer`, with its entry in the UI view
+  registry: a row showing banked time **plus the session in flight** (which lives
+  outside progress until it stops, so the row adds it back) and a Start/Stop
+  button. `useTodayView` loads the live timers and ticks once a second **only
+  while one is running**, so an idle screen stays quiet. Seeded a timer activity
+  ("Read", 600s/day). Verified by an iOS Metro bundle (exit 0).
+
+**All three activity types are now complete end-to-end** (checklist, counter,
+timer). Next natural step: the create flow (goals/activities), which needs write
+methods on those repositories plus an `IdGenerator` port.
 
 - **Still deferred**: `metricSum` period goals. Summing a metric across days
   needs each activityType's `measure(progress)` generically — the domain

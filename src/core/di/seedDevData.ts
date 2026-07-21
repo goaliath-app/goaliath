@@ -43,6 +43,14 @@ export async function seedDevData(database: SQLiteDatabase): Promise<void> {
       INSERT OR IGNORE INTO activity_schedules (id, activity_id, recurrence_rule, day_goal, period_goal, start_date)
         VALUES ('sch-pushups', 'act-pushups', '{"kind":"daily"}', 10, NULL, '2024-01-01');
 
+      -- A timer: dayGoal is in seconds (10 minutes).
+      INSERT OR IGNORE INTO activities (id, goal_id, title, description, activity_type)
+        VALUES ('act-read', 'goal-health', 'Read', '10 minutes a day', 'timer');
+      INSERT OR IGNORE INTO activity_status_periods (activity_id, status, from_day)
+        VALUES ('act-read', 'active', '2024-01-01');
+      INSERT OR IGNORE INTO activity_schedules (id, activity_id, recurrence_rule, day_goal, period_goal, start_date)
+        VALUES ('sch-read', 'act-read', '{"kind":"daily"}', 600, NULL, '2024-01-01');
+
       -- A quota: no fixed due days, offered every day as an opt-in (§4).
       INSERT OR IGNORE INTO activities (id, goal_id, title, description, activity_type)
         VALUES ('act-run', 'goal-health', 'Go for a run', '3 days a week', 'checklist');
