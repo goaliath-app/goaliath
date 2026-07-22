@@ -80,6 +80,7 @@ src/
 ├── shared/
 │   ├── domain/                   # Contratos cross-feature (p. ej. SyncStatus, Money)
 │   ├── i18n/                     # setup de i18next + locales/<lang>/<namespace>.ts
+│   ├── theme/                    # design tokens + temas (ver Estilos)
 │   ├── infrastructure/
 │   │   ├── db/                   # conexión a expo-sqlite + runner de migraciones genérico (sin conocer features)
 │   │   ├── api/                  # cliente HTTP base, interceptores
@@ -128,6 +129,8 @@ Ambos tienen que pasar por `index.ts`. Nada fuera de un feature —ni siquiera `
 | Un componente usado solo dentro de un feature | `features/<f>/ui/components/` |
 | Un componente genérico usado por 2+ features (Button, Card...) | `shared/ui/` |
 | Un texto visible para el usuario (nunca hardcodeado en un componente) | `shared/i18n/locales/<lang>/<namespace>.ts` |
+| Un color, espaciado o valor tipográfico (nunca hardcodeado en un componente) | `shared/theme/` |
+| Los estilos de un componente o pantalla | `<NombreComponente>.styles.ts`, al lado |
 | Un tipo/contrato usado por 2+ features (p. ej. `SyncStatus`) | `shared/domain/` |
 | Un error genérico sin datos de negocio específicos (p. ej. `NotFoundError`) | `shared/domain/errors.ts` |
 | Un error específico de un feature (extiende la base compartida) | `features/<f>/domain/errors.ts` |
@@ -390,6 +393,108 @@ module.exports = {
 ```
 
 `boundaries/entry-point` es la regla que cierra el hueco real: sin ella, `element-types` por sí sola dejaría que `features/items` importe cualquier fichero interno de `features/settings`, ya que ambos son del mismo tipo `feature`. Con `entry-point`, solo se puede importar `features/settings/index.ts`.
+
+La misma config lleva las **reglas de estilos** de más abajo, que tienen el mismo
+problema de "es convención hasta que el lint la fuerza" — y con más evidencia
+todavía, porque 15 colores hardcodeados llegaron al código sin que nadie decidiera
+añadirlos:
+
+```js
+  plugins: ['boundaries', 'react-native'],
+  rules: {
+    'react-native/no-inline-styles': 'error',
+    'react-native/no-color-literals': 'error',
+  },
+```
+
+---
+
+## Estilos: tokens, temas y dónde viven
+
+Cuatro reglas, un solo mecanismo:
+
+1. **Sin colores hardcodeados.** Los valores crudos existen en un único fichero.
+2. **Sin estilos inline.** Ningún objeto de estilo literal dentro del JSX.
+3. **Los estilos viven en su propio fichero**, nunca junto al código del componente.
+4. **Los temas son intercambiables.** Claro y oscuro para empezar; añadir más no
+   puede obligar a tocar ni un componente.
+
+### Por qué los estilos son una función y no una constante
+
+`StyleSheet.create` se ejecuta **una vez, al importar el módulo**. Eso vale para
+un tema fijo y es imposible con uno intercambiable: una constante calculada al
+importar no puede saber qué tema está activo ni reaccionar cuando cambia.
+
+Así que un fichero de estilos exporta una **factoría** que recibe el tema, y el
+componente la resuelve con un hook que memoiza por tema — `StyleSheet.create` se
+vuelve a ejecutar cuando el tema cambia de verdad, no en cada render:
+
+```ts
+// TodayScreen.styles.ts — al lado del componente, en fichero aparte
+import { StyleSheet } from 'react-native';
+import type { Theme } from '@/shared/theme';
+
+export const todayScreenStyles = (theme: Theme) =>
+  StyleSheet.create({
+    screen: {
+      flex: 1,
+      paddingHorizontal: theme.spacing.lg,
+      backgroundColor: theme.colors.background,
+    },
+    title: { ...theme.typography.title, color: theme.colors.text.primary },
+  });
+```
+
+```ts
+// TodayScreen.tsx
+const styles = useThemedStyles(todayScreenStyles);
+```
+
+Nomenclatura: `<NombreComponente>.styles.ts`, junto a `<NombreComponente>.tsx`.
+Al lado para encontrarlo al instante, aparte para que ningún fichero mezcle
+layout con lógica.
+
+### Estructura
+
+```
+src/shared/theme/
+├── palette.ts          # valores crudos — el ÚNICO fichero del repo con un hex literal
+├── tokens.ts           # escalas de spacing / radius / typography
+├── Theme.ts            # el tipo que todo tema debe satisfacer
+├── themes/
+│   ├── light.ts
+│   └── dark.ts
+├── useThemedStyles.ts  # tema -> StyleSheet memoizado
+└── index.ts            # exporta el tipo Theme, el hook y el registro de temas — nunca la paleta
+```
+
+El provider vive en `core/providers/`, con los demás providers globales.
+
+### Qué hace barato añadir un tema
+
+- **`Theme` es un tipo que todo tema satisface**, así que añadir uno es rellenar
+  una forma y `tsc` avisa de cualquier token que falte. Un tema no puede quedarse
+  a medio definir.
+- **Nombres semánticos, no de paleta.** `colors.text.muted`, nunca
+  `colors.gray500`. Un componente que pide "texto atenuado" sigue funcionando en
+  cualquier tema; uno que pide gris 500 hay que reescribirlo para cada uno. Es la
+  única decisión que convierte claro/oscuro en un cambio de datos y no en una
+  refactorización.
+- **`palette.ts` no se exporta desde `index.ts`.** Los temas la leen; nadie más
+  puede, así que "sin colores hardcodeados" no tiene puerta trasera.
+- **Spacing y tipografía también viven en el tema**, aunque hoy no varíen entre
+  claro y oscuro. No cuesta nada ahora y significa que un tema de accesibilidad
+  con texto grande no obligará a tocar ningún consumidor.
+
+### Dónde está la raya en "sin estilos inline"
+
+Prohibido: un objeto de estilo literal en el JSX (`style={{ marginTop: 8 }}`) —
+esconde un número mágico donde ni el lint ni el tema pueden verlo.
+
+Permitido: componer estilos con nombre, incluso condicionalmente —
+`style={[styles.title, done && styles.titleMuted]}`. También permitido: un valor
+genuinamente calculado (el ancho de una barra de progreso), que aun así debe
+construirse a partir de tokens y no de literales.
 
 ---
 
