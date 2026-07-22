@@ -133,6 +133,9 @@ to add to the domain.
 
 - **Monthly / yearly recurrences** — already valid `RecurrenceRule` kinds
   ([domain-model.md §4](./domain-model.md)); the UI just doesn't offer them yet.
+  Deliberately left out of the first create form, which offers daily, chosen
+  weekdays and quota only — the projection handles all four either way, so
+  surfacing them later is one more option in one radio group.
 - **Any activityType × any recurrence** (e.g. a counter on fixed weekdays, a
   timer on a yearly date) — the two axes are orthogonal
   ([domain-model.md §3](./domain-model.md)).
@@ -141,6 +144,53 @@ to add to the domain.
 - **What already helps:** all of these fall out of the
   recurrence × activityType × targets decomposition already in the model;
   building them is UI-only.
+
+---
+
+## Every-other-day (and, for free, every N days)
+
+"One day on, one day off" — a rhythm that ignores the calendar and just counts.
+Unlike the cadences above, the model does **not** express this yet: it needs a
+new `RecurrenceRule` kind. It is still cheap, but it is the first cadence that
+costs domain work rather than UI work.
+
+```
+{ kind: 'interval', everyNDays: number, anchor: CalendarDay }
+```
+
+**Why the anchor is the whole design.** Every existing fixed kind answers
+`isDueOn(rule, day)` from the day alone: "is it a Tuesday", "is it the 3rd".
+An interval can't — two Tuesdays a week apart are not interchangeable, so
+something has to say where the count starts. Putting that reference **inside the
+rule** keeps `isDueOn(rule, day)` a pure function of its two arguments, exactly
+as it is today (§4).
+
+The tempting alternative — reuse the schedule's `startDate` as the anchor — is a
+trap. Schedules are versioned (§3): change the day target and a *new* version is
+appended with a later `startDate`, which would silently shift the rhythm's parity
+as a side effect of an unrelated edit. A rule-owned anchor is copied forward
+across versions and survives that.
+
+**Cost, concretely:**
+- **No migration.** `recurrence_rule` is a JSON column, so a new kind needs no
+  schema change — only a mapper that round-trips it.
+- **No scoring changes.** It is a `FixedRecurrenceRule` (its due days are
+  deterministic), so quota periods, `periodGoal` and the §3 grid are untouched.
+- **Domain:** one `isDueOn` case — `daysBetween(anchor, day) % everyNDays === 0`,
+  with days before the anchor never due. `CalendarDay` has `addDays` but no
+  `daysBetween` yet; it belongs there, next to it, and nowhere else (§10).
+- **UI:** one more option, plus a number field if the general "every N days" is
+  surfaced rather than just the N=2 case.
+
+**Two decisions to make when it is built:**
+1. **What a pause does to the rhythm.** Status and schedule are independent
+   timelines (§0), so pausing for five days and resuming would continue on the
+   *original* parity rather than restarting from the resume day. That is
+   defensible — it is a calendar rhythm, not a streak — but it is a choice, and
+   the opposite (re-anchor on resume) is what some users will expect.
+2. **Whether to expose N at all.** "Every other day" is the request; `everyNDays`
+   generalises it for free in the model, but offering an arbitrary N in the form
+   is a UI decision, not a modelling one.
 
 ---
 
@@ -182,6 +232,75 @@ boundary-independent, so the blast radius is narrow.
   `startOf('week')` (hardwired to Monday) across ~6 files and left a
   `// TODO: make startOfWeek prop functional` it never finished — precisely
   because there was no single point to change.
+
+---
+
+## Time zone: travel, and days you never lived
+
+The device's zone is read **implicitly** today: `getCalendarDay` builds the
+logical day from local wall-clock components, so it silently follows the device.
+That is correct while you stay put, and it quietly breaks when you travel.
+
+**The invariant this must protect:** one logical day = **one real calendar date
+the user actually lived**. A date they flew over must not carry records, and must
+not read as failure either.
+
+- **Mechanism: defer the switch to the next cutoff**, exactly like a
+  `dayStartHour` change (`implementation-notes.md`). Both are "the reckoning
+  changed"; letting the day in progress finish under the reckoning it started
+  with avoids the logical day jumping mid-day. One rule covers both.
+- **Cost: the zone has to stop being implicit.** To keep using the *old* zone
+  until the cutoff, it must be an explicit parameter of `getCalendarDay`
+  alongside `dayStartHour`, seeded from `expo-localization`
+  (`getCalendars()[0].timeZone`, `string | null`) and stored like any other
+  setting. Reading wall-clock components in an arbitrary IANA zone needs
+  `Intl.DateTimeFormat` + `formatToParts` with `timeZone` — **verify Hermes
+  supports it on both platforms before designing around it**; this repo already
+  avoided `Intl.ListFormat` for that reason. Storing a UTC *offset* instead is
+  not a fallback: DST changes it under you.
+- **Crossing the date line, west (a date you skip).** Fly out on the 4th, land on
+  the 6th: the 5th never existed for this user, and since `missed` is derived
+  rather than stored (§8), that date reads as a day where everything was failed.
+  **Accepted, deliberately.** Modelling "a day that did not exist" would mean a
+  new stored marker, a migration and a fourth display status, to remove a little
+  noise from a rare trip. The real answer is *pausing everything before you
+  travel* (see below), which makes nothing due on that date in the first place.
+- **Crossing the date line, east (a date you repeat).** Nothing to build.
+  Occurrences are keyed `(activityId, date)` (§5), so living the 4th twice
+  continues the *same* record with more hours available to finish it — which is
+  the invariant above, not an exception to it.
+- **The transition day is always shorter, never longer.** It runs from the old
+  cutoff to the next cutoff in the new zone, so it lands in `(0, 24]` hours — and
+  if you arrive shortly before the new zone's cutoff it can last minutes. A
+  day that short would surface due activities and derive them `missed` almost
+  immediately. Decide a floor below which the transition merges into the
+  following day instead of creating a toy one.
+
+---
+
+## Pause everything at once
+
+"I'm away for two weeks" — one action instead of pausing eight goals by hand.
+Nothing new in the model: pausing a Goal already cascades to its Activities
+(§0), so pausing every active goal makes nothing due, and no day in that stretch
+reads as missed. It is the practical answer to travel, holidays and illness.
+
+- **What it writes:** one `paused` `StatusPeriod` appended to each currently
+  active goal, all dated the same logical day, **in one transaction** — a
+  half-applied "pause everything" is worse than none.
+- **Resuming is the part with the trap.** "Resume all" must not wake up goals the
+  user had *deliberately* paused months earlier. So the bulk pause has to record
+  which goals it touched, rather than resume being "set every paused goal
+  active". That is the only piece of new state the feature needs, and skipping it
+  produces a bug the user will read as the app losing their intent.
+- **Watch the same-day status debt** (`implementation-notes.md`): timeline entries
+  are keyed `(owner, from_day)`, and a bulk pause immediately followed by a
+  resume on the same day is exactly the collision described there — and a far
+  more likely way to hit it than pausing one goal by hand.
+- **Scope to decide when it is built:** whether this is "pause all" only, or a
+  named *away period* with an end date that resumes itself. The second is nicer
+  and is a superset — but it is a schedule of its own, so it should not be
+  smuggled in as an implementation detail of the first.
 
 ---
 

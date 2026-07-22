@@ -133,7 +133,10 @@ al dominio.
 
 - **Recurrencias mensuales / anuales** — ya son `kind`s válidos de
   `RecurrenceRule` ([domain-model.es.md §4](./domain-model.es.md)); la
-  UI simplemente aún no las ofrece.
+  UI simplemente aún no las ofrece. Se dejaron fuera del primer formulario de
+  creación a propósito, que solo ofrece diaria, días concretos de la semana y
+  cuota — la proyección maneja las cuatro igual, así que sacarlas más adelante
+  es una opción más en un grupo de radios.
 - **Cualquier activityType × cualquier recurrencia** (p.ej. un counter en días
   fijos de la semana, un timer en una fecha anual) — los dos ejes son ortogonales
   ([domain-model.es.md §3](./domain-model.es.md)).
@@ -142,6 +145,56 @@ al dominio.
 - **Qué ya ayuda:** todo esto sale de la descomposición
   recurrencia × activityType × targets que ya está en el modelo; construirlo es
   solo UI.
+
+---
+
+## Un día sí, un día no (y, gratis, cada N días)
+
+Un ritmo que ignora el calendario y solo cuenta. A diferencia de las cadencias de
+arriba, el modelo **todavía no** expresa esto: necesita un `kind` nuevo de
+`RecurrenceRule`. Sigue siendo barato, pero es la primera cadencia que cuesta
+trabajo de dominio y no solo de UI.
+
+```
+{ kind: 'interval', everyNDays: number, anchor: CalendarDay }
+```
+
+**El ancla es todo el diseño.** Todas las cadencias fijas actuales responden a
+`isDueOn(rule, day)` mirando solo el día: "¿es martes?", "¿es día 3?". Un
+intervalo no puede — dos martes separados por una semana no son intercambiables,
+así que algo tiene que decir dónde empieza la cuenta. Meter esa referencia
+**dentro de la regla** mantiene `isDueOn(rule, day)` como función pura de sus dos
+argumentos, exactamente como está hoy (§4).
+
+La alternativa tentadora — reutilizar el `startDate` del schedule como ancla — es
+una trampa. Los schedules están versionados (§3): si cambias el objetivo diario
+se añade una versión *nueva* con un `startDate` posterior, lo que desplazaría en
+silencio la paridad del ritmo como efecto colateral de una edición que no tenía
+nada que ver. Un ancla que vive en la regla se copia de una versión a la
+siguiente y sobrevive a eso.
+
+**El coste, en concreto:**
+- **Sin migración.** `recurrence_rule` es una columna JSON, así que un `kind`
+  nuevo no cambia el esquema — solo el mapper que lo serializa de ida y vuelta.
+- **Sin cambios en el scoring.** Es una `FixedRecurrenceRule` (sus días tocan de
+  forma determinista), así que los periodos de cuota, `periodGoal` y la rejilla
+  de §3 quedan intactos.
+- **Dominio:** un caso más en `isDueOn` — `daysBetween(anchor, day) % everyNDays
+  === 0`, con los días anteriores al ancla nunca tocando. `CalendarDay` tiene
+  `addDays` pero aún no `daysBetween`; va ahí al lado, y en ningún otro sitio
+  (§10).
+- **UI:** una opción más, y un campo numérico si se expone el "cada N días"
+  general en vez de solo el caso N=2.
+
+**Dos decisiones para cuando se construya:**
+1. **Qué le hace una pausa al ritmo.** Estado y schedule son timelines
+   independientes (§0), así que pausar cinco días y reanudar continuaría con la
+   paridad *original* en vez de reiniciar desde el día de reanudación. Es
+   defendible — es un ritmo de calendario, no una racha — pero es una elección, y
+   lo contrario (re-anclar al reanudar) es lo que esperará parte de la gente.
+2. **Si exponer N o no.** "Un día sí, un día no" es lo que se pide; `everyNDays`
+   lo generaliza gratis en el modelo, pero ofrecer una N arbitraria en el
+   formulario es una decisión de UI, no de modelado.
 
 ---
 
@@ -186,6 +239,79 @@ impacto es estrecho.
   aviso: esparció el `startOf('week')` de Luxon (clavado a lunes) por ~6 ficheros
   y dejó un `// TODO: make startOfWeek prop functional` que nunca terminó —
   precisamente porque no había un punto único donde cambiarlo.
+
+---
+
+## Zona horaria: viajes, y días que nunca viviste
+
+Hoy la zona del dispositivo se lee de forma **implícita**: `getCalendarDay`
+construye el día lógico con componentes de reloj local, así que sigue al
+dispositivo en silencio. Es correcto mientras no te muevas, y se rompe sin avisar
+en cuanto viajas.
+
+**El invariante que hay que proteger:** un día lógico = **una fecha real de
+calendario que el usuario vivió de verdad**. Una fecha que se pasó volando no
+debe tener registros, y tampoco debe leerse como un fracaso.
+
+- **Mecanismo: diferir el relevo al siguiente corte**, igual que un cambio de
+  `dayStartHour` (`implementation-notes.md`). Los dos son "ha cambiado el sistema
+  de cómputo del día"; dejar que el día en curso termine con las reglas con las
+  que empezó evita que el día lógico salte a mitad. Una sola regla cubre ambos.
+- **Coste: la zona tiene que dejar de ser implícita.** Para poder seguir usando
+  la zona *vieja* hasta el corte, tiene que ser un parámetro explícito de
+  `getCalendarDay` junto a `dayStartHour`, sembrado desde `expo-localization`
+  (`getCalendars()[0].timeZone`, `string | null`) y guardado como cualquier otro
+  ajuste. Leer componentes de reloj en una zona IANA arbitraria necesita
+  `Intl.DateTimeFormat` + `formatToParts` con `timeZone` — **verificar que Hermes
+  lo soporta en ambas plataformas antes de diseñar sobre ello**; este repo ya
+  evitó `Intl.ListFormat` por ese mismo motivo. Guardar el *offset* UTC en vez del
+  nombre de la zona no es alternativa: el horario de verano lo cambia por debajo.
+- **Cruzar la línea de cambio de fecha hacia el oeste (una fecha que te saltas).**
+  Sales el día 4 y aterrizas el 6: el 5 no existió para este usuario y, como
+  `missed` se deriva en vez de guardarse (§8), esa fecha se lee como un día en el
+  que se falló todo. **Se acepta, a propósito.** Modelar "un día que no existió"
+  significaría una marca guardada nueva, una migración y un cuarto estado de
+  visualización, para quitar un poco de ruido de un viaje infrecuente. La
+  respuesta de verdad es *pausarlo todo antes de viajar* (ver más abajo), que
+  hace que esa fecha no tenga nada que tocar.
+- **Cruzar la línea hacia el este (una fecha que repites).** No hay nada que
+  construir. Las ocurrencias van indexadas por `(activityId, date)` (§5), así que
+  vivir el día 4 dos veces continúa el *mismo* registro con más horas para
+  terminarlo — que es el invariante de arriba, no una excepción.
+- **El día de transición siempre es más corto, nunca más largo.** Va del corte
+  viejo al siguiente corte en la zona nueva, así que cae en `(0, 24]` horas — y
+  si aterrizas poco antes del corte de la zona nueva puede durar minutos. Un día
+  así sacaría actividades que tocan y las derivaría a `missed` casi al instante.
+  Hay que decidir un mínimo por debajo del cual la transición se fusione con el
+  día siguiente en vez de crear un día de juguete.
+
+---
+
+## Pausarlo todo de golpe
+
+"Me voy dos semanas" — una acción en vez de pausar ocho goals a mano. No añade
+nada al modelo: pausar un Goal ya cascadea a sus Activities (§0), así que pausar
+todos los goals activos hace que no toque nada y que ningún día de ese tramo se
+lea como fallado. Es la respuesta práctica a viajes, vacaciones y enfermedad.
+
+- **Qué escribe:** un `StatusPeriod` `paused` añadido a cada goal activo, todos
+  con el mismo día lógico y **en una sola transacción** — un "pausar todo" a
+  medias es peor que no hacerlo.
+- **Reanudar es la parte con trampa.** "Reanudar todo" no debe despertar goals
+  que el usuario había pausado *a propósito* meses antes. Así que la pausa masiva
+  tiene que registrar a cuáles tocó, en vez de que reanudar sea "poner activos
+  todos los pausados". Es el único estado nuevo que necesita la funcionalidad, y
+  saltárselo produce un bug que el usuario leerá como que la app pierde su
+  intención.
+- **Ojo con la deuda de dos cambios de estado el mismo día**
+  (`implementation-notes.md`): las entradas del timeline van indexadas por
+  `(owner, from_day)`, y una pausa masiva seguida de una reanudación el mismo día
+  es exactamente la colisión que allí se describe — y una forma mucho más
+  probable de toparse con ella que pausando un goal a mano.
+- **Alcance a decidir cuando se construya:** si es solo "pausar todo", o un
+  *periodo de ausencia* con nombre y fecha de fin que se reanuda solo. Lo segundo
+  es más bonito y es un superconjunto — pero es una programación en sí misma, así
+  que no debería colarse como detalle de implementación de lo primero.
 
 ---
 
