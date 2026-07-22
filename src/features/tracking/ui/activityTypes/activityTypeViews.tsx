@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { ActivityId, ActivityType } from '../../domain/Activity';
 import {
@@ -48,6 +49,7 @@ export const activityTypeViews: Record<ActivityType, ActivityTypeView> = {
 function ChecklistRow({ item, actions }: ActivityRowProps) {
   const done = item.displayStatus === 'done';
   const { periodProgress } = item;
+  const { t } = useTranslation();
   return (
     <Pressable
       style={styles.row}
@@ -64,7 +66,10 @@ function ChecklistRow({ item, actions }: ActivityRowProps) {
         </Text>
         {periodProgress === null ? null : (
           <Text style={styles.meta}>
-            {periodProgress.current} of {periodProgress.target} this period
+            {t('activityRow.periodProgress', {
+              current: periodProgress.current,
+              target: periodProgress.target,
+            })}
           </Text>
         )}
       </View>
@@ -78,6 +83,7 @@ function CounterRow({ item, actions }: ActivityRowProps) {
   const progress = item.occurrence?.progress as CounterProgress | undefined;
   const count = progress === undefined ? 0 : countRepetitions(progress);
   const goal = item.schedule.dayGoal;
+  const { t } = useTranslation();
 
   return (
     <View style={styles.row}>
@@ -93,7 +99,9 @@ function CounterRow({ item, actions }: ActivityRowProps) {
         style={[styles.plus, done && styles.plusDone]}
         onPress={() => actions.incrementCounter(item.activity.id)}
         accessibilityRole="button"
-        accessibilityLabel={`Add one to ${item.activity.title}`}
+        accessibilityLabel={t('activityRow.addOne', {
+          title: item.activity.title,
+        })}
       >
         <Text style={styles.plusText}>+</Text>
       </Pressable>
@@ -112,6 +120,7 @@ function TimerRow({ item, actions, runningTimer, nowMs }: ActivityRowProps) {
     (progress === undefined ? 0 : totalSeconds(progress)) +
     (runningTimer === null ? 0 : elapsedSeconds(runningTimer, new Date(nowMs)));
   const goal = item.schedule.dayGoal;
+  const { t } = useTranslation();
 
   return (
     <View style={styles.row}>
@@ -133,9 +142,14 @@ function TimerRow({ item, actions, runningTimer, nowMs }: ActivityRowProps) {
             : actions.startTimer(item.activity.id)
         }
         accessibilityRole="button"
-        accessibilityLabel={`${running ? 'Stop' : 'Start'} ${item.activity.title}`}
+        accessibilityLabel={t(
+          running ? 'activityRow.timerStopLabel' : 'activityRow.timerStartLabel',
+          { title: item.activity.title },
+        )}
       >
-        <Text style={styles.timerButtonText}>{running ? 'Stop' : 'Start'}</Text>
+        <Text style={styles.timerButtonText}>
+          {t(running ? 'activityRow.timerStop' : 'activityRow.timerStart')}
+        </Text>
       </Pressable>
     </View>
   );

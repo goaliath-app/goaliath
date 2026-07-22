@@ -24,8 +24,13 @@ const padTwoDigits = (value: number): string => String(value).padStart(2, '0');
  * local hour against `dayStartHour` and shifts the *calendar* day, never doing
  * absolute-millisecond arithmetic. That's what keeps it correct across DST
  * transitions: on a spring-forward day (23 wall-clock hours) subtracting a fixed
- * number of real hours would land an hour off and mislabel the day. The caller
- * decides the timezone by the `Date` it passes in.
+ * number of real hours would land an hour off and mislabel the day.
+ *
+ * The zone is therefore whatever the **runtime's local zone** is at the call — a
+ * `Date` is an absolute instant and carries none, so the caller cannot choose it
+ * here. That means the logical day silently follows the device when the user
+ * travels; making the zone an explicit parameter is designed in
+ * `future-features.md` ("Time zone: travel, and days you never lived").
  *
  * @param instant       a point in time
  * @param dayStartHour  integer hour in `[0, 23]` at which the logical day begins
