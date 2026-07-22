@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDependencies } from '@/core/di/DependencyProvider';
+import {
+  useInvalidateStoredData,
+  useStoredDataRevision,
+} from '@/core/providers/StoredDataProvider';
 import { getCalendarDay } from '@/shared/domain/time/CalendarDay';
 import { getDayView } from '../../application/getDayView';
 import { logCounterRepetition } from '../../application/logCounterRepetition';
@@ -18,6 +22,8 @@ import type { TodayActions } from '../activityTypes/activityTypeViews';
  */
 export function useTodayView() {
   const deps = useDependencies();
+  const revision = useStoredDataRevision();
+  const invalidate = useInvalidateStoredData();
   const [items, setItems] = useState<DayItem[] | null>(null);
   const [runningTimers, setRunningTimers] = useState<RunningTimer[]>([]);
   const [nowMs, setNowMs] = useState(() => deps.now().getTime());
@@ -46,9 +52,11 @@ export function useTodayView() {
     setNowMs(deps.now().getTime());
   }, [deps, today]);
 
+  // `revision` is the dependency that makes this reload after *any* write, this
+  // screen's or another's — it is read for that effect alone.
   useEffect(() => {
     void load();
-  }, [load]);
+  }, [load, revision]);
 
   // Re-render once a second so a running timer's elapsed time stays live —
   // but only while something is actually running, so an idle screen is quiet.
@@ -72,25 +80,27 @@ export function useTodayView() {
     const start = startTimer(timerDeps);
     const stop = stopTimer(timerDeps);
 
+    // Each action invalidates rather than reloading directly: one rule for every
+    // writer in the app, instead of each screen remembering to refresh itself.
     return {
       toggleChecklist: async (activityId: ActivityId) => {
         await toggle({ activityId, day: today });
-        await load();
+        invalidate();
       },
       incrementCounter: async (activityId: ActivityId) => {
         await increment({ activityId, day: today });
-        await load();
+        invalidate();
       },
       startTimer: async (activityId: ActivityId) => {
         await start({ activityId, day: today });
-        await load();
+        invalidate();
       },
       stopTimer: async (activityId: ActivityId) => {
         await stop({ activityId });
-        await load();
+        invalidate();
       },
     };
-  }, [deps, today, load]);
+  }, [deps, today, invalidate]);
 
   const runningTimerFor = useCallback(
     (activityId: ActivityId) =>

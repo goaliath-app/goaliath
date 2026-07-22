@@ -18,6 +18,10 @@ the full hexagon (UI → hook → use case → projection → repository port �
 adapter → migration). All three activity types are implemented (checklist,
 counter, timer), and every goal shape in domain-model §3's grid is scoreable.
 
+The create flow is now closed end to end too: a form at `/activity/new` creates
+an activity and, optionally, its goal in the same transaction. **The app no
+longer depends on the dev seed to have data.**
+
 All user-facing text goes through `react-i18next` (`shared/i18n`), with `es` as
 the source language and `en` mirroring it. Keys are typed via `CustomTypeOptions`,
 so a wrong key fails `tsc` rather than rendering itself on screen.
@@ -68,9 +72,47 @@ and won't catch a module that fails to resolve in the app.
   app bundle, and `npx expo install --check` reports everything correctly aligned
   with SDK 56. So: **never run `npm audit fix --force` here.** Re-check when Expo
   publishes SDK updates that carry the fixes forward.
-- **`eslint-plugin-boundaries` isn't set up.** `architecture.md` prescribes it by
-  the second or third feature; the layering is currently convention only. Worth
-  doing when `tasks` lands and there are two features to keep apart.
+- **There is no ESLint at all.** `package.json` has a `lint` script (`expo lint`)
+  but no config and no eslint dependency, so *every* rule in `architecture.md` is
+  convention only — the layering rules `eslint-plugin-boundaries` was meant to
+  enforce, and now the styling rules too. **Decided: set it up with the styling
+  work, covering both** (`eslint-config-expo` + `eslint-plugin-react-native`'s
+  `no-inline-styles` / `no-color-literals`, plus `boundaries`).
+- **The styling architecture is designed but not built.** `architecture.md`
+  ("Styling") specifies design tokens, `Theme`-typed swappable themes, factory
+  style files (`X.styles.ts`) and a memoizing `useThemedStyles`. None of it
+  exists yet: **15 hardcoded colours across 42 usages**, styles declared inline
+  in each component's own file, and no theme. Two symptoms of the gap worth
+  naming, because they are what the design is meant to prevent:
+  - `#0a84ff` (5 uses) and `#007aff` (2) are two near-identical blues nobody
+    decided to have.
+  - `app.json` declares `"userInterfaceStyle": "automatic"`, i.e. the app claims
+    to follow the system's dark mode, while every colour is a light-mode
+    literal. Either the theme work makes that true, or the declaration should be
+    `"light"` until it does.
+- **Cache invalidation is one global counter** (`core/providers/StoredDataProvider`).
+  Any write bumps it; every reader has it as an effect dependency and recomputes.
+  Coarse on purpose — reads are local SQLite queries, so over-recomputing is
+  cheap, while tracking which reader a write affects is the kind of bookkeeping
+  that fails silently. Two consequences to keep in mind: the rule is a
+  *convention* (a hook that writes without calling `invalidate` goes stale with
+  nothing to catch it), and every mounted reader refetches on every write. If
+  either starts to bite, this provider is the seam a real query cache (TanStack
+  Query) replaces.
+- **`useCreateActivity` reads a repository directly** (`goalRepository.findAll()`)
+  to fill the goal picker, which breaks dependency rule 4 — `ui/` reaches data
+  through use cases only. It's there because no `listGoals` use case exists yet.
+  The fix is small and obvious: add one in `application/`, export it from the
+  feature barrel, and have the hook call that instead. This is exactly the kind of
+  drift `eslint-plugin-boundaries` (above) would have caught at commit time.
+- **The create form's draft model lives in `ui/format/activityDraft.ts`**, next to
+  the preview formatter. `format/` is the wrong name for it: it holds the draft
+  type, its validation, and the draft → `CreateActivityInput` mapping, none of
+  which is formatting. It wants to be `ui/model/` with the formatter left behind
+  in `ui/format/`. Pure rename, no logic change.
+- **`/activity/new` is only reachable from a provisional `+` on the Today
+  screen.** It belongs on the goals screen, which doesn't exist yet (see open
+  decisions).
 - **`getDayView` does N+1 queries** — per activity it fetches the goal, the
   schedule timeline, the day's occurrence, and (for quotas) the period's
   occurrences. Fine at demo scale, worth batching when activity counts grow.
@@ -122,11 +164,60 @@ and won't catch a module that fails to resolve in the app.
   shape: remove the *last* repetition (a plain edit), not an append-only
   add/remove log — a `-1` event would break the per-repetition timestamps stats
   rely on, and the model keeps no audit trail of corrections anywhere else (§9).
+- **How the goals/activities screen shows its contents.** Four shapes were
+  weighed: an accordion of goals with their activities, a flat list of goals, a
+  flat list of all activities across goals, and one goal's activities in
+  isolation. Two of those are not separate views at all — a collapsed accordion
+  *is* the goals list, and an expanded one *is* a single goal's activities — so
+  the real choice is **accordion vs. cross-goal flat list**, not a four-way mode
+  switch. The flat list only earns its place for questions the grouping actively
+  obstructs (search by name, "everything paused", "what falls on Mondays"), and
+  that shape is a filter/search control, not a second view.
+  Deliberately left open: Today already answers "what do I do now", so this
+  screen is management, not the daily driver — and the decision is easier to make
+  against real data, which the create flow now makes possible.
+- **`activityType` is immutable in practice.** Changing it would reinterpret every
+  past `OccurrenceProgress` (§5's untagged-progress boundary), so the day a
+  *edit* screen exists, the field has to be locked or the change has to be
+  modelled as archive-and-recreate. The create form is unaffected; this is a note
+  for whoever builds editing.
+- **Language follows the device and can't be changed in-app.** `resolveDeviceLanguage`
+  reads `getLocales()[0]` once at startup; there is no picker and no persistence.
+  Fine while `es`/`en` are the only bundles, but a user whose device is in a third
+  language silently gets Spanish with no way out. A picker belongs with the
+  `settings` feature whenever that arrives.
 - **Settings aren't stored.** `dayStartHour` (0) and `weekStart` (ISO Monday) are
   container constants. `weekStart` should eventually be seeded from the device
   via an adapter (mapping its Sunday=1 numbering to ISO) and, if ever made
   changeable, applied **forward-only** — moving the boundary re-buckets past
   quota weeks and would silently rewrite history (`future-features`).
+- **A `dayStartHour` change must take effect at the next logical day, never
+  immediately.** *Decided; build it with the settings screen, before the setting
+  is editable at all.*
+
+  Stored history is already safe by construction: `ActivityOccurrence.date` is a
+  persisted `CalendarDay` computed once at write time, so nothing re-buckets a
+  past record no matter what the setting becomes. The exposure is the **day in
+  progress**, and only when the change crosses *now* — i.e. when the current hour
+  falls between the old cutoff and the new one:
+
+  - **Raising it** (04:00 → 06:00 at 05:00) moves the logical day *backwards*.
+    Occurrences already written today become dated in the future: they vanish
+    from Today and reappear on their own at 06:00.
+  - **Lowering it** (06:00 → 04:00 at 05:00) moves the logical day *forwards*.
+    Yesterday becomes a past day instantly, and if it was due and unfinished the
+    projection derives `missed` (§8) on the spot — a day destroyed while the user
+    was still inside it, without a single stored row changing.
+
+  Deferring the change to the next cutoff closes both windows at once, and needs
+  no validation rules: it is what makes "forward-only" well defined here, since
+  the day in progress otherwise straddles the change.
+
+  Related trap for later: counter repetitions carry their own ISO timestamps
+  inside `progress`. Nothing derives a day from them today — the occurrence's
+  `date` is the bucket — but `DailyStatsSummary` (§12) will be tempted to, and it
+  would disagree with the stored date in exactly these cases. That is what the
+  §10 chokepoint rule exists to prevent.
 
 ---
 
@@ -140,31 +231,15 @@ closed the app and confirmed it resumes.
 
 ## Next
 
-**The create flow for goals and activities.** The domain half is done
-(`createGoal`, `createActivity` — the latter returns the activity *with* its
-first schedule and enforces the §3 invariants the type system can't). Remaining:
+**The goals/activities screen** — the last screen the app needs to be usable
+without the dev seed, and the natural home for the `+` that currently sits on
+Today. Its shape is still open (see open decisions), but two things are settled:
+it is a *management* surface rather than the daily driver, and now that
+activities can be created, the decision can be made against real data instead of
+in the abstract.
 
-- an `IdGenerator` **port** — the first outbound port that isn't a repository —
-  plus its adapter;
-- a **`TransactionRunner` port** (`runInTransaction(fn)`). Creation writes
-  several aggregates at once — a goal (optionally), an activity and its first
-  schedule — so each repository keeps saving only **its own** aggregate and the
-  *use case* declares the atomic boundary. (An earlier plan folded this into one
-  `ActivityRepository.create(activity, schedule)` method; adding inline goal
-  creation would have made that method write goals too, crossing aggregate
-  boundaries.)
-- **writes on the repositories** (`save` per aggregate) and
-  `GoalRepository.findAll` for the picker;
-- the `createGoal` (standalone) and `createActivity` **use cases**. The latter
-  takes a goal as `{ kind: 'existing', goalId } | { kind: 'new', title, … }` so
-  "pick one or create one" can't be violated, and it must **verify an existing
-  goal exists** — an activity pointing at a missing goal is skipped by
-  `getDayView`, i.e. invisible and unfixable from the app, the same hazard class
-  as an activity with no schedule;
-- the **form**, this repo's first multi-screen work (one route today, so it needs
-  Expo Router navigation). Use `isMeasurable` to decide which goal shapes to
-  offer. The goal picker must include **paused** goals; assigning one is valid but
-  the activity won't appear in Today until the goal resumes (the §0 cascade), so
-  the form should say so. Archived goals are excluded by default.
+The two small cleanups above (`listGoals` use case, `ui/format` → `ui/model`)
+are worth folding into that work rather than doing on their own — the same hook
+and directory get touched either way.
 
 After that: the `Task` feature (§6), then stats / `DailyStatsSummary` (§12).

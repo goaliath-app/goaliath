@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { DependencyProvider } from '@/core/di/DependencyProvider';
+import { StoredDataProvider } from '@/core/providers/StoredDataProvider';
 import { initI18n } from '@/shared/i18n';
 
 // Initialised at module scope, before any screen renders: translations are
@@ -9,7 +10,9 @@ initI18n();
 export default function RootLayout() {
   return (
     <DependencyProvider>
-      <Stack screenOptions={{ headerShown: false }} />
+      <StoredDataProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </StoredDataProvider>
     </DependencyProvider>
   );
 }
