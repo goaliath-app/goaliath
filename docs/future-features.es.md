@@ -21,6 +21,26 @@ y su entrada aquí se borra.
 
 ---
 
+## Índice
+
+- [Invariantes a preservar ahora](#invariantes-a-preservar-ahora)
+- [`excused` — cancelación externa (p.ej. un profesor cancela la clase)](#excused--cancelación-externa-pej-un-profesor-cancela-la-clase)
+- [`skipped` — no hacerlo conscientemente](#skipped--no-hacerlo-conscientemente)
+- [`reschedule` — mover la obligación de un día a otro](#reschedule--mover-la-obligación-de-un-día-a-otro)
+- [Timers en paralelo (más de uno corriendo a la vez)](#timers-en-paralelo-más-de-uno-corriendo-a-la-vez)
+- [Sincronización offline-first](#sincronización-offline-first)
+- [Cadencias y tipos expresables hoy pero no expuestos en la UI](#cadencias-y-tipos-expresables-hoy-pero-no-expuestos-en-la-ui)
+- [Un día sí, un día no (y, gratis, cada N días)](#un-día-sí-un-día-no-y-gratis-cada-n-días)
+- [Inicio de semana configurable (lunes vs domingo), sembrado desde el dispositivo](#inicio-de-semana-configurable-lunes-vs-domingo-sembrado-desde-el-dispositivo)
+- [Zona horaria: viajes, y días que nunca viviste](#zona-horaria-viajes-y-días-que-nunca-viviste)
+- [Pausarlo todo de golpe](#pausarlo-todo-de-golpe)
+- [Duplicar una actividad (la respuesta al "reconvertir renombrando")](#duplicar-una-actividad-la-respuesta-al-reconvertir-renombrando)
+- [Duplicados accidentales — detectar y fusionar "la misma cosa" dos veces](#duplicados-accidentales--detectar-y-fusionar-la-misma-cosa-dos-veces)
+- [Decisiones abiertas de tooling y arquitectura](#decisiones-abiertas-de-tooling-y-arquitectura)
+- [Backlog / ideas sin definir](#backlog--ideas-sin-definir)
+
+---
+
 ## Invariantes a preservar ahora
 
 Propiedades transversales que mantienen barato *todo lo de abajo*. Hoy no cuestan

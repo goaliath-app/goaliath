@@ -15,6 +15,27 @@ Guiding principle:
 
 ---
 
+## Contents
+
+- [0. Two independent timelines](#0-two-independent-timelines)
+- [1. Goal](#1-goal)
+- [2. Activity (intent)](#2-activity-intent)
+- [3. ActivitySchedule (versioned temporal behavior)](#3-activityschedule-versioned-temporal-behavior)
+  - [Two orthogonal axes (this is what keeps task types simple to extend)](#two-orthogonal-axes-this-is-what-keeps-task-types-simple-to-extend)
+- [4. RecurrenceRule (value object)](#4-recurrencerule-value-object)
+  - [Why `quota` needs an extra step in the projection](#why-quota-needs-an-extra-step-in-the-projection)
+- [5. ActivityOccurrence (persisted state of an occurrence)](#5-activityoccurrence-persisted-state-of-an-occurrence)
+- [6. Task (standalone one-off items)](#6-task-standalone-one-off-items)
+- [7. How to add a new activity type (extensibility)](#7-how-to-add-a-new-activity-type-extensibility)
+- [8. Projection algorithm (calendar = derived view)](#8-projection-algorithm-calendar--derived-view)
+- [9. Editing the past vs. changing the plan](#9-editing-the-past-vs-changing-the-plan)
+- [10. Day with a configurable cutoff hour](#10-day-with-a-configurable-cutoff-hour)
+- [11. Live state (timers) — not reconstructible](#11-live-state-timers--not-reconstructible)
+- [12. Stats: pure projection + materialized summary](#12-stats-pure-projection--materialized-summary)
+- [🧠 Mental summary of the system](#-mental-summary-of-the-system)
+
+---
+
 ## 0. Two independent timelines
 
 Two timelines are versioned **independently**, each answering a different

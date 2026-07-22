@@ -21,6 +21,26 @@ entry here is deleted.
 
 ---
 
+## Contents
+
+- [Invariants to preserve now](#invariants-to-preserve-now)
+- [`excused` — external cancellation (e.g. a teacher cancels class)](#excused--external-cancellation-eg-a-teacher-cancels-class)
+- [`skipped` — consciously not doing it](#skipped--consciously-not-doing-it)
+- [`reschedule` — move a day's obligation to another day](#reschedule--move-a-days-obligation-to-another-day)
+- [Parallel timers (more than one running at once)](#parallel-timers-more-than-one-running-at-once)
+- [Offline-first sync](#offline-first-sync)
+- [Cadences & shapes expressible now but not surfaced in the UI](#cadences--shapes-expressible-now-but-not-surfaced-in-the-ui)
+- [Every-other-day (and, for free, every N days)](#every-other-day-and-for-free-every-n-days)
+- [Configurable week start (Monday vs Sunday), seeded from the device](#configurable-week-start-monday-vs-sunday-seeded-from-the-device)
+- [Time zone: travel, and days you never lived](#time-zone-travel-and-days-you-never-lived)
+- [Pause everything at once](#pause-everything-at-once)
+- [Duplicate an activity (the answer to "repurposing by renaming")](#duplicate-an-activity-the-answer-to-repurposing-by-renaming)
+- [Accidental duplicates — noticing and merging "the same thing" twice](#accidental-duplicates--noticing-and-merging-the-same-thing-twice)
+- [Undecided tooling & architecture choices](#undecided-tooling--architecture-choices)
+- [Backlog / unshaped ideas](#backlog--unshaped-ideas)
+
+---
+
 ## Invariants to preserve now
 
 Cross-cutting properties that keep *everything below* cheap. They cost nothing

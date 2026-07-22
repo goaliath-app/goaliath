@@ -4,6 +4,34 @@
 
 > Documento de referencia para saber **dónde va cada fichero**. Si tienes dudas al crear un fichero nuevo, consulta la sección [¿Dónde va esto?](#dónde-va-esto) antes de decidir.
 
+## Índice
+
+- [Contexto y objetivo](#contexto-y-objetivo)
+- [Punto clave: Expo Router vs. la carpeta `app/`](#punto-clave-expo-router-vs-la-carpeta-app)
+- [Estructura de carpetas](#estructura-de-carpetas)
+- [Reglas de dependencia (las que no se rompen)](#reglas-de-dependencia-las-que-no-se-rompen)
+- [¿Dónde va esto?](#dónde-va-esto)
+- [Estilo del dominio: datos + funciones puras, no clases](#estilo-del-dominio-datos--funciones-puras-no-clases)
+  - [Haz irrepresentables los estados inválidos — cuando se pueda](#haz-irrepresentables-los-estados-inválidos--cuando-se-pueda)
+  - [Instantes: `Date` en los bordes, strings ISO dentro de los blobs](#instantes-date-en-los-bordes-strings-iso-dentro-de-los-blobs)
+  - [Las fronteras de calendario pasan por una sola función](#las-fronteras-de-calendario-pasan-por-una-sola-función)
+  - [La configuración se inyecta, nunca se lee desde el dominio](#la-configuración-se-inyecta-nunca-se-lee-desde-el-dominio)
+- [Convenciones de nombres](#convenciones-de-nombres)
+- [Errores de dominio: base compartida vs. específicos de feature](#errores-de-dominio-base-compartida-vs-específicos-de-feature)
+- [Migraciones de base de datos: orden centralizado, contenido propiedad del feature](#migraciones-de-base-de-datos-orden-centralizado-contenido-propiedad-del-feature)
+- [Inyección de dependencias: un mecanismo concreto](#inyección-de-dependencias-un-mecanismo-concreto)
+- [Forzar el aislamiento de features (lint, no solo convención)](#forzar-el-aislamiento-de-features-lint-no-solo-convención)
+- [Estilos: tokens, temas y dónde viven](#estilos-tokens-temas-y-dónde-viven)
+  - [Por qué los estilos son una función y no una constante](#por-qué-los-estilos-son-una-función-y-no-una-constante)
+  - [Estructura](#estructura)
+  - [Qué hace barato añadir un tema](#qué-hace-barato-añadir-un-tema)
+  - [Dónde está la raya en "sin estilos inline"](#dónde-está-la-raya-en-sin-estilos-inline)
+- [Testing](#testing)
+- [Decisiones abiertas de tooling y arquitectura](#decisiones-abiertas-de-tooling-y-arquitectura)
+- [Checklist rápida antes de hacer commit](#checklist-rápida-antes-de-hacer-commit)
+
+---
+
 ## Contexto y objetivo
 
 - App de React Native usando **Expo Router** (routing basado en ficheros).

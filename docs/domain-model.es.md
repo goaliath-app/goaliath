@@ -15,6 +15,27 @@ Principio rector:
 
 ---
 
+## Índice
+
+- [0. Dos líneas de tiempo independientes](#0-dos-líneas-de-tiempo-independientes)
+- [1. Goal](#1-goal)
+- [2. Activity (intención)](#2-activity-intención)
+- [3. ActivitySchedule (comportamiento temporal versionado)](#3-activityschedule-comportamiento-temporal-versionado)
+  - [Dos ejes ortogonales (esto es lo que mantiene simple añadir tipos de tarea)](#dos-ejes-ortogonales-esto-es-lo-que-mantiene-simple-añadir-tipos-de-tarea)
+- [4. RecurrenceRule (value object)](#4-recurrencerule-value-object)
+  - [Por qué `quota` necesita un paso extra en la proyección](#por-qué-quota-necesita-un-paso-extra-en-la-proyección)
+- [5. ActivityOccurrence (estado persistido de una ocurrencia)](#5-activityoccurrence-estado-persistido-de-una-ocurrencia)
+- [6. Task (tareas puntuales independientes)](#6-task-tareas-puntuales-independientes)
+- [7. Cómo añadir un nuevo tipo de actividad (extensibilidad)](#7-cómo-añadir-un-nuevo-tipo-de-actividad-extensibilidad)
+- [8. Algoritmo de proyección (calendario = vista derivada)](#8-algoritmo-de-proyección-calendario--vista-derivada)
+- [9. Editar el pasado vs. cambiar el plan](#9-editar-el-pasado-vs-cambiar-el-plan)
+- [10. Día con hora de corte configurable](#10-día-con-hora-de-corte-configurable)
+- [11. Estado en vivo (temporizadores) — no reconstruible](#11-estado-en-vivo-temporizadores--no-reconstruible)
+- [12. Estadísticas: proyección pura + resumen materializado](#12-estadísticas-proyección-pura--resumen-materializado)
+- [🧠 Resumen mental del sistema](#-resumen-mental-del-sistema)
+
+---
+
 ## 0. Dos líneas de tiempo independientes
 
 Se versionan **de forma independiente** dos líneas de tiempo, cada una

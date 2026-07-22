@@ -4,6 +4,34 @@
 
 > Reference document to know **where each file belongs**. If you're unsure when creating a new file, check the [Where does this go?](#where-does-this-go) section before deciding.
 
+## Contents
+
+- [Context and goal](#context-and-goal)
+- [Key point: Expo Router vs. the `app/` folder](#key-point-expo-router-vs-the-app-folder)
+- [Folder structure](#folder-structure)
+- [Dependency rules (the ones you don't break)](#dependency-rules-the-ones-you-dont-break)
+- [Where does this go?](#where-does-this-go)
+- [Domain style: data + pure functions, not classes](#domain-style-data--pure-functions-not-classes)
+  - [Make illegal states unrepresentable — where you can](#make-illegal-states-unrepresentable--where-you-can)
+  - [Instants: `Date` at the edges, ISO strings inside blobs](#instants-date-at-the-edges-iso-strings-inside-blobs)
+  - [Calendar boundaries go through one function](#calendar-boundaries-go-through-one-function)
+  - [Configuration is injected, never read from the domain](#configuration-is-injected-never-read-from-the-domain)
+- [Naming conventions](#naming-conventions)
+- [Domain errors: shared base vs. feature-specific](#domain-errors-shared-base-vs-feature-specific)
+- [Database migrations: centralized order, feature-owned content](#database-migrations-centralized-order-feature-owned-content)
+- [Dependency injection: a concrete mechanism](#dependency-injection-a-concrete-mechanism)
+- [Enforcing feature isolation (lint, not just convention)](#enforcing-feature-isolation-lint-not-just-convention)
+- [Styling: tokens, themes, and where styles live](#styling-tokens-themes-and-where-styles-live)
+  - [Why styles are a function, not a constant](#why-styles-are-a-function-not-a-constant)
+  - [Layout](#layout)
+  - [What makes a new theme cheap](#what-makes-a-new-theme-cheap)
+  - [The line on "no inline styles"](#the-line-on-no-inline-styles)
+- [Testing](#testing)
+- [Open tooling & architecture decisions](#open-tooling--architecture-decisions)
+- [Quick checklist before committing](#quick-checklist-before-committing)
+
+---
+
 ## Context and goal
 
 - React Native app using **Expo Router** (file-based routing).

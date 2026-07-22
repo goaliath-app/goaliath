@@ -11,6 +11,16 @@ Keep this short. If an entry stops being true, delete it.
 
 ---
 
+## Contents
+
+- [Where the build is](#where-the-build-is)
+- [Technical debt](#technical-debt)
+- [Open decisions](#open-decisions)
+- [Verification status](#verification-status)
+- [Next](#next)
+
+---
+
 ## Where the build is
 
 The `tracking` feature works end to end: a Today screen backed by SQLite through
