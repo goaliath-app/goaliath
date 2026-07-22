@@ -18,8 +18,9 @@ the full hexagon (UI → hook → use case → projection → repository port �
 adapter → migration). All three activity types are implemented (checklist,
 counter, timer), and every goal shape in domain-model §3's grid is scoreable.
 
-**The main blocker to real use: there is no create flow.** All data comes from the
-dev seed, and the Goal/Activity/Schedule repositories are read-only.
+All user-facing text goes through `react-i18next` (`shared/i18n`), with `es` as
+the source language and `en` mirroring it. Keys are typed via `CustomTypeOptions`,
+so a wrong key fails `tsc` rather than rendering itself on screen.
 
 **Green means**: `npm test` and `npx tsc --noEmit`. Metro bundling is checked
 separately with `npx expo export --platform ios` (exit 0) — Jest runs via Babel

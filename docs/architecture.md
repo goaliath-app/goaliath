@@ -79,6 +79,7 @@ src/
 │
 ├── shared/
 │   ├── domain/                   # Cross-feature contracts (e.g. SyncStatus, Money)
+│   ├── i18n/                     # i18next setup + locales/<lang>/<namespace>.ts
 │   ├── infrastructure/
 │   │   ├── db/                   # expo-sqlite connection + generic migration runner (no feature knowledge)
 │   │   ├── api/                  # base HTTP client, interceptors
@@ -126,6 +127,7 @@ Both must go through `index.ts`. Nothing outside a feature — not even `core/` 
 | A full screen | `features/<f>/ui/screens/` |
 | A component used only within one feature | `features/<f>/ui/components/` |
 | A generic component used by 2+ features (Button, Card...) | `shared/ui/` |
+| A user-visible string (never hardcoded in a component) | `shared/i18n/locales/<lang>/<namespace>.ts` |
 | A type/contract used by 2+ features (e.g. `SyncStatus`) | `shared/domain/` |
 | A generic error with no feature-specific business data (e.g. `NotFoundError`) | `shared/domain/errors.ts` |
 | A feature-specific error (extends the shared base) | `features/<f>/domain/errors.ts` |
