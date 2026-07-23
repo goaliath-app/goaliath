@@ -491,12 +491,20 @@ src/shared/theme/
 ├── Theme.ts            # el tipo que todo tema debe satisfacer
 ├── themes/
 │   ├── light.ts
-│   └── dark.ts
+│   ├── dark.ts
+│   └── grayscale.ts    # sin ningún tono — ver más abajo
+├── ThemeContext.tsx    # el contexto + useTheme()
 ├── useThemedStyles.ts  # tema -> StyleSheet memoizado
 └── index.ts            # exporta el tipo Theme, el hook y el registro de temas — nunca la paleta
 ```
 
-El provider vive en `core/providers/`, con los demás providers globales.
+El provider vive en `core/providers/`, con los demás providers globales. El
+*contexto* se queda aquí para que `shared/theme` sea autocontenido y un consumidor
+nunca tenga que importar de `core/`.
+
+`useThemedStyles` memoiza en el módulo, no dentro del hook, así que todos los
+consumidores de un mismo fichero de estilos comparten un único
+`StyleSheet.create` por tema en vez de uno cada uno.
 
 ### Qué hace barato añadir un tema
 
@@ -513,6 +521,28 @@ El provider vive en `core/providers/`, con los demás providers globales.
 - **Spacing y tipografía también viven en el tema**, aunque hoy no varíen entre
   claro y oscuro. No cuesta nada ahora y significa que un tema de accesibilidad
   con texto grande no obligará a tocar ningún consumidor.
+- **Las rampas se nombran por el color que son, los roles por lo que
+  significan.** `palette.blue`, `theme.colors.brand`. Llamar `danger` a una
+  rampa colapsa las dos capas: el siguiente tema que quiera otro rojo no tiene
+  adónde ir salvo `danger2`, y la paleta crece por *temas × roles* en vez de por
+  colores que de verdad existen. Nombradas por tono, el problema suele
+  encogerse: un tema nuevo reutiliza casi todo lo que ya hay y añade solo lo que
+  falta de verdad.
+- **Un tema que necesite tonos que ninguna rampa tiene añade su propia rampa a
+  `palette.ts`**, nunca valores inline en `themes/`. `grayscale` es el ejemplo
+  trabajado: la rampa `slate` por defecto lleva un azul tenue a propósito, así
+  que un tema cuya premisa es la ausencia de tono necesitó una rampa `gray`
+  verdaderamente neutra al lado.
+- **Varios roles pueden resolver al mismo tono.** Los roles son un vocabulario,
+  no la promesa de que cada uno tenga un color propio — `grayscale` colapsa
+  cuatro. Lo que un tema no puede hacer es colapsar una distinción que el diseño
+  confiaba solo al color, y por eso el estado se codifica antes en el glifo y en
+  las palabras.
+- **La accesibilidad la garantiza la suite, no una revisión.** Los tests de
+  contraste recorren el registro de temas, así que un tema nuevo queda
+  comprobado sin escribir ningún caso: los roles de texto deben 4.5:1, los
+  bordes de control y las formas de los glifos 3:1, y de los separadores de fila
+  se afirma que se quedan *por debajo*.
 
 ### Dónde está la raya en "sin estilos inline"
 

@@ -486,12 +486,20 @@ src/shared/theme/
 ├── Theme.ts            # the type every theme must satisfy
 ├── themes/
 │   ├── light.ts
-│   └── dark.ts
+│   ├── dark.ts
+│   └── grayscale.ts    # no hue at all — see below
+├── ThemeContext.tsx    # the context + useTheme()
 ├── useThemedStyles.ts  # theme -> memoized StyleSheet
 └── index.ts            # exports the Theme type, the hook and the theme registry — never the palette
 ```
 
-The provider lives in `core/providers/`, with the other global providers.
+The provider lives in `core/providers/`, with the other global providers. The
+*context* stays here so `shared/theme` is self-contained and a consumer never
+imports from `core/`.
+
+`useThemedStyles` memoizes on the module, not inside the hook, so every consumer
+of one style file shares a single `StyleSheet.create` per theme rather than one
+each.
 
 ### What makes a new theme cheap
 
@@ -506,6 +514,24 @@ The provider lives in `core/providers/`, with the other global providers.
 - **Spacing and typography live in the theme too**, even though they don't vary
   between light and dark today. It costs nothing now and means a large-text
   accessibility theme later needs no consumer changes.
+- **Ramps are named for the colour they are, roles for what they mean.**
+  `palette.blue`, `theme.colors.brand`. Naming a ramp `danger` collapses the two
+  layers: the next theme wanting a different red has nowhere to go but
+  `danger2`, and the palette grows by *themes × roles* instead of by colours
+  that actually exist. Named by hue it usually shrinks the problem — a new theme
+  reuses most of what is there and adds only what is genuinely missing.
+- **A theme needing tones no ramp holds adds its own ramp to `palette.ts`**,
+  never values inlined in `themes/`. `grayscale` is the worked example: the
+  default `slate` ramp carries a faint blue on purpose, so a theme whose whole
+  point is the absence of hue needed a true-neutral `gray` ramp beside it.
+- **Several roles may resolve to the same tone.** Roles are a vocabulary, not a
+  promise that each owns a unique colour — `grayscale` collapses four of them.
+  What a theme may not do is collapse a distinction the design carried in colour
+  alone, which is why state is encoded in glyph and wording first.
+- **Accessibility is enforced by the suite, not by review.** The contrast tests
+  run over the theme registry, so a new theme is checked without anyone writing
+  a case for it: text roles owe 4.5:1, control edges and glyph shapes owe 3:1,
+  and row dividers are asserted to stay *below* it.
 
 ### The line on "no inline styles"
 
