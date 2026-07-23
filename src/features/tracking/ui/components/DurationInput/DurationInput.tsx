@@ -1,13 +1,15 @@
+import { useThemedStyles } from '@/shared/theme';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { Text, TextInput, View } from 'react-native';
 import {
   padDurationField,
   parseDurationField,
   partsToSeconds,
   secondsToParts,
   type DurationUnit,
-} from '../format/duration';
+} from '../../format/duration';
+import { durationInputStyles } from './DurationInput.styles';
 
 const UNITS = [
   { unit: 'hours', labelKey: 'duration.hoursLabel' },
@@ -43,6 +45,7 @@ export function DurationInput({
 }: DurationInputProps) {
   const { t } = useTranslation('activityForm');
   const [focused, setFocused] = useState<DurationUnit | null>(null);
+  const styles = useThemedStyles(durationInputStyles);
   const parts = secondsToParts(value);
 
   return (
@@ -53,6 +56,8 @@ export function DurationInput({
           <View>
             <TextInput
               style={styles.input}
+              placeholderTextColor={styles.unitLabel.color}
+              selectionColor={styles.colon.color}
               // Unpadded while focused so the caret isn't fighting a leading
               // zero; padded once the user leaves, for the clock-face look.
               value={
@@ -83,24 +88,4 @@ export function DurationInput({
   );
 }
 
-const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'flex-start' },
-  field: { flexDirection: 'row', alignItems: 'flex-start' },
-  colon: { fontSize: 28, lineHeight: 46, marginHorizontal: 6, color: '#8a8a8e' },
-  input: {
-    borderWidth: 1,
-    borderColor: '#d1d1d6',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 22,
-    minWidth: 62,
-    textAlign: 'center',
-  },
-  unitLabel: {
-    fontSize: 12,
-    color: '#8a8a8e',
-    textAlign: 'center',
-    marginTop: 4,
-  },
-});
+

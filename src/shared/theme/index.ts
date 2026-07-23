@@ -8,19 +8,19 @@
  * the same reason: spacing and typography arrive through the theme, never
  * imported directly, so a future large-text theme needs no consumer changes.
  */
-export type { Theme, ThemeColors } from './Theme';
-export type { TypographyToken } from './tokens';
-export { ThemeContext, useTheme } from './ThemeContext';
-export { resolveThemedStyles, useThemedStyles } from './useThemedStyles';
-export type { StyleFactory } from './useThemedStyles';
-export { darkTheme } from './themes/dark';
-export { grayscaleTheme } from './themes/grayscale';
-export { lightTheme } from './themes/light';
-
 import type { Theme } from './Theme';
 import { darkTheme } from './themes/dark';
 import { grayscaleTheme } from './themes/grayscale';
 import { lightTheme } from './themes/light';
+
+export type { Theme, ThemeColors } from './Theme';
+export { ThemeContext, useTheme } from './ThemeContext';
+export { darkTheme } from './themes/dark';
+export { grayscaleTheme } from './themes/grayscale';
+export { lightTheme } from './themes/light';
+export type { TypographyToken } from './tokens';
+export { resolveThemedStyles, useThemedStyles } from './useThemedStyles';
+export type { StyleFactory } from './useThemedStyles';
 
 /**
  * Every built-in theme, keyed by its own name.

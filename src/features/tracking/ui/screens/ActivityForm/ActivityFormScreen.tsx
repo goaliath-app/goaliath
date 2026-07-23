@@ -10,9 +10,9 @@ import {
     TextInput,
     View,
 } from 'react-native';
-import type { ActivityType } from '../../domain/Activity';
-import { isMeasurable } from '../../domain/activityTypes/registry';
-import { DurationInput } from '../components/DurationInput/DurationInput';
+import type { ActivityType } from '../../../domain/Activity';
+import { isMeasurable } from '../../../domain/activityTypes/registry';
+import { DurationInput } from '../../components/DurationInput/DurationInput';
 import {
     effectiveAggregate,
     emptyActivityDraft,
@@ -24,18 +24,18 @@ import {
     type PeriodGoalAggregate,
     type QuotaPeriod,
     type RecurrenceChoice,
-} from '../format/activityDraft';
+} from '../../format/activityDraft';
 import {
     describeActivityDraft,
     type Translate,
-} from '../format/describeActivityDraft';
-import { useCreateActivity } from '../hooks/useCreateActivity';
+} from '../../format/describeActivityDraft';
+import { useCreateActivity } from '../../hooks/useCreateActivity';
 import {
     activityFormStyles,
     chipStyles,
     choiceStyles,
     fieldStyles,
-} from './ActivityForm/ActivityFormScreen.styles';
+} from './ActivityFormScreen.styles';
 
 /**
  * The draft keeps amounts as raw text (that's what a `TextInput` holds) while

@@ -3,9 +3,9 @@ import { Link } from 'expo-router';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
-import { activityTypeViews } from '../activityTypes/activityTypeViews';
-import { useTodayView } from '../hooks/useTodayView';
-import { todayScreenStyles } from './Today/TodayScreen.styles';
+import { activityTypeViews } from '../../activityTypes/activityTypeViews';
+import { useTodayView } from '../../hooks/useTodayView';
+import { todayScreenStyles } from './TodayScreen.styles';
 
 /**
  * The "Today" screen. Presentation only: it loads the projected day and, for

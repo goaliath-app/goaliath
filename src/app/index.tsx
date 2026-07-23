@@ -1,4 +1,4 @@
-import { TodayScreen } from '@/features/tracking/ui/screens/TodayScreen';
+import { TodayScreen } from '@/features/tracking/ui/screens/Today/TodayScreen';
 
 export default function Page() {
   return <TodayScreen />;

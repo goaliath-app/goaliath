@@ -1,17 +1,19 @@
+import { useThemedStyles } from '@/shared/theme';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import type { ActivityId, ActivityType } from '../../domain/Activity';
 import {
   countRepetitions,
   type CounterProgress,
 } from '../../domain/activityTypes/counter';
-import type { DayItem } from '../../domain/projection';
-import { elapsedSeconds, type RunningTimer } from '../../domain/RunningTimer';
 import {
   totalSeconds,
   type TimerProgress,
 } from '../../domain/activityTypes/timer';
+import type { DayItem } from '../../domain/projection';
+import { elapsedSeconds, type RunningTimer } from '../../domain/RunningTimer';
+import { activityRowStyles } from './activityTypeViews.styles';
 
 /**
  * The **UI half** of the activityType registry (domain-model §7): how a day's
@@ -50,6 +52,8 @@ function ChecklistRow({ item, actions }: ActivityRowProps) {
   const done = item.displayStatus === 'done';
   const { periodProgress } = item;
   const { t } = useTranslation();
+  const styles = useThemedStyles(activityRowStyles);
+
   return (
     <Pressable
       style={styles.row}
@@ -79,6 +83,7 @@ function ChecklistRow({ item, actions }: ActivityRowProps) {
 
 function CounterRow({ item, actions }: ActivityRowProps) {
   const done = item.displayStatus === 'done';
+  const styles = useThemedStyles(activityRowStyles);
   // Untagged-progress boundary (§5): safe here — this view only renders counters.
   const progress = item.occurrence?.progress as CounterProgress | undefined;
   const count = progress === undefined ? 0 : countRepetitions(progress);
@@ -87,11 +92,11 @@ function CounterRow({ item, actions }: ActivityRowProps) {
 
   return (
     <View style={styles.row}>
-      <View style={styles.counterLabel}>
+      <View style={styles.label}>
         <Text style={[styles.title, done && styles.titleMuted]}>
           {item.activity.title}
         </Text>
-        <Text style={styles.counterMeta}>
+        <Text style={styles.meta}>
           {goal === null ? `${count}` : `${count} / ${goal}`}
         </Text>
       </View>
@@ -111,6 +116,7 @@ function CounterRow({ item, actions }: ActivityRowProps) {
 
 function TimerRow({ item, actions, runningTimer, nowMs }: ActivityRowProps) {
   const done = item.displayStatus === 'done';
+  const styles = useThemedStyles(activityRowStyles);
   const running = runningTimer !== null;
   // Untagged-progress boundary (§5): safe — this view only renders timers.
   const progress = item.occurrence?.progress as TimerProgress | undefined;
@@ -166,49 +172,4 @@ function formatDuration(seconds: number): string {
     : `${minutes}:${pad(remainingSeconds)}`;
 }
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    backgroundColor: '#f2f2f7',
-    gap: 14,
-  },
-  title: { fontSize: 17, color: '#1c1c1e' },
-  titleMuted: { color: '#8a8a8e', textDecorationLine: 'line-through' },
-  checkbox: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    borderWidth: 2,
-    borderColor: '#c7c7cc',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkboxDone: { backgroundColor: '#34c759', borderColor: '#34c759' },
-  check: { color: '#ffffff', fontSize: 16, fontWeight: '700', lineHeight: 20 },
-  label: { flex: 1, gap: 2 },
-  meta: { fontSize: 14, color: '#8a8a8e' },
-  counterLabel: { flex: 1, gap: 2 },
-  counterMeta: { fontSize: 14, color: '#8a8a8e' },
-  plus: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#007aff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  plusDone: { backgroundColor: '#34c759' },
-  plusText: { color: '#ffffff', fontSize: 24, fontWeight: '600', lineHeight: 28 },
-  timerButton: {
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 20,
-    backgroundColor: '#007aff',
-  },
-  timerButtonRunning: { backgroundColor: '#ff3b30' },
-  timerButtonText: { color: '#ffffff', fontSize: 15, fontWeight: '600' },
-});
+

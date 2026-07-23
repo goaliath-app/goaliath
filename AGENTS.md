@@ -20,6 +20,7 @@ Each doc except `implementation-notes.md` has a Spanish mirror `*.es.md`; keep t
 - The **domain layer is pure**: no RN/Expo imports, no I/O, deterministic. It carries the design risk, so it's tested hardest.
 - Logical dates go through `getCalendarDay` **only** (`src/shared/domain/time/CalendarDay.ts`) — never compute dates ad hoc (domain-model §10).
 - Value types are branded where it prevents mixups (e.g. `CalendarDay`).
+- **Pin exact dependency versions** in `package.json` — no `^` or `~`, prod or dev. This is a public app: a reproducible install is worth more than a silent minor bump. When adding a dep, install it and write the resolved version literally. Check it for known vulnerabilities before committing.
 
 ## Tests
 - Runner: **Jest** via the `jest-expo` preset (+ its peer `@react-native/jest-preset`). Pure-domain suites run under the `node` environment.
