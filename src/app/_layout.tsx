@@ -9,13 +9,16 @@ import { initI18n } from '@/shared/i18n';
 initI18n();
 
 export default function RootLayout() {
+  // ThemeProvider is outermost on purpose: it depends only on the OS colour
+  // scheme (no DI, no stored data), so it is ready before the database is and
+  // can theme DependencyProvider's own loading/error gate.
   return (
-    <DependencyProvider>
-      <StoredDataProvider>
-        <ThemeProvider>
+    <ThemeProvider>
+      <DependencyProvider>
+        <StoredDataProvider>
           <Stack screenOptions={{ headerShown: false }} />
-        </ThemeProvider>
-      </StoredDataProvider>
-    </DependencyProvider>
+        </StoredDataProvider>
+      </DependencyProvider>
+    </ThemeProvider>
   );
 }

@@ -532,6 +532,16 @@ created/edited (no need to recompute the whole history), and it can be fully
 regenerated at any time from the sources of truth — it remains a cache, not a
 new source of truth.
 
+**The summary is strictly per-day; period-goal completion is not stored here.**
+Whether a `quota` period was met (`completedDays`/`metricSum`, §3) is a property
+of the *period*, not of any single day, so it is **re-aggregated on read** from
+these per-day rows (sum the metric, or count the completed days, across the
+period's span) — never materialized as a per-day field. A `completionRatio` on a
+single quota day is meaningless and must not be written; the day rows carry only
+what a day actually has (its own metric and whether it counted), and the period
+question is answered by folding them, exactly as `quotaPeriodProgress` already
+does over live occurrences.
+
 ---
 
 ## 🧠 Mental summary of the system

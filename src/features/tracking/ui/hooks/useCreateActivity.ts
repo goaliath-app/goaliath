@@ -100,7 +100,11 @@ export function useCreateActivity() {
         // like, so every reader has to recompute — not just this screen.
         invalidate();
         return true;
-      } catch {
+      } catch (error) {
+        // The form only shows a generic "failed"; without this the actual cause
+        // (a transaction error, a missing goal) is lost. Dev-only so it never
+        // reaches production logs.
+        if (__DEV__) console.error('createActivity failed', error);
         setFailed(true);
         return false;
       } finally {

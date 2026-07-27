@@ -8,6 +8,7 @@
 
 - [Context and goal](#context-and-goal)
 - [Key point: Expo Router vs. the `app/` folder](#key-point-expo-router-vs-the-app-folder)
+- [Navigation (app shell)](#navigation-app-shell)
 - [Folder structure](#folder-structure)
 - [Dependency rules (the ones you don't break)](#dependency-rules-the-ones-you-dont-break)
 - [Where does this go?](#where-does-this-go)
@@ -44,15 +45,19 @@ This document assumes a **hexagonal / ports and adapters** architecture applied 
 
 ## Key point: Expo Router vs. the `app/` folder
 
-Expo Router reserves the root `app/` folder for file-based routing. **We don't use it for anything else.** This changes the typical structure of other RN projects:
+Expo Router owns a dedicated folder for file-based routing. This project keeps it
+at **`src/app/`** (Expo Router supports both `app/` at the repo root and
+`src/app/`; we take the `src/` variant so *all* first-party code lives under one
+root). **We don't use it for anything else.** This changes the typical structure
+of other RN projects:
 
-- `app/` → **routes only**. Each file is a thin screen that imports and renders a component from `src/features/*/ui/screens`.
-- All real logic (domain, use cases, infrastructure, components, hooks) lives in `src/`.
+- `src/app/` → **routes only**. Each file is a thin screen that imports and renders a component from `src/features/*/ui/screens`.
+- All real logic (domain, use cases, infrastructure, components, hooks) lives elsewhere in `src/`.
 
-**Hard rule:** a file inside `app/` shouldn't be more than ~15-20 lines. If it starts growing, that logic is leaking out of the feature and should move to `src/features/<feature>/ui/screens`.
+**Hard rule:** a file inside `src/app/` shouldn't be more than ~15-20 lines. If it starts growing, that logic is leaking out of the feature and should move to `src/features/<feature>/ui/screens`.
 
 ```tsx
-// app/(tabs)/items/index.tsx
+// src/app/(tabs)/items/index.tsx
 import { ItemListScreen } from '@/features/items/ui/screens/ItemListScreen';
 
 export default function Page() {
@@ -62,21 +67,87 @@ export default function Page() {
 
 ---
 
+## Navigation (app shell)
+
+The app has exactly **two primary surfaces** — the ones reached every day without
+opening a menu:
+
+1. **Today** (`src/app/index.tsx`) — what's due now. The home screen.
+2. **Create** an activity/goal — a primary action available from Today (e.g. a
+   `+`), deliberately *not* buried in a menu.
+
+Everything else is **management**, reached through a single **profile hub** opened
+from a top-left icon on Today: settings, stats, the goals/activities screen, a
+calendar, account… The hub is a thin menu screen — it only navigates and owns no
+feature logic. A new management destination is one more item on it, never another
+primary surface.
+
+**Stack + hub, not tabs.** The product is Today-centric: one daily surface plus a
+menu of occasional ones. Bottom tabs would give rarely-visited screens equal
+weight and dilute the one that matters; a stack with a hub keeps Today central and
+lets the menu grow without a redesign. (The `(tabs)` group in the illustrative
+tree below is only Expo Router's own naming example — this app does not use a tab
+navigator.)
+
+**Route structure** (thin routes only — see the `app/` rules above):
+
+```
+src/app/                     # routes: one thin file per feature screen (flat)
+├── _layout.tsx              # root Stack + global providers (core/)
+├── index.tsx               # -> TodayScreen        (tracking)  — home
+├── profile.tsx             # -> ProfileScreen      (profile)   — the hub
+├── settings.tsx            # -> SettingsScreen     (settings)
+├── goals.tsx               # -> GoalsScreen        (tracking)
+├── stats.tsx               # -> StatsScreen        (stats)
+├── calendar.tsx            # -> CalendarScreen     (calendar)
+└── activity/
+    └── new.tsx             # -> ActivityFormScreen (tracking)  — modal
+```
+
+- **Flat routes, not nested under the hub.** Settings, stats, goals and calendar
+  are **siblings reached *through* the profile menu, not children of it**, so their
+  routes sit at the top level (`/settings`, `/goals`…), each a thin file owned by
+  its feature — never under `/profile/…`. This keeps the **route hierarchy**
+  (the URL tree) decoupled from the **navigation graph** (who links to whom): the
+  fact that the profile is today's entry point to settings is a choice expressed in
+  the hub screen's links, not a structure baked into paths. So when Today later
+  wants a shortcut straight to stats, it links to `/stats` — no route to move. Only
+  a genuine parent/child family stays nested (`activity/new`, later `activity/[id]`).
+- **Where the hub lives — it *is* a feature.** Every screen the user opens is a
+  feature's `ui/screens` (that's the hard rule that `app/` routes only import from
+  `ui/screens`); `shared/ui` is for generic widgets, not screens, and only the app
+  shell (`_layout.tsx` + global providers, in `core/`) sits outside a feature. So
+  the hub is its own small **`profile` feature**, trimmed to just `ui/` — it has no
+  domain or data today, and this is where an account/profile screen grows when it
+  does. It reaches the other destinations **by route path** (`router.push('/profile/settings')`),
+  **never by importing their code**, so cross-feature isolation (rule 5) is
+  untouched: a route string is not a cross-feature import. Each route still renders
+  its own feature's screen through that feature's public `index.ts`.
+- **Presentation:** management destinations **push** onto the stack (back returns
+  through the hub to Today); **create** is presented **modally** — it's a task you
+  complete and dismiss, not a place you navigate into.
+- **Not-yet-built destinations** (stats, calendar) appear here as the *intended*
+  topology; their feature designs live in [future-features.md](./future-features.md)
+  until built. This section is the source of truth for how screens connect, not for
+  what each unbuilt screen does.
+
+---
+
 ## Folder structure
 
 > `items` below is a placeholder feature name — swap it for whatever your real features are (e.g. `orders`, `contacts`, `tasks`...). The layers and rules stay the same regardless of the domain.
 
 ```
-app/                              # Expo Router — ROUTES ONLY, thin files
-├── _layout.tsx
-├── (tabs)/
-│   ├── items/
-│   │   ├── index.tsx             # -> imports ItemListScreen
-│   │   └── [id].tsx              # -> imports ItemDetailScreen
-│   └── settings/
-│       └── index.tsx
-
 src/
+├── app/                          # Expo Router — ROUTES ONLY, thin files
+│   ├── _layout.tsx
+│   └── (tabs)/
+│       ├── items/
+│       │   ├── index.tsx         # -> imports ItemListScreen
+│       │   └── [id].tsx          # -> imports ItemDetailScreen
+│       └── settings/
+│           └── index.tsx
+│
 ├── features/
 │   ├── items/
 │   │   ├── domain/               # Entities, value objects, interfaces (ports)

@@ -82,24 +82,28 @@ and won't catch a module that fails to resolve in the app.
   app bundle, and `npx expo install --check` reports everything correctly aligned
   with SDK 56. So: **never run `npm audit fix --force` here.** Re-check when Expo
   publishes SDK updates that carry the fixes forward.
-- **There is no ESLint at all.** `package.json` has a `lint` script (`expo lint`)
-  but no config and no eslint dependency, so *every* rule in `architecture.md` is
-  convention only — the layering rules `eslint-plugin-boundaries` was meant to
-  enforce, and now the styling rules too. **Decided: set it up with the styling
-  work, covering both** (`eslint-config-expo` + `eslint-plugin-react-native`'s
-  `no-inline-styles` / `no-color-literals`, plus `boundaries`).
-- **The styling architecture is designed but not built.** `architecture.md`
-  ("Styling") specifies design tokens, `Theme`-typed swappable themes, factory
-  style files (`X.styles.ts`) and a memoizing `useThemedStyles`. None of it
-  exists yet: **15 hardcoded colours across 42 usages**, styles declared inline
-  in each component's own file, and no theme. Two symptoms of the gap worth
-  naming, because they are what the design is meant to prevent:
-  - `#0a84ff` (5 uses) and `#007aff` (2) are two near-identical blues nobody
-    decided to have.
-  - `app.json` declares `"userInterfaceStyle": "automatic"`, i.e. the app claims
-    to follow the system's dark mode, while every colour is a light-mode
-    literal. Either the theme work makes that true, or the declaration should be
-    `"light"` until it does.
+- **ESLint runs, but only the base Expo config — the architecture rules are still
+  unenforced.** `eslint.config.js` extends `eslint-config-expo/flat` and nothing
+  else, so the two rule sets `architecture.md` leans on are *not* wired:
+  `eslint-plugin-boundaries` (layering + feature isolation, the "convention until
+  lint enforces it" gap) and `eslint-plugin-react-native`'s `no-inline-styles` /
+  `no-color-literals` (the styling rules). Until those land, both are convention
+  only. **Decided: add both to the existing config** — the base is already in
+  place, so this is extending `eslint.config.js`, not standing ESLint up from
+  scratch. Live proof they're still needed: the theme layer is fully built (see
+  next note) yet a raw literal and an inline style sat in
+  `core/di/DependencyProvider` until they were cleaned up by hand — exactly what
+  `no-color-literals` catches at commit time.
+- **The styling architecture is built; what's missing is the lint that guards it.**
+  `architecture.md` ("Styling") is now implemented end to end: `shared/theme/`
+  holds `palette.ts` (the one file with hex), token scales, `Theme`-typed light /
+  dark / grayscale themes, a memoizing `useThemedStyles`, and factory `X.styles.ts`
+  files colocated with their components; `ThemeProvider` is mounted at the app
+  root and follows the OS colour scheme, so the `"userInterfaceStyle": "automatic"`
+  in `app.json` is now honoured. The contrast suite runs over the theme registry.
+  What remains is not the architecture but its enforcement (the ESLint note above)
+  and the in-app light/dark/system override, which waits on a settings screen (its
+  seam is `ThemeProvider` alone — see the component's own note).
 - **Cache invalidation is one global counter** (`core/providers/StoredDataProvider`).
   Any write bumps it; every reader has it as an effect dependency and recomputes.
   Coarse on purpose — reads are local SQLite queries, so over-recomputing is
@@ -109,6 +113,31 @@ and won't catch a module that fails to resolve in the app.
   nothing to catch it), and every mounted reader refetches on every write. If
   either starts to bite, this provider is the seam a real query cache (TanStack
   Query) replaces.
+- **`OccurrenceProgress` is an untagged union, guarded only by UI routing.** The
+  occurrence carries no `activityType` discriminant (domain-model §5, by design),
+  so which member of `Checklist | Counter | Timer` its `progress` is is known only
+  from the owning activity's type. The write use cases (`logCounterRepetition`,
+  `stopTimer`, `toggleChecklistDone`) each assume their own shape and cast at a
+  named boundary — **safe only as long as the UI routes each activity to the use
+  case matching its type.** Nothing at the domain or persistence layer stops a
+  `CounterProgress` being written for a timer activity; if a screen ever routes
+  wrong, `measure`/projection misread it silently. This is the flip side of the
+  deliberate "no discriminant" choice, not a bug to patch now — but it is the main
+  latent-correctness risk, and it compounds the *"`activityType` is immutable in
+  practice"* open decision below (both are about progress being reinterpreted
+  under the wrong type). Cheapest guard when it earns its place: have each write
+  use case fetch the activity and assert its type before writing (defence in
+  depth), or add the discriminant and drop the casts.
+- **The `.es` doc mirrors drift silently.** `AGENTS.md` requires every doc except
+  this one to stay in sync with its `*.es.md` mirror, but nothing enforces it —
+  and it was already missed once (an `architecture.md` edit that didn't reach
+  `architecture.es.md`). It is the same "convention until something enforces it"
+  gap as the lint rules: a coupling rule ("edit A, also touch B") is exactly what
+  a human or an agent forgets at the moment of editing A. **Recommended guard**: a
+  CI check that fails a PR when a `docs/<name>.md` changes without its
+  `docs/<name>.es.md` changing in the same diff (a few lines of `git diff --name-only`
+  against the merge base). Not built yet; until it is, the rule relies on
+  discipline and will keep drifting.
 - **`useCreateActivity` reads a repository directly** (`goalRepository.findAll()`)
   to fill the goal picker, which breaks dependency rule 4 — `ui/` reaches data
   through use cases only. It's there because no `listGoals` use case exists yet.
@@ -120,12 +149,24 @@ and won't catch a module that fails to resolve in the app.
   type, its validation, and the draft → `CreateActivityInput` mapping, none of
   which is formatting. It wants to be `ui/model/` with the formatter left behind
   in `ui/format/`. Pure rename, no logic change.
-- **`/activity/new` is only reachable from a provisional `+` on the Today
-  screen.** It belongs on the goals screen, which doesn't exist yet (see open
-  decisions).
+- **The management screens have no home yet.** Per the navigation model
+  (`architecture.md` → "Navigation (app shell)"), Today keeps a **profile icon**
+  that opens a hub for everything that isn't "see today" or "create" — settings,
+  stats, goals, calendar. That hub doesn't exist yet, so goals/settings are
+  currently unreachable and `/activity/new` is reached from a **provisional** `+`
+  on Today. The `+` itself is *correct* long-term (create is a primary action, not
+  a hub item); what's provisional is its styling and the absent hub. Building the
+  hub + goals screen is week 1 of `roadmap.md`.
 - **`getDayView` does N+1 queries** — per activity it fetches the goal, the
   schedule timeline, the day's occurrence, and (for quotas) the period's
   occurrences. Fine at demo scale, worth batching when activity counts grow.
+  **The real cliff is the product of this and the global invalidation counter
+  above, not either alone**: because *every* write bumps the counter and *every*
+  mounted reader re-runs its query, a single "log one rep" re-executes this whole
+  N+1 projection for every screen currently mounted. Neither is worth fixing in
+  isolation; the pair is the signal that `StoredDataProvider` should become a real
+  query cache (TanStack Query) with batched, per-key reads — do both at that seam,
+  not piecemeal.
 - **Web bundling fails** inside `expo-sqlite/web` resolving `wa-sqlite.wasm`. A
   web-only packaging quirk; irrelevant while the app is mobile-only, but it means
   `expo export -p web` can't be used as a check.

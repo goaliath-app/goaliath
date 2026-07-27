@@ -52,8 +52,10 @@ export interface DayItem {
  * asks whether the day is due, and resolves what to show, replacing the
  * generated expectation with a persisted occurrence when one exists.
  *
- * Scope for now: **fixed recurrences only**. `quota` needs the day-by-day opt-in
- * step (§4/§8), which is deferred, so quota schedules are skipped here.
+ * Both recurrence families are handled: a **fixed** rule names its due days
+ * (`isDueOn`), while a **quota** never makes a day due — from today onward it is
+ * *offered* as a candidate the user can opt into (§4/§8), and its progress
+ * against the `periodGoal` is scored from the period's occurrences.
  */
 export function buildDay({ day, today, activities }: BuildDayInput): DayItem[] {
   const items: DayItem[] = [];

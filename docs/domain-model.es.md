@@ -546,6 +546,17 @@ Se actualiza de forma incremental cada vez que se crea/edita una
 puede regenerarse por completo en cualquier momento a partir de las fuentes de
 verdad — sigue siendo una caché, no una fuente de verdad nueva.
 
+**El resumen es estrictamente por día; la compleción de un `periodGoal` no se
+guarda aquí.** Que un periodo de `quota` se cumpliera (`completedDays`/`metricSum`,
+§3) es una propiedad del *periodo*, no de ningún día suelto, así que se
+**re-agrega en lectura** a partir de estas filas por día (suma la métrica, o
+cuenta los días completados, sobre el span del periodo) — nunca se materializa
+como campo por día. Un `completionRatio` sobre un único día de quota no significa
+nada y no debe escribirse; las filas de día llevan solo lo que un día realmente
+tiene (su propia métrica y si contó), y la pregunta del periodo se responde
+plegándolas, exactamente como ya hace `quotaPeriodProgress` sobre ocurrencias en
+vivo.
+
 ---
 
 ## 🧠 Resumen mental del sistema

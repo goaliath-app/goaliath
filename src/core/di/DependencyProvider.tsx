@@ -5,9 +5,11 @@ import {
   useState,
   type PropsWithChildren,
 } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
+import { useThemedStyles } from '@/shared/theme';
 import { getDatabase } from '@/shared/infrastructure/db/connection';
 import { createContainer, type Container } from './container';
+import { dependencyProviderStyles } from './DependencyProvider.styles';
 import { bootstrapDatabase } from './migrations';
 import { seedDevData } from './seedDevData';
 
@@ -22,6 +24,7 @@ const DependencyContext = createContext<Container | null>(null);
 export function DependencyProvider({ children }: PropsWithChildren) {
   const [container, setContainer] = useState<Container | null>(null);
   const [error, setError] = useState<Error | null>(null);
+  const styles = useThemedStyles(dependencyProviderStyles);
 
   useEffect(() => {
     let active = true;
@@ -70,8 +73,3 @@ export function useDependencies(): Container {
   }
   return container;
 }
-
-const styles = StyleSheet.create({
-  centered: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  error: { color: '#b00020', paddingHorizontal: 24, textAlign: 'center' },
-});
