@@ -10,10 +10,13 @@ import {
   type TimerProgress,
 } from '../domain/activityTypes/timer';
 import type { ActivityOccurrenceRepository } from '../domain/ports/ActivityOccurrenceRepository';
+import type { ActivityRepository } from '../domain/ports/ActivityRepository';
 import type { ActivityScheduleRepository } from '../domain/ports/ActivityScheduleRepository';
 import type { RunningTimerRepository } from '../domain/ports/RunningTimerRepository';
+import { assertActivityType } from './assertActivityType';
 
 export interface StopTimerDeps {
+  activities: ActivityRepository;
   runningTimers: RunningTimerRepository;
   occurrences: ActivityOccurrenceRepository;
   schedules: ActivityScheduleRepository;
@@ -34,11 +37,14 @@ export function stopTimer(deps: StopTimerDeps) {
     const running = await deps.runningTimers.findByActivityId(activityId);
     if (running === null) return;
 
+    await assertActivityType(deps.activities, activityId, 'timer');
+
     const endedAt = deps.now();
     const day = running.occurrenceDate;
 
     const existing = await deps.occurrences.findByActivityAndDate(activityId, day);
-    // Untagged-progress boundary (§5): safe — only timer activities get here.
+    // Untagged-progress boundary (§5): safe — `assertActivityType` above refuses
+    // any non-timer activity before we read progress as a timer's.
     const priorProgress = existing?.progress as Partial<TimerProgress> | undefined;
     const nextProgress = appendInterval(
       { intervals: priorProgress?.intervals ?? [] },

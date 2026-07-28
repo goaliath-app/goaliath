@@ -1,5 +1,5 @@
 import type { SqlDatabase } from '@/shared/infrastructure/db/SqlDatabase';
-import type { Activity } from '../domain/Activity';
+import type { Activity, ActivityId } from '../domain/Activity';
 import type { ActivityRepository } from '../domain/ports/ActivityRepository';
 import { toActivity, type ActivityRow } from './mappers/ActivityMapper';
 import type { StatusPeriodRow } from './mappers/StatusPeriodMapper';
@@ -11,6 +11,21 @@ interface ActivityStatusPeriodRow extends StatusPeriodRow {
 /** SQLite adapter for `ActivityRepository`. */
 export class SqliteActivityRepository implements ActivityRepository {
   constructor(private readonly database: SqlDatabase) {}
+
+  async findById(id: ActivityId): Promise<Activity | null> {
+    const row = await this.database.getFirstAsync<ActivityRow>(
+      'SELECT id, goal_id, title, description, activity_type FROM activities WHERE id = ?',
+      id,
+    );
+    if (row === null) return null;
+
+    const periodRows = await this.database.getAllAsync<StatusPeriodRow>(
+      // Ascending order: the status-timeline invariant (§0), same as findAll.
+      'SELECT status, from_day FROM activity_status_periods WHERE activity_id = ? ORDER BY from_day',
+      id,
+    );
+    return toActivity(row, periodRows);
+  }
 
   async findAll(): Promise<Activity[]> {
     const activityRows = await this.database.getAllAsync<ActivityRow>(

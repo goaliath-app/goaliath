@@ -5,8 +5,10 @@ import {
   asActivityId,
   asDay,
   asScheduleId,
+  buildActivity,
   buildDailyCounterSchedule,
   InMemoryActivityOccurrenceRepository,
+  InMemoryActivityRepository,
   InMemoryActivityScheduleRepository,
   InMemoryRunningTimerRepository,
 } from '../support/trackingFakes';
@@ -32,6 +34,10 @@ const setup = (dayGoalSeconds: number, clockStart = '2024-06-15T07:00:00Z') => {
   const runningTimers = new InMemoryRunningTimerRepository();
   const occurrences = new InMemoryActivityOccurrenceRepository();
   const deps = {
+    activities: new InMemoryActivityRepository([
+      buildActivity({ activityType: 'timer' }),
+      buildActivity({ id: otherActivityId, activityType: 'timer' }),
+    ]),
     runningTimers,
     occurrences,
     schedules: new InMemoryActivityScheduleRepository([

@@ -32,6 +32,14 @@ The create flow is now closed end to end too: a form at `/activity/new` creates
 an activity and, optionally, its goal in the same transaction. **The app no
 longer depends on the dev seed to have data.**
 
+Navigation now matches the app-shell model: Today carries a **profile hub** icon
+(top-left → `/profile`) and keeps Create as a primary action (`+`). The hub is
+its own ui-only `profile` feature and navigates by route path, so it imports no
+other feature. Its first item opens the **goals screen** (`/goals`) — an
+accordion of goals expanding to their activities, read-only for now (pause/resume
+is week 2). Both screens read through the application layer (`listGoals`,
+`getGoalsOverview`).
+
 All user-facing text goes through `react-i18next` (`shared/i18n`), with `es` as
 the source language and `en` mirroring it. Keys are typed via `CustomTypeOptions`,
 so a wrong key fails `tsc` rather than rendering itself on screen.
@@ -94,6 +102,21 @@ and won't catch a module that fails to resolve in the app.
   next note) yet a raw literal and an inline style sat in
   `core/di/DependencyProvider` until they were cleaned up by hand — exactly what
   `no-color-literals` catches at commit time.
+  **Deferred once, on purpose.** A first pass wired `eslint-plugin-boundaries@7`
+  + `eslint-plugin-react-native@5` and confirmed the *current code has zero
+  violations* — the layering and styling conventions already hold. It was backed
+  out because boundaries v7 renamed the rule (`element-types` → `dependencies`,
+  `rules` → `policies`, `${…}` → `{{…}}`) and the legacy syntax only runs with
+  deprecation warnings; landing it cleanly means writing v7 `policies` with
+  capture-based same-feature selectors and *validating each one against an
+  injected violation* (a mis-written selector silently disables a boundary, which
+  is worse than no rule). Do it together with CI so the check that enforces it and
+  the config it runs land as one piece. Two pre-existing **base-config** findings
+  surfaced while it was on and will need a decision when CI turns lint red:
+  `react-hooks/set-state-in-effect` on the `void load()` reader effect (used by
+  every read hook — likely a rule-level exception, the pattern is intentional),
+  and `import/no-unresolved` for `node:sqlite` in the test support file (a
+  resolver setting). Neither is caused by the architecture rules.
 - **The styling architecture is built; what's missing is the lint that guards it.**
   `architecture.md` ("Styling") is now implemented end to end: `shared/theme/`
   holds `palette.ts` (the one file with hex), token scales, `Theme`-typed light /
@@ -113,21 +136,21 @@ and won't catch a module that fails to resolve in the app.
   nothing to catch it), and every mounted reader refetches on every write. If
   either starts to bite, this provider is the seam a real query cache (TanStack
   Query) replaces.
-- **`OccurrenceProgress` is an untagged union, guarded only by UI routing.** The
-  occurrence carries no `activityType` discriminant (domain-model §5, by design),
-  so which member of `Checklist | Counter | Timer` its `progress` is is known only
-  from the owning activity's type. The write use cases (`logCounterRepetition`,
-  `stopTimer`, `toggleChecklistDone`) each assume their own shape and cast at a
-  named boundary — **safe only as long as the UI routes each activity to the use
-  case matching its type.** Nothing at the domain or persistence layer stops a
-  `CounterProgress` being written for a timer activity; if a screen ever routes
-  wrong, `measure`/projection misread it silently. This is the flip side of the
-  deliberate "no discriminant" choice, not a bug to patch now — but it is the main
-  latent-correctness risk, and it compounds the *"`activityType` is immutable in
-  practice"* open decision below (both are about progress being reinterpreted
-  under the wrong type). Cheapest guard when it earns its place: have each write
-  use case fetch the activity and assert its type before writing (defence in
-  depth), or add the discriminant and drop the casts.
+- **`OccurrenceProgress` is an untagged union (domain-model §5, by design), now
+  guarded at the write path.** The occurrence carries no `activityType`
+  discriminant, so which member of `Checklist | Counter | Timer` its `progress`
+  is is known only from the owning activity's type, and each write use case
+  assumes its own shape and casts at a named boundary. Each one
+  (`toggleChecklistDone`, `logCounterRepetition`, `startTimer`, `stopTimer`) now
+  calls `assertActivityType` (`application/assertActivityType.ts`) first — it
+  loads the activity via `ActivityRepository.findById` and throws if the type
+  isn't the one the caller routed to, so a mis-routed screen fails loudly instead
+  of writing progress the projection later misreads silently. The cast stays as
+  defence against a missing field, but the latent-correctness risk is closed
+  here. What the guard does **not** cover is the *"`activityType` is immutable in
+  practice"* open decision below: a type *change* would reinterpret existing
+  progress, a different problem. Adding the discriminant and dropping the casts is
+  still on the table if editing ever makes the type mutable.
 - **The `.es` doc mirrors drift silently.** `AGENTS.md` requires every doc except
   this one to stay in sync with its `*.es.md` mirror, but nothing enforces it —
   and it was already missed once (an `architecture.md` edit that didn't reach
@@ -138,25 +161,15 @@ and won't catch a module that fails to resolve in the app.
   `docs/<name>.es.md` changing in the same diff (a few lines of `git diff --name-only`
   against the merge base). Not built yet; until it is, the rule relies on
   discipline and will keep drifting.
-- **`useCreateActivity` reads a repository directly** (`goalRepository.findAll()`)
-  to fill the goal picker, which breaks dependency rule 4 — `ui/` reaches data
-  through use cases only. It's there because no `listGoals` use case exists yet.
-  The fix is small and obvious: add one in `application/`, export it from the
-  feature barrel, and have the hook call that instead. This is exactly the kind of
-  drift `eslint-plugin-boundaries` (above) would have caught at commit time.
-- **The create form's draft model lives in `ui/format/activityDraft.ts`**, next to
-  the preview formatter. `format/` is the wrong name for it: it holds the draft
-  type, its validation, and the draft → `CreateActivityInput` mapping, none of
-  which is formatting. It wants to be `ui/model/` with the formatter left behind
-  in `ui/format/`. Pure rename, no logic change.
-- **The management screens have no home yet.** Per the navigation model
-  (`architecture.md` → "Navigation (app shell)"), Today keeps a **profile icon**
-  that opens a hub for everything that isn't "see today" or "create" — settings,
-  stats, goals, calendar. That hub doesn't exist yet, so goals/settings are
-  currently unreachable and `/activity/new` is reached from a **provisional** `+`
-  on Today. The `+` itself is *correct* long-term (create is a primary action, not
-  a hub item); what's provisional is its styling and the absent hub. Building the
-  hub + goals screen is week 1 of `roadmap.md`.
+- **The goals screen is read-only until pause/resume lands (roadmap week 2).**
+  The `profile` hub (top-left on Today → `/profile`) and the `GoalsScreen`
+  accordion (`/goals`) now exist, so goals and their activities are reachable
+  without the dev seed, and `listGoals` / `getGoalsOverview` feed them through the
+  application layer (rule 4 respected). What's missing is *acting* on them:
+  pausing, resuming and archiving a goal or activity from that screen, which is
+  where the `StatusPeriod` same-day fix has to land first (both are week 2). The
+  hub lists only Goals today; settings and stats become items as those features
+  arrive.
 - **`getDayView` does N+1 queries** — per activity it fetches the goal, the
   schedule timeline, the day's occurrence, and (for quotas) the period's
   occurrences. Fine at demo scale, worth batching when activity counts grow.
@@ -282,15 +295,18 @@ closed the app and confirmed it resumes.
 
 ## Next
 
-**The goals/activities screen** — the last screen the app needs to be usable
-without the dev seed, and the natural home for the `+` that currently sits on
-Today. Its shape is still open (see open decisions), but two things are settled:
-it is a *management* surface rather than the daily driver, and now that
-activities can be created, the decision can be made against real data instead of
-in the abstract.
+**Lifecycle: pause / resume / archive** (roadmap week 2). The goals screen shows
+status but can't yet change it. The blocker to clear first is the `StatusPeriod`
+same-day fix (see Technical debt) — a domain op that keeps one entry per logical
+day, most recent wins — without which pausing then resuming on the same day
+violates the primary key. Then wire pause/resume/archive from the goals screen
+(the §0 cascade is already in the domain) and pin the aggregate `save`
+transactional contract with a test.
 
-The two small cleanups above (`listGoals` use case, `ui/format` → `ui/model`)
-are worth folding into that work rather than doing on their own — the same hook
-and directory get touched either way.
+Still open from week 1 and deliberately paused: **real ESLint** (boundaries + RN
+style rules) — land it with **CI** so the config and the check that runs it ship
+together (see the ESLint entry in Technical debt for the v7-syntax caveat).
 
-After that: the `Task` feature (§6), then stats / `DailyStatsSummary` (§12).
+After that: `settings` feature + forward-only cutoff (week 3), then day-outcome
+(D3) / timer cap (D4) / `Task` (§6) (week 4), then stats / `DailyStatsSummary`
+(§12).

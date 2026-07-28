@@ -3,10 +3,15 @@ import type { CounterProgress } from '@/features/tracking/domain/activityTypes/c
 import {
   asActivityId,
   asDay,
+  buildActivity,
   buildDailyCounterSchedule,
   InMemoryActivityOccurrenceRepository,
+  InMemoryActivityRepository,
   InMemoryActivityScheduleRepository,
 } from '../support/trackingFakes';
+
+const counterActivities = () =>
+  new InMemoryActivityRepository([buildActivity({ activityType: 'counter' })]);
 
 const activityId = asActivityId('activity-1');
 const day = asDay('2024-06-15');
@@ -15,6 +20,7 @@ const at = (iso: string) => () => new Date(iso);
 const setup = (dayGoal: number, now = at('2024-06-15T09:00:00Z')) => {
   const occurrences = new InMemoryActivityOccurrenceRepository();
   const log = logCounterRepetition({
+    activities: counterActivities(),
     schedules: new InMemoryActivityScheduleRepository([
       buildDailyCounterSchedule(dayGoal),
     ]),
@@ -54,12 +60,15 @@ describe('logCounterRepetition', () => {
     const schedules = new InMemoryActivityScheduleRepository([
       buildDailyCounterSchedule(1),
     ]);
+    const activities = counterActivities();
     const firstLog = logCounterRepetition({
+      activities,
       schedules,
       occurrences,
       now: at('2024-06-15T09:00:00Z'),
     });
     const laterLog = logCounterRepetition({
+      activities,
       schedules,
       occurrences,
       now: at('2024-06-15T18:00:00Z'),

@@ -5,11 +5,14 @@ import {
   type ActivityOccurrence,
 } from '../domain/ActivityOccurrence';
 import type { ActivityOccurrenceRepository } from '../domain/ports/ActivityOccurrenceRepository';
+import type { ActivityRepository } from '../domain/ports/ActivityRepository';
 import type { ActivityScheduleRepository } from '../domain/ports/ActivityScheduleRepository';
 import { scheduleOn } from '../domain/ActivitySchedule';
 import { emptyChecklistProgress } from '../domain/activityTypes/checklist';
+import { assertActivityType } from './assertActivityType';
 
 export interface ToggleChecklistDoneDeps {
+  activities: ActivityRepository;
   schedules: ActivityScheduleRepository;
   occurrences: ActivityOccurrenceRepository;
   now: () => Date;
@@ -29,6 +32,8 @@ export function toggleChecklistDone(deps: ToggleChecklistDoneDeps) {
     activityId: ActivityId;
     day: CalendarDay;
   }): Promise<void> => {
+    await assertActivityType(deps.activities, activityId, 'checklist');
+
     const existing = await deps.occurrences.findByActivityAndDate(activityId, day);
 
     if (existing !== null && existing.status === 'done') {

@@ -54,16 +54,16 @@ on Today: settings, stats, goals, a calendar, account… Stack + hub, not tabs.
 **Goal:** the app is usable without the dev seed, reached through the real
 navigation, and tooling stops relying on discipline.
 
-- [ ] **Profile hub screen** (app-shell level) + a **top-left icon on Today** that opens it. Thin: a list of items that navigate. First item wired: Goals. (Settings/stats items follow.)
-- [ ] Keep **Create** as a primary action on Today (a `+`, presented modally) — it is *not* moved into the hub. This supersedes the old implementation-notes plan to move `+` onto the goals screen.
-- [ ] `GoalsScreen` as an **accordion** (D1) in the `tracking` feature + a thin top-level route `src/app/goals.tsx`, reached **from the hub** by route path (`/goals`).
-- [ ] `listGoals` use case in `application/` + barrel export → the hook stops reading `goalRepository.findAll()` directly (**closes the rule-4 violation**).
-- [ ] Rename `ui/format/activityDraft.ts` → `ui/model/` (formatter stays in `ui/format/`). Pure rename.
-- [ ] **Write-path type guard (B):** each write use case validates the `activityType` before writing → silent corruption becomes a loud error.
-- [ ] **Real ESLint:** add `eslint-plugin-boundaries` + `react-native/no-inline-styles`/`no-color-literals` to `eslint.config.js`.
+- [x] **Profile hub screen** (app-shell level) + a **top-left icon on Today** that opens it. Thin: a list of items that navigate. First item wired: Goals. (Settings/stats items follow.) — `features/profile`, route `src/app/profile.tsx`.
+- [x] Keep **Create** as a primary action on Today (a `+`) — it is *not* moved into the hub. This supersedes the old implementation-notes plan to move `+` onto the goals screen.
+- [x] `GoalsScreen` as an **accordion** (D1) in the `tracking` feature + a thin top-level route `src/app/goals.tsx`, reached **from the hub** by route path (`/goals`). Backed by a `getGoalsOverview` read use case.
+- [x] `listGoals` use case in `application/` + barrel export → the hook stops reading `goalRepository.findAll()` directly (**closes the rule-4 violation**).
+- [x] Rename `ui/format/activityDraft.ts` → `ui/model/` (formatter stays in `ui/format/`). Pure rename.
+- [x] **Write-path type guard (B):** each write use case validates the `activityType` before writing → silent corruption becomes a loud error. `application/assertActivityType.ts` + `ActivityRepository.findById`.
+- [ ] **Real ESLint:** add `eslint-plugin-boundaries` + `react-native/no-inline-styles`/`no-color-literals` to `eslint.config.js`. *Attempted and backed out — land with CI (boundaries v7 needs `policies`/`dependencies` syntax, validated against injected violations; see implementation-notes).*
 - [ ] **Stand up CI** (appendix): test + tsc + lint + `.es` mirror guard.
 
-**Done:** navigate goals↔activities and create from there; lint and CI block deep imports, raw colours and drifted docs; green.
+**Done (except lint + CI):** navigate goals↔activities and create from there; green. Lint and CI (block deep imports, raw colours, drifted docs) move forward together.
 
 ---
 

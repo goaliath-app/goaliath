@@ -1,4 +1,4 @@
-import { emptyActivityDraft, type ActivityDraft } from '../../ui/format/activityDraft';
+import { emptyActivityDraft, type ActivityDraft } from '../../ui/model/activityDraft';
 import {
   describeActivityDraft,
   type Translate,

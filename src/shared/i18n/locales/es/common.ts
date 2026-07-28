@@ -7,6 +7,23 @@ export default {
     title: 'Hoy',
     empty: 'No tienes nada para hoy.',
     newActivity: 'Nueva actividad',
+    menu: 'Menú',
+  },
+  profile: {
+    title: 'Perfil',
+    goalsLabel: 'Objetivos',
+    goalsHint: 'Tus objetivos y sus actividades',
+  },
+  goals: {
+    title: 'Objetivos',
+    empty: 'Aún no tienes objetivos. Crea una actividad para empezar.',
+    activitiesEmpty: 'Sin actividades',
+  },
+  back: 'Atrás',
+  status: {
+    active: 'Activo',
+    paused: 'En pausa',
+    archived: 'Archivado',
   },
   activityRow: {
     periodProgress: '{{current}} de {{target}} este periodo',

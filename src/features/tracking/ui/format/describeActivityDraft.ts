@@ -3,7 +3,7 @@ import {
   metricOf,
   parsePositiveInteger,
   type ActivityDraft,
-} from './activityDraft';
+} from '../model/activityDraft';
 import { formatDurationWords } from './duration';
 
 /**

@@ -14,10 +14,11 @@ export const todayScreenStyles = (theme: Theme) =>
       paddingHorizontal: theme.spacing.lg,
       backgroundColor: theme.colors.background,
     },
-    header: {
+    topBar: {
       flexDirection: 'row',
-      alignItems: 'flex-start',
+      alignItems: 'center',
       justifyContent: 'space-between',
+      marginBottom: theme.spacing.lg,
     },
     title: {
       ...theme.typography.display,
@@ -29,7 +30,7 @@ export const todayScreenStyles = (theme: Theme) =>
       marginTop: theme.spacing.xs,
       marginBottom: theme.spacing.lg,
     },
-    add: {
+    iconButton: {
       width: 44,
       height: 44,
       borderRadius: theme.radius.full,
@@ -37,7 +38,7 @@ export const todayScreenStyles = (theme: Theme) =>
       justifyContent: 'center',
       backgroundColor: theme.colors.surfaceSunken,
     },
-    addText: {
+    iconText: {
       ...theme.typography.title,
       color: theme.colors.text.primary,
       lineHeight: 32,

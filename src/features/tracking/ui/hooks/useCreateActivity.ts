@@ -5,6 +5,7 @@ import {
   useStoredDataRevision,
 } from '@/core/providers/StoredDataProvider';
 import { createActivity } from '../../application/createActivity';
+import { listGoals } from '../../application/listGoals';
 import type { Goal } from '../../domain/Goal';
 import { statusOn } from '../../domain/StatusPeriod';
 import {
@@ -14,7 +15,7 @@ import {
 import {
   buildCreateActivityInput,
   type ActivityDraft,
-} from '../format/activityDraft';
+} from '../model/activityDraft';
 
 export interface GoalOption {
   goal: Goal;
@@ -60,7 +61,7 @@ export function useCreateActivity() {
     let active = true;
     void (async () => {
       const today = getCalendarDay(deps.now(), deps.dayStartHour);
-      const loaded = await deps.goalRepository.findAll();
+      const loaded = await listGoals({ goals: deps.goalRepository })();
       if (!active) return;
       setGoals(
         loaded

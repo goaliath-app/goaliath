@@ -24,7 +24,7 @@ import {
     type PeriodGoalAggregate,
     type QuotaPeriod,
     type RecurrenceChoice,
-} from '../../format/activityDraft';
+} from '../../model/activityDraft';
 import {
     describeActivityDraft,
     type Translate,

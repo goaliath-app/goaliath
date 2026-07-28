@@ -23,6 +23,8 @@ export { SqliteRunningTimerRepository } from './infrastructure/SqliteRunningTime
 
 // Use cases.
 export { getDayView } from './application/getDayView';
+export { listGoals } from './application/listGoals';
+export { getGoalsOverview } from './application/getGoalsOverview';
 export { toggleChecklistDone } from './application/toggleChecklistDone';
 export { logCounterRepetition } from './application/logCounterRepetition';
 export { createGoal } from './application/createGoal';

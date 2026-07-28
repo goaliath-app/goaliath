@@ -2,9 +2,11 @@ import { toggleChecklistDone } from '@/features/tracking/application/toggleCheck
 import {
   asActivityId,
   asDay,
+  buildActivity,
   buildDailyChecklistSchedule,
   buildQuotaWeekSchedule,
   InMemoryActivityOccurrenceRepository,
+  InMemoryActivityRepository,
   InMemoryActivityScheduleRepository,
 } from '../support/trackingFakes';
 
@@ -14,6 +16,9 @@ const at = (iso: string) => () => new Date(iso);
 
 const setup = (occurrences = new InMemoryActivityOccurrenceRepository()) => {
   const deps = {
+    activities: new InMemoryActivityRepository([
+      buildActivity({ activityType: 'checklist' }),
+    ]),
     schedules: new InMemoryActivityScheduleRepository([
       buildDailyChecklistSchedule(),
     ]),
@@ -48,6 +53,9 @@ describe('toggleChecklistDone', () => {
   it('records a quota day as an opt-in, not as a recurrence-generated day', async () => {
     const occurrences = new InMemoryActivityOccurrenceRepository();
     const toggle = toggleChecklistDone({
+      activities: new InMemoryActivityRepository([
+        buildActivity({ activityType: 'checklist' }),
+      ]),
       schedules: new InMemoryActivityScheduleRepository([
         buildQuotaWeekSchedule(3),
       ]),

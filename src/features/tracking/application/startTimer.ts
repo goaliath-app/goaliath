@@ -1,5 +1,6 @@
 import type { CalendarDay } from '@/shared/domain/time/CalendarDay';
 import type { ActivityId } from '../domain/Activity';
+import { assertActivityType } from './assertActivityType';
 import { stopTimer, type StopTimerDeps } from './stopTimer';
 
 /**
@@ -31,6 +32,8 @@ export function startTimer(deps: StartTimerDeps) {
     activityId: ActivityId;
     day: CalendarDay;
   }): Promise<void> => {
+    await assertActivityType(deps.activities, activityId, 'timer');
+
     if (ENFORCE_SINGLE_TIMER) {
       for (const running of await deps.runningTimers.findAll()) {
         await stop({ activityId: running.activityId });

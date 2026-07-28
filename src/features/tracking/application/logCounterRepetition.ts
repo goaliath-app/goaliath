@@ -5,6 +5,7 @@ import {
   type ActivityOccurrence,
 } from '../domain/ActivityOccurrence';
 import type { ActivityOccurrenceRepository } from '../domain/ports/ActivityOccurrenceRepository';
+import type { ActivityRepository } from '../domain/ports/ActivityRepository';
 import type { ActivityScheduleRepository } from '../domain/ports/ActivityScheduleRepository';
 import { scheduleOn } from '../domain/ActivitySchedule';
 import {
@@ -12,8 +13,10 @@ import {
   isCounterComplete,
   type CounterProgress,
 } from '../domain/activityTypes/counter';
+import { assertActivityType } from './assertActivityType';
 
 export interface LogCounterRepetitionDeps {
+  activities: ActivityRepository;
   schedules: ActivityScheduleRepository;
   occurrences: ActivityOccurrenceRepository;
   now: () => Date;
@@ -26,9 +29,9 @@ export interface LogCounterRepetitionDeps {
  * status is set to `done` the moment the rep count reaches the goal (§3, §5).
  *
  * The `progress as CounterProgress` read is the untagged-progress boundary
- * (occurrences carry no type discriminant, §5): safe because the caller only
- * routes counter activities here. It defends against a missing field so a
- * mis-typed occurrence can't crash the spread.
+ * (occurrences carry no type discriminant, §5): safe because `assertActivityType`
+ * refuses a non-counter activity up front, and it still defends against a missing
+ * field so a mis-typed occurrence can't crash the spread.
  */
 export function logCounterRepetition(deps: LogCounterRepetitionDeps) {
   return async ({
@@ -38,6 +41,8 @@ export function logCounterRepetition(deps: LogCounterRepetitionDeps) {
     activityId: ActivityId;
     day: CalendarDay;
   }): Promise<void> => {
+    await assertActivityType(deps.activities, activityId, 'counter');
+
     const existing = await deps.occurrences.findByActivityAndDate(activityId, day);
     const priorProgress = existing?.progress as Partial<CounterProgress> | undefined;
     const currentProgress: CounterProgress = {

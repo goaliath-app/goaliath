@@ -7,7 +7,7 @@ import {
   parsePositiveInteger,
   validateActivityDraft,
   type ActivityDraft,
-} from '../../ui/format/activityDraft';
+} from '../../ui/model/activityDraft';
 
 const GOAL_ID = 'goal-1' as GoalId;
 

@@ -108,6 +108,24 @@ describe('creating an activity with a new goal', () => {
     expect(schedule.periodGoal).toBeNull();
   });
 
+  it('loads a single activity by id with its status timeline', async () => {
+    const activity = await createActivity(deps)({
+      goal: { kind: 'new', title: 'Health' },
+      title: 'Meditate',
+      activityType: 'checklist',
+      recurrenceRule: { kind: 'daily' },
+      dayGoal: null,
+      periodGoal: null,
+    });
+
+    const loaded = await deps.activities.findById(activity.id);
+    expect(loaded).toEqual(activity);
+    expect(loaded?.statusPeriods).toEqual([
+      { status: 'active', from: '2024-06-15' },
+    ]);
+    expect(await deps.activities.findById(asActivityId('ghost'))).toBeNull();
+  });
+
   it('persists a quota schedule with its period goal (JSON round-trip)', async () => {
     const activity = await createActivity(deps)({
       goal: { kind: 'new', title: 'Health' },

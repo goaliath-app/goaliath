@@ -4,6 +4,23 @@ export default {
     title: 'Today',
     empty: 'Nothing scheduled for today.',
     newActivity: 'New activity',
+    menu: 'Menu',
+  },
+  profile: {
+    title: 'Profile',
+    goalsLabel: 'Goals',
+    goalsHint: 'Your goals and their activities',
+  },
+  goals: {
+    title: 'Goals',
+    empty: 'No goals yet. Create an activity to get started.',
+    activitiesEmpty: 'No activities',
+  },
+  back: 'Back',
+  status: {
+    active: 'Active',
+    paused: 'Paused',
+    archived: 'Archived',
   },
   activityRow: {
     periodProgress: '{{current}} of {{target}} this period',

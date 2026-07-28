@@ -106,6 +106,9 @@ export class InMemoryGoalRepository implements GoalRepository {
 
 export class InMemoryActivityRepository implements ActivityRepository {
   constructor(private readonly activities: Activity[] = []) {}
+  async findById(id: ActivityId): Promise<Activity | null> {
+    return this.activities.find((activity) => activity.id === id) ?? null;
+  }
   async findAll(): Promise<Activity[]> {
     return this.activities;
   }

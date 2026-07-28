@@ -69,6 +69,7 @@ export function useTodayView() {
 
   const actions = useMemo<TodayActions>(() => {
     const writeDeps = {
+      activities: deps.activityRepository,
       schedules: deps.activityScheduleRepository,
       occurrences: deps.activityOccurrenceRepository,
       now: deps.now,

@@ -20,23 +20,31 @@ export function TodayScreen() {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>{t('today.title')}</Text>
-          <Text style={styles.date}>{today}</Text>
-        </View>
-        {/* Provisional entry point: the create form is reachable from here until
-            the goals screen exists to host it. */}
+      <View style={styles.topBar}>
+        {/* Profile hub (top-left): everything that isn't "see today" or
+            "create" lives behind here — goals, settings, stats. */}
+        <Link href="/profile" asChild>
+          <Pressable
+            style={styles.iconButton}
+            accessibilityRole="button"
+            accessibilityLabel={t('today.menu')}
+          >
+            <Text style={styles.iconText}>☰</Text>
+          </Pressable>
+        </Link>
+        {/* Create is a primary action, not a hub item (navigation model). */}
         <Link href="/activity/new" asChild>
           <Pressable
-            style={styles.add}
+            style={styles.iconButton}
             accessibilityRole="button"
             accessibilityLabel={t('today.newActivity')}
           >
-            <Text style={styles.addText}>+</Text>
+            <Text style={styles.iconText}>+</Text>
           </Pressable>
         </Link>
       </View>
+      <Text style={styles.title}>{t('today.title')}</Text>
+      <Text style={styles.date}>{today}</Text>
 
       {items === null ? (
         <View style={styles.centered}>
