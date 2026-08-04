@@ -7,7 +7,7 @@
 ## Índice
 
 - [Contexto y objetivo](#contexto-y-objetivo)
-- [Punto clave: Expo Router vs. la carpeta `app/`](#punto-clave-expo-router-vs-la-carpeta-app)
+- [Expo Router](#expo-router)
 - [Navegación (shell de la app)](#navegación-shell-de-la-app)
 - [Estructura de carpetas](#estructura-de-carpetas)
 - [Reglas de dependencia (las que no se rompen)](#reglas-de-dependencia-las-que-no-se-rompen)
@@ -20,15 +20,11 @@
 - [Convenciones de nombres](#convenciones-de-nombres)
 - [Errores de dominio: base compartida vs. específicos de feature](#errores-de-dominio-base-compartida-vs-específicos-de-feature)
 - [Migraciones de base de datos: orden centralizado, contenido propiedad del feature](#migraciones-de-base-de-datos-orden-centralizado-contenido-propiedad-del-feature)
-- [Inyección de dependencias: un mecanismo concreto](#inyección-de-dependencias-un-mecanismo-concreto)
-- [Forzar el aislamiento de features (lint, no solo convención)](#forzar-el-aislamiento-de-features-lint-no-solo-convención)
 - [Estilos: tokens, temas y dónde viven](#estilos-tokens-temas-y-dónde-viven)
-  - [Por qué los estilos son una función y no una constante](#por-qué-los-estilos-son-una-función-y-no-una-constante)
   - [Estructura](#estructura)
   - [Qué hace barato añadir un tema](#qué-hace-barato-añadir-un-tema)
   - [Dónde está la raya en "sin estilos inline"](#dónde-está-la-raya-en-sin-estilos-inline)
 - [Testing](#testing)
-- [Decisiones abiertas de tooling y arquitectura](#decisiones-abiertas-de-tooling-y-arquitectura)
 - [Checklist rápida antes de hacer commit](#checklist-rápida-antes-de-hacer-commit)
 
 ---
@@ -43,9 +39,9 @@ Este documento asume una arquitectura **hexagonal / puertos y adaptadores** apli
 
 ---
 
-## Punto clave: Expo Router vs. la carpeta `app/`
+## Expo Router
 
-Expo Router usa una carpeta dedicada para el routing basado en ficheros. En este proyecto la mantenemos en **`src/app/`** (Expo Router admite tanto `app/` en la raíz del repo como `src/app/`; tomamos la variante `src/` para que *todo* el código propio viva bajo una única raíz). **No la usamos para nada más.** Esto cambia la estructura típica de otros proyectos RN:
+Expo Router usa una carpeta dedicada para el routing basado en ficheros. En este proyecto la mantenemos en **`src/app/`**. **No la usamos para nada más.** Esto cambia la estructura típica de otros proyectos RN:
 
 - `src/app/` → **solo rutas**. Cada fichero es una pantalla fina que importa y renderiza un componente de `src/features/*/ui/screens`.
 - Todo el resto de la lógica real (domain, use cases, infraestructura, componentes, hooks) vive en otras partes de `src/`.
@@ -65,75 +61,19 @@ export default function Page() {
 
 ## Navegación (shell de la app)
 
-La app tiene exactamente **dos superficies primarias** — las que se alcanzan a
-diario sin abrir un menú:
+La app tiene exactamente **dos superficies primarias** — las que se alcanzan a diario sin abrir un menú:
 
 1. **Hoy** (`src/app/index.tsx`) — lo que toca ahora. La pantalla de inicio.
-2. **Crear** una actividad/goal — una acción primaria disponible desde Hoy (p. ej.
-   un `+`), deliberadamente *no* enterrada en un menú.
+2. **Crear** una actividad/goal — una acción primaria disponible desde Hoy (p. ej. un `+`), deliberadamente *no* enterrada en un menú.
 
-Todo lo demás es **gestión**, y se alcanza a través de un único **hub de perfil**
-que se abre desde un icono arriba a la izquierda en Hoy: settings, stats, la
-pantalla de goals/actividades, un calendario, cuenta… El hub es una pantalla-menú
-fina — solo navega y no contiene lógica de ninguna feature. Un nuevo destino de
-gestión es un item más en él, nunca otra superficie primaria.
+Todo lo demás es **gestión**, y se alcanza a través de un único **hub de perfil** que se abre desde un icono arriba a la izquierda en Hoy: settings, stats, la pantalla de goals/actividades, un calendario, cuenta… El hub es una pantalla-menú fina — solo navega y no contiene lógica de ninguna feature. Un nuevo destino de gestión es un item más en él, nunca otra superficie primaria. Esta app no usa un navegador de tabs.
 
-**Stack + hub, no tabs.** El producto es Hoy-céntrico: una superficie diaria más
-un menú de las ocasionales. Unas tabs inferiores darían el mismo peso a pantallas
-que se visitan poco y diluirían la que importa; un stack con hub mantiene Hoy en el
-centro y deja crecer el menú sin rediseño. (El grupo `(tabs)` del árbol ilustrativo
-de abajo es solo el ejemplo de nomenclatura del propio Expo Router — esta app no
-usa un navegador de tabs.)
-
-**Estructura de rutas** (solo rutas finas — ver las reglas de `app/` arriba):
-
-```
-src/app/                     # rutas: un fichero fino por pantalla de feature (plano)
-├── _layout.tsx              # Stack raíz + providers globales (core/)
-├── index.tsx               # -> TodayScreen        (tracking)  — inicio
-├── profile.tsx             # -> ProfileScreen      (profile)   — el hub
-├── settings.tsx            # -> SettingsScreen     (settings)
-├── goals.tsx               # -> GoalsScreen        (tracking)
-├── stats.tsx               # -> StatsScreen        (stats)
-├── calendar.tsx            # -> CalendarScreen     (calendar)
-└── activity/
-    └── new.tsx             # -> ActivityFormScreen (tracking)  — modal
-```
-
-- **Rutas planas, no anidadas bajo el hub.** Settings, stats, goals y calendario
-  son **hermanas alcanzadas *a través* del menú del perfil, no hijas de él**, así
-  que sus rutas van al primer nivel (`/settings`, `/goals`…), cada una un fichero
-  fino propiedad de su feature — nunca bajo `/profile/…`. Esto mantiene la
-  **jerarquía de rutas** (el árbol de URLs) desacoplada del **grafo de navegación**
-  (quién enlaza con quién): que el perfil sea hoy la puerta a settings es una
-  decisión expresada en los enlaces del hub, no una estructura grabada en las rutas.
-  Así, cuando Hoy quiera más adelante un atajo directo a stats, enlaza a `/stats` —
-  sin mover ninguna ruta. Solo una familia padre/hijo real se queda anidada
-  (`activity/new`, luego `activity/[id]`).
-- **Dónde vive el hub — *es* una feature.** Toda pantalla que el usuario abre es la
-  `ui/screens` de una feature (esa es la regla dura de que las rutas de `app/` solo
-  importan de `ui/screens`); `shared/ui` es para widgets genéricos, no pantallas, y
-  solo el shell de la app (`_layout.tsx` + providers globales, en `core/`) queda
-  fuera de una feature. Así que el hub es su propia pequeña **feature `profile`**,
-  recortada a solo `ui/` — hoy no tiene dominio ni datos, y es donde crecerá una
-  pantalla de cuenta/perfil cuando los tenga. Alcanza los demás destinos **por ruta**
-  (`router.push('/profile/settings')`), **nunca importando su código**, así que el
-  aislamiento entre features (regla 5) no se toca: un string de ruta no es un import
-  entre features. Cada ruta sigue renderizando la pantalla de su propia feature a
-  través de su `index.ts` público.
-- **Presentación:** los destinos de gestión hacen **push** en el stack (atrás vuelve
-  por el hub a Hoy); **crear** se presenta como **modal** — es una tarea que
-  completas y cierras, no un lugar al que navegas.
-- **Destinos aún no construidos** (stats, calendario) aparecen aquí como la topología
-  *pretendida*; el diseño de cada feature vive en [future-features.md](./future-features.es.md)
-  hasta que se construya. Esta sección es la fuente de verdad de cómo conectan las
-  pantallas, no de qué hace cada pantalla no construida.
+- **Rutas planas, no anidadas bajo el hub.** Settings, stats, goals y calendario son **hermanas alcanzadas *a través* del menú del perfil, no hijas de él**, así que sus rutas van al primer nivel (`/settings`, `/goals`…), cada una un fichero fino propiedad de su feature — nunca bajo `/profile/…`. Esto mantiene la **jerarquía de rutas** (el árbol de URLs) desacoplada del **grafo de navegación** (quién enlaza con quién): que el perfil sea hoy la puerta a settings es una decisión expresada en los enlaces del hub, no una estructura grabada en las rutas. Así, cuando Hoy quiera más adelante un atajo directo a stats, enlaza a `/stats` — sin mover ninguna ruta. Solo una familia padre/hijo real se queda anidada (`activity/new`, luego `activity/[id]`).
+- **Presentación:** los destinos de gestión hacen **push** en el stack (atrás vuelve por el hub a Hoy); **crear** se presenta como **modal** — es una tarea que completas y cierras, no un lugar al que navegas.
 
 ---
 
 ## Estructura de carpetas
-
-> `items` a continuación es un nombre de feature de ejemplo — sustitúyelo por tus features reales (p. ej. `orders`, `contacts`, `tasks`...). Las capas y las reglas se mantienen igual sea cual sea el dominio.
 
 ```
 src/
@@ -147,7 +87,7 @@ src/
 │           └── index.tsx
 │
 ├── features/
-│   ├── items/
+│   ├── items/                    # Feature de ejemplo
 │   │   ├── domain/               # Entidades, value objects, interfaces (puertos)
 │   │   │   ├── Item.ts
 │   │   │   ├── ports/              # contratos hacia fuera que el dominio exige al exterior
@@ -196,7 +136,7 @@ El `index.ts` de un feature tiene dos tipos de exports, ambos públicos pero par
 - **De cara a la UI**: screens y hooks, consumidos por las rutas de `app/`.
 - **De cara al composition root**: la interfaz del repositorio, su(s) adaptador(es) concreto(s) y las migraciones del feature — consumidos únicamente por `core/di/`, nunca por otro feature ni por `app/`.
 
-Ambos tienen que pasar por `index.ts`. Nada fuera de un feature —ni siquiera `core/`— accede directamente a `domain/`, `application/` o `infrastructure/`. Ver [Inyección de dependencias](#inyección-de-dependencias-un-mecanismo-concreto) y [Migraciones de base de datos](#migraciones-de-base-de-datos-orden-centralizado-contenido-propiedad-del-feature) para entender por qué esto importa en la práctica, no solo en el papel.
+Ambos tienen que pasar por `index.ts`. Nada fuera de un feature —ni siquiera `core/`— accede directamente a `domain/`, `application/` o `infrastructure/`.
 
 ---
 
@@ -246,60 +186,27 @@ Ambos tienen que pasar por `index.ts`. Nada fuera de un feature —ni siquiera `
 
 ## Estilo del dominio: datos + funciones puras, no clases
 
-Las entidades de dominio se modelan como **datos planos (tipos/interfaces) más
-funciones puras libres**, no como clases con métodos. El comportamiento es una
-función exportada que recibe la entidad como parámetro y devuelve un valor (o una
-entidad nueva) — p. ej. `isActiveOn(periods, day)`,
-`isEffectivelyActive(activity, goal, day)` — nunca `entity.doThing()` con estado
-mutable interno. Esto mantiene el dominio inmutable, sin `this` y trivial de
-testear, y coincide con cómo ya está escrito el core puro (`StatusPeriod`,
-`RecurrenceRule`, `CalendarDay`).
+Las entidades de dominio se modelan como **datos planos (tipos/interfaces) más funciones puras libres**, no como clases con métodos. El comportamiento es una función exportada que recibe la entidad como parámetro y devuelve un valor (o una entidad nueva) — p. ej. `isActiveOn(periods, day)`, `isEffectivelyActive(activity, goal, day)` — nunca `entity.doThing()` con estado mutable interno. Esto mantiene el dominio inmutable, sin `this` y trivial de testear, y coincide con cómo ya está escrito el core puro (`StatusPeriod`, `RecurrenceRule`, `CalendarDay`).
 
-Las clases siguen siendo la herramienta correcta **fuera** del dominio: los
-adapters de infraestructura (repositorios como `SqliteItemRepository`) son clases
-que implementan un puerto del dominio y los inyecta `core/di/`. Así que la
-división es deliberada — *datos + funciones libres en `domain/`, clases en
-`infrastructure/`* — no un accidente de dos estilos mezclados. Los ejemplos con
-métodos en otras partes de este doc (`Item.updateStatus()`) son atajo
-ilustrativo, no un mandato de poner comportamiento en la entidad.
+Las clases siguen siendo la herramienta correcta **fuera** del dominio: los adapters de infraestructura (repositorios como `SqliteItemRepository`) son clases que implementan un puerto del dominio y los inyecta `core/di/`. Así que la división es deliberada — *datos + funciones libres en `domain/`, clases en `infrastructure/`* — no un accidente de dos estilos mezclados. Los ejemplos con métodos en otras partes de este doc (`Item.updateStatus()`) son atajo ilustrativo, no un mandato de poner comportamiento en la entidad.
 
 ### Haz irrepresentables los estados inválidos — cuando se pueda
 
-Cuando el dato lleva el discriminante, codifica el invariante en el tipo en vez
-de comprobarlo en runtime: un schedule es `FixedSchedule | QuotaSchedule`, así
-que "`periodGoal` existe ⟺ la recurrencia es quota" no se puede construir mal; y
-`quota` está excluido del tipo del parámetro de `isDueOn`, así que pedírselo es
-un error de compilación en vez de una rama.
+Cuando el dato lleva el discriminante, codifica el invariante en el tipo en vez de comprobarlo en runtime: un schedule es `FixedSchedule | QuotaSchedule`, así que "`periodGoal` existe ⟺ la recurrencia es quota" no se puede construir mal; y `quota` está excluido del tipo del parámetro de `isDueOn`, así que pedírselo es un error de compilación en vez de una rama.
 
-Donde el discriminante **no** está disponible esto no funciona, y fingir lo
-contrario es peor que admitirlo. El `progress` de una `ActivityOccurrence` no
-lleva etiqueta de tipo —cuál aplica se sabe por el tipo de la activity dueña—,
-así que cada consumidor castea en una frontera que lo dice en un comentario.
-Mantén esas fronteras pocas y con nombre.
+Donde el discriminante **no** está disponible esto no funciona, y fingir lo contrario es peor que admitirlo. El `progress` de una `ActivityOccurrence` no lleva etiqueta de tipo —cuál aplica se sabe por el tipo de la activity dueña—, así que cada consumidor castea en una frontera que lo dice en un comentario. Mantén esas fronteras pocas y con nombre.
 
 ### Instantes: `Date` en los bordes, strings ISO dentro de los blobs
 
-Los campos de primera clase que guardan un instante (`completedAt`, `startedAt`)
-son `Date`, revividos por el mapper. Los instantes **dentro** de un blob JSON
-(las repeticiones de un counter, los intervalos de un timer) se quedan como
-strings ISO, para que el blob viaje por el almacenamiento sin que el mapper
-necesite conocer su forma. Los días lógicos no son `Date` en ningún caso — ver
-`CalendarDay`.
+Los campos de primera clase que guardan un instante (`completedAt`, `startedAt`) son `Date`, revividos por el mapper. Los instantes **dentro** de un blob JSON (las repeticiones de un counter, los intervalos de un timer) se quedan como strings ISO, para que el blob viaje por el almacenamiento sin que el mapper necesite conocer su forma. Los días lógicos no son `Date` en ningún caso — ver `CalendarDay`.
 
 ### Las fronteras de calendario pasan por una sola función
 
-Todo lo que decide "¿a qué día/semana/periodo pertenece esto?" se canaliza por
-una única función pura — `getCalendarDay` para días lógicos,
-`shared/domain/time/calendarRange` para periodos. Nada las calcula por su
-cuenta. `legacy/v1` es el caso de aviso: desperdigó `startOf('week')` por ~6
-ficheros y nunca pudo hacer configurable el inicio de semana.
+Todo lo que decide "¿a qué día/semana/periodo pertenece esto?" se canaliza por una única función pura — `getCalendarDay` para días lógicos, `shared/domain/time/calendarRange` para periodos. Nada las calcula por su cuenta.
 
 ### La configuración se inyecta, nunca se lee desde el dominio
 
-Valores como `dayStartHour`, `weekStart` y la hora actual llegan como parámetros
-desde `core/di/`; las capas de dominio y aplicación nunca leen una API del
-dispositivo ni un reloj global. Eso es lo que mantiene la proyección pura y sus
-tests deterministas.
+Valores como `dayStartHour`, `weekStart` y la hora actual llegan como parámetros desde `core/di/`; las capas de dominio y aplicación nunca leen una API del dispositivo ni un reloj global. Eso es lo que mantiene la proyección pura y sus tests deterministas.
 
 ---
 
@@ -311,7 +218,7 @@ tests deterministas.
 - Casos de uso: verbo en camelCase, un fichero por caso de uso (`createItem.ts`, no un `itemUseCases.ts` cajón de sastre).
 - Hooks: prefijo `use`, coincidiendo con el nombre del caso de uso cuando aplique (`useCreateItem.ts`).
 - Mappers: `<Entidad>Mapper.ts`.
-- Rutas de Expo Router: siguen la convención propia de Expo Router (no la tuya), pero el contenido siempre es un import + render.
+- Rutas de Expo Router: siguen la convención propia de Expo Router, pero el contenido siempre es un import + render.
 
 ---
 
@@ -350,7 +257,7 @@ export class ItemAlreadySyncedError extends ConflictError {}
 `shared/infrastructure/db/` solo contiene la conexión y un **runner genérico** — no tiene ningún conocimiento del esquema de ningún feature. Decidir el **orden de ejecución** entre features es una responsabilidad transversal, así que se resuelve en `core/di/`, el mismo composition root que ya conecta los repositorios — es el único sitio explícitamente autorizado a depender tanto de `shared/` como de `features/`.
 
 - **Por qué centralizar el orden**: evita conflictos de orden entre migraciones que distintos features puedan escribir en paralelo (p. ej. dos features añadiendo ambos la migración `0004` a la vez).
-- **Por qué no resolverlo dentro de `shared/`**: `shared/` solo puede depender de `shared/` (ver [reglas de lint](#forzar-el-aislamiento-de-features-lint-no-solo-convención)). Que `shared/infrastructure/db/` importe ficheros de migración de cada feature directamente violaría eso — y acceder a la carpeta interna `infrastructure/migrations/` de un feature en vez de a su `index.ts` también violaría `entry-point`.
+- **Por qué no resolverlo dentro de `shared/`**: `shared/` solo puede depender de `shared/`. Que `shared/infrastructure/db/` importe ficheros de migración de cada feature directamente violaría eso — y acceder a la carpeta interna `infrastructure/migrations/` de un feature en vez de a su `index.ts` también violaría `entry-point`.
 
 ```
 shared/infrastructure/db/
@@ -391,165 +298,14 @@ Esto mantiene `shared/` puro (solo importa `shared/`) y deja el cableado entre f
 
 ---
 
-## Inyección de dependencias: un mecanismo concreto
-
-La regla 7 dice que `core/di/` decide qué implementación se inyecta, pero eso no explica cómo un hook llega realmente a tener el repositorio concreto. El mecanismo: **Context + composition root**.
-
-```ts
-// core/di/container.ts
-import { ItemRepository, SqliteItemRepository } from '@/features/items';
-import { db } from '@/shared/infrastructure/db/connection';
-
-export interface Container {
-  itemRepository: ItemRepository;
-  // settingsRepository: SettingsRepository;
-}
-
-export function createContainer(): Container {
-  return {
-    itemRepository: new SqliteItemRepository(db),
-  };
-}
-```
-
-Fíjate en que el import viene de `@/features/items` (su `index.ts`), no de `@/features/items/domain/ports/ItemRepository` ni de `.../infrastructure/SqliteItemRepository` directamente — esos son ficheros internos. `ItemRepository` y `SqliteItemRepository` tienen que formar parte de los exports de cara al DI del feature para que esto funcione sin un import directo a un fichero interno.
-
-```tsx
-// core/di/DependencyProvider.tsx
-import { createContext, useContext, PropsWithChildren } from 'react';
-import { Container, createContainer } from './container';
-
-const DependencyContext = createContext<Container | null>(null);
-
-export function DependencyProvider({ children }: PropsWithChildren) {
-  const container = createContainer();
-  return (
-    <DependencyContext.Provider value={container}>
-      {children}
-    </DependencyContext.Provider>
-  );
-}
-
-export function useDependencies(): Container {
-  const ctx = useContext(DependencyContext);
-  if (!ctx) throw new Error('useDependencies must be used within DependencyProvider');
-  return ctx;
-}
-```
-
-`DependencyProvider` envuelve la app en `app/_layout.tsx`, junto al resto de providers globales. Desde un hook de un feature:
-
-```ts
-// features/items/ui/hooks/useCreateItem.ts
-import { useDependencies } from '@/core/di/DependencyProvider';
-import { createItem } from '../application/createItem';
-
-export function useCreateItem() {
-  const { itemRepository } = useDependencies();
-  return useMutation({ mutationFn: createItem(itemRepository) });
-}
-```
-
-Los tests de casos de uso (ver la sección de Testing) nunca pasan por el Context: llaman a `createItem(fakeRepo)` directamente. El Context es solo el mecanismo de cableado en producción.
-
----
-
-## Forzar el aislamiento de features (lint, no solo convención)
-
-La regla 5 (un feature nunca importa de las carpetas internas de otro feature) es solo una convención hasta que el lint la haga cumplir de verdad. Con un único feature de ejemplo no se nota, pero a partir del segundo o tercer feature merece la pena añadir `eslint-plugin-boundaries`:
-
-```js
-// .eslintrc.js
-module.exports = {
-  plugins: ['boundaries'],
-  settings: {
-    'boundaries/elements': [
-      { type: 'app', pattern: 'app/*' },
-      { type: 'feature', pattern: 'src/features/*', capture: ['feature'] },
-      { type: 'shared', pattern: 'src/shared/*' },
-      { type: 'core', pattern: 'src/core/*' },
-    ],
-  },
-  rules: {
-    'boundaries/element-types': ['error', {
-      default: 'disallow',
-      rules: [
-        { from: 'app', allow: ['feature'] },
-        { from: 'feature', allow: ['shared', 'core'] },
-        { from: 'shared', allow: ['shared'] },
-        { from: 'core', allow: ['shared', 'feature'] },
-      ],
-    }],
-    // fuerza a que los imports pasen por el index.ts público de cada feature
-    'boundaries/entry-point': ['error', {
-      default: 'disallow',
-      rules: [{ target: 'feature', allow: 'index.ts' }],
-    }],
-  },
-};
-```
-
-`boundaries/entry-point` es la regla que cierra el hueco real: sin ella, `element-types` por sí sola dejaría que `features/items` importe cualquier fichero interno de `features/settings`, ya que ambos son del mismo tipo `feature`. Con `entry-point`, solo se puede importar `features/settings/index.ts`.
-
-La misma config lleva las **reglas de estilos** de más abajo, que tienen el mismo
-problema de "es convención hasta que el lint la fuerza" — y con más evidencia
-todavía, porque 15 colores hardcodeados llegaron al código sin que nadie decidiera
-añadirlos:
-
-```js
-  plugins: ['boundaries', 'react-native'],
-  rules: {
-    'react-native/no-inline-styles': 'error',
-    'react-native/no-color-literals': 'error',
-  },
-```
-
----
-
 ## Estilos: tokens, temas y dónde viven
 
 Cuatro reglas, un solo mecanismo:
 
 1. **Sin colores hardcodeados.** Los valores crudos existen en un único fichero.
 2. **Sin estilos inline.** Ningún objeto de estilo literal dentro del JSX.
-3. **Los estilos viven en su propio fichero**, nunca junto al código del componente.
-4. **Los temas son intercambiables.** Claro y oscuro para empezar; añadir más no
-   puede obligar a tocar ni un componente.
-
-### Por qué los estilos son una función y no una constante
-
-`StyleSheet.create` se ejecuta **una vez, al importar el módulo**. Eso vale para
-un tema fijo y es imposible con uno intercambiable: una constante calculada al
-importar no puede saber qué tema está activo ni reaccionar cuando cambia.
-
-Así que un fichero de estilos exporta una **factoría** que recibe el tema, y el
-componente la resuelve con un hook que memoiza por tema — `StyleSheet.create` se
-vuelve a ejecutar cuando el tema cambia de verdad, no en cada render:
-
-```ts
-// TodayScreen.styles.ts — al lado del componente, en fichero aparte
-import { StyleSheet } from 'react-native';
-import type { Theme } from '@/shared/theme';
-
-export const todayScreenStyles = (theme: Theme) =>
-  StyleSheet.create({
-    screen: {
-      flex: 1,
-      paddingHorizontal: theme.spacing.lg,
-      backgroundColor: theme.colors.background,
-    },
-    title: { ...theme.typography.title, color: theme.colors.text.primary },
-  });
-```
-
-```ts
-// TodayScreen.tsx
-const styles = useThemedStyles(todayScreenStyles);
-```
-
-Nomenclatura: `<NombreComponente>.styles.ts`, junto a `<NombreComponente>.tsx`.
-Al lado para encontrarlo al instante, aparte para que ningún fichero mezcle
-layout con lógica.
+3. **Los estilos viven en su propio fichero**, nunca junto al código del componente. Nomenclatura: `<NombreComponente>.styles.ts`, junto a `<NombreComponente>.tsx`.
+4. **Los temas son intercambiables.** Claro y oscuro para empezar; añadir más no puede obligar a tocar ni un componente.
 
 ### Estructura
 
@@ -567,56 +323,32 @@ src/shared/theme/
 └── index.ts            # exporta el tipo Theme, el hook y el registro de temas — nunca la paleta
 ```
 
-El provider vive en `core/providers/`, con los demás providers globales. El
-*contexto* se queda aquí para que `shared/theme` sea autocontenido y un consumidor
-nunca tenga que importar de `core/`.
+El provider vive en `core/providers/`, con los demás providers globales. El *contexto* se queda aquí para que `shared/theme` sea autocontenido y un consumidor nunca tenga que importar de `core/`.
 
-`useThemedStyles` memoiza en el módulo, no dentro del hook, así que todos los
-consumidores de un mismo fichero de estilos comparten un único
-`StyleSheet.create` por tema en vez de uno cada uno.
+`useThemedStyles` memoiza en el módulo, no dentro del hook, así que todos los consumidores de un mismo fichero de estilos comparten un único `StyleSheet.create` por tema en vez de uno cada uno.
 
 ### Qué hace barato añadir un tema
 
 - **`Theme` es un tipo que todo tema satisface**, así que añadir uno es rellenar
-  una forma y `tsc` avisa de cualquier token que falte. Un tema no puede quedarse
-  a medio definir.
+una forma y `tsc` avisa de cualquier token que falte. Un tema no puede quedarse a medio definir.
 - **Nombres semánticos, no de paleta.** `colors.text.muted`, nunca
-  `colors.gray500`. Un componente que pide "texto atenuado" sigue funcionando en
-  cualquier tema; uno que pide gris 500 hay que reescribirlo para cada uno. Es la
-  única decisión que convierte claro/oscuro en un cambio de datos y no en una
-  refactorización.
+`colors.gray500`. Un componente que pide "texto atenuado" sigue funcionando en cualquier tema; uno que pide gris 500 hay que reescribirlo para cada uno. Es la única decisión que convierte claro/oscuro en un cambio de datos y no en una refactorización.
 - **`palette.ts` no se exporta desde `index.ts`.** Los temas la leen; nadie más
-  puede, así que "sin colores hardcodeados" no tiene puerta trasera.
+puede, así que "sin colores hardcodeados" no tiene puerta trasera.
 - **Spacing y tipografía también viven en el tema**, aunque hoy no varíen entre
-  claro y oscuro. No cuesta nada ahora y significa que un tema de accesibilidad
-  con texto grande no obligará a tocar ningún consumidor.
+claro y oscuro. No cuesta nada ahora y significa que un tema de accesibilidad con texto grande no obligará a tocar ningún consumidor.
 - **Las rampas se nombran por el color que son, los roles por lo que
-  significan.** `palette.blue`, `theme.colors.brand`. Llamar `danger` a una
-  rampa colapsa las dos capas: el siguiente tema que quiera otro rojo no tiene
-  adónde ir salvo `danger2`, y la paleta crece por *temas × roles* en vez de por
-  colores que de verdad existen. Nombradas por tono, el problema suele
-  encogerse: un tema nuevo reutiliza casi todo lo que ya hay y añade solo lo que
-  falta de verdad.
+significan.** `palette.blue`, `theme.colors.brand`. Llamar `danger` a una rampa colapsa las dos capas: el siguiente tema que quiera otro rojo no tiene adónde ir salvo `danger2`, y la paleta crece por *temas × roles* en vez de por colores que de verdad existen. Nombradas por tono, el problema suele encogerse: un tema nuevo reutiliza casi todo lo que ya hay y añade solo lo que falta de verdad.
 - **Un tema que necesite tonos que ninguna rampa tiene añade su propia rampa a
-  `palette.ts`**, nunca valores inline en `themes/`. `grayscale` es el ejemplo
-  trabajado: la rampa `slate` por defecto lleva un azul tenue a propósito, así
-  que un tema cuya premisa es la ausencia de tono necesitó una rampa `gray`
-  verdaderamente neutra al lado.
+`palette.ts`**, nunca valores inline en `themes/`. `grayscale` es el ejemplo trabajado: la rampa `slate` por defecto lleva un azul tenue a propósito, así que un tema cuya premisa es la ausencia de tono necesitó una rampa `gray` verdaderamente neutra al lado.
 - **Varios roles pueden resolver al mismo tono.** Los roles son un vocabulario,
-  no la promesa de que cada uno tenga un color propio — `grayscale` colapsa
-  cuatro. Lo que un tema no puede hacer es colapsar una distinción que el diseño
-  confiaba solo al color, y por eso el estado se codifica antes en el glifo y en
-  las palabras.
+no la promesa de que cada uno tenga un color propio — `grayscale` colapsa cuatro. Lo que un tema no puede hacer es colapsar una distinción que el diseño confiaba solo al color, y por eso el estado se codifica antes en el glifo y en las palabras.
 - **La accesibilidad la garantiza la suite, no una revisión.** Los tests de
-  contraste recorren el registro de temas, así que un tema nuevo queda
-  comprobado sin escribir ningún caso: los roles de texto deben 4.5:1, los
-  bordes de control y las formas de los glifos 3:1, y de los separadores de fila
-  se afirma que se quedan *por debajo*.
+contraste recorren el registro de temas, así que un tema nuevo queda comprobado sin escribir ningún caso: los roles de texto deben 4.5:1, los bordes de control y las formas de los glifos 3:1, y de los separadores de fila se afirma que se quedan *por debajo*.
 
 ### Dónde está la raya en "sin estilos inline"
 
-Prohibido: un objeto de estilo literal en el JSX (`style={{ marginTop: 8 }}`) —
-esconde un número mágico donde ni el lint ni el tema pueden verlo.
+Prohibido: un objeto de estilo literal en el JSX (`style={{ marginTop: 8 }}`) — esconde un número mágico donde ni el lint ni el tema pueden verlo.
 
 Permitido: componer estilos con nombre, incluso condicionalmente —
 `style={[styles.title, done && styles.titleMuted]}`. También permitido: un valor
@@ -665,15 +397,6 @@ test('createItem saves the item', async () => {
   expect(await repo.findById(item.id)).toEqual(item);
 });
 ```
-
----
-
-## Decisiones abiertas de tooling y arquitectura
-
-Las decisiones sin cerrar — el motor de sincronización, el runner de tests y la
-librería de estado global compartido — se registran en
-[future-features.es.md](./future-features.es.md), para que esta
-referencia se limite a lo que ya está en pie.
 
 ---
 
