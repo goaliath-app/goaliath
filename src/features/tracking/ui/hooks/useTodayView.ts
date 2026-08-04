@@ -55,7 +55,9 @@ export function useTodayView() {
   // `revision` is the dependency that makes this reload after *any* write, this
   // screen's or another's — it is read for that effect alone.
   useEffect(() => {
-    void load();
+    void (async () => {
+      await load();
+    })();
   }, [load, revision]);
 
   // Re-render once a second so a running timer's elapsed time stays live —

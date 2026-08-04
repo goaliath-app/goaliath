@@ -1,5 +1,6 @@
 import type { CalendarDay } from '@/shared/domain/time/CalendarDay';
 import {
+  addStatusPeriod,
   activeSince,
   isActiveOn,
   startedOn,
@@ -15,6 +16,39 @@ const timeline: StatusPeriod[] = [
   { status: 'paused', from: day('2024-03-01') },
   { status: 'active', from: day('2024-05-01') },
 ];
+
+describe('addStatusPeriod', () => {
+  it('replaces a change already recorded for the same logical day', () => {
+    const periods: StatusPeriod[] = [
+      { status: 'active', from: day('2024-01-10') },
+      { status: 'paused', from: day('2024-03-01') },
+    ];
+
+    expect(addStatusPeriod(periods, { status: 'active', from: day('2024-03-01') })).toEqual([
+      { status: 'active', from: '2024-01-10' },
+      { status: 'active', from: '2024-03-01' },
+    ]);
+  });
+
+  it('keeps the timeline sorted when adding a change out of order', () => {
+    expect(
+      addStatusPeriod(timeline, { status: 'paused', from: day('2024-02-01') }),
+    ).toEqual([
+      { status: 'active', from: '2024-01-10' },
+      { status: 'paused', from: '2024-02-01' },
+      { status: 'paused', from: '2024-03-01' },
+      { status: 'active', from: '2024-05-01' },
+    ]);
+  });
+
+  it('does not mutate the existing timeline', () => {
+    const periods = [...timeline];
+
+    addStatusPeriod(periods, { status: 'paused', from: day('2024-03-01') });
+
+    expect(periods).toEqual(timeline);
+  });
+});
 
 describe('statusOn / isActiveOn', () => {
   it('returns the status in effect, with `from` inclusive', () => {

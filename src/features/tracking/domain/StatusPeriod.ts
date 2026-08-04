@@ -23,6 +23,20 @@ export interface StatusPeriod {
 }
 
 /**
+ * Adds a status change to a timeline. There can be only one change per logical
+ * day; when one already exists, the new change wins. The input is never
+ * mutated, and the result remains sorted by `from`.
+ */
+export function addStatusPeriod(
+  periods: readonly StatusPeriod[],
+  period: StatusPeriod,
+): StatusPeriod[] {
+  return [...periods.filter((current) => current.from !== period.from), period].sort(
+    (left, right) => (left.from < right.from ? -1 : left.from > right.from ? 1 : 0),
+  );
+}
+
+/**
  * The entry in effect on `day`: the latest one whose `from <= day`. `from` is
  * inclusive, so the day a change takes effect already belongs to the new status.
  *

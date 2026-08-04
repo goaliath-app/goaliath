@@ -30,6 +30,9 @@ export function resolveDeviceLanguage(): SupportedLanguage {
 export function initI18n(): typeof i18n {
   if (i18n.isInitialized) return i18n;
 
+  // i18next exposes `use` on its default instance; the lint rule mistakes it
+  // for a named export because the package exposes both shapes.
+  // eslint-disable-next-line import/no-named-as-default-member
   void i18n.use(initReactI18next).init({
     resources,
     defaultNS,
