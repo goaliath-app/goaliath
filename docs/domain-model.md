@@ -34,6 +34,14 @@ Guiding principle:
 - [12. Stats: pure projection + materialized summary](#12-stats-pure-projection--materialized-summary)
 - [🧠 Mental summary of the system](#-mental-summary-of-the-system)
 
+This document describes the **domain** shape. Persistence is decoupled
+(`expo-sqlite` behind a repository, so the UI and domain never depend on the
+data source — see [architecture.md](./architecture.md)): in storage the periods
+live in a normalized table with a reference to their owner, reconstructed into
+the aggregate by the mapper. That's why the domain shows `statusPeriods` as a
+list on the entity while the database keeps it as its own table — same data,
+two layers.
+
 ---
 
 ## 0. Two independent timelines
@@ -71,19 +79,6 @@ Timelines are contiguous (the entity always has some status once it exists —
 `archived` is a status, not a gap), so a `to` would only duplicate the next
 entry's `from` and add an invariant to keep consistent. The end is derived, and
 overlaps and gaps become unrepresentable.
-
-This document describes the **domain** shape. Persistence is decoupled
-(`expo-sqlite` behind a repository, so the UI and domain never depend on the
-data source — see [architecture.md](./architecture.md)): in storage the periods
-live in a normalized table with a reference to their owner, reconstructed into
-the aggregate by the mapper. That's why the domain shows `statusPeriods` as a
-list on the entity while the database keeps it as its own table — same data,
-two layers.
-
-Composition rule: an Activity is only effectively active on a date if **both
-it and its Goal** are in `active` status on that date. This is resolved with a
-pure function `isEffectivelyActive(activity, goal, date)`, with no need to
-duplicate the flag in two places.
 
 Purely cosmetic fields (`title`, `motivation`, `description`) **are not
 versioned**. If the user renames it,
@@ -144,6 +139,11 @@ Activity {
   the cosmetic fields). In TypeScript it should be typed as the set of
   registered keys (e.g. `keyof typeof registry`) rather than a bare `string`,
   so the set stays open through the registry while still giving autocompletion.
+
+Composition rule: an Activity is only effectively active on a date if **both
+it and its Goal** are in `active` status on that date. This is resolved with a
+pure function `isEffectivelyActive(activity, goal, date)`, with no need to
+duplicate the flag in two places.
 
 ---
 

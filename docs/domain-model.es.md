@@ -34,6 +34,14 @@ Principio rector:
 - [12. Estadísticas: proyección pura + resumen materializado](#12-estadísticas-proyección-pura--resumen-materializado)
 - [🧠 Resumen mental del sistema](#-resumen-mental-del-sistema)
 
+Este documento describe la forma del **dominio**. La persistencia está
+desacoplada (`expo-sqlite` detrás de un repositorio, para que la UI y el dominio
+nunca dependan de la fuente de datos — ver [architecture.es.md](./architecture.es.md)):
+en almacenamiento los periodos viven en una tabla normalizada con una referencia
+a su dueño, y el mapper los reconstruye dentro del agregado. Por eso el dominio
+muestra `statusPeriods` como lista en la entidad mientras la base de datos lo
+guarda como tabla propia — mismos datos, dos capas.
+
 ---
 
 ## 0. Dos líneas de tiempo independientes
@@ -74,23 +82,9 @@ Las timelines son contiguas (la entidad siempre tiene algún estado una vez exis
 `from` de la siguiente entrada y añadiría un invariante que mantener. El fin se
 deriva, y los solapes y huecos quedan irrepresentables.
 
-Este documento describe la forma del **dominio**. La persistencia está
-desacoplada (`expo-sqlite` detrás de un repositorio, para que la UI y el dominio
-nunca dependan de la fuente de datos — ver [architecture.es.md](./architecture.es.md)):
-en almacenamiento los periodos viven en una tabla normalizada con una referencia
-a su dueño, y el mapper los reconstruye dentro del agregado. Por eso el dominio
-muestra `statusPeriods` como lista en la entidad mientras la base de datos lo
-guarda como tabla propia — mismos datos, dos capas.
-
-Regla de composición: una Activity solo está efectivamente activa en una fecha
-si **ella y su Goal** están en estado `active` en esa fecha. Se resuelve con
-una función pura `isEffectivelyActive(activity, goal, date)`, sin necesidad de
-duplicar el flag en dos sitios.
-
 Los campos puramente cosméticos (`title`, `motivation`, `description`) **no se
 versionan**. Si el usuario lo renombra, el histórico simplemente muestra el
-nombre actual. Es una
-simplificación deliberada: nadie necesita que las estadísticas de hace 3 meses
+nombre actual. Es una simplificación deliberada: nadie necesita que las estadísticas de hace 3 meses
 muestren un nombre antiguo, y evitamos versionar datos que no afectan a si un
 día cuenta o no para una racha/estadística.
 
@@ -146,6 +140,11 @@ Activity {
   cosméticos). En TypeScript debería tiparse como el conjunto de claves
   registradas (p.ej. `keyof typeof registry`) en vez de un `string` pelado, de
   forma que el conjunto siga abierto vía el registro pero con autocompletado.
+
+Regla de composición: una Activity solo está efectivamente activa en una fecha
+si **ella y su Goal** están en estado `active` en esa fecha. Se resuelve con
+una función pura `isEffectivelyActive(activity, goal, date)`, sin necesidad de
+duplicar el flag en dos sitios.
 
 ---
 
