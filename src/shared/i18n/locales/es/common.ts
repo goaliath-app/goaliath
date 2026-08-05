@@ -13,6 +13,13 @@ export default {
     title: 'Perfil',
     goalsLabel: 'Objetivos',
     goalsHint: 'Tus objetivos y sus actividades',
+    deleteAllDataLabel: 'Eliminar todos los datos',
+    deleteAllDataHint: 'Borra todo tu progreso y actividades',
+    deleteAllDataAlertTitle: 'Eliminar todos los datos',
+    deleteAllDataAlertMessage: '¿De verdad quieres borrar todos tus datos?',
+    deleteAllDataConfirm: 'Sí',
+    deleteAllDataCancel: 'No',
+    deleteAllDataFailed: 'No se pudieron borrar los datos. Intenta de nuevo.',
   },
   goals: {
     title: 'Objetivos',

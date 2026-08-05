@@ -1,7 +1,8 @@
 import { useThemedStyles } from '@/shared/theme';
 import { Link, useRouter, type Href } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { useDeleteAllData } from '../../hooks/useDeleteAllData';
 import { profileScreenStyles } from './ProfileScreen.styles';
 
 /**
@@ -30,9 +31,33 @@ const HUB_ITEMS: readonly HubItem[] = [
 ];
 
 export function ProfileScreen() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const router = useRouter();
   const styles = useThemedStyles(profileScreenStyles);
+
+  const deleteAllData = useDeleteAllData();
+
+  const handleDeleteAllData = (): void => {
+    Alert.alert(
+      t('profile.deleteAllDataAlertTitle'),
+      t('profile.deleteAllDataAlertMessage'),
+      [
+        { text: t('profile.deleteAllDataCancel'), style: 'cancel' },
+        {
+          text: t('profile.deleteAllDataConfirm'),
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteAllData();
+            } catch (error) {
+              const message = (error as Error).message ?? t('profile.deleteAllDataFailed');
+              Alert.alert(t('profile.deleteAllDataAlertTitle'), message);
+            }
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <View style={styles.screen}>
@@ -60,6 +85,12 @@ export function ProfileScreen() {
             </Pressable>
           </Link>
         ))}
+        <Pressable style={styles.item} accessibilityRole="button" onPress={handleDeleteAllData}>
+          <View style={styles.itemText}>
+            <Text style={styles.itemLabel}>{t('profile.deleteAllDataLabel')}</Text>
+            <Text style={styles.itemHint}>{t('profile.deleteAllDataHint')}</Text>
+          </View>
+        </Pressable>
       </ScrollView>
     </View>
   );

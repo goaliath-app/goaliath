@@ -1,20 +1,22 @@
-import type { SQLiteDatabase } from 'expo-sqlite';
-import type { IdGenerator } from '@/shared/domain/ports/IdGenerator';
-import type { TransactionRunner } from '@/shared/domain/ports/TransactionRunner';
-import { ExpoIdGenerator } from '@/shared/infrastructure/ExpoIdGenerator';
-import { SqliteTransactionRunner } from '@/shared/infrastructure/db/SqliteTransactionRunner';
 import {
   SqliteActivityOccurrenceRepository,
   SqliteActivityRepository,
   SqliteActivityScheduleRepository,
   SqliteGoalRepository,
   SqliteRunningTimerRepository,
+  SqliteTrackingDataCleanupRepository,
   type ActivityOccurrenceRepository,
   type ActivityRepository,
   type ActivityScheduleRepository,
   type GoalRepository,
   type RunningTimerRepository,
+  type TrackingDataCleanupRepository,
 } from '@/features/tracking';
+import type { IdGenerator } from '@/shared/domain/ports/IdGenerator';
+import type { TransactionRunner } from '@/shared/domain/ports/TransactionRunner';
+import { ExpoIdGenerator } from '@/shared/infrastructure/ExpoIdGenerator';
+import { SqliteTransactionRunner } from '@/shared/infrastructure/db/SqliteTransactionRunner';
+import type { SQLiteDatabase } from 'expo-sqlite';
 
 /**
  * The composition root's wiring (architecture.md, rule 7): the one place that
@@ -28,6 +30,7 @@ export interface Container {
   activityScheduleRepository: ActivityScheduleRepository;
   activityOccurrenceRepository: ActivityOccurrenceRepository;
   runningTimerRepository: RunningTimerRepository;
+  trackingDataCleanup: TrackingDataCleanupRepository;
   ids: IdGenerator;
   transactions: TransactionRunner;
   now: () => Date;
@@ -42,6 +45,7 @@ export function createContainer(database: SQLiteDatabase): Container {
     activityScheduleRepository: new SqliteActivityScheduleRepository(database),
     activityOccurrenceRepository: new SqliteActivityOccurrenceRepository(database),
     runningTimerRepository: new SqliteRunningTimerRepository(database),
+    trackingDataCleanup: new SqliteTrackingDataCleanupRepository(database),
     ids: new ExpoIdGenerator(),
     transactions: new SqliteTransactionRunner(database),
     now: () => new Date(),

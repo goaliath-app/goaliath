@@ -10,6 +10,13 @@ export default {
     title: 'Profile',
     goalsLabel: 'Goals',
     goalsHint: 'Your goals and their activities',
+    deleteAllDataLabel: 'Delete all data',
+    deleteAllDataHint: 'Erase all your progress and activities',
+    deleteAllDataAlertTitle: 'Delete all data',
+    deleteAllDataAlertMessage: 'Do you really want to delete all your data?',
+    deleteAllDataConfirm: 'Yes',
+    deleteAllDataCancel: 'No',
+    deleteAllDataFailed: 'Unable to delete data. Please try again.',
   },
   goals: {
     title: 'Goals',
