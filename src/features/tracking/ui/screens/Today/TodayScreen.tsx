@@ -1,5 +1,6 @@
 import { useThemedStyles } from '@/shared/theme';
 import { Link } from 'expo-router';
+import { Plus, User } from 'lucide-react-native';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
@@ -29,7 +30,7 @@ export function TodayScreen() {
             accessibilityRole="button"
             accessibilityLabel={t('today.menu')}
           >
-            <Text style={styles.iconText}>☰</Text>
+            <User />
           </Pressable>
         </Link>
         {/* Create is a primary action, not a hub item (navigation model). */}
@@ -39,7 +40,7 @@ export function TodayScreen() {
             accessibilityRole="button"
             accessibilityLabel={t('today.newActivity')}
           >
-            <Text style={styles.iconText}>+</Text>
+            <Plus />
           </Pressable>
         </Link>
       </View>

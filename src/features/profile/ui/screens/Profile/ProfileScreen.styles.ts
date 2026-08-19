@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
 import type { Theme } from '@/shared/theme';
+import { StyleSheet } from 'react-native';
 
 /**
  * Styles for {@link ProfileScreen}. A factory so it reads the active theme
@@ -54,9 +54,5 @@ export const profileScreenStyles = (theme: Theme) =>
     itemHint: {
       ...theme.typography.meta,
       color: theme.colors.text.secondary,
-    },
-    chevron: {
-      ...theme.typography.title,
-      color: theme.colors.text.muted,
     },
   });

@@ -1,5 +1,6 @@
 import { useThemedStyles } from '@/shared/theme';
 import { useRouter } from 'expo-router';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { Fragment, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
@@ -40,7 +41,7 @@ export function GoalsScreen() {
           accessibilityLabel={t('back')}
           onPress={() => router.back()}
         >
-          <Text style={styles.backText}>‹</Text>
+          <ChevronLeft />
         </Pressable>
         <Text style={styles.title}>{t('goals.title')}</Text>
       </View>
@@ -63,7 +64,7 @@ export function GoalsScreen() {
                   accessibilityState={{ expanded: isOpen }}
                   onPress={() => toggle(goal.id)}
                 >
-                  <Text style={styles.chevron}>{isOpen ? '▾' : '▸'}</Text>
+                  {isOpen ? <ChevronDown /> : <ChevronRight/>}
                   <View style={styles.goalHeaderText}>
                     <Text style={styles.goalTitle}>{goal.title}</Text>
                     {goal.motivation.length > 0 ? (

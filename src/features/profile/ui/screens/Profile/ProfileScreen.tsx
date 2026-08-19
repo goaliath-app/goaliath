@@ -1,5 +1,6 @@
 import { useThemedStyles } from '@/shared/theme';
 import { Link, useRouter, type Href } from 'expo-router';
+import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useDeleteAllData } from '../../hooks/useDeleteAllData';
@@ -68,7 +69,7 @@ export function ProfileScreen() {
           accessibilityLabel={t('back')}
           onPress={() => router.back()}
         >
-          <Text style={styles.backText}>‹</Text>
+          <ChevronLeft />
         </Pressable>
         <Text style={styles.title}>{t('profile.title')}</Text>
       </View>
@@ -81,7 +82,7 @@ export function ProfileScreen() {
                 <Text style={styles.itemLabel}>{t(item.labelKey)}</Text>
                 <Text style={styles.itemHint}>{t(item.hintKey)}</Text>
               </View>
-              <Text style={styles.chevron}>›</Text>
+              <ChevronRight/>
             </Pressable>
           </Link>
         ))}
