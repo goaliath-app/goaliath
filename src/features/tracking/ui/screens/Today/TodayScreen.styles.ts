@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
 import type { Theme } from '@/shared/theme';
+import { StyleSheet } from 'react-native';
 
 /**
  * Styles for {@link TodayScreen}. A factory rather than a constant so it can
@@ -28,7 +28,6 @@ export const todayScreenStyles = (theme: Theme) =>
       ...theme.typography.meta,
       color: theme.colors.text.secondary,
       marginTop: theme.spacing.xs,
-      marginBottom: theme.spacing.lg,
     },
     iconButton: {
       width: 44,

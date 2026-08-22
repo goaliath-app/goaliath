@@ -3,8 +3,8 @@ export default {
   today: {
     title: 'Today',
     empty: 'Nothing scheduled for today.',
-    newActivity: 'New activity',
-    menu: 'Menu',
+    newActivity: 'Add new activity',
+    profile: 'Go to user profile',
   },
   profile: {
     title: 'Profile',

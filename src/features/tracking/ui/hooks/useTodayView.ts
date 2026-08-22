@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDependencies } from '@/core/di/DependencyProvider';
 import {
   useInvalidateStoredData,
   useStoredDataRevision,
 } from '@/core/providers/StoredDataProvider';
-import { getCalendarDay } from '@/shared/domain/time/CalendarDay';
+import { getCalendarDay, isoWeekday } from '@/shared/domain/time/CalendarDay';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getDayView } from '../../application/getDayView';
 import { logCounterRepetition } from '../../application/logCounterRepetition';
 import { startTimer } from '../../application/startTimer';
@@ -32,6 +32,8 @@ export function useTodayView() {
     () => getCalendarDay(deps.now(), deps.dayStartHour),
     [deps],
   );
+
+  const todayWeekday = useMemo(() => { const value = isoWeekday(today); return value; }, [today]);
 
   const load = useCallback(async () => {
     const view = getDayView({
@@ -111,5 +113,5 @@ export function useTodayView() {
     [runningTimers],
   );
 
-  return { items, today, actions, runningTimerFor, nowMs };
+  return { items, today, todayWeekday, actions, runningTimerFor, nowMs };
 }

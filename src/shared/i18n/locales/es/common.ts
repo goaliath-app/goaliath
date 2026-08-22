@@ -6,8 +6,8 @@ export default {
   today: {
     title: 'Hoy',
     empty: 'No tienes nada para hoy.',
-    newActivity: 'Nueva actividad',
-    menu: 'Menú',
+    newActivity: 'Añadir actividad',
+    profile: 'Ir al perfil de usuario',
   },
   profile: {
     title: 'Perfil',
